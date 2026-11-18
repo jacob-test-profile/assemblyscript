@@ -19,6 +19,7 @@
  (import "env" "getChunk" (func $async-await-position/getChunk (param i32) (result i32)))
  (import "env" "getNum" (func $async-await-position/getNum (param i32) (result i32)))
  (import "env" "__async_wait" (func $~lib/promise/__async_wait (param i32) (result i32)))
+ (import "env" "getFlag" (func $async-await-position/getFlag (param i32) (result i32)))
  (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
  (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
  (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
@@ -44,12 +45,33 @@
  (global $async-await-position/__async_roots_indexOrder (mut i32) (i32.const 0))
  (global $async-await-position/__async_roots_elemCompound (mut i32) (i32.const 0))
  (global $async-await-position/__async_roots_storedField (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_ifCond (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_whileCond (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_forCond (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_doCond (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_forIncr (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_callArgs (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_binaryOp (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_binaryStr (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_varInitCall (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_varInitBinary (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_returnAssign (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_compoundRhs (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_assignRhsField (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_ternaryCond (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_andLeft (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_storedArg (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_ifCondInTry (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_unaryOp (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_arrayLit (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_templateLit (mut i32) (i32.const 0))
  (global $async-await-position/__async_roots_W_setField (mut i32) (i32.const 0))
+ (global $async-await-position/__async_roots_W_checkFlag (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 2608))
- (global $~lib/memory/__data_end i32 (i32.const 2740))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35508))
- (global $~lib/memory/__heap_base i32 (i32.const 35508))
+ (global $~lib/rt/__rtti_base i32 (i32.const 2736))
+ (global $~lib/memory/__data_end i32 (i32.const 3040))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35808))
+ (global $~lib/memory/__heap_base i32 (i32.const 35808))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -74,7 +96,11 @@
  (data $20 (i32.const 2508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00B\00B\00B\00\00\00\00\00\00\00")
  (data $21 (i32.const 2540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00C\00C\00C\00\00\00\00\00\00\00")
  (data $22 (i32.const 2572) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00D\00D\00D\00\00\00\00\00\00\00")
- (data $23 (i32.const 2608) " \00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $23 (i32.const 2604) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\04\00\00\00N\00O\00\00\00\00\00\00\00\00\00")
+ (data $24 (i32.const 2636) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00Y\00E\00S\00\00\00\00\00\00\00")
+ (data $25 (i32.const 2668) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00!\00\00\00\00\00\00\00\00\00\00\00")
+ (data $26 (i32.const 2700) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0c\00\00\00C\00A\00U\00G\00H\00T\00")
+ (data $27 (i32.const 2736) "K\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "compoundStr" (func $async-await-position/compoundStr))
@@ -89,8 +115,30 @@
  (export "storedField" (func $async-await-position/storedField))
  (export "chunkString" (func $async-await-position/chunkString))
  (export "startSetField" (func $async-await-position/startSetField))
+ (export "startCheckFlag" (func $async-await-position/startCheckFlag))
+ (export "ifCond" (func $async-await-position/ifCond))
+ (export "whileCond" (func $async-await-position/whileCond))
+ (export "forCond" (func $async-await-position/forCond))
+ (export "doCond" (func $async-await-position/doCond))
+ (export "forIncr" (func $async-await-position/forIncr))
+ (export "callArgs" (func $async-await-position/callArgs))
+ (export "binaryOp" (func $async-await-position/binaryOp))
+ (export "binaryStr" (func $async-await-position/binaryStr))
+ (export "varInitCall" (func $async-await-position/varInitCall))
+ (export "varInitBinary" (func $async-await-position/varInitBinary))
+ (export "returnAssign" (func $async-await-position/returnAssign))
+ (export "compoundRhs" (func $async-await-position/compoundRhs))
+ (export "assignRhsField" (func $async-await-position/assignRhsField))
+ (export "ternaryCond" (func $async-await-position/ternaryCond))
+ (export "andLeft" (func $async-await-position/andLeft))
+ (export "storedArg" (func $async-await-position/storedArg))
+ (export "ifCondInTry" (func $async-await-position/ifCondInTry))
+ (export "unaryOp" (func $async-await-position/unaryOp))
+ (export "arrayLit" (func $async-await-position/arrayLit))
+ (export "templateLit" (func $async-await-position/templateLit))
  (export "__async_async_await_position_W_new" (func $async-await-position/__async_async_await_position_W_new))
  (export "memory" (memory $0))
+ (export "combine" (func $export:async-await-position/combine))
  (export "getW" (func $export:async-await-position/getW))
  (export "__async_async_await_position_compoundStr_resume_0" (func $export:async-await-position/__async_async_await_position_compoundStr_resume_0))
  (export "__async_async_await_position_compoundStr_reject_0" (func $export:async-await-position/__async_async_await_position_compoundStr_reject_0))
@@ -170,6 +218,124 @@
  (export "__async_async_await_position_storedField_result" (func $export:async-await-position/__async_async_await_position_storedField_result))
  (export "__async_async_await_position_storedField_error" (func $export:async-await-position/__async_async_await_position_storedField_error))
  (export "__async_async_await_position_storedField_status" (func $export:async-await-position/__async_async_await_position_storedField_status))
+ (export "__async_async_await_position_ifCond_resume_0" (func $export:async-await-position/__async_async_await_position_ifCond_resume_0))
+ (export "__async_async_await_position_ifCond_reject_0" (func $export:async-await-position/__async_async_await_position_ifCond_reject_0))
+ (export "__async_async_await_position_ifCond_result" (func $export:async-await-position/__async_async_await_position_ifCond_result))
+ (export "__async_async_await_position_ifCond_error" (func $export:async-await-position/__async_async_await_position_ifCond_error))
+ (export "__async_async_await_position_ifCond_status" (func $export:async-await-position/__async_async_await_position_ifCond_status))
+ (export "__async_async_await_position_whileCond_resume_0" (func $export:async-await-position/__async_async_await_position_whileCond_resume_0))
+ (export "__async_async_await_position_whileCond_reject_0" (func $export:async-await-position/__async_async_await_position_whileCond_reject_0))
+ (export "__async_async_await_position_whileCond_resume_1" (func $export:async-await-position/__async_async_await_position_whileCond_resume_1))
+ (export "__async_async_await_position_whileCond_reject_1" (func $export:async-await-position/__async_async_await_position_whileCond_reject_1))
+ (export "__async_async_await_position_whileCond_result" (func $export:async-await-position/__async_async_await_position_whileCond_result))
+ (export "__async_async_await_position_whileCond_error" (func $export:async-await-position/__async_async_await_position_whileCond_error))
+ (export "__async_async_await_position_whileCond_status" (func $export:async-await-position/__async_async_await_position_whileCond_status))
+ (export "__async_async_await_position_forCond_resume_0" (func $export:async-await-position/__async_async_await_position_forCond_resume_0))
+ (export "__async_async_await_position_forCond_reject_0" (func $export:async-await-position/__async_async_await_position_forCond_reject_0))
+ (export "__async_async_await_position_forCond_resume_1" (func $export:async-await-position/__async_async_await_position_forCond_resume_1))
+ (export "__async_async_await_position_forCond_reject_1" (func $export:async-await-position/__async_async_await_position_forCond_reject_1))
+ (export "__async_async_await_position_forCond_result" (func $export:async-await-position/__async_async_await_position_forCond_result))
+ (export "__async_async_await_position_forCond_error" (func $export:async-await-position/__async_async_await_position_forCond_error))
+ (export "__async_async_await_position_forCond_status" (func $export:async-await-position/__async_async_await_position_forCond_status))
+ (export "__async_async_await_position_doCond_resume_0" (func $export:async-await-position/__async_async_await_position_doCond_resume_0))
+ (export "__async_async_await_position_doCond_reject_0" (func $export:async-await-position/__async_async_await_position_doCond_reject_0))
+ (export "__async_async_await_position_doCond_resume_1" (func $export:async-await-position/__async_async_await_position_doCond_resume_1))
+ (export "__async_async_await_position_doCond_reject_1" (func $export:async-await-position/__async_async_await_position_doCond_reject_1))
+ (export "__async_async_await_position_doCond_result" (func $export:async-await-position/__async_async_await_position_doCond_result))
+ (export "__async_async_await_position_doCond_error" (func $export:async-await-position/__async_async_await_position_doCond_error))
+ (export "__async_async_await_position_doCond_status" (func $export:async-await-position/__async_async_await_position_doCond_status))
+ (export "__async_async_await_position_forIncr_resume_0" (func $export:async-await-position/__async_async_await_position_forIncr_resume_0))
+ (export "__async_async_await_position_forIncr_reject_0" (func $export:async-await-position/__async_async_await_position_forIncr_reject_0))
+ (export "__async_async_await_position_forIncr_resume_1" (func $export:async-await-position/__async_async_await_position_forIncr_resume_1))
+ (export "__async_async_await_position_forIncr_reject_1" (func $export:async-await-position/__async_async_await_position_forIncr_reject_1))
+ (export "__async_async_await_position_forIncr_result" (func $export:async-await-position/__async_async_await_position_forIncr_result))
+ (export "__async_async_await_position_forIncr_error" (func $export:async-await-position/__async_async_await_position_forIncr_error))
+ (export "__async_async_await_position_forIncr_status" (func $export:async-await-position/__async_async_await_position_forIncr_status))
+ (export "__async_async_await_position_callArgs_resume_0" (func $export:async-await-position/__async_async_await_position_callArgs_resume_0))
+ (export "__async_async_await_position_callArgs_reject_0" (func $export:async-await-position/__async_async_await_position_callArgs_reject_0))
+ (export "__async_async_await_position_callArgs_resume_1" (func $export:async-await-position/__async_async_await_position_callArgs_resume_1))
+ (export "__async_async_await_position_callArgs_reject_1" (func $export:async-await-position/__async_async_await_position_callArgs_reject_1))
+ (export "__async_async_await_position_callArgs_result" (func $export:async-await-position/__async_async_await_position_callArgs_result))
+ (export "__async_async_await_position_callArgs_error" (func $export:async-await-position/__async_async_await_position_callArgs_error))
+ (export "__async_async_await_position_callArgs_status" (func $export:async-await-position/__async_async_await_position_callArgs_status))
+ (export "__async_async_await_position_binaryOp_resume_0" (func $export:async-await-position/__async_async_await_position_binaryOp_resume_0))
+ (export "__async_async_await_position_binaryOp_reject_0" (func $export:async-await-position/__async_async_await_position_binaryOp_reject_0))
+ (export "__async_async_await_position_binaryOp_resume_1" (func $export:async-await-position/__async_async_await_position_binaryOp_resume_1))
+ (export "__async_async_await_position_binaryOp_reject_1" (func $export:async-await-position/__async_async_await_position_binaryOp_reject_1))
+ (export "__async_async_await_position_binaryOp_result" (func $export:async-await-position/__async_async_await_position_binaryOp_result))
+ (export "__async_async_await_position_binaryOp_error" (func $export:async-await-position/__async_async_await_position_binaryOp_error))
+ (export "__async_async_await_position_binaryOp_status" (func $export:async-await-position/__async_async_await_position_binaryOp_status))
+ (export "__async_async_await_position_binaryStr_resume_0" (func $export:async-await-position/__async_async_await_position_binaryStr_resume_0))
+ (export "__async_async_await_position_binaryStr_reject_0" (func $export:async-await-position/__async_async_await_position_binaryStr_reject_0))
+ (export "__async_async_await_position_binaryStr_resume_1" (func $export:async-await-position/__async_async_await_position_binaryStr_resume_1))
+ (export "__async_async_await_position_binaryStr_reject_1" (func $export:async-await-position/__async_async_await_position_binaryStr_reject_1))
+ (export "__async_async_await_position_binaryStr_result" (func $export:async-await-position/__async_async_await_position_binaryStr_result))
+ (export "__async_async_await_position_binaryStr_error" (func $export:async-await-position/__async_async_await_position_binaryStr_error))
+ (export "__async_async_await_position_binaryStr_status" (func $export:async-await-position/__async_async_await_position_binaryStr_status))
+ (export "__async_async_await_position_varInitCall_resume_0" (func $export:async-await-position/__async_async_await_position_varInitCall_resume_0))
+ (export "__async_async_await_position_varInitCall_reject_0" (func $export:async-await-position/__async_async_await_position_varInitCall_reject_0))
+ (export "__async_async_await_position_varInitCall_result" (func $export:async-await-position/__async_async_await_position_varInitCall_result))
+ (export "__async_async_await_position_varInitCall_error" (func $export:async-await-position/__async_async_await_position_varInitCall_error))
+ (export "__async_async_await_position_varInitCall_status" (func $export:async-await-position/__async_async_await_position_varInitCall_status))
+ (export "__async_async_await_position_varInitBinary_resume_0" (func $export:async-await-position/__async_async_await_position_varInitBinary_resume_0))
+ (export "__async_async_await_position_varInitBinary_reject_0" (func $export:async-await-position/__async_async_await_position_varInitBinary_reject_0))
+ (export "__async_async_await_position_varInitBinary_result" (func $export:async-await-position/__async_async_await_position_varInitBinary_result))
+ (export "__async_async_await_position_varInitBinary_error" (func $export:async-await-position/__async_async_await_position_varInitBinary_error))
+ (export "__async_async_await_position_varInitBinary_status" (func $export:async-await-position/__async_async_await_position_varInitBinary_status))
+ (export "__async_async_await_position_returnAssign_resume_0" (func $export:async-await-position/__async_async_await_position_returnAssign_resume_0))
+ (export "__async_async_await_position_returnAssign_reject_0" (func $export:async-await-position/__async_async_await_position_returnAssign_reject_0))
+ (export "__async_async_await_position_returnAssign_resume_1" (func $export:async-await-position/__async_async_await_position_returnAssign_resume_1))
+ (export "__async_async_await_position_returnAssign_reject_1" (func $export:async-await-position/__async_async_await_position_returnAssign_reject_1))
+ (export "__async_async_await_position_returnAssign_result" (func $export:async-await-position/__async_async_await_position_returnAssign_result))
+ (export "__async_async_await_position_returnAssign_error" (func $export:async-await-position/__async_async_await_position_returnAssign_error))
+ (export "__async_async_await_position_returnAssign_status" (func $export:async-await-position/__async_async_await_position_returnAssign_status))
+ (export "__async_async_await_position_compoundRhs_resume_0" (func $export:async-await-position/__async_async_await_position_compoundRhs_resume_0))
+ (export "__async_async_await_position_compoundRhs_reject_0" (func $export:async-await-position/__async_async_await_position_compoundRhs_reject_0))
+ (export "__async_async_await_position_compoundRhs_result" (func $export:async-await-position/__async_async_await_position_compoundRhs_result))
+ (export "__async_async_await_position_compoundRhs_error" (func $export:async-await-position/__async_async_await_position_compoundRhs_error))
+ (export "__async_async_await_position_compoundRhs_status" (func $export:async-await-position/__async_async_await_position_compoundRhs_status))
+ (export "__async_async_await_position_assignRhsField_resume_0" (func $export:async-await-position/__async_async_await_position_assignRhsField_resume_0))
+ (export "__async_async_await_position_assignRhsField_reject_0" (func $export:async-await-position/__async_async_await_position_assignRhsField_reject_0))
+ (export "__async_async_await_position_assignRhsField_result" (func $export:async-await-position/__async_async_await_position_assignRhsField_result))
+ (export "__async_async_await_position_assignRhsField_error" (func $export:async-await-position/__async_async_await_position_assignRhsField_error))
+ (export "__async_async_await_position_assignRhsField_status" (func $export:async-await-position/__async_async_await_position_assignRhsField_status))
+ (export "__async_async_await_position_ternaryCond_resume_0" (func $export:async-await-position/__async_async_await_position_ternaryCond_resume_0))
+ (export "__async_async_await_position_ternaryCond_reject_0" (func $export:async-await-position/__async_async_await_position_ternaryCond_reject_0))
+ (export "__async_async_await_position_ternaryCond_result" (func $export:async-await-position/__async_async_await_position_ternaryCond_result))
+ (export "__async_async_await_position_ternaryCond_error" (func $export:async-await-position/__async_async_await_position_ternaryCond_error))
+ (export "__async_async_await_position_ternaryCond_status" (func $export:async-await-position/__async_async_await_position_ternaryCond_status))
+ (export "__async_async_await_position_andLeft_resume_0" (func $export:async-await-position/__async_async_await_position_andLeft_resume_0))
+ (export "__async_async_await_position_andLeft_reject_0" (func $export:async-await-position/__async_async_await_position_andLeft_reject_0))
+ (export "__async_async_await_position_andLeft_result" (func $export:async-await-position/__async_async_await_position_andLeft_result))
+ (export "__async_async_await_position_andLeft_error" (func $export:async-await-position/__async_async_await_position_andLeft_error))
+ (export "__async_async_await_position_andLeft_status" (func $export:async-await-position/__async_async_await_position_andLeft_status))
+ (export "__async_async_await_position_storedArg_resume_0" (func $export:async-await-position/__async_async_await_position_storedArg_resume_0))
+ (export "__async_async_await_position_storedArg_reject_0" (func $export:async-await-position/__async_async_await_position_storedArg_reject_0))
+ (export "__async_async_await_position_storedArg_result" (func $export:async-await-position/__async_async_await_position_storedArg_result))
+ (export "__async_async_await_position_storedArg_error" (func $export:async-await-position/__async_async_await_position_storedArg_error))
+ (export "__async_async_await_position_storedArg_status" (func $export:async-await-position/__async_async_await_position_storedArg_status))
+ (export "__async_async_await_position_ifCondInTry_resume_0" (func $export:async-await-position/__async_async_await_position_ifCondInTry_resume_0))
+ (export "__async_async_await_position_ifCondInTry_reject_0" (func $export:async-await-position/__async_async_await_position_ifCondInTry_reject_0))
+ (export "__async_async_await_position_ifCondInTry_result" (func $export:async-await-position/__async_async_await_position_ifCondInTry_result))
+ (export "__async_async_await_position_ifCondInTry_error" (func $export:async-await-position/__async_async_await_position_ifCondInTry_error))
+ (export "__async_async_await_position_ifCondInTry_status" (func $export:async-await-position/__async_async_await_position_ifCondInTry_status))
+ (export "__async_async_await_position_unaryOp_resume_0" (func $export:async-await-position/__async_async_await_position_unaryOp_resume_0))
+ (export "__async_async_await_position_unaryOp_reject_0" (func $export:async-await-position/__async_async_await_position_unaryOp_reject_0))
+ (export "__async_async_await_position_unaryOp_result" (func $export:async-await-position/__async_async_await_position_unaryOp_result))
+ (export "__async_async_await_position_unaryOp_error" (func $export:async-await-position/__async_async_await_position_unaryOp_error))
+ (export "__async_async_await_position_unaryOp_status" (func $export:async-await-position/__async_async_await_position_unaryOp_status))
+ (export "__async_async_await_position_arrayLit_resume_0" (func $export:async-await-position/__async_async_await_position_arrayLit_resume_0))
+ (export "__async_async_await_position_arrayLit_reject_0" (func $export:async-await-position/__async_async_await_position_arrayLit_reject_0))
+ (export "__async_async_await_position_arrayLit_resume_1" (func $export:async-await-position/__async_async_await_position_arrayLit_resume_1))
+ (export "__async_async_await_position_arrayLit_reject_1" (func $export:async-await-position/__async_async_await_position_arrayLit_reject_1))
+ (export "__async_async_await_position_arrayLit_result" (func $export:async-await-position/__async_async_await_position_arrayLit_result))
+ (export "__async_async_await_position_arrayLit_error" (func $export:async-await-position/__async_async_await_position_arrayLit_error))
+ (export "__async_async_await_position_arrayLit_status" (func $export:async-await-position/__async_async_await_position_arrayLit_status))
+ (export "__async_async_await_position_templateLit_resume_0" (func $export:async-await-position/__async_async_await_position_templateLit_resume_0))
+ (export "__async_async_await_position_templateLit_reject_0" (func $export:async-await-position/__async_async_await_position_templateLit_reject_0))
+ (export "__async_async_await_position_templateLit_result" (func $export:async-await-position/__async_async_await_position_templateLit_result))
+ (export "__async_async_await_position_templateLit_error" (func $export:async-await-position/__async_async_await_position_templateLit_error))
+ (export "__async_async_await_position_templateLit_status" (func $export:async-await-position/__async_async_await_position_templateLit_status))
  (export "__async_async_await_position_W_setField_resume_0" (func $export:async-await-position/__async_async_await_position_W_setField_resume_0))
  (export "__async_async_await_position_W_setField_reject_0" (func $export:async-await-position/__async_async_await_position_W_setField_reject_0))
  (export "__async_async_await_position_W_setField_resume_1" (func $export:async-await-position/__async_async_await_position_W_setField_resume_1))
@@ -178,6 +344,12 @@
  (export "__async_async_await_position_W_setField_error" (func $export:async-await-position/__async_async_await_position_W_setField_error))
  (export "__async_async_await_position_W_setField_status" (func $export:async-await-position/__async_async_await_position_W_setField_status))
  (export "__async_async_await_position_W_setField_entry" (func $export:async-await-position/__async_async_await_position_W_setField_entry))
+ (export "__async_async_await_position_W_checkFlag_resume_0" (func $export:async-await-position/__async_async_await_position_W_checkFlag_resume_0))
+ (export "__async_async_await_position_W_checkFlag_reject_0" (func $export:async-await-position/__async_async_await_position_W_checkFlag_reject_0))
+ (export "__async_async_await_position_W_checkFlag_result" (func $export:async-await-position/__async_async_await_position_W_checkFlag_result))
+ (export "__async_async_await_position_W_checkFlag_error" (func $export:async-await-position/__async_async_await_position_W_checkFlag_error))
+ (export "__async_async_await_position_W_checkFlag_status" (func $export:async-await-position/__async_async_await_position_W_checkFlag_status))
+ (export "__async_async_await_position_W_checkFlag_entry" (func $export:async-await-position/__async_async_await_position_W_checkFlag_entry))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
   local.get $this
@@ -2690,6 +2862,486 @@
   local.get $length_
   i32.store offset=12
  )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-await-position/__Cps_W_setField>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
   local.get $buffer
@@ -2710,6 +3362,30 @@
   i32.store offset=8
  )
  (func $~lib/array/Array<async-await-position/__Cps_W_setField>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:length_ (param $this i32) (param $length_ i32)
   local.get $this
   local.get $length_
   i32.store offset=12
@@ -2774,8 +3450,105 @@
   global.set $async-await-position/__async_roots_storedField
   i32.const 0
   i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#constructor
+  global.set $async-await-position/__async_roots_ifCond
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#constructor
+  global.set $async-await-position/__async_roots_whileCond
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#constructor
+  global.set $async-await-position/__async_roots_forCond
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#constructor
+  global.set $async-await-position/__async_roots_doCond
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#constructor
+  global.set $async-await-position/__async_roots_forIncr
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#constructor
+  global.set $async-await-position/__async_roots_callArgs
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#constructor
+  global.set $async-await-position/__async_roots_binaryOp
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#constructor
+  global.set $async-await-position/__async_roots_binaryStr
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#constructor
+  global.set $async-await-position/__async_roots_varInitCall
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#constructor
+  global.set $async-await-position/__async_roots_varInitBinary
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#constructor
+  global.set $async-await-position/__async_roots_returnAssign
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#constructor
+  global.set $async-await-position/__async_roots_compoundRhs
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#constructor
+  global.set $async-await-position/__async_roots_assignRhsField
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#constructor
+  global.set $async-await-position/__async_roots_ternaryCond
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#constructor
+  global.set $async-await-position/__async_roots_andLeft
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#constructor
+  global.set $async-await-position/__async_roots_storedArg
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#constructor
+  global.set $async-await-position/__async_roots_ifCondInTry
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#constructor
+  global.set $async-await-position/__async_roots_unaryOp
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#constructor
+  global.set $async-await-position/__async_roots_arrayLit
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#constructor
+  global.set $async-await-position/__async_roots_templateLit
+  i32.const 0
+  i32.const 0
   call $~lib/array/Array<async-await-position/__Cps_W_setField>#constructor
   global.set $async-await-position/__async_roots_W_setField
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#constructor
+  global.set $async-await-position/__async_roots_W_checkFlag
+ )
+ (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $~lib/string/String#get:length (param $this i32) (result i32)
+  local.get $this
+  i32.const 20
+  i32.sub
+  call $~lib/rt/common/OBJECT#get:rtSize
+  i32.const 1
+  i32.shr_u
+  return
  )
  (func $async-await-position/__Cps_compoundStr#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2926,19 +3699,6 @@
  (func $async-await-position/__Cps_compoundStr#get:__pend0 (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
- )
- (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=16
- )
- (func $~lib/string/String#get:length (param $this i32) (result i32)
-  local.get $this
-  i32.const 20
-  i32.sub
-  call $~lib/rt/common/OBJECT#get:rtSize
-  i32.const 1
-  i32.shr_u
-  return
  )
  (func $async-await-position/__Cps_compoundStr#get:__tmp_2 (param $this i32) (result i32)
   local.get $this
@@ -4579,6 +5339,1677 @@
   local.get $this
   i32.load offset=16
  )
+ (func $async-await-position/__Cps_W_checkFlag#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__cps_i_0 (param $this i32) (param $__cps_i_0 i32)
+  local.get $this
+  local.get $__cps_i_0
+  i32.store offset=16
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
+  local.get $this
+  local.get $__cps___async_this_1
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_this_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_W_checkFlag#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store8 offset=24
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:__cps_i_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=24
+ )
+ (func $async-await-position/__Cps_ifCond#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_ifCond#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCond#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCond#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_ifCond#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store8 offset=13
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ifCond#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_ifCond#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_ifCond#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=13
+ )
+ (func $async-await-position/__Cps_whileCond#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_whileCond#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_whileCond#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_whileCond#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_whileCond#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_whileCond#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
+  local.get $this
+  local.get $__cps_out_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_out_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_whileCond#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
+  local.get $this
+  local.get $__cps_i_1
+  i32.store offset=24
+ )
+ (func $async-await-position/__Cps_whileCond#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store8 offset=28
+ )
+ (func $async-await-position/__Cps_whileCond#set:__tmp_3 (param $this i32) (param $__tmp_3 i32)
+  local.get $this
+  local.get $__tmp_3
+  i32.store offset=32
+  local.get $this
+  local.get $__tmp_3
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_whileCond#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_whileCond#get:__cps_out_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_whileCond#get:__cps_i_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_whileCond#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_whileCond#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=28
+ )
+ (func $async-await-position/__Cps_whileCond#get:__tmp_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-await-position/__Cps_whileCond#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_forCond#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_forCond#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forCond#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forCond#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_forCond#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forCond#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
+  local.get $this
+  local.get $__cps_out_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_out_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forCond#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
+  local.get $this
+  local.get $__cps_i_1
+  i32.store offset=24
+ )
+ (func $async-await-position/__Cps_forCond#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store8 offset=28
+ )
+ (func $async-await-position/__Cps_forCond#set:__tmp_3 (param $this i32) (param $__tmp_3 i32)
+  local.get $this
+  local.get $__tmp_3
+  i32.store offset=32
+  local.get $this
+  local.get $__tmp_3
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_forCond#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_forCond#get:__cps_out_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_forCond#get:__cps_i_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_forCond#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_forCond#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=28
+ )
+ (func $async-await-position/__Cps_forCond#get:__tmp_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-await-position/__Cps_forCond#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_doCond#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_doCond#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_doCond#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_doCond#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_doCond#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_doCond#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
+  local.get $this
+  local.get $__cps_out_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_out_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_doCond#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
+  local.get $this
+  local.get $__cps_i_1
+  i32.store offset=24
+ )
+ (func $async-await-position/__Cps_doCond#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store8 offset=28
+ )
+ (func $async-await-position/__Cps_doCond#set:__tmp_3 (param $this i32) (param $__tmp_3 i32)
+  local.get $this
+  local.get $__tmp_3
+  i32.store offset=32
+  local.get $this
+  local.get $__tmp_3
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_doCond#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_doCond#get:__cps_out_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_doCond#get:__cps_i_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_doCond#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_doCond#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=28
+ )
+ (func $async-await-position/__Cps_doCond#get:__tmp_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-await-position/__Cps_doCond#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_forIncr#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_forIncr#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forIncr#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forIncr#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_forIncr#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forIncr#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
+  local.get $this
+  local.get $__cps_out_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_out_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_forIncr#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
+  local.get $this
+  local.get $__cps_i_1
+  i32.store offset=24
+ )
+ (func $async-await-position/__Cps_forIncr#set:__tmp_2 (param $this i32) (param $__tmp_2 i32)
+  local.get $this
+  local.get $__tmp_2
+  i32.store offset=28
+ )
+ (func $async-await-position/__Cps_forIncr#set:__tmp_3 (param $this i32) (param $__tmp_3 i32)
+  local.get $this
+  local.get $__tmp_3
+  i32.store offset=32
+  local.get $this
+  local.get $__tmp_3
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_forIncr#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_forIncr#get:__cps_out_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_forIncr#get:__cps_i_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_forIncr#get:__tmp_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-await-position/__Cps_forIncr#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_forIncr#get:__tmp_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-await-position/__Cps_forIncr#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_callArgs#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_callArgs#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_callArgs#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_callArgs#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_callArgs#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_callArgs#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_callArgs#set:__cps___async_hoist_1_1 (param $this i32) (param $__cps___async_hoist_1_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_1_1
+  i32.store offset=24
+  local.get $this
+  local.get $__cps___async_hoist_1_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_callArgs#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_callArgs#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_callArgs#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_callArgs#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_callArgs#get:__cps___async_hoist_1_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_binaryOp#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store offset=20
+ )
+ (func $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_1_1 (param $this i32) (param $__cps___async_hoist_1_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_1_1
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_binaryOp#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__cps___async_hoist_1_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_binaryStr#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_1_1 (param $this i32) (param $__cps___async_hoist_1_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_1_1
+  i32.store offset=24
+  local.get $this
+  local.get $__cps___async_hoist_1_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_binaryStr#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__cps___async_hoist_1_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_varInitCall#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_varInitCall#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_varInitCall#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_varInitCall#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_varInitCall#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
+  local.get $this
+  local.get $__cps_x_0
+  i32.store offset=16
+  local.get $this
+  local.get $__cps_x_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_varInitCall#set:__cps___async_hoist_0_1 (param $this i32) (param $__cps___async_hoist_0_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_varInitCall#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_varInitCall#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_varInitCall#get:__cps___async_hoist_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_varInitCall#get:__cps_x_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:__cps_y_0 (param $this i32) (param $__cps_y_0 i32)
+  local.get $this
+  local.get $__cps_y_0
+  i32.store offset=16
+ )
+ (func $async-await-position/__Cps_varInitBinary#set:__cps___async_hoist_0_1 (param $this i32) (param $__cps___async_hoist_0_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.store offset=20
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:__cps___async_hoist_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:__cps_y_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_returnAssign#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+  local.get $this
+  local.get $__pend1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__cps_s_0 (param $this i32) (param $__cps_s_0 i32)
+  local.get $this
+  local.get $__cps_s_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_s_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_0_1 (param $this i32) (param $__cps___async_hoist_0_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.store offset=24
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_1_2 (param $this i32) (param $__cps___async_hoist_1_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_1_2
+  i32.store offset=28
+  local.get $this
+  local.get $__cps___async_hoist_1_2
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_returnAssign#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__cps___async_hoist_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__cps___async_hoist_1_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__cps_s_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
+  local.get $this
+  local.get $__cps_n_0
+  i32.store offset=16
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__tmp_1 (param $this i32) (param $__tmp_1 i32)
+  local.get $this
+  local.get $__tmp_1
+  i32.store offset=20
+ )
+ (func $async-await-position/__Cps_compoundRhs#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__cps_n_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__tmp_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__cps_w_0 (param $this i32) (param $__cps_w_0 i32)
+  local.get $this
+  local.get $__cps_w_0
+  i32.store offset=16
+  local.get $this
+  local.get $__cps_w_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__tmp_1 (param $this i32) (param $__tmp_1 i32)
+  local.get $this
+  local.get $__tmp_1
+  i32.store offset=20
+  local.get $this
+  local.get $__tmp_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_assignRhsField#set:__cps___async_hoist_0_2 (param $this i32) (param $__cps___async_hoist_0_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.store offset=24
+  local.get $this
+  local.get $__cps___async_hoist_0_2
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__cps_w_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__cps___async_hoist_0_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__tmp_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_ternaryCond#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_ternaryCond#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ternaryCond#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ternaryCond#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_ternaryCond#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store8 offset=13
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ternaryCond#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_ternaryCond#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_ternaryCond#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=13
+ )
+ (func $async-await-position/__Cps_andLeft#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_andLeft#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_andLeft#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_andLeft#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_andLeft#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store8 offset=13
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_andLeft#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_andLeft#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_andLeft#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=13
+ )
+ (func $async-await-position/__Cps_storedArg#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_storedArg#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_storedArg#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_storedArg#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_storedArg#set:__cps_p_0 (param $this i32) (param $__cps_p_0 i32)
+  local.get $this
+  local.get $__cps_p_0
+  i32.store offset=16
+  local.get $this
+  local.get $__cps_p_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_storedArg#set:__cps___async_hoist_0_1 (param $this i32) (param $__cps___async_hoist_0_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_storedArg#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_storedArg#get:__cps_p_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_storedArg#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_storedArg#get:__cps___async_hoist_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store8 offset=12
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0 (param $this i32) (param $__cps___async_try_ret_0_0 i32)
+  local.get $this
+  local.get $__cps___async_try_ret_0_0
+  i32.store8 offset=13
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1 (param $this i32) (param $__cps___async_try_brk_1_1 i32)
+  local.get $this
+  local.get $__cps___async_try_brk_1_1
+  i32.store8 offset=14
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2 (param $this i32) (param $__cps___async_try_cnt_2_2 i32)
+  local.get $this
+  local.get $__cps___async_try_cnt_2_2
+  i32.store8 offset=15
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendErr_3_3 (param $this i32) (param $__cps___async_try_pendErr_3_3 i32)
+  local.get $this
+  local.get $__cps___async_try_pendErr_3_3
+  i32.store offset=16
+  local.get $this
+  local.get $__cps___async_try_pendErr_3_3
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendFail_4_4 (param $this i32) (param $__cps___async_try_pendFail_4_4 i32)
+  local.get $this
+  local.get $__cps___async_try_pendFail_4_4
+  i32.store8 offset=20
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_retVal_5_5 (param $this i32) (param $__cps___async_try_retVal_5_5 i32)
+  local.get $this
+  local.get $__cps___async_try_retVal_5_5
+  i32.store offset=24
+  local.get $this
+  local.get $__cps___async_try_retVal_5_5
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_flag_7_6 (param $this i32) (param $__cps___async_try_flag_7_6 i32)
+  local.get $this
+  local.get $__cps___async_try_flag_7_6
+  i32.store8 offset=28
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_err_6_7 (param $this i32) (param $__cps___async_try_err_6_7 i32)
+  local.get $this
+  local.get $__cps___async_try_err_6_7
+  i32.store offset=32
+  local.get $this
+  local.get $__cps___async_try_err_6_7
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps___async_hoist_0_8 (param $this i32) (param $__cps___async_hoist_0_8 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_8
+  i32.store8 offset=36
+ )
+ (func $async-await-position/__Cps_ifCondInTry#set:__cps_e_9 (param $this i32) (param $__cps_e_9 i32)
+  local.get $this
+  local.get $__cps_e_9
+  i32.store offset=40
+  local.get $this
+  local.get $__cps_e_9
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=28
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=12
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_hoist_0_8 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=36
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_ret_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=13
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_brk_1_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=14
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_cnt_2_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=15
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendFail_4_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=20
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_err_6_7 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendErr_3_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_retVal_5_5 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_unaryOp#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_unaryOp#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
+ (func $async-await-position/__Cps_unaryOp#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_unaryOp#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_unaryOp#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store offset=16
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_unaryOp#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_unaryOp#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_unaryOp#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_arrayLit#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__pend1 (param $this i32) (param $__pend1 i32)
+  local.get $this
+  local.get $__pend1
+  i32.store offset=16
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__cps_arr_0 (param $this i32) (param $__cps_arr_0 i32)
+  local.get $this
+  local.get $__cps_arr_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps_arr_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_0_1 (param $this i32) (param $__cps___async_hoist_0_1 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_1
+  i32.store offset=24
+ )
+ (func $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_1_2 (param $this i32) (param $__cps___async_hoist_1_2 i32)
+  local.get $this
+  local.get $__cps___async_hoist_1_2
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_arrayLit#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__pend1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__cps___async_hoist_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__cps___async_hoist_1_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__cps_arr_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-await-position/__Cps_templateLit#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-await-position/__Cps_templateLit#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+  local.get $this
+  local.get $__result
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_templateLit#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_templateLit#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-position/__Cps_templateLit#set:__cps___async_hoist_0_0 (param $this i32) (param $__cps___async_hoist_0_0 i32)
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.store offset=16
+  local.get $this
+  local.get $__cps___async_hoist_0_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_templateLit#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-await-position/__Cps_templateLit#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-await-position/__Cps_templateLit#get:__cps___async_hoist_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
  (func $async-await-position/__Cps_compoundStr#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -4659,6 +7090,166 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-await-position/__Cps_ifCond#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ifCond#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_whileCond#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_whileCond#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_forCond#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_forCond#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_doCond#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_doCond#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_forIncr#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_forIncr#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_callArgs#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_callArgs#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_binaryOp#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_binaryStr#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_varInitCall#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_varInitCall#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_varInitBinary#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_returnAssign#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_compoundRhs#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_assignRhsField#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_ternaryCond#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ternaryCond#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_andLeft#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_andLeft#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_storedArg#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_storedArg#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_ifCondInTry#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_unaryOp#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_unaryOp#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_arrayLit#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $async-await-position/__Cps_templateLit#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_templateLit#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
  (func $async-await-position/__Cps_W_setField#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -4671,6 +7262,14 @@
   i32.const 0
   call $async-await-position/W#constructor
   return
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:__result (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-await-position/__Cps_W_checkFlag#get:__error (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -4762,7 +7361,154 @@
    local.get $0
    call $~lib/rt/itcms/__visit
   end
+  global.get $async-await-position/__async_roots_ifCond
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_whileCond
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_forCond
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_doCond
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_forIncr
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_callArgs
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_binaryOp
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_binaryStr
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_varInitCall
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_varInitBinary
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_returnAssign
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_compoundRhs
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_assignRhsField
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_ternaryCond
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_andLeft
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_storedArg
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_ifCondInTry
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_unaryOp
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_arrayLit
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_templateLit
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
   global.get $async-await-position/__async_roots_W_setField
+  local.tee $1
+  if
+   local.get $1
+   local.get $0
+   call $~lib/rt/itcms/__visit
+  end
+  global.get $async-await-position/__async_roots_W_checkFlag
   local.tee $1
   if
    local.get $1
@@ -5184,6 +7930,674 @@
   local.get $1
   call $~lib/array/Array<async-await-position/__Cps_storedField>#__visit
  )
+ (func $async-await-position/__Cps_ifCond~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#__visit
+ )
+ (func $async-await-position/__Cps_whileCond~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#__visit
+ )
+ (func $async-await-position/__Cps_forCond~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#__visit
+ )
+ (func $async-await-position/__Cps_doCond~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#__visit
+ )
+ (func $async-await-position/__Cps_forIncr~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#__visit
+ )
+ (func $async-await-position/__Cps_callArgs~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#__visit
+ )
+ (func $async-await-position/__Cps_binaryOp~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#__visit
+ )
+ (func $async-await-position/__Cps_binaryStr~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#__visit
+ )
+ (func $async-await-position/__Cps_varInitCall~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#__visit
+ )
+ (func $async-await-position/__Cps_varInitBinary~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#__visit
+ )
+ (func $async-await-position/__Cps_returnAssign~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#__visit
+ )
+ (func $async-await-position/__Cps_compoundRhs~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#__visit
+ )
+ (func $async-await-position/__Cps_assignRhsField~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#__visit
+ )
+ (func $async-await-position/__Cps_ternaryCond~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#__visit
+ )
+ (func $async-await-position/__Cps_andLeft~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#__visit
+ )
+ (func $async-await-position/__Cps_storedArg~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#__visit
+ )
+ (func $async-await-position/__Cps_ifCondInTry~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#__visit
+ )
+ (func $async-await-position/__Cps_unaryOp~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#__visit
+ )
+ (func $async-await-position/__Cps_arrayLit~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#__visit
+ )
+ (func $async-await-position/__Cps_templateLit~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#__visit
+ )
  (func $async-await-position/__Cps_W_setField~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -5226,186 +8640,471 @@
   local.get $1
   call $~lib/array/Array<async-await-position/__Cps_W_setField>#__visit
  )
+ (func $async-await-position/__Cps_W_checkFlag~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#__visit
+ )
  (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
   block $invalid
-   block $~lib/array/Array<async-await-position/__Cps_W_setField>
-    block $async-await-position/__Cps_W_setField
-     block $~lib/array/Array<async-await-position/__Cps_storedField>
-      block $async-await-position/__Cps_storedField
-       block $~lib/array/Array<async-await-position/__Cps_elemCompound>
-        block $async-await-position/__Cps_elemCompound
-         block $~lib/array/Array<async-await-position/__Cps_indexOrder>
-          block $async-await-position/__Cps_indexOrder
-           block $~lib/array/Array<async-await-position/__Cps_elemAssign>
-            block $async-await-position/__Cps_elemAssign
-             block $~lib/array/Array<async-await-position/__Cps_recvCall>
-              block $async-await-position/__Cps_recvCall
-               block $~lib/array/Array<async-await-position/__Cps_fieldCompound>
-                block $async-await-position/__Cps_fieldCompound
-                 block $~lib/array/Array<async-await-position/__Cps_fieldAssign>
-                  block $async-await-position/__Cps_fieldAssign
-                   block $~lib/array/Array<async-await-position/__Cps_mixedCompound>
-                    block $async-await-position/__Cps_mixedCompound
-                     block $~lib/array/Array<async-await-position/__Cps_compoundNum>
-                      block $async-await-position/__Cps_compoundNum
-                       block $~lib/array/Array<async-await-position/__Cps_compoundStr>
-                        block $async-await-position/__Cps_compoundStr
-                         block $~lib/array/Array<i32>
-                          block $~lib/array/Array<~lib/string/String>
-                           block $async-await-position/W
-                            block $~lib/promise/Promise<f64>
-                             block $~lib/promise/Promise<i32>
-                              block $~lib/promise/Promise<~lib/string/String>
-                               block $~lib/arraybuffer/ArrayBufferView
-                                block $~lib/string/String
-                                 block $~lib/arraybuffer/ArrayBuffer
-                                  block $~lib/object/Object
+   block $~lib/array/Array<async-await-position/__Cps_W_checkFlag>
+    block $async-await-position/__Cps_W_checkFlag
+     block $~lib/array/Array<async-await-position/__Cps_W_setField>
+      block $async-await-position/__Cps_W_setField
+       block $~lib/array/Array<async-await-position/__Cps_templateLit>
+        block $async-await-position/__Cps_templateLit
+         block $~lib/array/Array<async-await-position/__Cps_arrayLit>
+          block $async-await-position/__Cps_arrayLit
+           block $~lib/array/Array<async-await-position/__Cps_unaryOp>
+            block $async-await-position/__Cps_unaryOp
+             block $~lib/array/Array<async-await-position/__Cps_ifCondInTry>
+              block $async-await-position/__Cps_ifCondInTry
+               block $~lib/array/Array<async-await-position/__Cps_storedArg>
+                block $async-await-position/__Cps_storedArg
+                 block $~lib/array/Array<async-await-position/__Cps_andLeft>
+                  block $async-await-position/__Cps_andLeft
+                   block $~lib/array/Array<async-await-position/__Cps_ternaryCond>
+                    block $async-await-position/__Cps_ternaryCond
+                     block $~lib/array/Array<async-await-position/__Cps_assignRhsField>
+                      block $async-await-position/__Cps_assignRhsField
+                       block $~lib/array/Array<async-await-position/__Cps_compoundRhs>
+                        block $async-await-position/__Cps_compoundRhs
+                         block $~lib/array/Array<async-await-position/__Cps_returnAssign>
+                          block $async-await-position/__Cps_returnAssign
+                           block $~lib/array/Array<async-await-position/__Cps_varInitBinary>
+                            block $async-await-position/__Cps_varInitBinary
+                             block $~lib/array/Array<async-await-position/__Cps_varInitCall>
+                              block $async-await-position/__Cps_varInitCall
+                               block $~lib/array/Array<async-await-position/__Cps_binaryStr>
+                                block $async-await-position/__Cps_binaryStr
+                                 block $~lib/array/Array<async-await-position/__Cps_binaryOp>
+                                  block $async-await-position/__Cps_binaryOp
+                                   block $~lib/array/Array<async-await-position/__Cps_callArgs>
+                                    block $async-await-position/__Cps_callArgs
+                                     block $~lib/array/Array<async-await-position/__Cps_forIncr>
+                                      block $async-await-position/__Cps_forIncr
+                                       block $~lib/array/Array<async-await-position/__Cps_doCond>
+                                        block $async-await-position/__Cps_doCond
+                                         block $~lib/array/Array<async-await-position/__Cps_forCond>
+                                          block $async-await-position/__Cps_forCond
+                                           block $~lib/array/Array<async-await-position/__Cps_whileCond>
+                                            block $async-await-position/__Cps_whileCond
+                                             block $~lib/array/Array<async-await-position/__Cps_ifCond>
+                                              block $async-await-position/__Cps_ifCond
+                                               block $~lib/array/Array<async-await-position/__Cps_storedField>
+                                                block $async-await-position/__Cps_storedField
+                                                 block $~lib/array/Array<async-await-position/__Cps_elemCompound>
+                                                  block $async-await-position/__Cps_elemCompound
+                                                   block $~lib/array/Array<async-await-position/__Cps_indexOrder>
+                                                    block $async-await-position/__Cps_indexOrder
+                                                     block $~lib/array/Array<async-await-position/__Cps_elemAssign>
+                                                      block $async-await-position/__Cps_elemAssign
+                                                       block $~lib/array/Array<async-await-position/__Cps_recvCall>
+                                                        block $async-await-position/__Cps_recvCall
+                                                         block $~lib/array/Array<async-await-position/__Cps_fieldCompound>
+                                                          block $async-await-position/__Cps_fieldCompound
+                                                           block $~lib/array/Array<async-await-position/__Cps_fieldAssign>
+                                                            block $async-await-position/__Cps_fieldAssign
+                                                             block $~lib/array/Array<async-await-position/__Cps_mixedCompound>
+                                                              block $async-await-position/__Cps_mixedCompound
+                                                               block $~lib/array/Array<async-await-position/__Cps_compoundNum>
+                                                                block $async-await-position/__Cps_compoundNum
+                                                                 block $~lib/array/Array<async-await-position/__Cps_compoundStr>
+                                                                  block $async-await-position/__Cps_compoundStr
+                                                                   block $~lib/promise/Promise<bool>
+                                                                    block $~lib/array/Array<i32>
+                                                                     block $~lib/array/Array<~lib/string/String>
+                                                                      block $async-await-position/W
+                                                                       block $~lib/promise/Promise<f64>
+                                                                        block $~lib/promise/Promise<i32>
+                                                                         block $~lib/promise/Promise<~lib/string/String>
+                                                                          block $~lib/arraybuffer/ArrayBufferView
+                                                                           block $~lib/string/String
+                                                                            block $~lib/arraybuffer/ArrayBuffer
+                                                                             block $~lib/object/Object
+                                                                              local.get $0
+                                                                              i32.const 8
+                                                                              i32.sub
+                                                                              i32.load
+                                                                              br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/promise/Promise<i32> $~lib/promise/Promise<f64> $async-await-position/W $~lib/array/Array<~lib/string/String> $~lib/array/Array<i32> $~lib/promise/Promise<bool> $async-await-position/__Cps_compoundStr $~lib/array/Array<async-await-position/__Cps_compoundStr> $async-await-position/__Cps_compoundNum $~lib/array/Array<async-await-position/__Cps_compoundNum> $async-await-position/__Cps_mixedCompound $~lib/array/Array<async-await-position/__Cps_mixedCompound> $async-await-position/__Cps_fieldAssign $~lib/array/Array<async-await-position/__Cps_fieldAssign> $async-await-position/__Cps_fieldCompound $~lib/array/Array<async-await-position/__Cps_fieldCompound> $async-await-position/__Cps_recvCall $~lib/array/Array<async-await-position/__Cps_recvCall> $async-await-position/__Cps_elemAssign $~lib/array/Array<async-await-position/__Cps_elemAssign> $async-await-position/__Cps_indexOrder $~lib/array/Array<async-await-position/__Cps_indexOrder> $async-await-position/__Cps_elemCompound $~lib/array/Array<async-await-position/__Cps_elemCompound> $async-await-position/__Cps_storedField $~lib/array/Array<async-await-position/__Cps_storedField> $async-await-position/__Cps_ifCond $~lib/array/Array<async-await-position/__Cps_ifCond> $async-await-position/__Cps_whileCond $~lib/array/Array<async-await-position/__Cps_whileCond> $async-await-position/__Cps_forCond $~lib/array/Array<async-await-position/__Cps_forCond> $async-await-position/__Cps_doCond $~lib/array/Array<async-await-position/__Cps_doCond> $async-await-position/__Cps_forIncr $~lib/array/Array<async-await-position/__Cps_forIncr> $async-await-position/__Cps_callArgs $~lib/array/Array<async-await-position/__Cps_callArgs> $async-await-position/__Cps_binaryOp $~lib/array/Array<async-await-position/__Cps_binaryOp> $async-await-position/__Cps_binaryStr $~lib/array/Array<async-await-position/__Cps_binaryStr> $async-await-position/__Cps_varInitCall $~lib/array/Array<async-await-position/__Cps_varInitCall> $async-await-position/__Cps_varInitBinary $~lib/array/Array<async-await-position/__Cps_varInitBinary> $async-await-position/__Cps_returnAssign $~lib/array/Array<async-await-position/__Cps_returnAssign> $async-await-position/__Cps_compoundRhs $~lib/array/Array<async-await-position/__Cps_compoundRhs> $async-await-position/__Cps_assignRhsField $~lib/array/Array<async-await-position/__Cps_assignRhsField> $async-await-position/__Cps_ternaryCond $~lib/array/Array<async-await-position/__Cps_ternaryCond> $async-await-position/__Cps_andLeft $~lib/array/Array<async-await-position/__Cps_andLeft> $async-await-position/__Cps_storedArg $~lib/array/Array<async-await-position/__Cps_storedArg> $async-await-position/__Cps_ifCondInTry $~lib/array/Array<async-await-position/__Cps_ifCondInTry> $async-await-position/__Cps_unaryOp $~lib/array/Array<async-await-position/__Cps_unaryOp> $async-await-position/__Cps_arrayLit $~lib/array/Array<async-await-position/__Cps_arrayLit> $async-await-position/__Cps_templateLit $~lib/array/Array<async-await-position/__Cps_templateLit> $async-await-position/__Cps_W_setField $~lib/array/Array<async-await-position/__Cps_W_setField> $async-await-position/__Cps_W_checkFlag $~lib/array/Array<async-await-position/__Cps_W_checkFlag> $invalid
+                                                                             end
+                                                                             return
+                                                                            end
+                                                                            return
+                                                                           end
+                                                                           return
+                                                                          end
+                                                                          local.get $0
+                                                                          local.get $1
+                                                                          call $~lib/arraybuffer/ArrayBufferView~visit
+                                                                          return
+                                                                         end
+                                                                         return
+                                                                        end
+                                                                        return
+                                                                       end
+                                                                       return
+                                                                      end
+                                                                      local.get $0
+                                                                      local.get $1
+                                                                      call $async-await-position/W~visit
+                                                                      return
+                                                                     end
+                                                                     local.get $0
+                                                                     local.get $1
+                                                                     call $~lib/array/Array<~lib/string/String>~visit
+                                                                     return
+                                                                    end
+                                                                    local.get $0
+                                                                    local.get $1
+                                                                    call $~lib/array/Array<i32>~visit
+                                                                    return
+                                                                   end
+                                                                   return
+                                                                  end
+                                                                  local.get $0
+                                                                  local.get $1
+                                                                  call $async-await-position/__Cps_compoundStr~visit
+                                                                  return
+                                                                 end
+                                                                 local.get $0
+                                                                 local.get $1
+                                                                 call $~lib/array/Array<async-await-position/__Cps_compoundStr>~visit
+                                                                 return
+                                                                end
+                                                                local.get $0
+                                                                local.get $1
+                                                                call $async-await-position/__Cps_compoundNum~visit
+                                                                return
+                                                               end
+                                                               local.get $0
+                                                               local.get $1
+                                                               call $~lib/array/Array<async-await-position/__Cps_compoundNum>~visit
+                                                               return
+                                                              end
+                                                              local.get $0
+                                                              local.get $1
+                                                              call $async-await-position/__Cps_mixedCompound~visit
+                                                              return
+                                                             end
+                                                             local.get $0
+                                                             local.get $1
+                                                             call $~lib/array/Array<async-await-position/__Cps_mixedCompound>~visit
+                                                             return
+                                                            end
+                                                            local.get $0
+                                                            local.get $1
+                                                            call $async-await-position/__Cps_fieldAssign~visit
+                                                            return
+                                                           end
+                                                           local.get $0
+                                                           local.get $1
+                                                           call $~lib/array/Array<async-await-position/__Cps_fieldAssign>~visit
+                                                           return
+                                                          end
+                                                          local.get $0
+                                                          local.get $1
+                                                          call $async-await-position/__Cps_fieldCompound~visit
+                                                          return
+                                                         end
+                                                         local.get $0
+                                                         local.get $1
+                                                         call $~lib/array/Array<async-await-position/__Cps_fieldCompound>~visit
+                                                         return
+                                                        end
+                                                        local.get $0
+                                                        local.get $1
+                                                        call $async-await-position/__Cps_recvCall~visit
+                                                        return
+                                                       end
+                                                       local.get $0
+                                                       local.get $1
+                                                       call $~lib/array/Array<async-await-position/__Cps_recvCall>~visit
+                                                       return
+                                                      end
+                                                      local.get $0
+                                                      local.get $1
+                                                      call $async-await-position/__Cps_elemAssign~visit
+                                                      return
+                                                     end
+                                                     local.get $0
+                                                     local.get $1
+                                                     call $~lib/array/Array<async-await-position/__Cps_elemAssign>~visit
+                                                     return
+                                                    end
+                                                    local.get $0
+                                                    local.get $1
+                                                    call $async-await-position/__Cps_indexOrder~visit
+                                                    return
+                                                   end
+                                                   local.get $0
+                                                   local.get $1
+                                                   call $~lib/array/Array<async-await-position/__Cps_indexOrder>~visit
+                                                   return
+                                                  end
+                                                  local.get $0
+                                                  local.get $1
+                                                  call $async-await-position/__Cps_elemCompound~visit
+                                                  return
+                                                 end
+                                                 local.get $0
+                                                 local.get $1
+                                                 call $~lib/array/Array<async-await-position/__Cps_elemCompound>~visit
+                                                 return
+                                                end
+                                                local.get $0
+                                                local.get $1
+                                                call $async-await-position/__Cps_storedField~visit
+                                                return
+                                               end
+                                               local.get $0
+                                               local.get $1
+                                               call $~lib/array/Array<async-await-position/__Cps_storedField>~visit
+                                               return
+                                              end
+                                              local.get $0
+                                              local.get $1
+                                              call $async-await-position/__Cps_ifCond~visit
+                                              return
+                                             end
+                                             local.get $0
+                                             local.get $1
+                                             call $~lib/array/Array<async-await-position/__Cps_ifCond>~visit
+                                             return
+                                            end
+                                            local.get $0
+                                            local.get $1
+                                            call $async-await-position/__Cps_whileCond~visit
+                                            return
+                                           end
+                                           local.get $0
+                                           local.get $1
+                                           call $~lib/array/Array<async-await-position/__Cps_whileCond>~visit
+                                           return
+                                          end
+                                          local.get $0
+                                          local.get $1
+                                          call $async-await-position/__Cps_forCond~visit
+                                          return
+                                         end
+                                         local.get $0
+                                         local.get $1
+                                         call $~lib/array/Array<async-await-position/__Cps_forCond>~visit
+                                         return
+                                        end
+                                        local.get $0
+                                        local.get $1
+                                        call $async-await-position/__Cps_doCond~visit
+                                        return
+                                       end
+                                       local.get $0
+                                       local.get $1
+                                       call $~lib/array/Array<async-await-position/__Cps_doCond>~visit
+                                       return
+                                      end
+                                      local.get $0
+                                      local.get $1
+                                      call $async-await-position/__Cps_forIncr~visit
+                                      return
+                                     end
+                                     local.get $0
+                                     local.get $1
+                                     call $~lib/array/Array<async-await-position/__Cps_forIncr>~visit
+                                     return
+                                    end
+                                    local.get $0
+                                    local.get $1
+                                    call $async-await-position/__Cps_callArgs~visit
+                                    return
+                                   end
                                    local.get $0
-                                   i32.const 8
-                                   i32.sub
-                                   i32.load
-                                   br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/promise/Promise<i32> $~lib/promise/Promise<f64> $async-await-position/W $~lib/array/Array<~lib/string/String> $~lib/array/Array<i32> $async-await-position/__Cps_compoundStr $~lib/array/Array<async-await-position/__Cps_compoundStr> $async-await-position/__Cps_compoundNum $~lib/array/Array<async-await-position/__Cps_compoundNum> $async-await-position/__Cps_mixedCompound $~lib/array/Array<async-await-position/__Cps_mixedCompound> $async-await-position/__Cps_fieldAssign $~lib/array/Array<async-await-position/__Cps_fieldAssign> $async-await-position/__Cps_fieldCompound $~lib/array/Array<async-await-position/__Cps_fieldCompound> $async-await-position/__Cps_recvCall $~lib/array/Array<async-await-position/__Cps_recvCall> $async-await-position/__Cps_elemAssign $~lib/array/Array<async-await-position/__Cps_elemAssign> $async-await-position/__Cps_indexOrder $~lib/array/Array<async-await-position/__Cps_indexOrder> $async-await-position/__Cps_elemCompound $~lib/array/Array<async-await-position/__Cps_elemCompound> $async-await-position/__Cps_storedField $~lib/array/Array<async-await-position/__Cps_storedField> $async-await-position/__Cps_W_setField $~lib/array/Array<async-await-position/__Cps_W_setField> $invalid
+                                   local.get $1
+                                   call $~lib/array/Array<async-await-position/__Cps_callArgs>~visit
+                                   return
                                   end
+                                  local.get $0
+                                  local.get $1
+                                  call $async-await-position/__Cps_binaryOp~visit
                                   return
                                  end
+                                 local.get $0
+                                 local.get $1
+                                 call $~lib/array/Array<async-await-position/__Cps_binaryOp>~visit
                                  return
                                 end
+                                local.get $0
+                                local.get $1
+                                call $async-await-position/__Cps_binaryStr~visit
                                 return
                                end
                                local.get $0
                                local.get $1
-                               call $~lib/arraybuffer/ArrayBufferView~visit
+                               call $~lib/array/Array<async-await-position/__Cps_binaryStr>~visit
                                return
                               end
+                              local.get $0
+                              local.get $1
+                              call $async-await-position/__Cps_varInitCall~visit
                               return
                              end
+                             local.get $0
+                             local.get $1
+                             call $~lib/array/Array<async-await-position/__Cps_varInitCall>~visit
                              return
                             end
+                            local.get $0
+                            local.get $1
+                            call $async-await-position/__Cps_varInitBinary~visit
                             return
                            end
                            local.get $0
                            local.get $1
-                           call $async-await-position/W~visit
+                           call $~lib/array/Array<async-await-position/__Cps_varInitBinary>~visit
                            return
                           end
                           local.get $0
                           local.get $1
-                          call $~lib/array/Array<~lib/string/String>~visit
+                          call $async-await-position/__Cps_returnAssign~visit
                           return
                          end
                          local.get $0
                          local.get $1
-                         call $~lib/array/Array<i32>~visit
+                         call $~lib/array/Array<async-await-position/__Cps_returnAssign>~visit
                          return
                         end
                         local.get $0
                         local.get $1
-                        call $async-await-position/__Cps_compoundStr~visit
+                        call $async-await-position/__Cps_compoundRhs~visit
                         return
                        end
                        local.get $0
                        local.get $1
-                       call $~lib/array/Array<async-await-position/__Cps_compoundStr>~visit
+                       call $~lib/array/Array<async-await-position/__Cps_compoundRhs>~visit
                        return
                       end
                       local.get $0
                       local.get $1
-                      call $async-await-position/__Cps_compoundNum~visit
+                      call $async-await-position/__Cps_assignRhsField~visit
                       return
                      end
                      local.get $0
                      local.get $1
-                     call $~lib/array/Array<async-await-position/__Cps_compoundNum>~visit
+                     call $~lib/array/Array<async-await-position/__Cps_assignRhsField>~visit
                      return
                     end
                     local.get $0
                     local.get $1
-                    call $async-await-position/__Cps_mixedCompound~visit
+                    call $async-await-position/__Cps_ternaryCond~visit
                     return
                    end
                    local.get $0
                    local.get $1
-                   call $~lib/array/Array<async-await-position/__Cps_mixedCompound>~visit
+                   call $~lib/array/Array<async-await-position/__Cps_ternaryCond>~visit
                    return
                   end
                   local.get $0
                   local.get $1
-                  call $async-await-position/__Cps_fieldAssign~visit
+                  call $async-await-position/__Cps_andLeft~visit
                   return
                  end
                  local.get $0
                  local.get $1
-                 call $~lib/array/Array<async-await-position/__Cps_fieldAssign>~visit
+                 call $~lib/array/Array<async-await-position/__Cps_andLeft>~visit
                  return
                 end
                 local.get $0
                 local.get $1
-                call $async-await-position/__Cps_fieldCompound~visit
+                call $async-await-position/__Cps_storedArg~visit
                 return
                end
                local.get $0
                local.get $1
-               call $~lib/array/Array<async-await-position/__Cps_fieldCompound>~visit
+               call $~lib/array/Array<async-await-position/__Cps_storedArg>~visit
                return
               end
               local.get $0
               local.get $1
-              call $async-await-position/__Cps_recvCall~visit
+              call $async-await-position/__Cps_ifCondInTry~visit
               return
              end
              local.get $0
              local.get $1
-             call $~lib/array/Array<async-await-position/__Cps_recvCall>~visit
+             call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>~visit
              return
             end
             local.get $0
             local.get $1
-            call $async-await-position/__Cps_elemAssign~visit
+            call $async-await-position/__Cps_unaryOp~visit
             return
            end
            local.get $0
            local.get $1
-           call $~lib/array/Array<async-await-position/__Cps_elemAssign>~visit
+           call $~lib/array/Array<async-await-position/__Cps_unaryOp>~visit
            return
           end
           local.get $0
           local.get $1
-          call $async-await-position/__Cps_indexOrder~visit
+          call $async-await-position/__Cps_arrayLit~visit
           return
          end
          local.get $0
          local.get $1
-         call $~lib/array/Array<async-await-position/__Cps_indexOrder>~visit
+         call $~lib/array/Array<async-await-position/__Cps_arrayLit>~visit
          return
         end
         local.get $0
         local.get $1
-        call $async-await-position/__Cps_elemCompound~visit
+        call $async-await-position/__Cps_templateLit~visit
         return
        end
        local.get $0
        local.get $1
-       call $~lib/array/Array<async-await-position/__Cps_elemCompound>~visit
+       call $~lib/array/Array<async-await-position/__Cps_templateLit>~visit
        return
       end
       local.get $0
       local.get $1
-      call $async-await-position/__Cps_storedField~visit
+      call $async-await-position/__Cps_W_setField~visit
       return
      end
      local.get $0
      local.get $1
-     call $~lib/array/Array<async-await-position/__Cps_storedField>~visit
+     call $~lib/array/Array<async-await-position/__Cps_W_setField>~visit
      return
     end
     local.get $0
     local.get $1
-    call $async-await-position/__Cps_W_setField~visit
+    call $async-await-position/__Cps_W_checkFlag~visit
     return
    end
    local.get $0
    local.get $1
-   call $~lib/array/Array<async-await-position/__Cps_W_setField>~visit
+   call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>~visit
    return
   end
   unreachable
@@ -5418,8 +9117,8 @@
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 35536
-   i32.const 35584
+   i32.const 35840
+   i32.const 35888
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5448,7 +9147,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5586,7 +9285,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5724,7 +9423,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 15
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5862,7 +9561,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 17
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6000,7 +9699,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 19
+   i32.const 20
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6138,7 +9837,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 21
+   i32.const 22
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6276,7 +9975,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 23
+   i32.const 24
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6414,7 +10113,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 25
+   i32.const 26
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6552,7 +10251,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 27
+   i32.const 28
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6690,7 +10389,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 29
+   i32.const 30
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6798,6 +10497,2766 @@
   local.get $6
   local.get $length
   call $~lib/array/Array<async-await-position/__Cps_storedField>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 32
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 34
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 36
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 38
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 40
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 42
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 44
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 46
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 48
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 50
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 52
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 54
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 56
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 58
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 60
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 62
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 64
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 66
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 68
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 70
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:length_
   local.get $this
   local.set $6
   global.get $~lib/memory/__stack_pointer
@@ -6828,7 +13287,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 31
+   i32.const 72
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6944,6 +13403,282 @@
   global.set $~lib/memory/__stack_pointer
   local.get $6
  )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 74
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 80
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+ )
+ (func $~lib/string/String#concat (param $this i32) (param $other i32) (result i32)
+  (local $thisSize i32)
+  (local $otherSize i32)
+  (local $outSize i32)
+  (local $out i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store
+  local.get $6
+  call $~lib/string/String#get:length
+  i32.const 1
+  i32.shl
+  local.set $thisSize
+  local.get $other
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store
+  local.get $6
+  call $~lib/string/String#get:length
+  i32.const 1
+  i32.shl
+  local.set $otherSize
+  local.get $thisSize
+  local.get $otherSize
+  i32.add
+  local.set $outSize
+  local.get $outSize
+  i32.const 0
+  i32.eq
+  if
+   i32.const 528
+   local.set $6
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $6
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $outSize
+  i32.const 2
+  call $~lib/rt/itcms/__new
+  local.tee $out
+  i32.store offset=4
+  local.get $out
+  local.get $this
+  local.get $thisSize
+  memory.copy
+  local.get $out
+  local.get $thisSize
+  i32.add
+  local.get $other
+  local.get $otherSize
+  memory.copy
+  local.get $out
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
+  return
+ )
+ (func $~lib/string/String.__concat (param $left i32) (param $right i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $left
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $right
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $~lib/string/String#concat
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/combine (param $a i32) (param $b i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $a
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $b
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $~lib/string/String.__concat
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
  (func $async-await-position/__Cps_compoundStr#constructor (param $this i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -6959,7 +13694,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 32
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7230,113 +13965,6 @@
   local.get $4
   return
  )
- (func $~lib/string/String#concat (param $this i32) (param $other i32) (result i32)
-  (local $thisSize i32)
-  (local $otherSize i32)
-  (local $outSize i32)
-  (local $out i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store
-  local.get $6
-  call $~lib/string/String#get:length
-  i32.const 1
-  i32.shl
-  local.set $thisSize
-  local.get $other
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store
-  local.get $6
-  call $~lib/string/String#get:length
-  i32.const 1
-  i32.shl
-  local.set $otherSize
-  local.get $thisSize
-  local.get $otherSize
-  i32.add
-  local.set $outSize
-  local.get $outSize
-  i32.const 0
-  i32.eq
-  if
-   i32.const 528
-   local.set $6
-   global.get $~lib/memory/__stack_pointer
-   i32.const 8
-   i32.add
-   global.set $~lib/memory/__stack_pointer
-   local.get $6
-   return
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $outSize
-  i32.const 2
-  call $~lib/rt/itcms/__new
-  local.tee $out
-  i32.store offset=4
-  local.get $out
-  local.get $this
-  local.get $thisSize
-  memory.copy
-  local.get $out
-  local.get $thisSize
-  i32.add
-  local.get $other
-  local.get $otherSize
-  memory.copy
-  local.get $out
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
-  return
- )
- (func $~lib/string/String.__concat (param $left i32) (param $right i32) (result i32)
-  (local $2 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  local.get $left
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  local.get $2
-  i32.store
-  local.get $2
-  local.get $right
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  local.get $2
-  i32.store offset=4
-  local.get $2
-  call $~lib/string/String#concat
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $2
-  return
- )
  (func $~lib/array/Array<async-await-position/__Cps_compoundStr>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
   (local $len i32)
   (local $4 i32)
@@ -7520,7 +14148,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7991,7 +14619,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 96
-   i32.const 12
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8454,7 +15082,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 14
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9490,7 +16118,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 56
-   i32.const 14
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9825,7 +16453,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 16
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10255,7 +16883,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 32
-   i32.const 16
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10644,7 +17272,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 18
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11124,7 +17752,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 40
-   i32.const 18
+   i32.const 19
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11475,7 +18103,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 19
+  i32.const 20
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12054,7 +18682,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 24
-   i32.const 20
+   i32.const 21
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -12373,7 +19001,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 21
+  i32.const 22
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12897,7 +19525,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 44
-   i32.const 22
+   i32.const 23
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13417,7 +20045,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 23
+  i32.const 24
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -13988,7 +20616,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 32
-   i32.const 24
+   i32.const 25
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14337,7 +20965,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 25
+  i32.const 26
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -14892,7 +21520,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 32
-   i32.const 26
+   i32.const 27
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -15362,7 +21990,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 27
+  i32.const 28
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -15796,7 +22424,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 28
-   i32.const 28
+   i32.const 29
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -16123,7 +22751,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 29
+  i32.const 30
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -16520,7 +23148,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 40
-   i32.const 30
+   i32.const 71
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -16871,7 +23499,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 31
+  i32.const 72
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -17410,6 +24038,16401 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_W_checkFlag#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 25
+   i32.const 73
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_W_checkFlag#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_W_checkFlag#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#set:__cps_i_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#set:__cps___async_this_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 74
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_W_checkFlag#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_W_checkFlag#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1027
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_W_checkFlag#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_W_checkFlag#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_W_checkFlag#get:__cps_i_0
+         call $async-await-position/getFlag
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1
+         call $async-await-position/__Cps_W_checkFlag#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 12
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_W_checkFlag#get:__pend0
+        call $async-await-position/__Cps_W_checkFlag#set:__cps___async_hoist_0_2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        call $async-await-position/__Cps_W_checkFlag#get:__cps___async_hoist_0_2
+        if
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1027
+         call $async-await-position/__Cps_W_checkFlag#set:state
+        else
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_W_checkFlag#set:state
+        end
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2624
+       call $async-await-position/__Cps_W_checkFlag#set:__result
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const -1
+       call $async-await-position/__Cps_W_checkFlag#set:state
+       global.get $async-await-position/__async_roots_W_checkFlag
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       global.get $async-await-position/__async_roots_W_checkFlag
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       i32.const 0
+       call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#indexOf
+       i32.const 1
+       call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#splice
+       drop
+       i32.const 1
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 2656
+      call $async-await-position/__Cps_W_checkFlag#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_W_checkFlag#set:state
+      global.get $async-await-position/__async_roots_W_checkFlag
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_W_checkFlag
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_W_checkFlag#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/W#checkFlag (param $this i32) (param $i i32) (result i32)
+  (local $__st i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_W_checkFlag#constructor
+  local.tee $__st
+  i32.store
+  local.get $__st
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=4
+  local.get $3
+  local.get $i
+  call $async-await-position/__Cps_W_checkFlag#set:__cps_i_0
+  local.get $__st
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=4
+  local.get $3
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=8
+  local.get $3
+  call $async-await-position/__Cps_W_checkFlag#set:__cps___async_this_1
+  global.get $async-await-position/__async_roots_W_checkFlag
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=4
+  local.get $3
+  local.get $__st
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=8
+  local.get $3
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#push
+  drop
+  local.get $__st
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store offset=4
+  local.get $3
+  call $async-await-position/__Cps_W_checkFlag#step
+  drop
+  local.get $__st
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-await-position/startCheckFlag (result i32)
+  (local $w i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/W#constructor
+  local.tee $w
+  i32.store
+  local.get $w
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/W#checkFlag
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_ifCond#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 14
+   i32.const 31
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCond#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCond#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCond#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCond#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 32
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_ifCond#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_ifCond#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1027
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_ifCond#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_ifCond#set:state
+          br $break|1
+         end
+         i32.const 0
+         call $async-await-position/getFlag
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1
+         call $async-await-position/__Cps_ifCond#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 12
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_ifCond#get:__pend0
+        call $async-await-position/__Cps_ifCond#set:__cps___async_hoist_0_0
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        call $async-await-position/__Cps_ifCond#get:__cps___async_hoist_0_0
+        if
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1027
+         call $async-await-position/__Cps_ifCond#set:state
+        else
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_ifCond#set:state
+        end
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2624
+       call $async-await-position/__Cps_ifCond#set:__result
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const -1
+       call $async-await-position/__Cps_ifCond#set:state
+       global.get $async-await-position/__async_roots_ifCond
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       global.get $async-await-position/__async_roots_ifCond
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       i32.const 0
+       call $~lib/array/Array<async-await-position/__Cps_ifCond>#indexOf
+       i32.const 1
+       call $~lib/array/Array<async-await-position/__Cps_ifCond>#splice
+       drop
+       i32.const 1
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 2656
+      call $async-await-position/__Cps_ifCond#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_ifCond#set:state
+      global.get $async-await-position/__async_roots_ifCond
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_ifCond
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_ifCond>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_ifCond>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_ifCond#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/ifCond (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_ifCond#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_ifCond
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_ifCond#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_whileCond#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 36
+   i32.const 33
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_whileCond#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_whileCond#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_whileCond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_whileCond#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_whileCond#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_whileCond#set:__cps_out_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_whileCond#set:__cps_i_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_whileCond#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_whileCond#set:__tmp_3
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 34
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_whileCond#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case9|1
+      block $case8|1
+       block $case7|1
+        block $case6|1
+         block $case5|1
+          block $case4|1
+           block $case3|1
+            block $case2|1
+             block $case1|1
+              block $case0|1
+               local.get $this
+               local.set $2
+               global.get $~lib/memory/__stack_pointer
+               local.get $2
+               i32.store
+               local.get $2
+               call $async-await-position/__Cps_whileCond#get:state
+               local.set $1
+               local.get $1
+               i32.const 0
+               i32.eq
+               br_if $case0|1
+               local.get $1
+               i32.const 1
+               i32.eq
+               br_if $case1|1
+               local.get $1
+               i32.const 2
+               i32.eq
+               br_if $case2|1
+               local.get $1
+               i32.const 1024
+               i32.eq
+               br_if $case3|1
+               local.get $1
+               i32.const 1025
+               i32.eq
+               br_if $case4|1
+               local.get $1
+               i32.const 1026
+               i32.eq
+               br_if $case5|1
+               local.get $1
+               i32.const 1027
+               i32.eq
+               br_if $case6|1
+               local.get $1
+               i32.const 1028
+               i32.eq
+               br_if $case7|1
+               local.get $1
+               i32.const 1029
+               i32.eq
+               br_if $case8|1
+               br $case9|1
+              end
+              local.get $this
+              local.set $2
+              global.get $~lib/memory/__stack_pointer
+              local.get $2
+              i32.store
+              local.get $2
+              i32.const 1024
+              call $async-await-position/__Cps_whileCond#set:state
+              br $break|1
+             end
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1028
+             call $async-await-position/__Cps_whileCond#set:state
+             br $break|1
+            end
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 1029
+            call $async-await-position/__Cps_whileCond#set:state
+            br $break|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 528
+           call $async-await-position/__Cps_whileCond#set:__cps_out_0
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_whileCond#set:__cps_i_1
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1026
+           call $async-await-position/__Cps_whileCond#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-await-position/__Cps_whileCond#get:__cps_out_0
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-await-position/__Cps_whileCond#set:__result
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const -1
+          call $async-await-position/__Cps_whileCond#set:state
+          global.get $async-await-position/__async_roots_whileCond
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          global.get $async-await-position/__async_roots_whileCond
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          i32.const 0
+          call $~lib/array/Array<async-await-position/__Cps_whileCond>#indexOf
+          i32.const 1
+          call $~lib/array/Array<async-await-position/__Cps_whileCond>#splice
+          drop
+          i32.const 1
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          i32.const 20
+          i32.add
+          global.set $~lib/memory/__stack_pointer
+          local.get $2
+          return
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_whileCond#get:__cps_i_1
+         call $async-await-position/getFlag
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1
+         call $async-await-position/__Cps_whileCond#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 20
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-await-position/__Cps_whileCond#get:__cps_out_0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_whileCond#set:__tmp_3
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        call $async-await-position/__Cps_whileCond#get:__cps_i_1
+        call $async-await-position/getChunk
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 2
+        call $async-await-position/__Cps_whileCond#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_whileCond#get:__pend0
+       call $async-await-position/__Cps_whileCond#set:__cps___async_hoist_0_2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       call $async-await-position/__Cps_whileCond#get:__cps___async_hoist_0_2
+       if
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1027
+        call $async-await-position/__Cps_whileCond#set:state
+       else
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_whileCond#set:state
+       end
+       br $break|1
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_whileCond#get:__tmp_3
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_whileCond#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_whileCond#set:__cps_out_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_whileCond#get:__cps_i_1
+      i32.const 1
+      i32.add
+      call $async-await-position/__Cps_whileCond#set:__cps_i_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1026
+      call $async-await-position/__Cps_whileCond#set:state
+      br $break|1
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_whileCond#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/whileCond (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_whileCond#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_whileCond
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_whileCond#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_forCond#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 36
+   i32.const 35
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forCond#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forCond#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forCond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forCond#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forCond#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forCond#set:__cps_out_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forCond#set:__cps_i_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forCond#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forCond#set:__tmp_3
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 36
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_forCond#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case10|1
+      block $case9|1
+       block $case8|1
+        block $case7|1
+         block $case6|1
+          block $case5|1
+           block $case4|1
+            block $case3|1
+             block $case2|1
+              block $case1|1
+               block $case0|1
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                call $async-await-position/__Cps_forCond#get:state
+                local.set $1
+                local.get $1
+                i32.const 0
+                i32.eq
+                br_if $case0|1
+                local.get $1
+                i32.const 1
+                i32.eq
+                br_if $case1|1
+                local.get $1
+                i32.const 2
+                i32.eq
+                br_if $case2|1
+                local.get $1
+                i32.const 1024
+                i32.eq
+                br_if $case3|1
+                local.get $1
+                i32.const 1025
+                i32.eq
+                br_if $case4|1
+                local.get $1
+                i32.const 1026
+                i32.eq
+                br_if $case5|1
+                local.get $1
+                i32.const 1027
+                i32.eq
+                br_if $case6|1
+                local.get $1
+                i32.const 1028
+                i32.eq
+                br_if $case7|1
+                local.get $1
+                i32.const 1029
+                i32.eq
+                br_if $case8|1
+                local.get $1
+                i32.const 1030
+                i32.eq
+                br_if $case9|1
+                br $case10|1
+               end
+               local.get $this
+               local.set $2
+               global.get $~lib/memory/__stack_pointer
+               local.get $2
+               i32.store
+               local.get $2
+               i32.const 1024
+               call $async-await-position/__Cps_forCond#set:state
+               br $break|1
+              end
+              local.get $this
+              local.set $2
+              global.get $~lib/memory/__stack_pointer
+              local.get $2
+              i32.store
+              local.get $2
+              i32.const 1029
+              call $async-await-position/__Cps_forCond#set:state
+              br $break|1
+             end
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1030
+             call $async-await-position/__Cps_forCond#set:state
+             br $break|1
+            end
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 528
+            call $async-await-position/__Cps_forCond#set:__cps_out_0
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 0
+            call $async-await-position/__Cps_forCond#set:__cps_i_1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 1026
+            call $async-await-position/__Cps_forCond#set:state
+            br $break|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=8
+           local.get $2
+           call $async-await-position/__Cps_forCond#get:__cps_out_0
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=4
+           local.get $2
+           call $async-await-position/__Cps_forCond#set:__result
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const -1
+           call $async-await-position/__Cps_forCond#set:state
+           global.get $async-await-position/__async_roots_forCond
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           global.get $async-await-position/__async_roots_forCond
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=4
+           local.get $2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=8
+           local.get $2
+           i32.const 0
+           call $~lib/array/Array<async-await-position/__Cps_forCond>#indexOf
+           i32.const 1
+           call $~lib/array/Array<async-await-position/__Cps_forCond>#splice
+           drop
+           i32.const 1
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           i32.const 20
+           i32.add
+           global.set $~lib/memory/__stack_pointer
+           local.get $2
+           return
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_forCond#get:__cps_i_1
+          call $async-await-position/getFlag
+          drop
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1
+          call $async-await-position/__Cps_forCond#set:state
+          i32.const 0
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          i32.const 20
+          i32.add
+          global.set $~lib/memory/__stack_pointer
+          local.get $2
+          return
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=8
+         local.get $2
+         call $async-await-position/__Cps_forCond#get:__cps_out_0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=4
+         local.get $2
+         call $async-await-position/__Cps_forCond#set:__tmp_3
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_forCond#get:__cps_i_1
+         call $async-await-position/getChunk
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 2
+         call $async-await-position/__Cps_forCond#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 20
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_forCond#get:__cps_i_1
+        i32.const 1
+        i32.add
+        call $async-await-position/__Cps_forCond#set:__cps_i_1
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1026
+        call $async-await-position/__Cps_forCond#set:state
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_forCond#get:__pend0
+       call $async-await-position/__Cps_forCond#set:__cps___async_hoist_0_2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       call $async-await-position/__Cps_forCond#get:__cps___async_hoist_0_2
+       if
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1027
+        call $async-await-position/__Cps_forCond#set:state
+       else
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_forCond#set:state
+       end
+       br $break|1
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_forCond#get:__tmp_3
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_forCond#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_forCond#set:__cps_out_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1028
+      call $async-await-position/__Cps_forCond#set:state
+      br $break|1
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_forCond#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/forCond (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_forCond#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_forCond
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_forCond#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_doCond#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 36
+   i32.const 37
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_doCond#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_doCond#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_doCond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_doCond#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_doCond#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_doCond#set:__cps_out_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_doCond#set:__cps_i_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_doCond#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_doCond#set:__tmp_3
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 38
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_doCond#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case9|1
+      block $case8|1
+       block $case7|1
+        block $case6|1
+         block $case5|1
+          block $case4|1
+           block $case3|1
+            block $case2|1
+             block $case1|1
+              block $case0|1
+               local.get $this
+               local.set $2
+               global.get $~lib/memory/__stack_pointer
+               local.get $2
+               i32.store
+               local.get $2
+               call $async-await-position/__Cps_doCond#get:state
+               local.set $1
+               local.get $1
+               i32.const 0
+               i32.eq
+               br_if $case0|1
+               local.get $1
+               i32.const 1
+               i32.eq
+               br_if $case1|1
+               local.get $1
+               i32.const 2
+               i32.eq
+               br_if $case2|1
+               local.get $1
+               i32.const 1024
+               i32.eq
+               br_if $case3|1
+               local.get $1
+               i32.const 1025
+               i32.eq
+               br_if $case4|1
+               local.get $1
+               i32.const 1026
+               i32.eq
+               br_if $case5|1
+               local.get $1
+               i32.const 1027
+               i32.eq
+               br_if $case6|1
+               local.get $1
+               i32.const 1028
+               i32.eq
+               br_if $case7|1
+               local.get $1
+               i32.const 1029
+               i32.eq
+               br_if $case8|1
+               br $case9|1
+              end
+              local.get $this
+              local.set $2
+              global.get $~lib/memory/__stack_pointer
+              local.get $2
+              i32.store
+              local.get $2
+              i32.const 1024
+              call $async-await-position/__Cps_doCond#set:state
+              br $break|1
+             end
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1028
+             call $async-await-position/__Cps_doCond#set:state
+             br $break|1
+            end
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 1029
+            call $async-await-position/__Cps_doCond#set:state
+            br $break|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 528
+           call $async-await-position/__Cps_doCond#set:__cps_out_0
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_doCond#set:__cps_i_1
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1026
+           call $async-await-position/__Cps_doCond#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-await-position/__Cps_doCond#get:__cps_out_0
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-await-position/__Cps_doCond#set:__result
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const -1
+          call $async-await-position/__Cps_doCond#set:state
+          global.get $async-await-position/__async_roots_doCond
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          global.get $async-await-position/__async_roots_doCond
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          i32.const 0
+          call $~lib/array/Array<async-await-position/__Cps_doCond>#indexOf
+          i32.const 1
+          call $~lib/array/Array<async-await-position/__Cps_doCond>#splice
+          drop
+          i32.const 1
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          i32.const 20
+          i32.add
+          global.set $~lib/memory/__stack_pointer
+          local.get $2
+          return
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=8
+         local.get $2
+         call $async-await-position/__Cps_doCond#get:__cps_out_0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=4
+         local.get $2
+         call $async-await-position/__Cps_doCond#set:__tmp_3
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_doCond#get:__cps_i_1
+         call $async-await-position/getChunk
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 2
+         call $async-await-position/__Cps_doCond#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 20
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        call $async-await-position/__Cps_doCond#get:__cps_i_1
+        call $async-await-position/getFlag
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_doCond#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_doCond#get:__pend0
+       call $async-await-position/__Cps_doCond#set:__cps___async_hoist_0_2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       call $async-await-position/__Cps_doCond#get:__cps___async_hoist_0_2
+       if
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1026
+        call $async-await-position/__Cps_doCond#set:state
+       else
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_doCond#set:state
+       end
+       br $break|1
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_doCond#get:__tmp_3
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_doCond#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_doCond#set:__cps_out_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_doCond#get:__cps_i_1
+      i32.const 1
+      i32.add
+      call $async-await-position/__Cps_doCond#set:__cps_i_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1027
+      call $async-await-position/__Cps_doCond#set:state
+      br $break|1
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_doCond#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/doCond (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_doCond#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_doCond
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_doCond#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_forIncr#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 36
+   i32.const 39
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forIncr#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forIncr#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forIncr#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forIncr#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forIncr#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forIncr#set:__cps_out_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forIncr#set:__cps_i_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_forIncr#set:__tmp_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_forIncr#set:__tmp_3
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 40
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_forIncr#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case10|1
+      block $case9|1
+       block $case8|1
+        block $case7|1
+         block $case6|1
+          block $case5|1
+           block $case4|1
+            block $case3|1
+             block $case2|1
+              block $case1|1
+               block $case0|1
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                call $async-await-position/__Cps_forIncr#get:state
+                local.set $1
+                local.get $1
+                i32.const 0
+                i32.eq
+                br_if $case0|1
+                local.get $1
+                i32.const 1
+                i32.eq
+                br_if $case1|1
+                local.get $1
+                i32.const 2
+                i32.eq
+                br_if $case2|1
+                local.get $1
+                i32.const 1024
+                i32.eq
+                br_if $case3|1
+                local.get $1
+                i32.const 1025
+                i32.eq
+                br_if $case4|1
+                local.get $1
+                i32.const 1026
+                i32.eq
+                br_if $case5|1
+                local.get $1
+                i32.const 1027
+                i32.eq
+                br_if $case6|1
+                local.get $1
+                i32.const 1028
+                i32.eq
+                br_if $case7|1
+                local.get $1
+                i32.const 1029
+                i32.eq
+                br_if $case8|1
+                local.get $1
+                i32.const 1030
+                i32.eq
+                br_if $case9|1
+                br $case10|1
+               end
+               local.get $this
+               local.set $2
+               global.get $~lib/memory/__stack_pointer
+               local.get $2
+               i32.store
+               local.get $2
+               i32.const 1024
+               call $async-await-position/__Cps_forIncr#set:state
+               br $break|1
+              end
+              local.get $this
+              local.set $2
+              global.get $~lib/memory/__stack_pointer
+              local.get $2
+              i32.store
+              local.get $2
+              i32.const 1029
+              call $async-await-position/__Cps_forIncr#set:state
+              br $break|1
+             end
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1030
+             call $async-await-position/__Cps_forIncr#set:state
+             br $break|1
+            end
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 528
+            call $async-await-position/__Cps_forIncr#set:__cps_out_0
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 0
+            call $async-await-position/__Cps_forIncr#set:__cps_i_1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            i32.const 1026
+            call $async-await-position/__Cps_forIncr#set:state
+            br $break|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=8
+           local.get $2
+           call $async-await-position/__Cps_forIncr#get:__cps_out_0
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=4
+           local.get $2
+           call $async-await-position/__Cps_forIncr#set:__result
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const -1
+           call $async-await-position/__Cps_forIncr#set:state
+           global.get $async-await-position/__async_roots_forIncr
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           global.get $async-await-position/__async_roots_forIncr
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=4
+           local.get $2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=8
+           local.get $2
+           i32.const 0
+           call $~lib/array/Array<async-await-position/__Cps_forIncr>#indexOf
+           i32.const 1
+           call $~lib/array/Array<async-await-position/__Cps_forIncr>#splice
+           drop
+           i32.const 1
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           i32.const 20
+           i32.add
+           global.set $~lib/memory/__stack_pointer
+           local.get $2
+           return
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_forIncr#get:__cps_i_1
+          i32.const 2
+          i32.lt_s
+          if
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1027
+           call $async-await-position/__Cps_forIncr#set:state
+          else
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1025
+           call $async-await-position/__Cps_forIncr#set:state
+          end
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=8
+         local.get $2
+         call $async-await-position/__Cps_forIncr#get:__cps_out_0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store offset=4
+         local.get $2
+         call $async-await-position/__Cps_forIncr#set:__tmp_3
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_forIncr#get:__cps_i_1
+         call $async-await-position/getChunk
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 2
+         call $async-await-position/__Cps_forIncr#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 20
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_forIncr#get:__cps_i_1
+        call $async-await-position/__Cps_forIncr#set:__tmp_2
+        i32.const 1
+        call $async-await-position/getNum
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_forIncr#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_forIncr#get:__tmp_2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_forIncr#get:__pend0
+       i32.add
+       call $async-await-position/__Cps_forIncr#set:__cps_i_1
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1026
+       call $async-await-position/__Cps_forIncr#set:state
+       br $break|1
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_forIncr#get:__tmp_3
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_forIncr#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_forIncr#set:__cps_out_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1028
+      call $async-await-position/__Cps_forIncr#set:state
+      br $break|1
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_forIncr#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/forIncr (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_forIncr#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_forIncr
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_forIncr#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_callArgs#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 41
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_callArgs#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_callArgs#set:__cps___async_hoist_1_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 42
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_callArgs#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_callArgs#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 2
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_callArgs#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_callArgs#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_callArgs#set:state
+         br $break|1
+        end
+        i32.const 0
+        call $async-await-position/getChunk
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_callArgs#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       call $async-await-position/__Cps_callArgs#get:__pend0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_callArgs#set:__cps___async_hoist_0_0
+       i32.const 1
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2
+       call $async-await-position/__Cps_callArgs#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 20
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_callArgs#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_callArgs#set:__cps___async_hoist_1_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_callArgs#get:__cps___async_hoist_0_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_callArgs#get:__cps___async_hoist_1_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/combine
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_callArgs#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_callArgs#set:state
+      global.get $async-await-position/__async_roots_callArgs
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_callArgs
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_callArgs>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_callArgs>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 20
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_callArgs#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/callArgs (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_callArgs#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_callArgs
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_callArgs#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_binaryOp#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 43
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryOp#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_1_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 44
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_binaryOp#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_binaryOp#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 2
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_binaryOp#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_binaryOp#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_binaryOp#set:state
+         br $break|1
+        end
+        i32.const 2
+        call $async-await-position/getNum
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_binaryOp#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 12
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_binaryOp#get:__pend0
+       call $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_0_0
+       i32.const 3
+       call $async-await-position/getNum
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2
+       call $async-await-position/__Cps_binaryOp#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_binaryOp#get:__pend1
+      call $async-await-position/__Cps_binaryOp#set:__cps___async_hoist_1_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_binaryOp#get:__cps___async_hoist_0_0
+      i32.add
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_binaryOp#get:__cps___async_hoist_1_1
+      i32.add
+      call $async-await-position/__Cps_binaryOp#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_binaryOp#set:state
+      global.get $async-await-position/__async_roots_binaryOp
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_binaryOp
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_binaryOp>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_binaryOp>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_binaryOp#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/binaryOp (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_binaryOp#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_binaryOp
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_binaryOp#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_binaryStr#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 45
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_binaryStr#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_1_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 46
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_binaryStr#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_binaryStr#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 2
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_binaryStr#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_binaryStr#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_binaryStr#set:state
+         br $break|1
+        end
+        i32.const 0
+        call $async-await-position/getChunk
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_binaryStr#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       call $async-await-position/__Cps_binaryStr#get:__pend0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_0_0
+       i32.const 1
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2
+       call $async-await-position/__Cps_binaryStr#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 20
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_binaryStr#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_binaryStr#set:__cps___async_hoist_1_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_binaryStr#get:__cps___async_hoist_0_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_binaryStr#get:__cps___async_hoist_1_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_binaryStr#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_binaryStr#set:state
+      global.get $async-await-position/__async_roots_binaryStr
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_binaryStr
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_binaryStr>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_binaryStr>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 20
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_binaryStr#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/binaryStr (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_binaryStr#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_binaryStr
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_binaryStr#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_varInitCall#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 24
+   i32.const 47
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitCall#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitCall#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitCall#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitCall#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitCall#set:__cps_x_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitCall#set:__cps___async_hoist_0_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 48
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_varInitCall#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_varInitCall#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_varInitCall#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_varInitCall#set:state
+        br $break|1
+       end
+       i32.const 0
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_varInitCall#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 16
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#get:__pend0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#set:__cps___async_hoist_0_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#get:__cps___async_hoist_0_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 2688
+      call $async-await-position/combine
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#set:__cps_x_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#get:__cps_x_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitCall#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_varInitCall#set:state
+      global.get $async-await-position/__async_roots_varInitCall
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_varInitCall
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_varInitCall>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_varInitCall>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 16
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_varInitCall#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 16
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/varInitCall (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_varInitCall#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_varInitCall
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_varInitCall#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_varInitBinary#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 24
+   i32.const 49
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_varInitBinary#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#set:__cps_y_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#set:__cps___async_hoist_0_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 50
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_varInitBinary#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_varInitBinary#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_varInitBinary#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_varInitBinary#set:state
+        br $break|1
+       end
+       i32.const 2
+       call $async-await-position/getNum
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_varInitBinary#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitBinary#get:__pend0
+      call $async-await-position/__Cps_varInitBinary#set:__cps___async_hoist_0_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitBinary#get:__cps___async_hoist_0_1
+      i32.add
+      call $async-await-position/__Cps_varInitBinary#set:__cps_y_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_varInitBinary#get:__cps_y_0
+      call $async-await-position/__Cps_varInitBinary#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_varInitBinary#set:state
+      global.get $async-await-position/__async_roots_varInitBinary
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_varInitBinary
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_varInitBinary#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/varInitBinary (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_varInitBinary#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_varInitBinary
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_varInitBinary#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_returnAssign#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 32
+   i32.const 51
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_returnAssign#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__cps_s_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_0_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_1_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 52
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_returnAssign#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 20
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.const 20
+  memory.fill
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_returnAssign#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 2
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_returnAssign#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_returnAssign#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_returnAssign#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 528
+        call $async-await-position/__Cps_returnAssign#set:__cps_s_0
+        i32.const 0
+        call $async-await-position/getChunk
+        drop
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1
+        call $async-await-position/__Cps_returnAssign#set:state
+        i32.const 0
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 20
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       call $async-await-position/__Cps_returnAssign#get:__pend0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_0_1
+       i32.const 1
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2
+       call $async-await-position/__Cps_returnAssign#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 20
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#get:__pend1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#set:__cps___async_hoist_1_2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#get:__cps___async_hoist_0_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=16
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#get:__cps___async_hoist_1_2
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#set:__cps_s_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#get:__cps_s_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_returnAssign#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_returnAssign#set:state
+      global.get $async-await-position/__async_roots_returnAssign
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_returnAssign
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_returnAssign>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_returnAssign>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 20
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_returnAssign#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 20
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/returnAssign (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_returnAssign#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_returnAssign
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_returnAssign#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_compoundRhs#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 53
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_compoundRhs#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:__cps_n_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:__tmp_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 54
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_compoundRhs#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_compoundRhs#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_compoundRhs#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_compoundRhs#set:state
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 10
+       call $async-await-position/__Cps_compoundRhs#set:__cps_n_0
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_compoundRhs#get:__cps_n_0
+       call $async-await-position/__Cps_compoundRhs#set:__tmp_1
+       i32.const 2
+       call $async-await-position/getNum
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_compoundRhs#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_compoundRhs#get:__pend0
+      call $async-await-position/__Cps_compoundRhs#set:__cps___async_hoist_0_2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_compoundRhs#get:__tmp_1
+      i32.const 1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_compoundRhs#get:__cps___async_hoist_0_2
+      i32.add
+      i32.add
+      call $async-await-position/__Cps_compoundRhs#set:__cps_n_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_compoundRhs#get:__cps_n_0
+      call $async-await-position/__Cps_compoundRhs#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_compoundRhs#set:state
+      global.get $async-await-position/__async_roots_compoundRhs
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_compoundRhs
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_compoundRhs#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/compoundRhs (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_compoundRhs#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_compoundRhs
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_compoundRhs#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_assignRhsField#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 55
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_assignRhsField#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_assignRhsField#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_assignRhsField#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_assignRhsField#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_assignRhsField#set:__cps_w_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_assignRhsField#set:__tmp_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_assignRhsField#set:__cps___async_hoist_0_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 56
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_assignRhsField#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_assignRhsField#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_assignRhsField#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_assignRhsField#set:state
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 0
+       call $async-await-position/W#constructor
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_assignRhsField#set:__cps_w_0
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       call $async-await-position/__Cps_assignRhsField#get:__cps_w_0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_assignRhsField#set:__tmp_1
+       i32.const 0
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_assignRhsField#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 16
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#get:__pend0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#set:__cps___async_hoist_0_2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#get:__tmp_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#get:__cps___async_hoist_0_2
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 2688
+      call $~lib/string/String.__concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/W#set:s
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#get:__cps_w_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/W#get:s
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_assignRhsField#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_assignRhsField#set:state
+      global.get $async-await-position/__async_roots_assignRhsField
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_assignRhsField
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 16
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_assignRhsField#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 16
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/assignRhsField (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_assignRhsField#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_assignRhsField
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_assignRhsField#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_ternaryCond#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 14
+   i32.const 57
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ternaryCond#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ternaryCond#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ternaryCond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ternaryCond#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ternaryCond#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 58
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_ternaryCond#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_ternaryCond#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_ternaryCond#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_ternaryCond#set:state
+        br $break|1
+       end
+       i32.const 0
+       call $async-await-position/getFlag
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_ternaryCond#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_ternaryCond#get:__pend0
+      call $async-await-position/__Cps_ternaryCond#set:__cps___async_hoist_0_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_ternaryCond#get:__cps___async_hoist_0_0
+      if (result i32)
+       i32.const 2656
+      else
+       i32.const 2624
+      end
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_ternaryCond#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_ternaryCond#set:state
+      global.get $async-await-position/__async_roots_ternaryCond
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_ternaryCond
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_ternaryCond#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/ternaryCond (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_ternaryCond#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_ternaryCond
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_ternaryCond#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_andLeft#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 14
+   i32.const 59
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_andLeft#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_andLeft#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_andLeft#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_andLeft#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_andLeft#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 60
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_andLeft#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_andLeft#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1027
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1024
+           call $async-await-position/__Cps_andLeft#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1025
+          call $async-await-position/__Cps_andLeft#set:state
+          br $break|1
+         end
+         i32.const 0
+         call $async-await-position/getFlag
+         drop
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1
+         call $async-await-position/__Cps_andLeft#set:state
+         i32.const 0
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         i32.const 12
+         i32.add
+         global.set $~lib/memory/__stack_pointer
+         local.get $2
+         return
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_andLeft#get:__pend0
+        call $async-await-position/__Cps_andLeft#set:__cps___async_hoist_0_0
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        call $async-await-position/__Cps_andLeft#get:__cps___async_hoist_0_0
+        if (result i32)
+         i32.const 1
+        else
+         i32.const 0
+        end
+        if
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1027
+         call $async-await-position/__Cps_andLeft#set:state
+        else
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1026
+         call $async-await-position/__Cps_andLeft#set:state
+        end
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 2624
+       call $async-await-position/__Cps_andLeft#set:__result
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const -1
+       call $async-await-position/__Cps_andLeft#set:state
+       global.get $async-await-position/__async_roots_andLeft
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       global.get $async-await-position/__async_roots_andLeft
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=8
+       local.get $2
+       i32.const 0
+       call $~lib/array/Array<async-await-position/__Cps_andLeft>#indexOf
+       i32.const 1
+       call $~lib/array/Array<async-await-position/__Cps_andLeft>#splice
+       drop
+       i32.const 1
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 2656
+      call $async-await-position/__Cps_andLeft#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_andLeft#set:state
+      global.get $async-await-position/__async_roots_andLeft
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_andLeft
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_andLeft>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_andLeft>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_andLeft#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/andLeft (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_andLeft#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_andLeft
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_andLeft#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_storedArg#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 24
+   i32.const 61
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_storedArg#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_storedArg#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_storedArg#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_storedArg#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_storedArg#set:__cps_p_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_storedArg#set:__cps___async_hoist_0_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 62
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_storedArg#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_storedArg#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_storedArg#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_storedArg#set:state
+        br $break|1
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 0
+       call $async-await-position/getChunk
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store offset=4
+       local.get $2
+       call $async-await-position/__Cps_storedArg#set:__cps_p_0
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       call $async-await-position/__Cps_storedArg#get:__cps_p_0
+       call $~lib/promise/__async_wait
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_storedArg#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 16
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_storedArg#get:__pend0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_storedArg#set:__cps___async_hoist_0_1
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/__Cps_storedArg#get:__cps___async_hoist_0_1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 2688
+      call $async-await-position/combine
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_storedArg#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_storedArg#set:state
+      global.get $async-await-position/__async_roots_storedArg
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_storedArg
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_storedArg>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_storedArg>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 16
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_storedArg#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 16
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/storedArg (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_storedArg#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_storedArg
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_storedArg#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_ifCondInTry#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 44
+   i32.const 63
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendErr_3_3
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendFail_4_4
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_retVal_5_5
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_flag_7_6
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_err_6_7
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_hoist_0_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_ifCondInTry#set:__cps_e_9
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 64
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_ifCondInTry#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case21|1
+      block $case20|1
+       block $case19|1
+        block $case18|1
+         block $case17|1
+          block $case16|1
+           block $case15|1
+            block $case14|1
+             block $case13|1
+              block $case12|1
+               block $case11|1
+                block $case10|1
+                 block $case9|1
+                  block $case8|1
+                   block $case7|1
+                    block $case6|1
+                     block $case5|1
+                      block $case4|1
+                       block $case3|1
+                        block $case2|1
+                         block $case1|1
+                          block $case0|1
+                           local.get $this
+                           local.set $2
+                           global.get $~lib/memory/__stack_pointer
+                           local.get $2
+                           i32.store
+                           local.get $2
+                           call $async-await-position/__Cps_ifCondInTry#get:state
+                           local.set $1
+                           local.get $1
+                           i32.const 0
+                           i32.eq
+                           br_if $case0|1
+                           local.get $1
+                           i32.const 1
+                           i32.eq
+                           br_if $case1|1
+                           local.get $1
+                           i32.const 1024
+                           i32.eq
+                           br_if $case2|1
+                           local.get $1
+                           i32.const 1025
+                           i32.eq
+                           br_if $case3|1
+                           local.get $1
+                           i32.const 1026
+                           i32.eq
+                           br_if $case4|1
+                           local.get $1
+                           i32.const 1027
+                           i32.eq
+                           br_if $case5|1
+                           local.get $1
+                           i32.const 1028
+                           i32.eq
+                           br_if $case6|1
+                           local.get $1
+                           i32.const 1029
+                           i32.eq
+                           br_if $case7|1
+                           local.get $1
+                           i32.const 1030
+                           i32.eq
+                           br_if $case8|1
+                           local.get $1
+                           i32.const 1031
+                           i32.eq
+                           br_if $case9|1
+                           local.get $1
+                           i32.const 1032
+                           i32.eq
+                           br_if $case10|1
+                           local.get $1
+                           i32.const 1033
+                           i32.eq
+                           br_if $case11|1
+                           local.get $1
+                           i32.const 1034
+                           i32.eq
+                           br_if $case12|1
+                           local.get $1
+                           i32.const 1035
+                           i32.eq
+                           br_if $case13|1
+                           local.get $1
+                           i32.const 1036
+                           i32.eq
+                           br_if $case14|1
+                           local.get $1
+                           i32.const 1037
+                           i32.eq
+                           br_if $case15|1
+                           local.get $1
+                           i32.const 1038
+                           i32.eq
+                           br_if $case16|1
+                           local.get $1
+                           i32.const 1039
+                           i32.eq
+                           br_if $case17|1
+                           local.get $1
+                           i32.const 1040
+                           i32.eq
+                           br_if $case18|1
+                           local.get $1
+                           i32.const 1041
+                           i32.eq
+                           br_if $case19|1
+                           local.get $1
+                           i32.const 1042
+                           i32.eq
+                           br_if $case20|1
+                           br $case21|1
+                          end
+                          local.get $this
+                          local.set $2
+                          global.get $~lib/memory/__stack_pointer
+                          local.get $2
+                          i32.store
+                          local.get $2
+                          i32.const 1024
+                          call $async-await-position/__Cps_ifCondInTry#set:state
+                          br $break|1
+                         end
+                         local.get $this
+                         local.set $2
+                         global.get $~lib/memory/__stack_pointer
+                         local.get $2
+                         i32.store
+                         local.get $2
+                         i32.const 1028
+                         call $async-await-position/__Cps_ifCondInTry#set:state
+                         br $break|1
+                        end
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 0
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 0
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 0
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 528
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendErr_3_3
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 0
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendFail_4_4
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 0
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_flag_7_6
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 528
+                        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_err_6_7
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 1026
+                        call $async-await-position/__Cps_ifCondInTry#set:state
+                        br $break|1
+                       end
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store
+                       local.get $2
+                       call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6
+                       if
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 1037
+                        call $async-await-position/__Cps_ifCondInTry#set:state
+                       else
+                        local.get $this
+                        local.set $2
+                        global.get $~lib/memory/__stack_pointer
+                        local.get $2
+                        i32.store
+                        local.get $2
+                        i32.const 1036
+                        call $async-await-position/__Cps_ifCondInTry#set:state
+                       end
+                       br $break|1
+                      end
+                      i32.const 1
+                      drop
+                      local.get $this
+                      local.set $2
+                      global.get $~lib/memory/__stack_pointer
+                      local.get $2
+                      i32.store
+                      local.get $2
+                      i32.const 1027
+                      call $async-await-position/__Cps_ifCondInTry#set:state
+                      br $break|1
+                     end
+                     i32.const 0
+                     call $async-await-position/getFlag
+                     drop
+                     local.get $this
+                     local.set $2
+                     global.get $~lib/memory/__stack_pointer
+                     local.get $2
+                     i32.store
+                     local.get $2
+                     i32.const 1
+                     call $async-await-position/__Cps_ifCondInTry#set:state
+                     i32.const 0
+                     local.set $2
+                     global.get $~lib/memory/__stack_pointer
+                     i32.const 12
+                     i32.add
+                     global.set $~lib/memory/__stack_pointer
+                     local.get $2
+                     return
+                    end
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store offset=4
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__pend0
+                    call $async-await-position/__Cps_ifCondInTry#set:__cps___async_hoist_0_8
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__cps___async_hoist_0_8
+                    if
+                     local.get $this
+                     local.set $2
+                     global.get $~lib/memory/__stack_pointer
+                     local.get $2
+                     i32.store
+                     local.get $2
+                     i32.const 1030
+                     call $async-await-position/__Cps_ifCondInTry#set:state
+                    else
+                     local.get $this
+                     local.set $2
+                     global.get $~lib/memory/__stack_pointer
+                     local.get $2
+                     i32.store
+                     local.get $2
+                     i32.const 1029
+                     call $async-await-position/__Cps_ifCondInTry#set:state
+                    end
+                    br $break|1
+                   end
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6
+                   if (result i32)
+                    i32.const 1
+                   else
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_ret_0_0
+                   end
+                   if (result i32)
+                    i32.const 1
+                   else
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_brk_1_1
+                   end
+                   if (result i32)
+                    i32.const 1
+                   else
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_cnt_2_2
+                   end
+                   if (result i32)
+                    i32.const 1
+                   else
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendFail_4_4
+                   end
+                   if
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    i32.const 1033
+                    call $async-await-position/__Cps_ifCondInTry#set:state
+                   else
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    i32.const 1032
+                    call $async-await-position/__Cps_ifCondInTry#set:state
+                   end
+                   br $break|1
+                  end
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  i32.const 0
+                  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  i32.const 0
+                  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  i32.const 0
+                  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  i32.const 2656
+                  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_retVal_5_5
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  i32.const 1
+                  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+                  local.get $this
+                  local.set $2
+                  global.get $~lib/memory/__stack_pointer
+                  local.get $2
+                  i32.store
+                  local.get $2
+                  call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6
+                  if (result i32)
+                   i32.const 1
+                  else
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_ret_0_0
+                  end
+                  if (result i32)
+                   i32.const 1
+                  else
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_brk_1_1
+                  end
+                  if (result i32)
+                   i32.const 1
+                  else
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_cnt_2_2
+                  end
+                  if (result i32)
+                   i32.const 1
+                  else
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendFail_4_4
+                  end
+                  if
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   i32.const 1031
+                   call $async-await-position/__Cps_ifCondInTry#set:state
+                  else
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   i32.const 1029
+                   call $async-await-position/__Cps_ifCondInTry#set:state
+                  end
+                  br $break|1
+                 end
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 i32.const 1025
+                 call $async-await-position/__Cps_ifCondInTry#set:state
+                 br $break|1
+                end
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                i32.const 0
+                call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                i32.const 0
+                call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                i32.const 0
+                call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                i32.const 2624
+                call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_retVal_5_5
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                i32.const 1
+                call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+                local.get $this
+                local.set $2
+                global.get $~lib/memory/__stack_pointer
+                local.get $2
+                i32.store
+                local.get $2
+                call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6
+                if (result i32)
+                 i32.const 1
+                else
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_ret_0_0
+                end
+                if (result i32)
+                 i32.const 1
+                else
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_brk_1_1
+                end
+                if (result i32)
+                 i32.const 1
+                else
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_cnt_2_2
+                end
+                if (result i32)
+                 i32.const 1
+                else
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendFail_4_4
+                end
+                if
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 i32.const 1035
+                 call $async-await-position/__Cps_ifCondInTry#set:state
+                else
+                 local.get $this
+                 local.set $2
+                 global.get $~lib/memory/__stack_pointer
+                 local.get $2
+                 i32.store
+                 local.get $2
+                 i32.const 1034
+                 call $async-await-position/__Cps_ifCondInTry#set:state
+                end
+                br $break|1
+               end
+               local.get $this
+               local.set $2
+               global.get $~lib/memory/__stack_pointer
+               local.get $2
+               i32.store
+               local.get $2
+               i32.const 1025
+               call $async-await-position/__Cps_ifCondInTry#set:state
+               br $break|1
+              end
+              local.get $this
+              local.set $2
+              global.get $~lib/memory/__stack_pointer
+              local.get $2
+              i32.store
+              local.get $2
+              i32.const 1025
+              call $async-await-position/__Cps_ifCondInTry#set:state
+              br $break|1
+             end
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1025
+             call $async-await-position/__Cps_ifCondInTry#set:state
+             br $break|1
+            end
+            local.get $this
+            local.set $2
+            global.get $~lib/memory/__stack_pointer
+            local.get $2
+            i32.store
+            local.get $2
+            call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_flag_7_6
+            if
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1038
+             call $async-await-position/__Cps_ifCondInTry#set:state
+            else
+             local.get $this
+             local.set $2
+             global.get $~lib/memory/__stack_pointer
+             local.get $2
+             i32.store
+             local.get $2
+             i32.const 1039
+             call $async-await-position/__Cps_ifCondInTry#set:state
+            end
+            br $break|1
+           end
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_flag_7_6
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=8
+           local.get $2
+           call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_err_6_7
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store offset=4
+           local.get $2
+           call $async-await-position/__Cps_ifCondInTry#set:__cps_e_9
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_brk_1_1
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 0
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_cnt_2_2
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 2720
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_retVal_5_5
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1
+           call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+           local.get $this
+           local.set $2
+           global.get $~lib/memory/__stack_pointer
+           local.get $2
+           i32.store
+           local.get $2
+           i32.const 1036
+           call $async-await-position/__Cps_ifCondInTry#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_err_6_7
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-await-position/__Cps_ifCondInTry#set:__error
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const -2
+          call $async-await-position/__Cps_ifCondInTry#set:state
+          global.get $async-await-position/__async_roots_ifCondInTry
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          global.get $async-await-position/__async_roots_ifCondInTry
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          i32.const 0
+          call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#indexOf
+          i32.const 1
+          call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#splice
+          drop
+          i32.const 2
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          i32.const 12
+          i32.add
+          global.set $~lib/memory/__stack_pointer
+          local.get $2
+          return
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendFail_4_4
+         if
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1040
+          call $async-await-position/__Cps_ifCondInTry#set:state
+         else
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          i32.const 1041
+          call $async-await-position/__Cps_ifCondInTry#set:state
+         end
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 0
+        call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_pendFail_4_4
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_pendErr_3_3
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-position/__Cps_ifCondInTry#set:__error
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const -2
+        call $async-await-position/__Cps_ifCondInTry#set:state
+        global.get $async-await-position/__async_roots_ifCondInTry
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        global.get $async-await-position/__async_roots_ifCondInTry
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        i32.const 0
+        call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#indexOf
+        i32.const 1
+        call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#splice
+        drop
+        i32.const 2
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        i32.const 12
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $2
+        return
+       end
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_ret_0_0
+       if
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1042
+        call $async-await-position/__Cps_ifCondInTry#set:state
+       else
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1023
+        call $async-await-position/__Cps_ifCondInTry#set:state
+       end
+       br $break|1
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 0
+      call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_ret_0_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_ifCondInTry#get:__cps___async_try_retVal_5_5
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_ifCondInTry#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_ifCondInTry#set:state
+      global.get $async-await-position/__async_roots_ifCondInTry
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_ifCondInTry
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_ifCondInTry#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/ifCondInTry (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_ifCondInTry#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_ifCondInTry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_ifCondInTry#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_unaryOp#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 20
+   i32.const 65
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_unaryOp#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_unaryOp#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_unaryOp#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_unaryOp#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_unaryOp#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 66
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_unaryOp#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_unaryOp#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_unaryOp#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_unaryOp#set:state
+        br $break|1
+       end
+       i32.const 1
+       call $async-await-position/getNum
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_unaryOp#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 12
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_unaryOp#get:__pend0
+      call $async-await-position/__Cps_unaryOp#set:__cps___async_hoist_0_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const 0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_unaryOp#get:__cps___async_hoist_0_0
+      i32.sub
+      call $async-await-position/__Cps_unaryOp#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_unaryOp#set:state
+      global.get $async-await-position/__async_roots_unaryOp
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_unaryOp
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_unaryOp>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_unaryOp>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 12
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_unaryOp#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 12
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/unaryOp (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_unaryOp#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_unaryOp
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_unaryOp#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_arrayLit#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 32
+   i32.const 67
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_arrayLit#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:__pend1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<i32>#constructor
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $async-await-position/__Cps_arrayLit#set:__cps_arr_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_0_1
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_1_2
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 68
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_arrayLit#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case6|1
+      block $case5|1
+       block $case4|1
+        block $case3|1
+         block $case2|1
+          block $case1|1
+           block $case0|1
+            local.get $this
+            local.set $3
+            global.get $~lib/memory/__stack_pointer
+            local.get $3
+            i32.store
+            local.get $3
+            call $async-await-position/__Cps_arrayLit#get:state
+            local.set $1
+            local.get $1
+            i32.const 0
+            i32.eq
+            br_if $case0|1
+            local.get $1
+            i32.const 1
+            i32.eq
+            br_if $case1|1
+            local.get $1
+            i32.const 2
+            i32.eq
+            br_if $case2|1
+            local.get $1
+            i32.const 1024
+            i32.eq
+            br_if $case3|1
+            local.get $1
+            i32.const 1025
+            i32.eq
+            br_if $case4|1
+            local.get $1
+            i32.const 1026
+            i32.eq
+            br_if $case5|1
+            br $case6|1
+           end
+           local.get $this
+           local.set $3
+           global.get $~lib/memory/__stack_pointer
+           local.get $3
+           i32.store
+           local.get $3
+           i32.const 1024
+           call $async-await-position/__Cps_arrayLit#set:state
+           br $break|1
+          end
+          local.get $this
+          local.set $3
+          global.get $~lib/memory/__stack_pointer
+          local.get $3
+          i32.store
+          local.get $3
+          i32.const 1025
+          call $async-await-position/__Cps_arrayLit#set:state
+          br $break|1
+         end
+         local.get $this
+         local.set $3
+         global.get $~lib/memory/__stack_pointer
+         local.get $3
+         i32.store
+         local.get $3
+         i32.const 1026
+         call $async-await-position/__Cps_arrayLit#set:state
+         br $break|1
+        end
+        i32.const 1
+        call $async-await-position/getNum
+        drop
+        local.get $this
+        local.set $3
+        global.get $~lib/memory/__stack_pointer
+        local.get $3
+        i32.store
+        local.get $3
+        i32.const 1
+        call $async-await-position/__Cps_arrayLit#set:state
+        i32.const 0
+        local.set $3
+        global.get $~lib/memory/__stack_pointer
+        i32.const 16
+        i32.add
+        global.set $~lib/memory/__stack_pointer
+        local.get $3
+        return
+       end
+       local.get $this
+       local.set $3
+       global.get $~lib/memory/__stack_pointer
+       local.get $3
+       i32.store
+       local.get $3
+       local.get $this
+       local.set $3
+       global.get $~lib/memory/__stack_pointer
+       local.get $3
+       i32.store offset=4
+       local.get $3
+       call $async-await-position/__Cps_arrayLit#get:__pend0
+       call $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_0_1
+       i32.const 2
+       call $async-await-position/getNum
+       drop
+       local.get $this
+       local.set $3
+       global.get $~lib/memory/__stack_pointer
+       local.get $3
+       i32.store
+       local.get $3
+       i32.const 2
+       call $async-await-position/__Cps_arrayLit#set:state
+       i32.const 0
+       local.set $3
+       global.get $~lib/memory/__stack_pointer
+       i32.const 16
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $3
+       return
+      end
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store
+      local.get $3
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=4
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#get:__pend1
+      call $async-await-position/__Cps_arrayLit#set:__cps___async_hoist_1_2
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store
+      local.get $3
+      global.get $~lib/memory/__stack_pointer
+      i32.const 2
+      i32.const 2
+      i32.const 9
+      i32.const 0
+      call $~lib/rt/__newArray
+      local.tee $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=12
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#get:__cps___async_hoist_0_1
+      call $~lib/array/Array<i32>#__set
+      local.get $2
+      i32.const 1
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=12
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#get:__cps___async_hoist_1_2
+      call $~lib/array/Array<i32>#__set
+      local.get $2
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=4
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#set:__cps_arr_0
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store
+      local.get $3
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=12
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#get:__cps_arr_0
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=4
+      local.get $3
+      i32.const 0
+      call $~lib/array/Array<i32>#__get
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=12
+      local.get $3
+      call $async-await-position/__Cps_arrayLit#get:__cps_arr_0
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=4
+      local.get $3
+      i32.const 1
+      call $~lib/array/Array<i32>#__get
+      i32.add
+      call $async-await-position/__Cps_arrayLit#set:__result
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store
+      local.get $3
+      i32.const -1
+      call $async-await-position/__Cps_arrayLit#set:state
+      global.get $async-await-position/__async_roots_arrayLit
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store
+      local.get $3
+      global.get $async-await-position/__async_roots_arrayLit
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=4
+      local.get $3
+      local.get $this
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      local.get $3
+      i32.store offset=12
+      local.get $3
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_arrayLit>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_arrayLit>#splice
+      drop
+      i32.const 1
+      local.set $3
+      global.get $~lib/memory/__stack_pointer
+      i32.const 16
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $3
+      return
+     end
+     local.get $this
+     local.set $3
+     global.get $~lib/memory/__stack_pointer
+     local.get $3
+     i32.store
+     local.get $3
+     call $async-await-position/__Cps_arrayLit#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $3
+     global.get $~lib/memory/__stack_pointer
+     i32.const 16
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $3
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/arrayLit (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_arrayLit#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_arrayLit
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_arrayLit#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__Cps_templateLit#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 20
+   i32.const 69
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-position/__Cps_templateLit#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_templateLit#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_templateLit#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_templateLit#set:__pend0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-position/__Cps_templateLit#set:__cps___async_hoist_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#push (param $this i32) (param $value i32) (result i32)
+  (local $oldLen i32)
+  (local $len i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:length_
+  local.set $oldLen
+  local.get $oldLen
+  i32.const 1
+  i32.add
+  local.set $len
+  local.get $this
+  local.get $len
+  i32.const 2
+  i32.const 1
+  call $~lib/array/ensureCapacity
+  i32.const 1
+  drop
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart
+  local.get $oldLen
+  i32.const 2
+  i32.shl
+  i32.add
+  local.get $value
+  i32.store
+  local.get $this
+  local.get $value
+  i32.const 1
+  call $~lib/rt/itcms/__link
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  local.get $len
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:length_
+  local.get $len
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $ptr i32)
+  (local $7 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:length_
+  local.set $len
+  local.get $len
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $fromIndex
+   local.get $len
+   i32.ge_s
+  end
+  if
+   i32.const -1
+   local.set $7
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $7
+   return
+  end
+  local.get $fromIndex
+  i32.const 0
+  i32.lt_s
+  if
+   local.get $len
+   local.get $fromIndex
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+   local.set $fromIndex
+  end
+  local.get $this
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  local.get $7
+  i32.store
+  local.get $7
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart
+  local.set $ptr
+  loop $while-continue|0
+   local.get $fromIndex
+   local.get $len
+   i32.lt_s
+   if
+    local.get $ptr
+    local.get $fromIndex
+    i32.const 2
+    i32.shl
+    i32.add
+    i32.load
+    local.get $value
+    i32.eq
+    if
+     local.get $fromIndex
+     local.set $7
+     global.get $~lib/memory/__stack_pointer
+     i32.const 4
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $7
+     return
+    end
+    local.get $fromIndex
+    i32.const 1
+    i32.add
+    local.set $fromIndex
+    br $while-continue|0
+   end
+  end
+  i32.const -1
+  local.set $7
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $7
+  return
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#splice (param $this i32) (param $start i32) (param $deleteCount i32) (result i32)
+  (local $len i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i32)
+  (local $10 i32)
+  (local $11 i32)
+  (local $result i32)
+  (local $resultStart i32)
+  (local $thisStart i32)
+  (local $thisBase i32)
+  (local $offset i32)
+  (local $17 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:length_
+  local.set $len
+  local.get $start
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $len
+   local.get $start
+   i32.add
+   local.tee $4
+   i32.const 0
+   local.tee $5
+   local.get $4
+   local.get $5
+   i32.gt_s
+   select
+  else
+   local.get $start
+   local.tee $6
+   local.get $len
+   local.tee $7
+   local.get $6
+   local.get $7
+   i32.lt_s
+   select
+  end
+  local.set $start
+  local.get $deleteCount
+  local.tee $8
+  local.get $len
+  local.get $start
+  i32.sub
+  local.tee $9
+  local.get $8
+  local.get $9
+  i32.lt_s
+  select
+  local.tee $10
+  i32.const 0
+  local.tee $11
+  local.get $10
+  local.get $11
+  i32.gt_s
+  select
+  local.set $deleteCount
+  global.get $~lib/memory/__stack_pointer
+  local.get $deleteCount
+  i32.const 2
+  i32.const 70
+  i32.const 0
+  call $~lib/rt/__newArray
+  local.tee $result
+  i32.store offset=4
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart
+  local.set $resultStart
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart
+  local.set $thisStart
+  local.get $thisStart
+  local.get $start
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $thisBase
+  local.get $resultStart
+  local.get $thisBase
+  local.get $deleteCount
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $start
+  local.get $deleteCount
+  i32.add
+  local.set $offset
+  local.get $len
+  local.get $offset
+  i32.ne
+  if
+   local.get $thisBase
+   local.get $thisStart
+   local.get $offset
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $len
+   local.get $offset
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  local.get $this
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  local.get $17
+  i32.store
+  local.get $17
+  local.get $len
+  local.get $deleteCount
+  i32.sub
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#set:length_
+  local.get $result
+  local.set $17
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $17
+  return
+ )
+ (func $async-await-position/__Cps_templateLit#step (param $this i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  loop $while-continue|0
+   i32.const 1
+   if
+    block $break|1
+     block $case4|1
+      block $case3|1
+       block $case2|1
+        block $case1|1
+         block $case0|1
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          call $async-await-position/__Cps_templateLit#get:state
+          local.set $1
+          local.get $1
+          i32.const 0
+          i32.eq
+          br_if $case0|1
+          local.get $1
+          i32.const 1
+          i32.eq
+          br_if $case1|1
+          local.get $1
+          i32.const 1024
+          i32.eq
+          br_if $case2|1
+          local.get $1
+          i32.const 1025
+          i32.eq
+          br_if $case3|1
+          br $case4|1
+         end
+         local.get $this
+         local.set $2
+         global.get $~lib/memory/__stack_pointer
+         local.get $2
+         i32.store
+         local.get $2
+         i32.const 1024
+         call $async-await-position/__Cps_templateLit#set:state
+         br $break|1
+        end
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        i32.const 1025
+        call $async-await-position/__Cps_templateLit#set:state
+        br $break|1
+       end
+       i32.const 0
+       call $async-await-position/getChunk
+       drop
+       local.get $this
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       local.get $2
+       i32.store
+       local.get $2
+       i32.const 1
+       call $async-await-position/__Cps_templateLit#set:state
+       i32.const 0
+       local.set $2
+       global.get $~lib/memory/__stack_pointer
+       i32.const 16
+       i32.add
+       global.set $~lib/memory/__stack_pointer
+       local.get $2
+       return
+      end
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      call $async-await-position/__Cps_templateLit#get:__pend0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_templateLit#set:__cps___async_hoist_0_0
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=12
+      local.get $2
+      call $async-await-position/__Cps_templateLit#get:__cps___async_hoist_0_0
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 2688
+      call $~lib/string/String#concat
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      call $async-await-position/__Cps_templateLit#set:__result
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      i32.const -1
+      call $async-await-position/__Cps_templateLit#set:state
+      global.get $async-await-position/__async_roots_templateLit
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store
+      local.get $2
+      global.get $async-await-position/__async_roots_templateLit
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=4
+      local.get $2
+      local.get $this
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      local.get $2
+      i32.store offset=8
+      local.get $2
+      i32.const 0
+      call $~lib/array/Array<async-await-position/__Cps_templateLit>#indexOf
+      i32.const 1
+      call $~lib/array/Array<async-await-position/__Cps_templateLit>#splice
+      drop
+      i32.const 1
+      local.set $2
+      global.get $~lib/memory/__stack_pointer
+      i32.const 16
+      i32.add
+      global.set $~lib/memory/__stack_pointer
+      local.get $2
+      return
+     end
+     local.get $this
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     local.get $2
+     i32.store
+     local.get $2
+     call $async-await-position/__Cps_templateLit#get:state
+     i32.const -1
+     i32.eq
+     if (result i32)
+      i32.const 1
+     else
+      i32.const 2
+     end
+     local.set $2
+     global.get $~lib/memory/__stack_pointer
+     i32.const 16
+     i32.add
+     global.set $~lib/memory/__stack_pointer
+     local.get $2
+     return
+    end
+    br $while-continue|0
+   end
+  end
+  unreachable
+ )
+ (func $async-await-position/templateLit (result i32)
+  (local $__st i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  call $async-await-position/__Cps_templateLit#constructor
+  local.tee $__st
+  i32.store
+  global.get $async-await-position/__async_roots_templateLit
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#push
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $async-await-position/__Cps_templateLit#step
+  drop
+  local.get $__st
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -20587,6 +43610,4427 @@
   local.get $1
   return
  )
+ (func $async-await-position/__async_async_await_position_ifCond_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_ifCond#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_ifCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCond_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_ifCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_ifCond#set:state
+  global.get $async-await-position/__async_roots_ifCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_ifCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCond_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCond#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCond_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCond#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCond_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCond#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_whileCond#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_whileCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_whileCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_whileCond#set:state
+  global.get $async-await-position/__async_roots_whileCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_whileCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_whileCond#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_whileCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_whileCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_whileCond#set:state
+  global.get $async-await-position/__async_roots_whileCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_whileCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_whileCond#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_whileCond#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_whileCond_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_whileCond#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_forCond#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_forCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_forCond#set:state
+  global.get $async-await-position/__async_roots_forCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_forCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forCond#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_forCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_forCond#set:state
+  global.get $async-await-position/__async_roots_forCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_forCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forCond#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forCond#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forCond_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forCond#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_doCond#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_doCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_doCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_doCond#set:state
+  global.get $async-await-position/__async_roots_doCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_doCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_doCond#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_doCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_doCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_doCond#set:state
+  global.get $async-await-position/__async_roots_doCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_doCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_doCond#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_doCond#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_doCond_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_doCond#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_forIncr#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_forIncr#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forIncr#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_forIncr#set:state
+  global.get $async-await-position/__async_roots_forIncr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_forIncr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forIncr#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_forIncr#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_forIncr#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_forIncr#set:state
+  global.get $async-await-position/__async_roots_forIncr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_forIncr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forIncr#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forIncr#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_forIncr_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_forIncr#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_callArgs#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_callArgs#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_callArgs#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_callArgs#set:state
+  global.get $async-await-position/__async_roots_callArgs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_callArgs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_callArgs#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_callArgs#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_callArgs#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_callArgs#set:state
+  global.get $async-await-position/__async_roots_callArgs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_callArgs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_callArgs#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_callArgs#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_callArgs_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_callArgs#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_binaryOp#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_binaryOp#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryOp#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_binaryOp#set:state
+  global.get $async-await-position/__async_roots_binaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_binaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_binaryOp#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_binaryOp#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryOp#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_binaryOp#set:state
+  global.get $async-await-position/__async_roots_binaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_binaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryOp#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryOp#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryOp_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryOp#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_binaryStr#set:state
+  global.get $async-await-position/__async_roots_binaryStr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_binaryStr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_binaryStr#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_binaryStr#set:state
+  global.get $async-await-position/__async_roots_binaryStr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_binaryStr
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryStr#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryStr#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_binaryStr_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_binaryStr#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitCall_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_varInitCall#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_varInitCall#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitCall_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_varInitCall#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_varInitCall#set:state
+  global.get $async-await-position/__async_roots_varInitCall
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_varInitCall
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitCall_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitCall#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitCall_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitCall#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitCall_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitCall#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitBinary_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_varInitBinary#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_varInitBinary#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitBinary_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_varInitBinary#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_varInitBinary#set:state
+  global.get $async-await-position/__async_roots_varInitBinary
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_varInitBinary
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitBinary_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitBinary#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitBinary_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitBinary#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_varInitBinary_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_varInitBinary#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_returnAssign#set:state
+  global.get $async-await-position/__async_roots_returnAssign
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_returnAssign
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_returnAssign#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_returnAssign#set:state
+  global.get $async-await-position/__async_roots_returnAssign
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_returnAssign
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_returnAssign#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_returnAssign#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_returnAssign_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_returnAssign#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_compoundRhs_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_compoundRhs#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_compoundRhs#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_compoundRhs_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_compoundRhs#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_compoundRhs#set:state
+  global.get $async-await-position/__async_roots_compoundRhs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_compoundRhs
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_compoundRhs_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_compoundRhs#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_compoundRhs_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_compoundRhs#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_compoundRhs_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_compoundRhs#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_assignRhsField_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_assignRhsField#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_assignRhsField#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_assignRhsField_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_assignRhsField#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_assignRhsField#set:state
+  global.get $async-await-position/__async_roots_assignRhsField
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_assignRhsField
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_assignRhsField_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_assignRhsField#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_assignRhsField_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_assignRhsField#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_assignRhsField_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_assignRhsField#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ternaryCond_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_ternaryCond#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_ternaryCond#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ternaryCond_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_ternaryCond#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_ternaryCond#set:state
+  global.get $async-await-position/__async_roots_ternaryCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_ternaryCond
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ternaryCond_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ternaryCond#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ternaryCond_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ternaryCond#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ternaryCond_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ternaryCond#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_andLeft_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_andLeft#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_andLeft#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_andLeft_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_andLeft#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_andLeft#set:state
+  global.get $async-await-position/__async_roots_andLeft
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_andLeft
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_andLeft_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_andLeft#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_andLeft_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_andLeft#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_andLeft_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_andLeft#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_storedArg_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_storedArg#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_storedArg#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_storedArg_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_storedArg#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_storedArg#set:state
+  global.get $async-await-position/__async_roots_storedArg
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_storedArg
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_storedArg_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_storedArg#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_storedArg_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_storedArg#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_storedArg_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_storedArg#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCondInTry_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_ifCondInTry#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_ifCondInTry#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCondInTry_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_flag_7_6
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_ifCondInTry#set:__cps___async_try_err_6_7
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_ifCondInTry#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCondInTry_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCondInTry#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCondInTry_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCondInTry#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_ifCondInTry_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_ifCondInTry#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_unaryOp_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_unaryOp#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_unaryOp#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_unaryOp_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_unaryOp#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_unaryOp#set:state
+  global.get $async-await-position/__async_roots_unaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_unaryOp
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_unaryOp_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_unaryOp#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_unaryOp_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_unaryOp#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_unaryOp_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_unaryOp#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_arrayLit#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_arrayLit#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_arrayLit#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_arrayLit#set:state
+  global.get $async-await-position/__async_roots_arrayLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_arrayLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_resume_1 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_arrayLit#set:__pend1
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_arrayLit#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_reject_1 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_arrayLit#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_arrayLit#set:state
+  global.get $async-await-position/__async_roots_arrayLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_arrayLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_arrayLit#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_arrayLit#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_arrayLit_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_arrayLit#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_templateLit_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_templateLit#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_templateLit#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_templateLit_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_templateLit#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_templateLit#set:state
+  global.get $async-await-position/__async_roots_templateLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_templateLit
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_templateLit_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_templateLit#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_templateLit_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_templateLit#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_templateLit_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_templateLit#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-await-position/__async_async_await_position_W_setField_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20883,6 +48327,206 @@
   local.get $2
   local.get $i
   call $async-await-position/W#setField
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_resume_0 (param $state i32) (param $value i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $value
+  call $async-await-position/__Cps_W_checkFlag#set:__pend0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-await-position/__Cps_W_checkFlag#step
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_reject_0 (param $state i32) (param $message i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $message
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  call $async-await-position/__Cps_W_checkFlag#set:__error
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const -2
+  call $async-await-position/__Cps_W_checkFlag#set:state
+  global.get $async-await-position/__async_roots_W_checkFlag
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  global.get $async-await-position/__async_roots_W_checkFlag
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=4
+  local.get $2
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store offset=8
+  local.get $2
+  i32.const 0
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#splice
+  drop
+  i32.const 2
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_result (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_W_checkFlag#get:__result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_error (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_W_checkFlag#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_status (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-position/__Cps_W_checkFlag#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-position/__async_async_await_position_W_checkFlag_entry (param $receiver i32) (param $i i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $i
+  call $async-await-position/W#checkFlag
   local.set $2
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -21687,6 +49331,1406 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCond>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCond>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_whileCond>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_whileCond>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forCond>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forCond>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_doCond>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_doCond>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_forIncr>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_forIncr>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_callArgs>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_callArgs>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryOp>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryOp>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_binaryStr>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_binaryStr>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitCall>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitCall>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_varInitBinary>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_varInitBinary>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_returnAssign>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_returnAssign>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_compoundRhs>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_compoundRhs>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_assignRhsField>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_assignRhsField>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ternaryCond>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ternaryCond>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_andLeft>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_andLeft>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_storedArg>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_storedArg>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_ifCondInTry>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_unaryOp>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_unaryOp>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_arrayLit>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_arrayLit>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_templateLit>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_templateLit>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $~lib/array/Array<async-await-position/__Cps_W_setField>#__visit (param $this i32) (param $cookie i32)
   (local $cur i32)
   (local $end i32)
@@ -21750,6 +50794,76 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-await-position/__Cps_W_setField>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-await-position/__Cps_W_checkFlag>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -22019,6 +51133,29 @@
   global.set $~lib/memory/__stack_pointer
   local.get $14
   return
+ )
+ (func $export:async-await-position/combine (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/combine
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
  )
  (func $export:async-await-position/getW (param $0 i32) (result i32)
   (local $1 i32)
@@ -23668,6 +52805,2435 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-await-position/__async_async_await_position_ifCond_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ifCond_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCond_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ifCond_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCond_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCond_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCond_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCond_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCond_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCond_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_whileCond_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_whileCond_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_whileCond_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_whileCond_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_whileCond_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_whileCond_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_whileCond_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_whileCond_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forCond_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forCond_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forCond_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forCond_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forCond_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forCond_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forCond_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forCond_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_doCond_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_doCond_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_doCond_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_doCond_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_doCond_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_doCond_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_doCond_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_doCond_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forIncr_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forIncr_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forIncr_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_forIncr_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forIncr_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forIncr_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_forIncr_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_forIncr_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_callArgs_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_callArgs_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_callArgs_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_callArgs_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_callArgs_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_callArgs_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_callArgs_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_callArgs_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryOp_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryOp_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryOp_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryOp_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryOp_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryOp_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryOp_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryOp_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryStr_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryStr_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryStr_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_binaryStr_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryStr_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryStr_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_binaryStr_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_binaryStr_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitCall_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_varInitCall_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitCall_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_varInitCall_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitCall_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitCall_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitCall_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitCall_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitCall_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitCall_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitBinary_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_varInitBinary_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitBinary_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_varInitBinary_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitBinary_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitBinary_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitBinary_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitBinary_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_varInitBinary_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_varInitBinary_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_returnAssign_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_returnAssign_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_returnAssign_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_returnAssign_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_returnAssign_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_returnAssign_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_returnAssign_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_returnAssign_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_compoundRhs_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_compoundRhs_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_compoundRhs_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_compoundRhs_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_compoundRhs_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_compoundRhs_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_compoundRhs_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_compoundRhs_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_compoundRhs_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_compoundRhs_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_assignRhsField_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_assignRhsField_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_assignRhsField_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_assignRhsField_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_assignRhsField_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_assignRhsField_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_assignRhsField_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_assignRhsField_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_assignRhsField_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_assignRhsField_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ternaryCond_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ternaryCond_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ternaryCond_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ternaryCond_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ternaryCond_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ternaryCond_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ternaryCond_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ternaryCond_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ternaryCond_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ternaryCond_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_andLeft_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_andLeft_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_andLeft_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_andLeft_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_andLeft_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_andLeft_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_andLeft_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_andLeft_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_andLeft_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_andLeft_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_storedArg_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_storedArg_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_storedArg_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_storedArg_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_storedArg_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_storedArg_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_storedArg_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_storedArg_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_storedArg_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_storedArg_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCondInTry_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ifCondInTry_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCondInTry_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_ifCondInTry_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCondInTry_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCondInTry_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCondInTry_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCondInTry_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_ifCondInTry_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_ifCondInTry_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_unaryOp_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_unaryOp_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_unaryOp_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_unaryOp_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_unaryOp_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_unaryOp_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_unaryOp_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_unaryOp_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_unaryOp_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_unaryOp_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_arrayLit_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_arrayLit_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_resume_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_arrayLit_resume_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_reject_1 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_arrayLit_reject_1
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_arrayLit_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_arrayLit_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_arrayLit_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_arrayLit_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_templateLit_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_templateLit_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_templateLit_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_templateLit_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_templateLit_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_templateLit_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_templateLit_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_templateLit_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_templateLit_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_templateLit_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-await-position/__async_async_await_position_W_setField_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -23827,6 +55393,126 @@
   local.get $0
   local.get $1
   call $async-await-position/__async_async_await_position_W_setField_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_resume_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_W_checkFlag_resume_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_reject_0 (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_W_checkFlag_reject_0
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_result (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_W_checkFlag_result
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_error (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_W_checkFlag_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_status (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-position/__async_async_await_position_W_checkFlag_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-position/__async_async_await_position_W_checkFlag_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-await-position/__async_async_await_position_W_checkFlag_entry
   local.set $2
   global.get $~lib/memory/__stack_pointer
   i32.const 4

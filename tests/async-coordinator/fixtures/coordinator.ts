@@ -18,8 +18,15 @@ declare function issueNumber(i: i32): i32;
 //@ external("env", "getNumber")
 declare function getNumber(): Promise<i32>;
 
+//@ external("env", "getFlag")
+declare function getFlag(i: i32): Promise<bool>;
+
 //@ external("env", "joinNumbers")
 declare function joinNumbers(policy: i32): Promise<string>;
+
+export function combine(a: string, b: string): string {
+  return a + b;
+}
 
 export async function concatThree(): Promise<string> {
   let out = "";
@@ -285,6 +292,69 @@ export async function storedField(): Promise<string> {
   let p = getChunk(3);
   w.s = await p;
   return w.s;
+}
+
+// Await in an if condition.
+export async function ifCondFlag(): Promise<string> {
+  if (await getFlag(0)) {
+    return "YES";
+  }
+  return "NO";
+}
+
+// Await in a while condition: re-evaluated on every iteration.
+export async function whileCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  while (await getFlag(i)) {
+    out += await getChunk(i);
+    i++;
+  }
+  return out;
+}
+
+// Await in a for condition: re-evaluated on every iteration.
+export async function forCondFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; await getFlag(i); i++) {
+    out += await getChunk(i);
+  }
+  return out;
+}
+
+// Await in a do-while condition: evaluated after each body run.
+export async function doCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  do {
+    out += await getChunk(i);
+    i++;
+  } while (await getFlag(i));
+  return out;
+}
+
+// Await in a for incrementor: runs after each body run.
+export async function forIncrFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 2; i += await getNumber()) {
+    out += await getChunk(i);
+  }
+  return out;
+}
+
+// Awaits in call arguments, in order.
+export async function callArgsHoist(): Promise<string> {
+  return combine(await getChunk(0), await getChunk(1));
+}
+
+// Awaits as binary operands, in order.
+export async function binaryHoist(): Promise<i32> {
+  return 1 + await getNumber() + await getNumber();
+}
+
+// Await in a ternary condition.
+export async function ternaryCondFlag(): Promise<string> {
+  return (await getFlag(0)) ? "YES" : "NO";
 }
 
 export async function voidTask(): Promise<void> {

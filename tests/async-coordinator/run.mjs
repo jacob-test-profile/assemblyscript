@@ -113,6 +113,7 @@ console.log("PASS missing suspending binding fails loudly");
 const chunkCalls = [];
 const chunkDeferreds = [];
 const numDeferreds = [];
+const flagDeferreds = [];
 const handleDeferreds = [];
 const useDeferreds = [];
 const seenHandles = [];
@@ -134,6 +135,11 @@ const api = await instantiateAsync(bytes, {
     getNumber() {
       const d = deferred();
       numDeferreds.push(d);
+      return d.promise;
+    },
+    getFlag(i) {
+      const d = deferred();
+      flagDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -273,6 +279,114 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base].resolve("DDD");
   check((await p) === "DDD", "storedField must resolve DDD");
   console.log("PASS stored promise awaited into a field");
+}
+
+// Hoisted awaits: conditions, call arguments, binary operands, and the
+// for incrementor — all through the generated coordinator.
+{
+  // ifCondFlag: flag 0 true.
+  let fBase = flagDeferreds.length;
+  let p = api.ifCondFlag();
+  await tick();
+  check(flagDeferreds.length === fBase + 1, "ifCondFlag must issue getFlag once");
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ifCondFlag must resolve YES");
+  console.log("PASS await in an if condition");
+
+  // whileCondFlag: flag true, true, false across three evaluations.
+  let base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.whileCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  check(chunkDeferreds.length === base + 1, "whileCondFlag must issue chunk 0 after the first flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "whileCondFlag must resolve AAABBB");
+  console.log("PASS await in a while condition, re-evaluated per iteration");
+
+  // forCondFlag: same re-evaluation shape as the while condition.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.forCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "forCondFlag must resolve AAABBB");
+  console.log("PASS await in a for condition, re-evaluated per iteration");
+
+  // doCondFlag: body runs before the first condition evaluation.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.doCondFlag();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "doCondFlag must issue chunk 0 before any flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(false);
+  check((await p) === "AAABBB", "doCondFlag must resolve AAABBB");
+  console.log("PASS await in a do-while condition");
+
+  // forIncrFlag: chunk 0, +1, chunk 1, +1, stop.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.forIncrFlag();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "forIncrFlag must issue the incrementor after the first body");
+  numDeferreds[nBase].resolve(1);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  numDeferreds[nBase + 1].resolve(1);
+  check((await p) === "AAABBB", "forIncrFlag must resolve AAABBB");
+  console.log("PASS await in a for incrementor");
+
+  // callArgsHoist: chunk 0 then chunk 1, in argument order.
+  base = chunkDeferreds.length;
+  p = api.callArgsHoist();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "callArgsHoist must resolve AAABBB");
+  console.log("PASS awaits in call arguments, in order");
+
+  // binaryHoist: 1 + 2 + 3.
+  nBase = numDeferreds.length;
+  p = api.binaryHoist();
+  await tick();
+  numDeferreds[nBase].resolve(2);
+  await tick();
+  numDeferreds[nBase + 1].resolve(3);
+  check((await p) === 6, "binaryHoist must resolve 6");
+  console.log("PASS awaits as binary operands, in order");
+
+  // ternaryCondFlag: the condition await hoists, the branches do not run.
+  fBase = flagDeferreds.length;
+  p = api.ternaryCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ternaryCondFlag must resolve YES");
+  console.log("PASS await in a ternary condition");
 }
 
 // Heap churn + __collect mid-suspension: the state object must survive.
@@ -603,6 +717,17 @@ const api = await instantiateAsync(bytes, {
   joinMembers[base + 1].resolve(20);
   check((await p) === "10|20|30", "real join all must deliver results in argument order");
   console.log("PASS real join all, out-of-order delivery, in-order results");
+
+  // A join awaited as a method-call receiver: the join result is hoisted
+  // into a temp before the call.
+  base = joinMembers.length;
+  p = joinApi.joinHoist();
+  await tick();
+  check(joinMembers.length === base + 2, "joinHoist must issue 2 members");
+  joinMembers[base + 1].resolve(20);
+  joinMembers[base].resolve(10);
+  check((await p) === "10|20", "hoisted join must deliver its result to the method call");
+  console.log("PASS join awaited as a method-call receiver");
 
   base = joinMembers.length;
   p = joinApi.allFailFast();

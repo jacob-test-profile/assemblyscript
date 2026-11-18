@@ -21,6 +21,10 @@ export function preInstantiate(imports, exports) {
     orderLog.push(["num", i]);
     return 0; // suspended; the driver delivers via the resume export
   };
+  imports.env.getFlag = function(i) {
+    orderLog.push(["flag", i]);
+    return 0; // suspended; the driver delivers via the resume export
+  };
   imports.env.__async_wait = function(token) {
     return 0; // suspended; the driver delivers via the resume export
   };
@@ -28,7 +32,8 @@ export function preInstantiate(imports, exports) {
 
 // Drives one task to completion, delivering the next logged import call's
 // value at each suspension: the chunk string for getChunk, the argument
-// for getNum. `cursor` tracks the log across tasks in call order.
+// for getNum, and `i < 2` for getFlag. `cursor` tracks the log across
+// tasks in call order.
 let cursor = 0;
 
 function driveTask(instance, qual, handle) {
@@ -47,7 +52,7 @@ function driveTask(instance, qual, handle) {
     const site = st - 1;
     const entry = orderLog[cursor++];
     if (!entry) throw new Error(`task ${qual}: no logged import for site ` + site);
-    const value = entry[0] == "chunk" ? exports.chunkString(entry[1]) : entry[1];
+    const value = entry[0] == "chunk" ? exports.chunkString(entry[1]) : entry[0] == "flag" ? entry[1] < 2 : entry[1];
     const resume = exports[base + `_resume_${site}`];
     const rc = resume(handle, value);
     if (rc != 0 && rc != 1) throw new Error(`task ${qual}: unexpected step return ` + rc);
@@ -98,6 +103,69 @@ export async function postInstantiate(instance) {
   out = driveTask(instance, "W_setField", exports.startSetField());
   if (getString(out) !== "BBB1") throw new Error("setField must be BBB1");
 
+  out = driveTask(instance, "ifCond", exports.ifCond());
+  if (getString(out) !== "YES") throw new Error("ifCond must be YES");
+
+  out = driveTask(instance, "whileCond", exports.whileCond());
+  if (getString(out) !== "AAABBB") throw new Error("whileCond must be AAABBB");
+
+  out = driveTask(instance, "forCond", exports.forCond());
+  if (getString(out) !== "AAABBB") throw new Error("forCond must be AAABBB");
+
+  out = driveTask(instance, "doCond", exports.doCond());
+  if (getString(out) !== "AAABBB") throw new Error("doCond must be AAABBB");
+
+  out = driveTask(instance, "forIncr", exports.forIncr());
+  if (getString(out) !== "AAABBB") throw new Error("forIncr must be AAABBB");
+
+  out = driveTask(instance, "callArgs", exports.callArgs());
+  if (getString(out) !== "AAABBB") throw new Error("callArgs must be AAABBB");
+
+  out = driveTask(instance, "binaryOp", exports.binaryOp());
+  if (out !== 6) throw new Error("binaryOp must be 6, got " + out);
+
+  out = driveTask(instance, "binaryStr", exports.binaryStr());
+  if (getString(out) !== "AAABBB") throw new Error("binaryStr must be AAABBB");
+
+  out = driveTask(instance, "varInitCall", exports.varInitCall());
+  if (getString(out) !== "AAA!") throw new Error("varInitCall must be AAA!");
+
+  out = driveTask(instance, "varInitBinary", exports.varInitBinary());
+  if (out !== 3) throw new Error("varInitBinary must be 3, got " + out);
+
+  out = driveTask(instance, "returnAssign", exports.returnAssign());
+  if (getString(out) !== "AAABBB") throw new Error("returnAssign must be AAABBB");
+
+  out = driveTask(instance, "compoundRhs", exports.compoundRhs());
+  if (out !== 13) throw new Error("compoundRhs must be 13, got " + out);
+
+  out = driveTask(instance, "assignRhsField", exports.assignRhsField());
+  if (getString(out) !== "AAA!") throw new Error("assignRhsField must be AAA!");
+
+  out = driveTask(instance, "ternaryCond", exports.ternaryCond());
+  if (getString(out) !== "YES") throw new Error("ternaryCond must be YES");
+
+  out = driveTask(instance, "andLeft", exports.andLeft());
+  if (getString(out) !== "YES") throw new Error("andLeft must be YES");
+
+  out = driveTask(instance, "storedArg", exports.storedArg());
+  if (getString(out) !== "AAA!") throw new Error("storedArg must be AAA!");
+
+  out = driveTask(instance, "ifCondInTry", exports.ifCondInTry());
+  if (getString(out) !== "YES") throw new Error("ifCondInTry must be YES");
+
+  out = driveTask(instance, "W_checkFlag", exports.startCheckFlag());
+  if (getString(out) !== "YES") throw new Error("checkFlag must be YES");
+
+  out = driveTask(instance, "unaryOp", exports.unaryOp());
+  if (out !== -1) throw new Error("unaryOp must be -1, got " + out);
+
+  out = driveTask(instance, "arrayLit", exports.arrayLit());
+  if (out !== 3) throw new Error("arrayLit must be 3, got " + out);
+
+  out = driveTask(instance, "templateLit", exports.templateLit());
+  if (getString(out) !== "AAA!") throw new Error("templateLit must be AAA!");
+
   expectLog([
     ["chunk", 0], ["chunk", 1],
     ["num", 1], ["num", 2], ["num", 3], ["num", 2], ["num", 3],
@@ -110,6 +178,27 @@ export async function postInstantiate(instance) {
     ["chunk", 1],
     ["num", 5],
     ["chunk", 3],
-    ["chunk", 1], ["num", 1]
+    ["chunk", 1], ["num", 1],
+    ["flag", 0],
+    ["flag", 0], ["chunk", 0], ["flag", 1], ["chunk", 1], ["flag", 2],
+    ["flag", 0], ["chunk", 0], ["flag", 1], ["chunk", 1], ["flag", 2],
+    ["chunk", 0], ["flag", 1], ["chunk", 1], ["flag", 2],
+    ["chunk", 0], ["num", 1], ["chunk", 1], ["num", 1],
+    ["chunk", 0], ["chunk", 1],
+    ["num", 2], ["num", 3],
+    ["chunk", 0], ["chunk", 1],
+    ["chunk", 0],
+    ["num", 2],
+    ["chunk", 0], ["chunk", 1],
+    ["num", 2],
+    ["chunk", 0],
+    ["flag", 0],
+    ["flag", 0],
+    ["chunk", 0],
+    ["flag", 0],
+    ["flag", 0],
+    ["num", 1],
+    ["num", 1], ["num", 2],
+    ["chunk", 0]
   ], "await-position");
 }
