@@ -169,7 +169,9 @@ class QueuedImport {
     /** Path to the other file. */
     public foreignPath: string,
     /** Alternative path to the other file. */
-    public foreignPathAlt: string
+    public foreignPathAlt: string,
+    /** Whether the import is type-only. */
+    public isType: bool = false
   ) {}
 }
 
@@ -183,7 +185,9 @@ class QueuedExport {
     /** Path to the other file if a re-export. */
     public foreignPath: string | null,
     /** Alternative path to the other file if a re-export. */
-    public foreignPathAlt: string | null
+    public foreignPathAlt: string | null,
+    /** Whether the export is type-only. */
+    public isType: bool = false
   ) {}
 }
 
@@ -196,7 +200,9 @@ class QueuedExportStar {
     /** Alternative path to the other file. */
     public foreignPathAlt: string,
     /** Reference to the path literal for reporting. */
-    public pathLiteral: StringLiteralExpression
+    public pathLiteral: StringLiteralExpression,
+    /** Whether the export is type-only. */
+    public isType: bool = false
   ) {}
 }
 
@@ -1167,7 +1173,8 @@ export class Program extends DiagnosticEmitter {
           );
           continue;
         }
-        file.ensureExportStar(foreignFile);
+        if (exportStar.isType) file.ensureTypeExportStar(foreignFile);
+        else file.ensureExportStar(foreignFile);
       }
     }
 
@@ -1193,6 +1200,9 @@ export class Program extends DiagnosticEmitter {
               element,
               localIdentifier // isImport
             );
+            if (queuedImport.isType || this.lookupForeignIsType(foreignIdentifier.text, foreignFile, queuedExports)) {
+              queuedImport.localFile.noteTypeOnlyImport(localIdentifier.text);
+            }
             queuedImports.splice(i, 1);
             madeProgress = true;
           } else {
@@ -1201,15 +1211,17 @@ export class Program extends DiagnosticEmitter {
         } else { // i.e. import * as bar from "./bar"
           let localFile = queuedImport.localFile;
           let localName = localIdentifier.text;
+          let aliasNamespace = foreignFile.asAliasNamespace(
+            localName,
+            localFile,
+            localIdentifier
+          );
           localFile.add(
             localName,
-            foreignFile.asAliasNamespace(
-              localName,
-              localFile,
-              localIdentifier
-            ),
+            aliasNamespace,
             localIdentifier // isImport
           );
+          if (queuedImport.isType) localFile.noteTypeOnlyImport(localName);
           queuedImports.splice(i, 1);
           madeProgress = true;
         }
@@ -1246,7 +1258,18 @@ export class Program extends DiagnosticEmitter {
           let foreignFile = assert(this.lookupForeignFile(foreignPath, assert(queuedExport.foreignPathAlt)));
           let element = this.lookupForeign(localName, foreignFile, queuedExports);
           if (element) {
-            file.ensureExport(exportName, element);
+            if (queuedExport.isType) {
+              if (!this.isTypeExportable(element)) {
+                this.error(
+                  DiagnosticCode._0_is_a_value_and_cannot_be_exported_as_a_type,
+                  queuedExport.localIdentifier.range, localName
+                );
+              } else {
+                file.ensureTypeExport(exportName, element);
+              }
+            } else {
+              file.ensureExport(exportName, element);
+            }
           } else {
             this.error(
               DiagnosticCode.Module_0_has_no_exported_member_1,
@@ -1257,11 +1280,29 @@ export class Program extends DiagnosticEmitter {
         } else { // i.e. export { foo [as bar] }
           let element = file.getMember(localName);
           if (element) {
-            file.ensureExport(exportName, element);
+            if (queuedExport.isType) {
+              if (!this.isTypeExportable(element)) {
+                this.error(
+                  DiagnosticCode._0_is_a_value_and_cannot_be_exported_as_a_type,
+                  queuedExport.localIdentifier.range, localName
+                );
+              } else {
+                file.ensureTypeExport(exportName, element);
+              }
+            } else {
+              file.ensureExport(exportName, element);
+            }
           } else {
             let globalElement = this.lookup(localName);
             if (globalElement && isDeclaredElement(globalElement.kind)) { // export { memory }
-              file.ensureExport(exportName, <DeclaredElement>globalElement);
+              if (queuedExport.isType) {
+                this.error(
+                  DiagnosticCode._0_is_a_value_and_cannot_be_exported_as_a_type,
+                  queuedExport.localIdentifier.range, localName
+                );
+              } else {
+                file.ensureExport(exportName, <DeclaredElement>globalElement);
+              }
             } else {
               this.error(
                 DiagnosticCode.Module_0_has_no_exported_member_1,
@@ -1921,7 +1962,74 @@ export class Program extends DiagnosticEmitter {
         if (element) return element;
       }
     }
+    let typeExportsStar = foreignFile.typeExportsStar;
+    if (typeExportsStar) {
+      for (let i = 0, k = typeExportsStar.length; i < k; ++i) {
+        let element = this.lookupForeign(foreignName, typeExportsStar[i], queuedExports);
+        if (element) return element;
+      }
+    }
     return null;
+  }
+
+  /** Tests whether the named export of the other file is a type-only export. */
+  private lookupForeignIsType(
+    /** Identifier within the other file. */
+    foreignName: string,
+    /** The other file. */
+    foreignFile: File,
+    /** So far queued exports. */
+    queuedExports: Map<File,Map<string,QueuedExport>>
+  ): bool {
+    do {
+      // check if already resolved
+      if (foreignFile.lookupExport(foreignName)) {
+        return foreignFile.lookupExportIsType(foreignName);
+      }
+
+      // follow queued exports
+      if (queuedExports.has(foreignFile)) {
+        let fileQueuedExports = assert(queuedExports.get(foreignFile));
+        if (fileQueuedExports.has(foreignName)) {
+          let queuedExport = assert(fileQueuedExports.get(foreignName));
+          let queuedExportForeignPath = queuedExport.foreignPath;
+
+          // re-exported from another file
+          if (queuedExportForeignPath) {
+            // a type-only re-export makes the binding type-only
+            if (queuedExport.isType) return true;
+            let otherFile = this.lookupForeignFile(queuedExportForeignPath, assert(queuedExport.foreignPathAlt));
+            if (!otherFile) return false;
+            foreignName = queuedExport.localIdentifier.text;
+            foreignFile = otherFile;
+            continue;
+          }
+
+          // exported from this file
+          if (foreignFile.getMember(queuedExport.localIdentifier.text)) {
+            return queuedExport.isType;
+          }
+        }
+      }
+      break;
+    } while (true);
+
+    // follow star exports
+    let exportsStar = foreignFile.exportsStar;
+    if (exportsStar) {
+      for (let i = 0, k = exportsStar.length; i < k; ++i) {
+        if (this.lookupForeign(foreignName, exportsStar[i], queuedExports)) {
+          return this.lookupForeignIsType(foreignName, exportsStar[i], queuedExports);
+        }
+      }
+    }
+    let typeExportsStar = foreignFile.typeExportsStar;
+    if (typeExportsStar) {
+      for (let i = 0, k = typeExportsStar.length; i < k; ++i) {
+        if (this.lookupForeign(foreignName, typeExportsStar[i], queuedExports)) return true;
+      }
+    }
+    return false;
   }
 
   /** Validates that only supported decorators are present. */
@@ -2399,7 +2507,7 @@ export class Program extends DiagnosticEmitter {
     let members = statement.members;
     if (members) { // export { foo, bar } [from "./baz"]
       for (let i = 0, k = members.length; i < k; ++i) {
-        this.initializeExport(members[i], parent, statement.internalPath, queuedExports);
+        this.initializeExport(members[i], parent, statement.internalPath, statement.isType || members[i].isType, queuedExports);
       }
     } else { // export * from "./baz"
       let queued: QueuedExportStar[];
@@ -2411,8 +2519,23 @@ export class Program extends DiagnosticEmitter {
         foreignPath.endsWith(INDEX_SUFFIX) // strip or add index depending on what's already present
           ? foreignPath.substring(0, foreignPath.length - INDEX_SUFFIX.length)
           : foreignPath + INDEX_SUFFIX,
-        assert(statement.path)
+        assert(statement.path),
+        statement.isType
       ));
+    }
+  }
+
+  /** Tests whether the element can be exported as a type. */
+  private isTypeExportable(element: Element): bool {
+    switch (element.kind) {
+      case ElementKind.ClassPrototype:
+      case ElementKind.Class:
+      case ElementKind.InterfacePrototype:
+      case ElementKind.Interface:
+      case ElementKind.Enum:
+      case ElementKind.Namespace:
+      case ElementKind.TypeDefinition: return true;
+      default: return false;
     }
   }
 
@@ -2424,6 +2547,8 @@ export class Program extends DiagnosticEmitter {
     localFile: File,
     /** Path to the other file, if present. */
     foreignPath: string | null,
+    /** Whether the export is type-only. */
+    isType: bool,
     /** So far queued `export`s. */
     queuedExports: Map<File,Map<string,QueuedExport>>
   ): void {
@@ -2444,7 +2569,18 @@ export class Program extends DiagnosticEmitter {
 
       // resolve right away if the local element already exists
       if (element = localFile.getMember(localName)) {
-        localFile.ensureExport(foreignName, element);
+        if (isType) {
+          if (!this.isTypeExportable(element)) {
+            this.error(
+              DiagnosticCode._0_is_a_value_and_cannot_be_exported_as_a_type,
+              member.localName.range, localName
+            );
+            return;
+          }
+          localFile.ensureTypeExport(foreignName, element);
+        } else {
+          localFile.ensureExport(foreignName, element);
+        }
 
       // otherwise queue it
       } else {
@@ -2454,7 +2590,8 @@ export class Program extends DiagnosticEmitter {
         queued.set(foreignName, new QueuedExport(
           member.localName,
           member.exportedName,
-          null, null
+          null, null,
+          isType
         ));
       }
 
@@ -2469,7 +2606,8 @@ export class Program extends DiagnosticEmitter {
         foreignPath,
         foreignPath.endsWith(INDEX_SUFFIX) // strip or add index depending on what's already present
           ? foreignPath.substring(0, foreignPath.length - INDEX_SUFFIX.length)
-          : foreignPath + INDEX_SUFFIX
+          : foreignPath + INDEX_SUFFIX,
+        isType
       ));
     }
   }
@@ -2547,7 +2685,8 @@ export class Program extends DiagnosticEmitter {
           parent,
           statement.internalPath,
           queuedImports,
-          queuedExports
+          queuedExports,
+          statement.isType || declarations[i].isType
         );
       }
     } else {
@@ -2558,7 +2697,8 @@ export class Program extends DiagnosticEmitter {
           namespaceName,
           null, // indicates import *
           statement.internalPath,
-          statement.internalPath + INDEX_SUFFIX
+          statement.internalPath + INDEX_SUFFIX,
+          statement.isType
         ));
       } else {
         // import "./foo"
@@ -2577,7 +2717,9 @@ export class Program extends DiagnosticEmitter {
     /** So far queued `import`s. */
     queuedImports: QueuedImport[],
     /** So far queued `export`s. */
-    queuedExports: Map<File,Map<string,QueuedExport>>
+    queuedExports: Map<File,Map<string,QueuedExport>>,
+    /** Whether the import is type-only. */
+    isType: bool
   ): void {
     let foreignPathAlt = foreignPath.endsWith(INDEX_SUFFIX) // strip or add index depending on what's already present
       ? foreignPath.substring(0, foreignPath.length - INDEX_SUFFIX.length)
@@ -2589,6 +2731,9 @@ export class Program extends DiagnosticEmitter {
       let element = this.lookupForeign(declaration.foreignName.text, foreignFile, queuedExports);
       if (element) {
         parent.add(declaration.name.text, element, declaration.name /* isImport */);
+        if (isType || this.lookupForeignIsType(declaration.foreignName.text, foreignFile, queuedExports)) {
+          parent.noteTypeOnlyImport(declaration.name.text);
+        }
         return;
       }
     }
@@ -2599,7 +2744,8 @@ export class Program extends DiagnosticEmitter {
       declaration.name,
       declaration.foreignName,
       foreignPath,
-      foreignPathAlt
+      foreignPathAlt,
+      isType
     ));
   }
 
@@ -3268,6 +3414,12 @@ export class File extends Element {
   exports: Map<string,DeclaredElement> | null = null;
   /** File re-exports. */
   exportsStar: File[] | null = null;
+  /** File type-only exports. */
+  typeExports: Map<string,DeclaredElement> | null = null;
+  /** File type-only re-exports. */
+  typeExportsStar: File[] | null = null;
+  /** Local names bound by a type-only import, mapping to the imported element. */
+  typeOnlyImports: Map<string,DeclaredElement> | null = null;
   /** Top-level start function of this file. */
   startFunction!: Function;
   /** Array of `import * as X` alias namespaces of this file. */
@@ -3325,6 +3477,12 @@ export class File extends Element {
         if (element = exportsStar[i].getMember(name)) return element;
       }
     }
+    let typeExportsStar = this.typeExportsStar;
+    if (typeExportsStar) {
+      for (let i = 0, k = typeExportsStar.length; i < k; ++i) {
+        if (element = typeExportsStar[i].getMember(name)) return element;
+      }
+    }
     return null;
   }
 
@@ -3349,6 +3507,28 @@ export class File extends Element {
     }
   }
 
+  /** Records that a local name is bound by a type-only import. */
+  noteTypeOnlyImport(name: string): void {
+    let element = this.getMember(name);
+    if (!element) return;
+    let typeOnlyImports = this.typeOnlyImports;
+    if (!typeOnlyImports) this.typeOnlyImports = typeOnlyImports = new Map();
+    typeOnlyImports.set(name, element);
+  }
+
+  /** Ensures that an element is a type-only export of this file. */
+  ensureTypeExport(name: string, element: DeclaredElement): void {
+    let typeExports = this.typeExports;
+    if (!typeExports) this.typeExports = typeExports = new Map();
+    typeExports.set(name, element);
+
+    // Also, add to the namespaces that capture our exports
+    for(let i = 0; i < this.aliasNamespaces.length; i++) {
+      let ns = this.aliasNamespaces[i];
+      ns.add(name, element);
+    }
+  }
+
   /** Ensures that another file is a re-export of this file. */
   ensureExportStar(file: File): void {
     let exportsStar = this.exportsStar;
@@ -3357,10 +3537,20 @@ export class File extends Element {
     exportsStar.push(file);
   }
 
+  /** Ensures that another file is a type-only re-export of this file. */
+  ensureTypeExportStar(file: File): void {
+    let typeExportsStar = this.typeExportsStar;
+    if (!typeExportsStar) this.typeExportsStar = typeExportsStar = [];
+    else if (typeExportsStar.includes(file)) return;
+    typeExportsStar.push(file);
+  }
+
   /** Looks up the export of the specified name. */
   lookupExport(name: string): DeclaredElement | null {
     let exports = this.exports;
     if (exports && exports.has(name)) return assert(exports.get(name));
+    let typeExports = this.typeExports;
+    if (typeExports && typeExports.has(name)) return assert(typeExports.get(name));
     let exportsStar = this.exportsStar;
     if (exportsStar) {
       for (let i = 0, k = exportsStar.length; i < k; ++i) {
@@ -3368,7 +3558,36 @@ export class File extends Element {
         if (element) return element;
       }
     }
+    let typeExportsStar = this.typeExportsStar;
+    if (typeExportsStar) {
+      for (let i = 0, k = typeExportsStar.length; i < k; ++i) {
+        let element = typeExportsStar[i].lookupExport(name);
+        if (element) return element;
+      }
+    }
     return null;
+  }
+
+  /** Tests whether the named export is a type-only export. */
+  lookupExportIsType(name: string): bool {
+    let exports = this.exports;
+    if (exports && exports.has(name)) return false;
+    let typeExports = this.typeExports;
+    if (typeExports && typeExports.has(name)) return true;
+    let exportsStar = this.exportsStar;
+    if (exportsStar) {
+      for (let i = 0, k = exportsStar.length; i < k; ++i) {
+        if (exportsStar[i].lookupExport(name)) return exportsStar[i].lookupExportIsType(name);
+      }
+    }
+    let typeExportsStar = this.typeExportsStar;
+    if (typeExportsStar) {
+      for (let i = 0, k = typeExportsStar.length; i < k; ++i) {
+        // found through a type-only re-export, so it is type-only here
+        if (typeExportsStar[i].lookupExport(name)) return true;
+      }
+    }
+    return false;
   }
 
   /** Creates an imported namespace from this file. */

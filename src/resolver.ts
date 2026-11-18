@@ -1211,25 +1211,25 @@ export class Resolver extends DiagnosticEmitter {
     if (element = ctxFlow.lookup(name)) {
       this.currentThisExpression = null;
       this.currentElementExpression = null;
-      return element;
+      return this.checkTypeOnlyImport(node.text, node.range, element, ctxElement, reportMode);
     }
     let outerFlow = ctxFlow.outer;
     if (outerFlow) {
       if (element = outerFlow.lookup(name)) {
         this.currentThisExpression = null;
         this.currentElementExpression = null;
-        return element;
+        return this.checkTypeOnlyImport(node.text, node.range, element, ctxElement, reportMode);
       }
     }
     if (element = ctxElement.lookup(name)) {
       this.currentThisExpression = null;
       this.currentElementExpression = null;
-      return element;
+      return this.checkTypeOnlyImport(node.text, node.range, element, ctxElement, reportMode);
     }
     if (element = this.program.lookup(name)) {
       this.currentThisExpression = null;
       this.currentElementExpression = null;
-      return element;
+      return this.checkTypeOnlyImport(node.text, node.range, element, ctxElement, reportMode);
     }
     if (reportMode == ReportMode.Report) {
       this.error(
@@ -1238,6 +1238,30 @@ export class Resolver extends DiagnosticEmitter {
       );
     }
     return null;
+  }
+
+  /** Reports if the resolved element was imported using `import type`. */
+  private checkTypeOnlyImport(
+    name: string,
+    range: Range,
+    element: Element,
+    ctxElement: Element,
+    reportMode: ReportMode
+  ): Element | null {
+    if (reportMode == ReportMode.Report) {
+      let typeOnlyImports = ctxElement.file.typeOnlyImports;
+      if (typeOnlyImports) {
+        let typeOnly = typeOnlyImports.get(name);
+        if (typeOnly && typeOnly == element) {
+          this.error(
+            DiagnosticCode._0_cannot_be_used_as_a_value_because_it_is_a_type_only_import,
+            range, name
+          );
+          return null;
+        }
+      }
+    }
+    return element;
   }
 
   /** Resolves an identifier to its static type. */
@@ -2651,6 +2675,10 @@ export class Resolver extends DiagnosticEmitter {
     reportMode: ReportMode = ReportMode.Report
   ): Element | null {
     let element = this.resolveTypeName(node.typeName, ctxFlow, ctxFlow.sourceFunction, reportMode);
+    if (!element) return null;
+    // `new` constructs the class, so it is a value use of the type name.
+    let identifier = node.typeName.identifier;
+    element = this.checkTypeOnlyImport(identifier.text, identifier.range, element, ctxFlow.sourceFunction, reportMode);
     if (!element) return null;
     if (element.kind == ElementKind.ClassPrototype) {
       return this.resolveClassInclTypeArguments(

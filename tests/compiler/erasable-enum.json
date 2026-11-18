@@ -1,0 +1,9 @@
+{
+  "asc_flags": [
+    "--module",
+    "nodenext"
+  ],
+  "stderr": [
+    "TS1145: 'Enums' is not allowed when 'erasableSyntaxOnly' is enabled."
+  ]
+}

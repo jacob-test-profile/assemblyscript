@@ -1,0 +1,9 @@
+{
+  "asc_flags": [
+    "--module",
+    "nodenext"
+  ],
+  "stderr": [
+    "TS1147: 'Foo' cannot be used as a value because it is a type-only import."
+  ]
+}

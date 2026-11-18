@@ -1,0 +1,9 @@
+{
+  "asc_flags": [
+    "--module",
+    "nodenext"
+  ],
+  "stderr": [
+    "TS6055: Relative import './export-plain' must end with a '.ts' or '.js' extension."
+  ]
+}

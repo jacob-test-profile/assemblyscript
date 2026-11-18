@@ -330,6 +330,13 @@ export async function main(argv, options) {
   assemblyscript.setNoUnsafe(compilerOptions, opts.noUnsafe);
   assemblyscript.setPedantic(compilerOptions, opts.pedantic);
   assemblyscript.setRequireImportExtensions(compilerOptions, opts.requireImportExtensions);
+  let moduleKind;
+  switch (opts.module) {
+    case "nodenext": moduleKind = 1; break;
+    case "commonjs": moduleKind = 0; break;
+    default: return prepareResult(Error(`Invalid module '${opts.module}'. Expected 'commonjs' or 'nodenext'.`));
+  }
+  assemblyscript.setModule(compilerOptions, moduleKind);
   assemblyscript.setLowMemoryLimit(compilerOptions, opts.lowMemoryLimit >>> 0);
   assemblyscript.setExportRuntime(compilerOptions, opts.exportRuntime);
   assemblyscript.setBundleVersion(compilerOptions, bundleMajorVersion, bundleMinorVersion, bundlePatchVersion);

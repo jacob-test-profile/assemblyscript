@@ -518,9 +518,10 @@ export abstract class Node {
     members: ExportMember[] | null,
     path: StringLiteralExpression | null,
     isDeclare: bool,
+    isType: bool,
     range: Range
   ): ExportStatement {
-    return new ExportStatement(members, path, isDeclare, range);
+    return new ExportStatement(members, path, isDeclare, isType, range);
   }
 
   static createExportDefaultStatement(
@@ -541,10 +542,11 @@ export abstract class Node {
   static createExportMember(
     localName: IdentifierExpression,
     exportedName: IdentifierExpression | null,
+    isType: bool,
     range: Range
   ): ExportMember {
     if (!exportedName) exportedName = localName;
-    return new ExportMember(localName, exportedName, range);
+    return new ExportMember(localName, exportedName, isType, range);
   }
 
   static createExpressionStatement(
@@ -565,26 +567,29 @@ export abstract class Node {
   static createImportStatement(
     declarations: ImportDeclaration[] | null,
     path: StringLiteralExpression,
+    isType: bool,
     range: Range
   ): ImportStatement {
-    return new ImportStatement(declarations, null, path, range);
+    return new ImportStatement(declarations, null, path, isType, range);
   }
 
   static createWildcardImportStatement(
     namespaceName: IdentifierExpression,
     path: StringLiteralExpression,
+    isType: bool,
     range: Range
   ): ImportStatement {
-    return new ImportStatement(null, namespaceName, path, range);
+    return new ImportStatement(null, namespaceName, path, isType, range);
   }
 
   static createImportDeclaration(
     foreignName: IdentifierExpression,
     name: IdentifierExpression | null,
+    isType: bool,
     range: Range
   ): ImportDeclaration {
     if (!name) name = foreignName;
-    return new ImportDeclaration(name, foreignName, range);
+    return new ImportDeclaration(name, foreignName, isType, range);
   }
 
   static createInterfaceDeclaration(
@@ -1961,6 +1966,8 @@ export class ExportMember extends Node {
     public localName: IdentifierExpression,
     /** Exported identifier. */
     public exportedName: IdentifierExpression,
+    /** Whether this is a type-only export. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {
@@ -1977,6 +1984,8 @@ export class ExportStatement extends Statement {
     public path: StringLiteralExpression | null,
     /** Whether this is a declared export. */
     public isDeclare: bool,
+    /** Whether this is a type-only export. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {
@@ -2153,6 +2162,8 @@ export class ImportDeclaration extends DeclarationStatement {
     name: IdentifierExpression,
     /** Identifier being imported. */
     public foreignName: IdentifierExpression,
+    /** Whether this is a type-only import. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {
@@ -2169,6 +2180,8 @@ export class ImportStatement extends Statement {
     public namespaceName: IdentifierExpression | null,
     /** Path being imported from. */
     public path: StringLiteralExpression,
+    /** Whether this is a type-only import. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {

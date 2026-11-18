@@ -93,7 +93,7 @@ import {
 
   mangleInternalPath
 } from "./ast";
-import { Options } from "./compiler";
+import { Options, ModuleKind } from "./compiler";
 
 /** Represents a dependee. */
 class Dependee {
@@ -428,6 +428,14 @@ export class Parser extends DiagnosticEmitter {
         if (tn.peek(IdentifierHandling.Prefer) == Token.Identifier) {
           tn.discard(state);
           statement = this.parseTypeDeclaration(tn, flags, decorators, startPos);
+          decorators = null;
+        } else if (
+          (flags & CommonFlags.Export) != 0 &&
+          this.isNodeNext() &&
+          (tn.peek() == Token.OpenBrace || tn.peek() == Token.Asterisk)
+        ) {
+          tn.discard(state);
+          statement = this.parseExport(tn, startPos, (flags & CommonFlags.Declare) != 0, true);
           decorators = null;
         } else {
           tn.reset(state);
@@ -1333,6 +1341,12 @@ export class Parser extends DiagnosticEmitter {
       return null;
     }
     let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
+    if (this.isErasableEnforced()) {
+      this.error(
+        DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+        identifier.range, "Enums"
+      );
+    }
     if (tn.next() != Token.OpenBrace) {
       this.error(
         DiagnosticCode._0_expected,
@@ -1640,6 +1654,12 @@ export class Parser extends DiagnosticEmitter {
         } else { // identifier
           tn.reset(state);
         }
+      }
+      if (accessFlags && this.isErasableEnforced()) {
+        this.error(
+          DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+          assert(startRange), "Parameter properties"
+        );
       }
     }
     if (tn.skip(Token.Dot_Dot_Dot)) {
@@ -2798,6 +2818,12 @@ export class Parser extends DiagnosticEmitter {
 
     if (tn.skipIdentifier()) {
       let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
+      if (this.isErasableEnforced()) {
+        this.error(
+          DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+          identifier.range, "Namespaces"
+        );
+      }
       if (tn.skip(Token.OpenBrace)) {
         let members = new Array<Statement>();
         let declaration = Node.createNamespaceDeclaration(
@@ -2848,12 +2874,30 @@ export class Parser extends DiagnosticEmitter {
     return null;
   }
 
+  /** Tests if erasableSyntaxOnly enforcement applies to the current source. */
+  isErasableEnforced(): bool {
+    let options = this.options;
+    if (!options || options.module != ModuleKind.NodeNext) return false;
+    let source = this.currentSource;
+    // Library sources live under `~lib/`, including the stdlib's own enums,
+    // namespaces and parameter properties.
+    return !(source && source.normalizedPath.startsWith(LIBRARY_PREFIX));
+  }
+
+  /** Tests if the resolved module system is NodeNext. */
+  isNodeNext(): bool {
+    let options = this.options;
+    return !!options && options.module == ModuleKind.NodeNext;
+  }
+
   /** Errors if a relative import path lacks a file extension, when required. */
   checkImportExtension(
     path: StringLiteralExpression
   ): void {
     let options = this.options;
-    if (!options || !options.requireImportExtensions) return;
+    if (!options) return;
+    // Required either by the explicit flag or by the resolved module system.
+    if (!options.requireImportExtensions && options.module != ModuleKind.NodeNext) return;
     let source = this.currentSource;
     // Library sources live under `~lib/`, including the runtime entry file,
     // which is parsed as a user entry so its setup runs first.
@@ -2875,7 +2919,8 @@ export class Parser extends DiagnosticEmitter {
   parseExport(
     tn: Tokenizer,
     startPos: i32,
-    isDeclare: bool
+    isDeclare: bool,
+    isType: bool = false
   ): ExportStatement | null {
 
     // at 'export': '{' ExportMember (',' ExportMember)* }' ('from' StringLiteral)? ';'?
@@ -2912,7 +2957,7 @@ export class Parser extends DiagnosticEmitter {
           return null;
         }
       }
-      let ret = Node.createExportStatement(members, path, isDeclare, tn.range(startPos, tn.pos));
+      let ret = Node.createExportStatement(members, path, isDeclare, isType, tn.range(startPos, tn.pos));
       if (path) {
         let internalPath = assert(ret.internalPath);
         if (!this.seenlog.has(internalPath)) {
@@ -2928,7 +2973,7 @@ export class Parser extends DiagnosticEmitter {
         if (tn.skip(Token.StringLiteral)) {
           path = Node.createStringLiteralExpression(tn.readString(), tn.range());
           this.checkImportExtension(path);
-          let ret = Node.createExportStatement(null, path, isDeclare, tn.range(startPos, tn.pos));
+          let ret = Node.createExportStatement(null, path, isDeclare, isType, tn.range(startPos, tn.pos));
           let internalPath = assert(ret.internalPath);
           let source = tn.source;
           let exportPaths = source.exportPaths;
@@ -2965,8 +3010,24 @@ export class Parser extends DiagnosticEmitter {
     tn: Tokenizer
   ): ExportMember | null {
 
-    // before: Identifier ('as' Identifier)?
+    // before: ('type')? Identifier ('as' Identifier)?
 
+    let isType = false;
+    if (this.isNodeNext()) {
+      // export { type Foo } — a lone `type` followed by `,` or `}` is a
+      // member named `type`, not a type-only specifier.
+      let state = tn.mark();
+      if (tn.skip(Token.Type)) {
+        if (tn.peek(IdentifierHandling.Prefer) == Token.Identifier) {
+          isType = true;
+          tn.discard(state);
+        } else {
+          tn.reset(state);
+        }
+      } else {
+        tn.discard(state);
+      }
+    }
     if (tn.skipIdentifier(IdentifierHandling.Always)) {
       let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
       let asIdentifier: IdentifierExpression | null = null;
@@ -2985,12 +3046,14 @@ export class Parser extends DiagnosticEmitter {
         return Node.createExportMember(
           identifier,
           asIdentifier,
+          isType,
           Range.join(identifier.range, asIdentifier.range)
         );
       }
       return Node.createExportMember(
         identifier,
         null,
+        isType,
         identifier.range
       );
     } else {
@@ -3017,9 +3080,10 @@ export class Parser extends DiagnosticEmitter {
       Node.createExportMember(
         Node.createIdentifierExpression(name, range),
         Node.createIdentifierExpression("default", tn.range(defaultStart, defaultEnd)),
+        false,
         range
       )
-    ], null, false, tn.range(startPos, tn.pos));
+    ], null, false, false, tn.range(startPos, tn.pos));
     tn.skip(Token.Semicolon);
     return ret;
   }
@@ -3036,6 +3100,32 @@ export class Parser extends DiagnosticEmitter {
     let members: ImportDeclaration[] | null = null;
     let namespaceName: IdentifierExpression | null = null;
     let skipFrom = false;
+    let isType = false;
+    if (this.isNodeNext()) {
+      // import type { ... } / import type * as ns / import type Name from "..."
+      // Note that `import type from "..."` imports a default binding named
+      // `type`, so a lone `type` followed by `from` is not a type-only import.
+      let state = tn.mark();
+      if (tn.skip(Token.Type)) {
+        let next = tn.peek();
+        if (next == Token.OpenBrace || next == Token.Asterisk) {
+          isType = true;
+          tn.discard(state);
+        } else if (next == Token.Identifier) {
+          tn.next();
+          if (tn.peek() == Token.From) {
+            isType = true;
+            tn.discard(state);
+          } else {
+            tn.reset(state);
+          }
+        } else {
+          tn.reset(state);
+        }
+      } else {
+        tn.discard(state);
+      }
+    }
     if (tn.skip(Token.OpenBrace)) { // import { ... } from "file"
       members = new Array();
       while (!tn.skip(Token.CloseBrace)) {
@@ -3079,6 +3169,7 @@ export class Parser extends DiagnosticEmitter {
         Node.createImportDeclaration(
           Node.createIdentifierExpression("default", range),
           Node.createIdentifierExpression(name, range),
+          isType,
           range
         )
       ];
@@ -3102,9 +3193,9 @@ export class Parser extends DiagnosticEmitter {
         let ret: ImportStatement;
         if (namespaceName) {
           assert(!members);
-          ret = Node.createWildcardImportStatement(namespaceName, path, tn.range(startPos, tn.pos));
+          ret = Node.createWildcardImportStatement(namespaceName, path, isType, tn.range(startPos, tn.pos));
         } else {
-          ret = Node.createImportStatement(members, path, tn.range(startPos, tn.pos));
+          ret = Node.createImportStatement(members, path, isType, tn.range(startPos, tn.pos));
         }
         let internalPath = ret.internalPath;
         if (!this.seenlog.has(internalPath)) {
@@ -3132,8 +3223,24 @@ export class Parser extends DiagnosticEmitter {
     tn: Tokenizer
   ): ImportDeclaration | null {
 
-    // before: Identifier ('as' Identifier)?
+    // before: ('type')? Identifier ('as' Identifier)?
 
+    let isType = false;
+    if (this.isNodeNext()) {
+      // import { type Foo } — a lone `type` followed by `,` or `}` is a
+      // member named `type`, not a type-only specifier.
+      let state = tn.mark();
+      if (tn.skip(Token.Type)) {
+        if (tn.peek(IdentifierHandling.Prefer) == Token.Identifier) {
+          isType = true;
+          tn.discard(state);
+        } else {
+          tn.reset(state);
+        }
+      } else {
+        tn.discard(state);
+      }
+    }
     if (tn.skipIdentifier(IdentifierHandling.Always)) {
       let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
       let asIdentifier: IdentifierExpression | null = null;
@@ -3152,12 +3259,14 @@ export class Parser extends DiagnosticEmitter {
         return Node.createImportDeclaration(
           identifier,
           asIdentifier,
+          isType,
           Range.join(identifier.range, asIdentifier.range)
         );
       }
       return Node.createImportDeclaration(
         identifier,
         null,
+        isType,
         identifier.range
       );
     } else {

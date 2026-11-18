@@ -367,6 +367,20 @@
     "type": "b",
     "default": false
   },
+  "module": {
+    "description": [
+      "Specifies the module system the program is compiled for.",
+      "",
+      " commonjs   Classic resolution: extensionless relative imports",
+      "            allowed (default)",
+      " nodenext   NodeNext resolution: relative imports require a",
+      "            '.ts' or '.js' extension, and erasableSyntaxOnly /",
+      "            verbatimModuleSyntax are enforced",
+      ""
+    ],
+    "type": "s",
+    "default": "commonjs"
+  },
   "lib": {
     "description": [
       "Adds one or multiple paths to custom library components and",
