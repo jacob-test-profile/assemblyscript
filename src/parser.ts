@@ -114,9 +114,9 @@ export class Parser extends DiagnosticEmitter {
   donelog: Set<string> = new Set();
   /** Optional handler to intercept comments while tokenizing. */
   onComment: CommentHandler | null = null;
-  /** Decorators synthesized from `//@external` comments preceding the statement being parsed. */
+  /** Decorators synthesized from `//@ external` comments preceding the statement being parsed. */
   pendingExternalDecorators: DecoratorNode[] | null = null;
-  /** Line of the most recent `//@external` comment, or -1 if there is none pending. */
+  /** Line of the most recent `//@ external` comment, or -1 if there is none pending. */
   pendingExternalLine: i32 = -1;
   /** Current file being parsed. */
   currentSource: Source | null = null;
@@ -205,6 +205,17 @@ export class Parser extends DiagnosticEmitter {
         this.skipStatement(tn);
       }
     }
+    // a trailing `//@ external` comment applies to no declaration
+    let trailingExternalDecorators = this.pendingExternalDecorators;
+    if (trailingExternalDecorators) {
+      for (let i = 0, k = trailingExternalDecorators.length; i < k; ++i) {
+        this.error(
+          DiagnosticCode.A_external_comment_must_immediately_precede_a_top_level_declaration,
+          trailingExternalDecorators[i].range
+        );
+      }
+      this.pendingExternalDecorators = null;
+    }
   }
 
   /** Parses a top-level statement. */
@@ -212,8 +223,10 @@ export class Parser extends DiagnosticEmitter {
     tn: Tokenizer,
     namespace: NamespaceDeclaration | null = null
   ): Statement | null {
-    // a `//@external` comment seen while parsing a previous statement
-    // does not apply to this one
+    // a `//@ external` comment seen while parsing a previous statement
+    // does not apply to this one; it is reported below unless it is
+    // delivered again while parsing this statement
+    let discardedExternalDecorators = this.pendingExternalDecorators;
     this.pendingExternalDecorators = null;
     this.pendingExternalLine = -1;
 
@@ -275,7 +288,7 @@ export class Parser extends DiagnosticEmitter {
     let first = tn.peek();
     if (startPos < 0) startPos = tn.nextTokenPos;
 
-    // attach a preceding `//@external` comment, if any, as a decorator
+    // attach a preceding `//@ external` comment, if any, as a decorator
     let pendingExternalLine = this.pendingExternalLine;
     let pendingExternalDecorators = this.takePendingExternalDecorators();
     this.pendingExternalLine = -1;
@@ -293,6 +306,30 @@ export class Parser extends DiagnosticEmitter {
       } else {
         for (let i = 0, k = pendingExternalDecorators.length; i < k; ++i) {
           decorators.push(pendingExternalDecorators[i]);
+        }
+      }
+    }
+
+    // a discarded comment that was not delivered again while parsing
+    // this statement appeared where no declaration follows it
+    if (discardedExternalDecorators) {
+      for (let i = 0, k = discardedExternalDecorators.length; i < k; ++i) {
+        let discarded = discardedExternalDecorators[i];
+        let redelivered = false;
+        if (pendingExternalDecorators) {
+          for (let j = 0, l = pendingExternalDecorators.length; j < l; ++j) {
+            let range = pendingExternalDecorators[j].range;
+            if (range.start == discarded.range.start && range.end == discarded.range.end) {
+              redelivered = true;
+              break;
+            }
+          }
+        }
+        if (!redelivered) {
+          this.error(
+            DiagnosticCode.A_external_comment_must_immediately_precede_a_top_level_declaration,
+            discarded.range
+          );
         }
       }
     }
@@ -966,14 +1003,14 @@ export class Parser extends DiagnosticEmitter {
 
   // statements
 
-  /** Takes the decorators synthesized from preceding `//@external` comments, if any. */
+  /** Takes the decorators synthesized from preceding `//@ external` comments, if any. */
   private takePendingExternalDecorators(): DecoratorNode[] | null {
     let decorators = this.pendingExternalDecorators;
     this.pendingExternalDecorators = null;
     return decorators;
   }
 
-  /** Handles a comment seen while tokenizing, synthesizing a decorator for `//@external(...)`. */
+  /** Handles a comment seen while tokenizing, synthesizing a decorator for `//@ external(...)`. */
   private handleExternalComment(kind: CommentKind, text: string, range: Range): void {
     if (kind != CommentKind.Line) return;
     let decorator = this.parseExternalComment(text, range);
@@ -996,7 +1033,7 @@ export class Parser extends DiagnosticEmitter {
     this.pendingExternalLine = externalCommentLine(range.source, range.start);
   }
 
-  /** Parses a `//@external` comment into a decorator, or returns null if the comment is not one. */
+  /** Parses a `//@ external` comment into a decorator, or returns null if the comment is not one. */
   private parseExternalComment(text: string, range: Range): DecoratorNode | null {
     let end = text.length;
     while (end > 0) {
@@ -1005,10 +1042,14 @@ export class Parser extends DiagnosticEmitter {
       else break;
     }
     let pos = 2; // skip '//'
+    if (pos >= end || text.charCodeAt(pos) != CharCode.At) return null;
+    ++pos; // skip '@'
+    let afterAt = pos;
     pos = skipExternalCommentWhitespace(text, pos, end);
+    if (pos == afterAt) return null; // whitespace after '@' is required
     if (!hasExternalCommentPrefix(text, pos)) return null;
-    let atPos = pos;
-    pos += 9; // skip '@external'
+    let externalPos = pos;
+    pos += 8; // skip 'external'
     if (pos < end) {
       let c = text.charCodeAt(pos);
       if (c != CharCode.Space && c != CharCode.Tab && c != CharCode.OpenParen) return null;
@@ -1022,7 +1063,7 @@ export class Parser extends DiagnosticEmitter {
     }
     let decoratorRange = new Range(range.start, range.start + end);
     decoratorRange.source = range.source;
-    let nameRange = new Range(range.start + atPos, range.start + atPos + 9);
+    let nameRange = new Range(range.start + externalPos, range.start + externalPos + 8);
     nameRange.source = range.source;
     return Node.createDecorator(
       Node.createIdentifierExpression("external", nameRange),
@@ -1031,7 +1072,7 @@ export class Parser extends DiagnosticEmitter {
     );
   }
 
-  /** Parses the `(...)` arguments of a `//@external` comment into string literal expressions. */
+  /** Parses the `(...)` arguments of a `//@ external` comment into string literal expressions. */
   private parseExternalCommentArguments(
     text: string,
     pos: i32,
@@ -4831,7 +4872,7 @@ function determinePrecedence(kind: Token): Precedence {
   return Precedence.None;
 }
 
-/** Skips spaces and tabs within a `//@external` comment. */
+/** Skips spaces and tabs within a `//@ external` comment. */
 function skipExternalCommentWhitespace(text: string, pos: i32, end: i32): i32 {
   while (pos < end) {
     let c = text.charCodeAt(pos);
@@ -4841,9 +4882,9 @@ function skipExternalCommentWhitespace(text: string, pos: i32, end: i32): i32 {
   return pos;
 }
 
-/** Tests if the text at the given position starts with `@external`. */
+/** Tests if the text at the given position starts with `external`. */
 function hasExternalCommentPrefix(text: string, pos: i32): bool {
-  let prefix = "@external";
+  let prefix = "external";
   if (pos + prefix.length > text.length) return false;
   for (let i = 0; i < prefix.length; ++i) {
     if (text.charCodeAt(pos + i) != prefix.charCodeAt(i)) return false;
@@ -4851,7 +4892,7 @@ function hasExternalCommentPrefix(text: string, pos: i32): bool {
   return true;
 }
 
-/** Decodes backslash escapes in a `//@external` string argument. */
+/** Decodes backslash escapes in a `//@ external` string argument. */
 function decodeExternalCommentString(raw: string): string {
   let backslash = raw.indexOf("\\");
   if (backslash < 0) return raw;
@@ -4877,7 +4918,7 @@ function decodeExternalCommentString(raw: string): string {
   return out;
 }
 
-/** Creates a range within a `//@external` comment, for error reporting. */
+/** Creates a range within a `//@ external` comment, for error reporting. */
 function externalCommentRange(range: Range, start: i32, end: i32): Range {
   let subRange = new Range(start, end);
   subRange.source = range.source;

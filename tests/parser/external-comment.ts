@@ -1,11 +1,17 @@
-//@external("env", "someFunc")
+//@ external("env", "someFunc")
 export declare function someFunc(input: string): string;
 
-// @external("bar")
+//@  external("bar")
 export declare function two(): void;
 
-//@external('foo', 'baz')
+//@	external("foo", "baz")
 export declare function three(): void;
 
-//@external("foo", "var")
+//@ external("foo", "var")
 export declare const var_: i32;
+
+//@external("env", "nospace")
+export declare function nospace(): void;
+
+// @external("env", "slashespace")
+export declare function slashespace(): void;

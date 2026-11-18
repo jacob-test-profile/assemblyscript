@@ -1,7 +1,8 @@
 export function preInstantiate(imports, exports) {
   imports["external-comment"] = {
     foo: function() { /* nop */ },
-    bar: function() { /* nop */ }
+    bar: function() { /* nop */ },
+    nospace: function() { /* nop */ }
   };
   imports.foo = {
     baz: function() { /* nop */ },
