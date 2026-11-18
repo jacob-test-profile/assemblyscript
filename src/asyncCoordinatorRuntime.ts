@@ -37,8 +37,6 @@ function asyncNewString(memory, alloc, str) {
 // Builds a coordinator for the metadata baked into the generated file.
 export function createCoordinator(metadata) {
   metadata = metadata || __ASYNC_METADATA__;
-  const functionsByExport = new Map();
-  metadata.functions.forEach(function (fn) { functionsByExport.set(fn.exportName, fn); });
   const innerFunctionsByKey = new Map();
   Object.keys(metadata.inners || {}).forEach(function (key) { innerFunctionsByKey.set(key, metadata.inners[key]); });
   const importsByKey = new Map();
@@ -749,8 +747,16 @@ export function createCoordinator(metadata) {
     unpin = wasmExports.__unpin || null;
     api.instance = instance;
     api.exports = wasmExports;
-    functionsByExport.forEach(function (fn, exportName) {
-      api[exportName] = function () {
+    // A top-level function lands at api[exportName]; a namespaced one
+    // lands at api.NS.take, in nested objects mirroring its namespace
+    // path, and is driven through its entry export.
+    metadata.functions.forEach(function (fn) {
+      let target = api;
+      (fn.path || []).forEach(function (segment) {
+        if (!target[segment]) target[segment] = {};
+        target = target[segment];
+      });
+      target[fn.name || fn.exportName] = function () {
         return callAsync(fn, Array.prototype.slice.call(arguments));
       };
     });

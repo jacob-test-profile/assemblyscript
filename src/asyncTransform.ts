@@ -174,7 +174,9 @@ import {
 import {
   describeParams,
   findExportName,
-  warnSkipped
+  warnSkipped,
+  qualNameOf,
+  namespacePathOf
 } from "./asyncCoordinatorMeta";
 
 /** Fallthrough target meaning "the function completes". */
@@ -357,7 +359,7 @@ export function transformAsyncFunctions(program: Program): void {
         isMethod: false,
         receiverClass: null,
         genParent: file,
-        qualName: prototype.name,
+        qualName: qualNameOf(prototype),
         selfName: null,
         forbidden: new Set<string>(),
         isExtracted: false
@@ -411,10 +413,10 @@ export function transformAsyncFunctions(program: Program): void {
           continue;
         }
         transformPrototype = prototype.toBound(classInstance);
-      } else if (prototype.parent.kind == ElementKind.Namespace) {
-        fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
-        continue;
       }
+      // A namespaced function is transformed like a top-level one: its
+      // protocol members already register under the file, and generate()
+      // emits a top-level entry alias the coordinator can drive.
       if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
       let ctx: LiftContext = {
         program,
@@ -520,6 +522,9 @@ class AsyncFunctionTransform {
   private isMethod: bool;
   /** Enclosing class, for methods; `null` for plain functions. */
   private receiverClass: ClassPrototype | null;
+  /** Namespace path segments, outermost first; empty for top-level
+   *  functions and methods. */
+  private namespacePath: string[];
   /** Classes whose `__async_<file>_<Class>_new` export was already
    *  emitted by an earlier transformed method of the class. */
   private classNews: Set<ClassPrototype>;
@@ -554,6 +559,7 @@ class AsyncFunctionTransform {
     this.genParent = genParent;
     this.isMethod = isMethod;
     this.receiverClass = receiverClass;
+    this.namespacePath = isMethod ? [] : namespacePathOf(prototype);
     this.classNews = classNews;
     this.fnName = qualName;
     this.range = this.declaration.range;
@@ -1477,6 +1483,22 @@ class AsyncFunctionTransform {
     let call = <CallExpression>operand;
     let callee = call.expression;
     if (callee.kind == NodeKind.PropertyAccess) {
+      // Nested await of a namespaced async function in this file: the
+      // call starts the inner task, keyed by its qualified name.
+      let namespaced = this.lookupNamespaceFunction(callee);
+      if (namespaced) {
+        if (namespaced.declaration.range.source != this.file.source) {
+          this.fail("await of an async function in another file is not yet supported", node.range);
+          return null;
+        }
+        let args = call.args;
+        for (let i = 0, k = args.length; i < k; ++i) {
+          this.checkDirectAsyncCalls(args[i]);
+          if (this.failed) return null;
+        }
+        this.qualifyNestedCall(call, namespaced);
+        return this.transformNestedAwait(call, qualNameOf(namespaced), node, used);
+      }
       return this.transformMemberAwait(node, call, used);
     }
     if (callee.kind != NodeKind.Identifier) {
@@ -1502,7 +1524,8 @@ class AsyncFunctionTransform {
         this.checkDirectAsyncCalls(args[i]);
         if (this.failed) return null;
       }
-      return this.transformNestedAwait(call, calleeName, node, used);
+      this.qualifyNestedCall(call, innerPrototype);
+      return this.transformNestedAwait(call, qualNameOf(innerPrototype), node, used);
     }
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
@@ -1564,6 +1587,54 @@ class AsyncFunctionTransform {
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
     }
     return site;
+  }
+
+  /** Resolves a property-access chain to an async function declared in a
+   *  namespace, or `null` when the chain does not name one: the root must
+   *  look up to a namespace, every intermediate segment must be a
+   *  namespace, and the final segment an async function. A local with
+   *  the root name shadows the namespace, so that resolves to nothing
+   *  here. Locals, classes and instances never resolve here, so member
+   *  calls fall through to the member-await path. */
+  private lookupNamespaceFunction(expr: Expression): FunctionPrototype | null {
+    let segments = new Array<string>();
+    let current = expr;
+    while (current.kind == NodeKind.PropertyAccess) {
+      let access = <PropertyAccessExpression>current;
+      segments.unshift(access.property.text);
+      current = access.expression;
+    }
+    if (current.kind != NodeKind.Identifier) return null;
+    let rootName = (<IdentifierExpression>current).text;
+    let binding = this.scope.lookup(rootName);
+    if (binding && !binding.shadowed) return null;
+    let element = assert(this.flow).lookup(rootName);
+    if (!element || element.kind != ElementKind.Namespace) return null;
+    for (let i = 0, k = segments.length - 1; i < k; ++i) {
+      let next = (<Namespace>element).getMember(segments[i]);
+      if (!next || next.kind != ElementKind.Namespace) return null;
+      element = next;
+    }
+    let member = (<Namespace>element).getMember(segments[segments.length - 1]);
+    if (!member || member.kind != ElementKind.FunctionPrototype) return null;
+    let prototype = <FunctionPrototype>member;
+    return prototype.is(CommonFlags.Async) ? prototype : null;
+  }
+
+  /** Rewrites a nested call's callee to the inner function's absolute
+   *  namespace-qualified access (`NS.take`, `Outer.Inner.deep`), so the
+   *  call still resolves once the transform moves it into the top-level
+   *  state class. A call written unqualified or namespace-relative would
+   *  not resolve there. Top-level inners need no change. */
+  private qualifyNestedCall(call: CallExpression, prototype: FunctionPrototype): void {
+    let path = namespacePathOf(prototype);
+    if (path.length == 0) return;
+    let range = call.expression.range;
+    let callee: Expression = ident(path[0], range);
+    for (let i = 1, k = path.length; i < k; ++i) {
+      callee = new PropertyAccessExpression(callee, ident(path[i], range), range);
+    }
+    call.expression = new PropertyAccessExpression(callee, ident(prototype.name, range), range);
   }
 
   /** Records a nested await site for a call that starts an inner async
@@ -2238,6 +2309,12 @@ class AsyncFunctionTransform {
           return;
         }
       }
+      if (callee.kind == NodeKind.PropertyAccess) {
+        if (this.lookupNamespaceFunction(callee)) {
+          this.fail("Direct calls to async functions are not supported; await them", callee.range);
+          return;
+        }
+      }
       this.checkDirectAsyncCalls(expr.expression);
       if (this.failed) return;
       let args = expr.args;
@@ -2462,6 +2539,20 @@ class AsyncFunctionTransform {
       if (this.hasNameCollision(this.methodEntryName())) return false;
       emitEntry = true;
     }
+    let emitFunctionEntry = false;
+    if (!this.isMethod && this.namespacePath.length > 0 && this.isExportedThroughNamespaces()) {
+      if (this.hasNameCollision(this.methodEntryName())) return false;
+      // The entry body refers to the namespace by its root name, so a
+      // parameter with that name would shadow it.
+      let parameters = this.prototype.functionTypeNode.parameters;
+      for (let i = 0, k = parameters.length; i < k; ++i) {
+        if (parameters[i].name.text == this.namespacePath[0]) {
+          this.fail(`Async function parameter '${parameters[i].name.text}' shadows its namespace`, parameters[i].range);
+          return false;
+        }
+      }
+      emitFunctionEntry = true;
+    }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       if (this.sites[i].isJoin) {
         if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
@@ -2510,6 +2601,10 @@ class AsyncFunctionTransform {
     declarations.push(this.buildStatus());
     if (emitEntry) {
       let entry = this.buildMethodEntry(assert(receiverClass));
+      if (entry) declarations.push(entry);
+    }
+    if (emitFunctionEntry) {
+      let entry = this.buildFunctionEntry();
       if (entry) declarations.push(entry);
     }
     if (emitClassNew) {
@@ -3228,6 +3323,80 @@ class AsyncFunctionTransform {
 
   private classNewName(receiverClass: ClassPrototype): string {
     return `__async_${this.fileBase}_${receiverClass.name}_new`;
+  }
+
+  /** Whether the function is exported through its whole namespace chain:
+   *  the function and every enclosing namespace carry `Export`. A
+   *  non-exported namespaced function stays inner-only, like a
+   *  non-exported top-level function. */
+  private isExportedThroughNamespaces(): bool {
+    if (!this.prototype.is(CommonFlags.Export)) return false;
+    let current = this.prototype.parent;
+    while (current.kind == ElementKind.Namespace) {
+      if (!current.is(CommonFlags.Export)) return false;
+      current = current.parent;
+    }
+    return true;
+  }
+
+  /** Namespace-qualified callee for the function entry: `NS.take` for a
+   *  single namespace, `Outer.Inner.deep` for nested ones. */
+  private namespacedCallee(range: Range): Expression {
+    let callee: Expression = ident(this.namespacePath[0], range);
+    for (let i = 1, k = this.namespacePath.length; i < k; ++i) {
+      callee = new PropertyAccessExpression(callee, ident(this.namespacePath[i], range), range);
+    }
+    return new PropertyAccessExpression(callee, ident(this.prototype.name, range), range);
+  }
+
+  /** Builds the top-level entry alias for an exported namespaced async
+   *  function: `__async_<file>_<qual>_entry(...params): i32` calls the
+   *  namespaced wrapper and returns its state handle, mirroring the
+   *  method entry. Stock asc does not export namespace members, so
+   *  without this alias the coordinator could not drive the function. */
+  private buildFunctionEntry(): FunctionDeclaration | null {
+    let range = this.range;
+    let parameters = this.prototype.functionTypeNode.parameters;
+    let entryParams = new Array<ParameterNode>();
+    let callArgs = new Array<Expression>();
+    let signature = assert(this.instance).signature;
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      let parameter = parameters[i];
+      let typeNode = parameter.type || typeToTypeNode(signature.parameterTypes[i], range);
+      if (!typeNode) {
+        warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has no usable type", []);
+        return null;
+      }
+      entryParams.push(new ParameterNode(
+        ParameterKind.Default,
+        ident(parameter.name.text, range),
+        typeNode,
+        null,
+        range
+      ));
+      callArgs.push(ident(parameter.name.text, range));
+    }
+    let entrySignature = new FunctionTypeNode(
+      entryParams,
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ callExpr(this.namespacedCallee(range), callArgs, range) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.methodEntryName(), range), null, CommonFlags.Export,
+      null, entrySignature, blockStmt(body, range), ArrowKind.None, range
+    );
   }
 
   private buildMethodEntry(receiverClass: ClassPrototype): FunctionDeclaration | null {

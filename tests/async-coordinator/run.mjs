@@ -26,7 +26,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "namespaces.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -842,6 +842,44 @@ const api = await instantiateAsync(bytes, {
     c.dispose();
     console.log("PASS pinned instance survives churn + __collect");
   }
+}
+
+// Namespaced async functions through the generated coordinator: the api
+// mirrors the namespace path (api.NS.take, api.Outer.Inner.deep), a
+// namespaced fn awaiting another namespaced fn, a top-level fn awaiting
+// a namespaced fn, a non-exported namespace fn driven as an inner, and
+// rejection propagation out of a namespaced fn.
+{
+  const wasmBytes = readFileSync(compile("namespaces.ts"));
+  const nsCoord = join(dir, "namespaces.async.js");
+  check(existsSync(nsCoord), "namespaces.async.js must be emitted for the namespaces fixture");
+  const { instantiateAsync: instantiateNs } = await import(pathToFileURL(nsCoord).href);
+  const nsApi = await instantiateNs(wasmBytes, {
+    env: {
+      getChunk(i) {
+        if (i === 9) return Promise.reject(new Error("ns-boom"));
+        return Promise.resolve("C" + i);
+      }
+    }
+  });
+  check(typeof nsApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof nsApi.NS.take === "function", "generated coordinator must expose NS.take");
+  check(typeof nsApi.Outer === "object", "generated coordinator must expose the Outer namespace object");
+  check(typeof nsApi.Outer.Inner.deep === "function", "generated coordinator must expose Outer.Inner.deep");
+  check((await nsApi.NS.take()) === "got-C0", "NS.take must resolve got-C0");
+  console.log("PASS namespaced async fn at api.NS.take");
+  check((await nsApi.NS.takeTwo(5)) === "two-C5", "NS.takeTwo(5) must resolve two-C5");
+  console.log("PASS two async fns in the same namespace, with params");
+  check((await nsApi.NS.viaOther()) === "via-two-C1", "NS.viaOther must resolve via-two-C1");
+  console.log("PASS namespaced async fn awaiting another namespaced async fn");
+  check((await nsApi.Outer.Inner.deep()) === "deep-C2", "Outer.Inner.deep must resolve deep-C2");
+  console.log("PASS async fn in a nested namespace at api.Outer.Inner.deep");
+  check((await nsApi.topViaNs()) === "top-got-C0", "topViaNs must resolve top-got-C0");
+  console.log("PASS top-level async fn awaiting a namespaced async fn");
+  check((await nsApi.viaHidden()) === "via-hidden-secret-C3", "viaHidden must resolve via-hidden-secret-C3");
+  console.log("PASS non-exported namespace fn driven as a nested inner");
+  await assertRejects(nsApi.NS.failing(), /ns-boom/, "a rejecting namespaced await must reject the task promise");
+  console.log("PASS rejection propagates out of a namespaced async fn");
 }
 
 console.log("ALL COORDINATOR TESTS PASS");
