@@ -47,6 +47,7 @@ import {
   IfStatement,
   WhileStatement,
   ForStatement,
+  ForOfStatement,
   DoStatement,
   FunctionExpression,
   ClassExpression,
@@ -889,6 +890,11 @@ export function containsAwait(node: Node): bool {
       || (node.incrementor ? containsAwait(node.incrementor) : false)
       || containsAwait(node.body);
   }
+  if (node instanceof ForOfStatement) {
+    return containsAwait(node.variable)
+      || containsAwait(node.iterable)
+      || containsAwait(node.body);
+  }
   if (node instanceof SwitchStatement) {
     if (containsAwait(node.condition)) return true;
     let cases = node.cases;
@@ -1052,14 +1058,12 @@ function validateStatement(node: Statement, fail: AsyncFail): bool {
         && validateStatement(stmt.body, fail);
     }
     case NodeKind.ForOf: {
-      fail("'for-of' in async functions is not yet supported", node.range);
-      return false;
+      let stmt = <ForOfStatement>node;
+      return validateStatement(stmt.variable, fail)
+        && validateExpression(stmt.iterable, fail)
+        && validateStatement(stmt.body, fail);
     }
     case NodeKind.Switch: {
-      if (containsAwait(node)) {
-        fail("Async functions with 'await' in a 'switch' statement are not yet supported", node.range);
-        return false;
-      }
       let stmt = <SwitchStatement>node;
       if (!validateExpression(stmt.condition, fail)) return false;
       let cases = stmt.cases;
