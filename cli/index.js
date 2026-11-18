@@ -329,6 +329,7 @@ export async function main(argv, options) {
   assemblyscript.setUncheckedBehavior(compilerOptions, uncheckedBehavior);
   assemblyscript.setNoUnsafe(compilerOptions, opts.noUnsafe);
   assemblyscript.setPedantic(compilerOptions, opts.pedantic);
+  assemblyscript.setRequireImportExtensions(compilerOptions, opts.requireImportExtensions);
   assemblyscript.setLowMemoryLimit(compilerOptions, opts.lowMemoryLimit >>> 0);
   assemblyscript.setExportRuntime(compilerOptions, opts.exportRuntime);
   assemblyscript.setBundleVersion(compilerOptions, bundleMajorVersion, bundleMinorVersion, bundlePatchVersion);

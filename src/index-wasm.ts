@@ -235,6 +235,11 @@ export function setPedantic(options: Options, pedantic: bool): void {
   options.pedantic = pedantic;
 }
 
+/** Sets the `requireImportExtensions` option. */
+export function setRequireImportExtensions(options: Options, requireImportExtensions: bool): void {
+  options.requireImportExtensions = requireImportExtensions;
+}
+
 export function setDebugInfo(options: Options, debug: bool): void {
   options.debugInfo = debug;
 }

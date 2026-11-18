@@ -275,6 +275,8 @@ export class Options {
   noUnsafe: bool = false;
   /** If true, enables pedantic diagnostics. */
   pedantic: bool = false;
+  /** If true, relative imports must include a file extension. */
+  requireImportExtensions: bool = false;
   /** Indicates a very low (<64k) memory limit. */
   lowMemoryLimit: u32 = 0;
   /** If true, exports the runtime helpers. */

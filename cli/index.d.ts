@@ -150,6 +150,8 @@ export interface CompilerOptions {
   transform?: string | string[];
   /** Make yourself sad for no good reason. */
   pedantic?: boolean;
+  /** Requires relative imports to include a file extension, e.g. './foo.ts' instead of './foo'. */
+  requireImportExtensions?: boolean;
   /** Prints measuring information on I/O and compile times. */
   stats?: boolean;
   /** Disables terminal colors. */
