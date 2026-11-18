@@ -1,1 +1,0 @@
-{"stderr":["AS100: Not implemented: Async functions with 'await' in a 'finally' block are not yet supported (a finally must not suspend)","AS235: Only variables, functions and enums become WebAssembly module exports."]}

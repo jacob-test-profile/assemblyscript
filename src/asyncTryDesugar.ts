@@ -106,6 +106,14 @@ import {
 export interface AsyncTryRejectTarget {
   errorVar: string;
   flagVar: string;
+  /** Desugar locals a rejection of this await must clear first: the
+   *  error flags of the finallys the rejection escapes, plus the pending
+   *  return/break/continue flags when any finally is escaped. A rejection
+   *  is a transfer out of the finally, like a sync `throw` there, so the
+   *  pending outcome it replaces must not survive (the desugar's
+   *  `clearTransfers` does the same for sync transfers). Empty for
+   *  awaits outside a finally. */
+  clearVars: string[];
 }
 
 /** Reject targets recorded by the desugar, keyed by file + await offset.
@@ -174,6 +182,11 @@ class TryFrame {
   /** Per-finally "a transfer already left this finally" flag, "" when the
    *  try has no finally. */
   public finVar: string = "";
+  /** `frames.length` when this frame's finally started being desugared
+   *  (-1 when it has no finally): a rejection escapes this finally
+   *  exactly when no try is open between the finally and the await,
+   *  i.e. the frames depth at the await equals this depth. */
+  public depth: i32 = -1;
   constructor(
     public errVar: string,
     public flagVar: string
@@ -199,7 +212,6 @@ class TryDesugar {
    *  being desugared: a break/continue target pushed after the innermost
    *  marker is inside that part, anything older encloses it. */
   private tryMarkers = new Array<i32>();
-  private passthrough = new Array<string>();
   private finallyChain = new Array<TryFrame>();
   private pendingTargets = new Map<string, AsyncTryRejectTarget>();
   private failed: bool = false;
@@ -346,15 +358,6 @@ class TryDesugar {
         let tryStmt = <TryStatement>stmt;
         this.hasTry = true;
         if (tryStmt.catchVariable) this.names.add(tryStmt.catchVariable.text);
-        if (tryStmt.finallyStatements) {
-          let finallyStatements = tryStmt.finallyStatements;
-          for (let i = 0, k = finallyStatements.length; i < k; ++i) {
-            if (containsAwait(finallyStatements[i])) {
-              this.fail("Async functions with 'await' in a 'finally' block are not yet supported (a finally must not suspend)", finallyStatements[i].range);
-              return;
-            }
-          }
-        }
         let bodyStatements = tryStmt.bodyStatements;
         for (let i = 0, k = bodyStatements.length; i < k; ++i) this.analyzeStatement(bodyStatements[i], tryDepth + 1);
         if (tryStmt.catchStatements) {
@@ -632,23 +635,19 @@ class TryDesugar {
         let forOf = <ForOfStatement>stmt;
         let variable = this.desugarStatement(forOf.variable, mode);
         if (variable.length > 0) forOf.variable = variable[0];
-        this.passthrough.push("for-of");
         this.targets.push(new BreakTarget("loop"));
         forOf.body = this.desugarBranch(forOf.body, mode);
         this.targets.pop();
-        this.passthrough.pop();
         return [ stmt ];
       }
       case NodeKind.Switch: {
         let switchStmt = <SwitchStatement>stmt;
-        this.passthrough.push("switch");
         this.targets.push(new BreakTarget("switch"));
         let cases = switchStmt.cases;
         for (let i = 0, k = cases.length; i < k; ++i) {
           cases[i].statements = this.desugarList(cases[i].statements, mode);
         }
         this.targets.pop();
-        this.passthrough.pop();
         return [ stmt ];
       }
       default: {
@@ -726,10 +725,6 @@ class TryDesugar {
   }
 
   private desugarTry(stmt: TryStatement, mode: string): Statement[] {
-    if (this.passthrough.length > 0) {
-      this.fail("'try' inside a '" + this.passthrough[this.passthrough.length - 1] + "' statement is not yet supported", stmt.range);
-      return [ stmt ];
-    }
     let range = stmt.range;
     let frame = new TryFrame(this.fresh("err"), this.fresh("flag"));
     if (stmt.finallyStatements) frame.finVar = this.fresh("fin");
@@ -760,6 +755,7 @@ class TryDesugar {
     }
     if (stmt.finallyStatements) {
       out.push(this.letDecl(frame.finVar, namedType("bool", null, false, range), new FalseExpression(range)));
+      frame.depth = this.frames.length;
       this.finallyChain.push(frame);
       this.tryMarkers.push(this.targets.length);
       let desugaredFinally = this.desugarList(stmt.finallyStatements, "finally");
@@ -901,7 +897,18 @@ class TryDesugar {
       if (this.frames.length > 0) {
         let top = this.frames[this.frames.length - 1];
         let key = this.file.internalName + ":" + expr.range.start.toString();
-        this.pendingTargets.set(key, { errorVar: top.errVar, flagVar: top.flagVar });
+        let clearVars = new Array<string>();
+        for (let i = 0, k = this.finallyChain.length; i < k; ++i) {
+          if (this.finallyChain[i].depth == this.frames.length) {
+            clearVars.push(this.finallyChain[i].flagVar);
+          }
+        }
+        if (clearVars.length > 0) {
+          if (this.retFlag != "") clearVars.push(this.retFlag);
+          if (this.brkFlag != "") clearVars.push(this.brkFlag);
+          if (this.cntFlag != "") clearVars.push(this.cntFlag);
+        }
+        this.pendingTargets.set(key, { errorVar: top.errVar, flagVar: top.flagVar, clearVars });
       }
       this.scanExpression((<AwaitExpression>expr).operand);
       return;

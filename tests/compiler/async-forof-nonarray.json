@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: 'for-of' in async functions is only supported over arrays; the compiler has no iterator support for other iterables","AS235: Only variables, functions and enums become WebAssembly module exports."]}

@@ -413,6 +413,109 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS finally exactly once across a caught rejection");
 }
 
+// Await in switch: dispatch, fallthrough and default across suspensions.
+{
+  const base = chunkDeferreds.length;
+  const p1 = api.switchAwait(1);
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  check((await p1) === "AAA", "switchAwait(1) must resolve AAA");
+  const p2 = api.switchAwait(2);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  chunkDeferreds[base + 2].resolve("CCC");
+  check((await p2) === "BBBCCC", "switchAwait(2) must fall through case 2 into case 3");
+  const p3 = api.switchAwait(3);
+  await tick();
+  chunkDeferreds[base + 3].resolve("CCC");
+  check((await p3) === "CCC", "switchAwait(3) must resolve CCC");
+  check((await api.switchAwait(9)) === "dflt", "switchAwait(9) must take the default with no await");
+  console.log("PASS await in switch (dispatch, fallthrough, default)");
+}
+
+// A switch inside a loop: continue skips to the next iteration, break
+// leaves the switch only.
+{
+  const base = chunkDeferreds.length;
+  const p = api.switchInLoop();
+  await tick();
+  chunkDeferreds[base].resolve("CCC");
+  check((await p) === "xCCCx", "switchInLoop must skip case 1 and await only case 2");
+  console.log("PASS switch in loop with await (continue/break)");
+}
+
+// A finally may await: it runs exactly once, never on suspend, on the
+// normal path and after a caught throw.
+{
+  const base = chunkDeferreds.length;
+  const p0 = api.finallyAwait(0);
+  await tick();
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p0) === "ok-A/B", "finallyAwait(0) must run the awaiting finally exactly once");
+  const p1 = api.finallyAwait(1);
+  await tick();
+  chunkDeferreds[base + 2].resolve("A");
+  await tick();
+  chunkDeferreds[base + 3].resolve("B");
+  check((await p1) === "caught/B", "finallyAwait(1) must run the awaiting finally after the catch");
+  console.log("PASS await in finally (exactly once, both paths)");
+}
+
+// A rejection of a finally await replaces the pending body error.
+{
+  const base = chunkDeferreds.length;
+  const p = api.finallyRejectOuter();
+  await tick();
+  chunkDeferreds[base].reject(new Error("fin-boom"));
+  check((await p) === "outer-caught:fin-boom", "a finally-await rejection must replace the pending body error");
+  console.log("PASS finally-await rejection replaces the pending body error");
+}
+
+// Try inside a switch case, with catch and finally; a break out of the
+// switch from inside the try must still run the finally, then leave.
+{
+  const base = chunkDeferreds.length;
+  const p1 = api.tryInSwitch(1);
+  await tick();
+  chunkDeferreds[base].resolve("A");
+  check((await p1) === "t-A!", "tryInSwitch(1) must run the finally on the break path and skip the rest");
+  const p2 = api.tryInSwitch(2);
+  await tick();
+  chunkDeferreds[base + 1].resolve("A");
+  check((await p2) === "sw-caught:sw-boom", "tryInSwitch(2) must catch the throw after the await");
+  check((await api.tryInSwitch(9)) === "sw-dflt", "tryInSwitch(9) must take the default");
+  console.log("PASS try inside switch (catch, finally, break out)");
+}
+
+// For-of over an array: the iterator state survives suspension.
+{
+  const base = chunkDeferreds.length;
+  const p = api.forOfAwait();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  chunkDeferreds[base + 2].resolve("CCC");
+  check((await p) === "AAABBBCCC", "forOfAwait must iterate the array across suspensions");
+  console.log("PASS for-of with await in the body");
+}
+
+// For-of with a break after an await: only the values before the break count.
+{
+  const base = numDeferreds.length;
+  const p = api.forOfBreak();
+  await tick();
+  numDeferreds[base].resolve(10);
+  await tick();
+  numDeferreds[base + 1].resolve(20);
+  check((await p) === 10, "forOfBreak must stop after the break");
+  console.log("PASS for-of with break after an await");
+}
+
 // Void task resolves undefined.
 {
   const base = chunkDeferreds.length;

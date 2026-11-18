@@ -25,6 +25,7 @@ import {
   IfStatement,
   WhileStatement,
   ForStatement,
+  ForOfStatement,
   DoStatement,
   ThrowStatement,
   FunctionDeclaration,
@@ -229,6 +230,11 @@ class AwaitSite {
     public rejectFlagField: string = "",
     /** State field holding the enclosing try's error message, same. */
     public rejectErrField: string = "",
+    /** State fields a coordinator rejection of this site must clear
+     *  first: the error flags of the finallys the rejection escapes, and
+     *  the pending return/break/continue flags (see AsyncTryRejectTarget).
+     *  Empty for awaits outside a finally. */
+    public rejectClearFields: string[] = [],
     /** Whether this site awaits a nested async function in the same file. */
     public isNested: bool = false,
     /** State field holding the inner task's handle, for a nested site. */
@@ -963,6 +969,14 @@ class AsyncFunctionTransform {
         this.transformDo(<DoStatement>stmt, cont, breakTarget, continueTarget, isLast);
         return;
       }
+      case NodeKind.Switch: {
+        this.transformSwitch(<SwitchStatement>stmt, cont, breakTarget, continueTarget, isLast);
+        return;
+      }
+      case NodeKind.ForOf: {
+        this.transformForOf(<ForOfStatement>stmt, cont, breakTarget, continueTarget, isLast);
+        return;
+      }
       case NodeKind.Break: {
         if (breakTarget == NO_TARGET) {
           this.fail("'break' outside of a loop is not allowed here", stmt.range);
@@ -1394,6 +1408,265 @@ class AsyncFunctionTransform {
     }
   }
 
+  /** Reads a lifted local by name, honouring spill slots. */
+  private localAccess(name: string, range: Range): Expression {
+    let binding = this.scope.lookup(name);
+    assert(binding != null);
+    if (binding!.spilled) {
+      return callExpr(ident(SPILL_GET, range), [ thisProp(binding!.slotField, range) ], range);
+    }
+    return thisProp(binding!.field, range);
+  }
+
+  /** Transforms a `switch` whose cases may await. The discriminant is
+   *  evaluated once into a lifted local; a generated switch in the
+   *  dispatch segment routes to one entry segment per case, and each
+   *  case list falls through to the next case's entry, so `break`,
+   *  fallthrough and `default` keep their ordinary meaning. A `return`
+   *  inside a case completes the task through the usual terminal
+   *  segment instead of returning raw out of `step()`. */
+  private transformSwitch(
+    stmt: SwitchStatement,
+    cont: i32,
+    breakTarget: i32,
+    continueTarget: i32,
+    isLast: bool
+  ): void {
+    let range = stmt.range;
+    if (containsAwait(stmt.condition)) {
+      this.fail("'await' in a 'switch' condition is not yet supported", stmt.condition.range);
+      return;
+    }
+    let cases = stmt.cases;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      if (cases[i].label && containsAwait(cases[i].label!)) {
+        this.fail("'await' in a 'switch' case label is not yet supported", cases[i].label!.range);
+        return;
+      }
+    }
+    let flow = assert(this.flow);
+    let condType = this.resolver.resolveExpression(stmt.condition, flow, Type.auto, ReportMode.Swallow);
+    if (!condType) {
+      this.punted = true;
+      return;
+    }
+    let condTypeNode = typeToTypeNode(condType, range);
+    if (!condTypeNode && condType.kind != TypeKind.Extern) {
+      this.fail(`Async functions cannot switch on values of type '${condType.toString()}' yet`, range);
+      return;
+    }
+    let condition = this.rewriteChecked(stmt.condition);
+    if (!condition) return;
+    let after: i32;
+    if (isLast) {
+      after = cont;
+    } else {
+      after = this.createSegment();
+    }
+    let afterResolved = this.resolveCont(after);
+    let entries = new Array<i32>(cases.length);
+    for (let i = 0, k = cases.length; i < k; ++i) entries[i] = this.createSegment();
+    let defaultEntry = afterResolved;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      if (cases[i].isDefault) defaultEntry = entries[i];
+    }
+    this.pushScope();
+    let discName = `__async_sw_${this.fieldCounter}`;
+    let outcome = this.declareLocal(discName, condTypeNode, condType, range, stmt, false);
+    if (outcome != TransformOutcome.Transformed) {
+      this.popScope();
+      return;
+    }
+    this.emitLocalAssign(discName, condition, range);
+    let dispatchCases = new Array<SwitchCase>();
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      let label = cases[i].label;
+      let rewrittenLabel: Expression | null = null;
+      if (label) {
+        rewrittenLabel = rewriteExpression(label, this.rewriter());
+        if (!rewrittenLabel) {
+          this.popScope();
+          this.failed = true;
+          return;
+        }
+      }
+      dispatchCases.push(new SwitchCase(
+        rewrittenLabel,
+        [
+          exprStmt(assignExpr(this.stateAccess(range), this.segState(entries[i], range), range)),
+          new BreakStatement(null, range)
+        ],
+        range
+      ));
+    }
+    let hasDefault = false;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      if (cases[i].isDefault) hasDefault = true;
+    }
+    if (!hasDefault) {
+      dispatchCases.push(new SwitchCase(
+        null,
+        [
+          exprStmt(assignExpr(this.stateAccess(range), this.segState(defaultEntry, range), range)),
+          new BreakStatement(null, range)
+        ],
+        range
+      ));
+    }
+    this.emit(new SwitchStatement(this.localAccess(discName, range), dispatchCases, range));
+    this.closeCurrent(new SegmentEnd("redispatch"));
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      let next = i + 1 < k ? entries[i + 1] : afterResolved;
+      this.setCurrent(entries[i]);
+      this.transformList(cases[i].statements, next, afterResolved, continueTarget);
+      if (this.failed || this.punted) {
+        this.popScope();
+        return;
+      }
+    }
+    this.popScope();
+    if (!isLast) {
+      this.setCurrent(after);
+    }
+  }
+
+  /** Transforms a `for-of` over an array, lowering it to an indexed loop
+   *  whose index, iterable and element locals all survive suspension.
+   *  The compiler has no iterator support at all (even sync `for-of`
+   *  fails with "Not implemented: Iterators"), so any other iterable
+   *  stays loud. */
+  private transformForOf(
+    stmt: ForOfStatement,
+    cont: i32,
+    breakTarget: i32,
+    continueTarget: i32,
+    isLast: bool
+  ): void {
+    let range = stmt.range;
+    if (containsAwait(stmt.iterable)) {
+      this.fail("'await' in a 'for-of' iterable is not yet supported", stmt.iterable.range);
+      return;
+    }
+    let flow = assert(this.flow);
+    let iterType = this.resolver.resolveExpression(stmt.iterable, flow, Type.auto, ReportMode.Swallow);
+    if (!iterType) {
+      this.punted = true;
+      return;
+    }
+    let iterClass = iterType.getClass();
+    let typeArguments = iterClass ? iterClass.typeArguments : null;
+    if (!iterClass || iterClass.prototype.name != "Array" || !typeArguments || typeArguments.length != 1) {
+      this.fail("'for-of' in async functions is only supported over arrays; the compiler has no iterator support for other iterables", stmt.iterable.range);
+      return;
+    }
+    let elementType = typeArguments[0];
+    let elementTypeNode = typeToTypeNode(elementType, range);
+    if (!elementTypeNode) {
+      this.fail(`Async functions cannot iterate arrays of type '${elementType.toString()}' yet`, range);
+      return;
+    }
+    let elementName: string | null = null;
+    let elementRange = range;
+    if (stmt.variable.kind == NodeKind.Variable) {
+      let declarations = (<VariableStatement>stmt.variable).declarations;
+      if (declarations.length != 1) {
+        this.fail("'for-of' in async functions takes exactly one loop variable", stmt.variable.range);
+        return;
+      }
+      elementName = declarations[0].name.text;
+      elementRange = declarations[0].name.range;
+    } else if (stmt.variable.kind == NodeKind.Expression) {
+      let expr = (<ExpressionStatement>stmt.variable).expression;
+      if (expr.kind != NodeKind.Identifier) {
+        this.fail("'for-of' in async functions takes a single loop variable", stmt.variable.range);
+        return;
+      }
+      elementName = (<IdentifierExpression>expr).text;
+      elementRange = expr.range;
+    } else {
+      this.fail("'for-of' in async functions takes a single loop variable", stmt.variable.range);
+      return;
+    }
+    let rewrittenIter = this.rewriteChecked(stmt.iterable);
+    if (!rewrittenIter) return;
+    let iterTypeNode = typeToTypeNode(iterType, range);
+    if (!iterTypeNode) {
+      this.fail(`Async functions cannot iterate values of type '${iterType.toString()}' yet`, range);
+      return;
+    }
+    let after: i32;
+    if (isLast) {
+      after = cont;
+    } else {
+      after = this.createSegment();
+    }
+    let head = this.createSegment();
+    let bodyEntry = this.createSegment();
+    let incr = this.createSegment();
+    this.pushScope();
+    let iterName = `__async_of_${this.fieldCounter}`;
+    let outcome = this.declareLocal(iterName, iterTypeNode, iterType, range, stmt, false);
+    if (outcome != TransformOutcome.Transformed) {
+      this.popScope();
+      return;
+    }
+    this.emitLocalAssign(iterName, rewrittenIter, range);
+    let indexName = `__async_ofi_${this.fieldCounter}`;
+    outcome = this.declareLocal(indexName, namedType("i32", null, false, range), Type.i32, range, stmt, false);
+    if (outcome != TransformOutcome.Transformed) {
+      this.popScope();
+      return;
+    }
+    this.emitLocalAssign(indexName, intLit(0, range), range);
+    let isDeclaration = stmt.variable.kind == NodeKind.Variable;
+    if (isDeclaration) {
+      outcome = this.declareLocal(assert(elementName), elementTypeNode, elementType, elementRange, stmt, false);
+      if (outcome != TransformOutcome.Transformed) {
+        this.popScope();
+        return;
+      }
+    }
+    this.closeCurrent(new SegmentEnd("jump", head));
+    this.setCurrent(head);
+    let lengthAccess = (): Expression => {
+      return new PropertyAccessExpression(this.localAccess(iterName, range), ident("length", range), range);
+    };
+    let indexAccess = (): Expression => this.localAccess(indexName, range);
+    let dispatch = new IfStatement(
+      new BinaryExpression(Token.LessThan, indexAccess(), lengthAccess(), range),
+      blockStmt([ exprStmt(assignExpr(this.stateAccess(range), this.segState(bodyEntry, range), range)) ], range),
+      blockStmt([ exprStmt(assignExpr(this.stateAccess(range), this.segState(this.resolveCont(after), range), range)) ], range),
+      range
+    );
+    this.emit(dispatch);
+    this.closeCurrent(new SegmentEnd("redispatch"));
+    this.setCurrent(incr);
+    this.emit(exprStmt(assignExpr(
+      indexAccess(),
+      new BinaryExpression(Token.Plus, indexAccess(), intLit(1, range), range),
+      range
+    )));
+    this.closeCurrent(new SegmentEnd("jump", head));
+    this.setCurrent(bodyEntry);
+    let elementAccess = new ElementAccessExpression(this.localAccess(iterName, range), indexAccess(), range);
+    if (isDeclaration) {
+      this.emitLocalAssign(assert(elementName), elementAccess, range);
+    } else {
+      let binding = this.scope.lookup(assert(elementName));
+      if (binding && !binding.shadowed) {
+        this.emitLocalAssign(assert(elementName), elementAccess, range);
+      } else {
+        this.emit(exprStmt(assignExpr(ident(assert(elementName), elementRange), elementAccess, range)));
+      }
+    }
+    this.transformList(asStatements(stmt.body), incr, this.resolveCont(after), incr);
+    this.popScope();
+    if (this.failed || this.punted) return;
+    if (!isLast) {
+      this.setCurrent(after);
+    }
+  }
+
   // === Await ====================================================================================
 
   /** Whether the expression is a direct call to a suspending import. */
@@ -1487,20 +1760,33 @@ class AsyncFunctionTransform {
       waitCall, "", node.range
     );
     this.sites.push(site);
-    let rejectTarget = rejectTargetFor(this.file, node.range);
-    if (rejectTarget) {
-      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
-      let errBinding = this.scope.lookup(rejectTarget.errorVar);
-      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
-        site.rejectFlagField = flagBinding.field;
-        site.rejectErrField = errBinding.field;
-      }
-    }
+    this.resolveRejectTarget(site, node);
     if (unwrapped.kind == TypeKind.Extern) {
       site.slotField = `__slot_pend${site.id}`;
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
     }
     return site;
+  }
+
+  /** Resolves a coordinator rejection of this await to the enclosing
+   *  try's error locals, and records the pending-outcome flags the
+   *  rejection must clear first when the await sits in a finally. The
+   *  desugar recorded the target against the await's range; names are
+   *  resolved to state fields now, while the scope still holds them. */
+  private resolveRejectTarget(site: AwaitSite, node: AwaitExpression): void {
+    let rejectTarget = rejectTargetFor(this.file, node.range);
+    if (!rejectTarget) return;
+    let flagBinding = this.scope.lookup(rejectTarget.flagVar);
+    let errBinding = this.scope.lookup(rejectTarget.errorVar);
+    if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
+      site.rejectFlagField = flagBinding.field;
+      site.rejectErrField = errBinding.field;
+    }
+    let clearVars = rejectTarget.clearVars;
+    for (let i = 0, k = clearVars.length; i < k; ++i) {
+      let binding = this.scope.lookup(clearVars[i]);
+      if (binding && !binding.shadowed) site.rejectClearFields.push(binding.field);
+    }
   }
 
   /** Validates an await operand and records the site. Returns `null` on failure. */
@@ -1606,15 +1892,7 @@ class AsyncFunctionTransform {
     // A coordinator rejection of this site lands in the enclosing try's
     // catch when the desugar recorded one: resolve the error locals to
     // state fields now, while the scope still holds them.
-    let rejectTarget = rejectTargetFor(this.file, node.range);
-    if (rejectTarget) {
-      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
-      let errBinding = this.scope.lookup(rejectTarget.errorVar);
-      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
-        site.rejectFlagField = flagBinding.field;
-        site.rejectErrField = errBinding.field;
-      }
-    }
+    this.resolveRejectTarget(site, node);
     if (unwrapped.kind == TypeKind.Extern) {
       site.slotField = `__slot_pend${site.id}`;
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
@@ -1715,15 +1993,7 @@ class AsyncFunctionTransform {
     // A coordinator rejection of this site lands in the enclosing try's
     // catch when the desugar recorded one: resolve the error locals to
     // state fields now, while the scope still holds them.
-    let rejectTarget = rejectTargetFor(this.file, node.range);
-    if (rejectTarget) {
-      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
-      let errBinding = this.scope.lookup(rejectTarget.errorVar);
-      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
-        site.rejectFlagField = flagBinding.field;
-        site.rejectErrField = errBinding.field;
-      }
-    }
+    this.resolveRejectTarget(site, node);
     if (unwrapped.kind == TypeKind.Extern) {
       site.slotField = `__slot_pend${site.id}`;
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
@@ -3373,6 +3643,18 @@ class AsyncFunctionTransform {
       // after the suspending call (the task is suspended at this site, so
       // `step()` dispatches there). The desugared guards skip the rest of
       // the try body and the dispatch runs catch/finally/propagation.
+      // A rejection of an await in a finally first clears the pending
+      // outcome the finally was running for, exactly as a sync transfer
+      // in a finally does: without this, the post-finally dispatch would
+      // overwrite the new error with the stale body error, or execute a
+      // stale pending return.
+      for (let i = 0, k = site.rejectClearFields.length; i < k; ++i) {
+        body.push(exprStmt(assignExpr(
+          new PropertyAccessExpression(ident("state", range), ident(site.rejectClearFields[i], range), range),
+          new FalseExpression(range),
+          range
+        )));
+      }
       body.push(exprStmt(assignExpr(
         new PropertyAccessExpression(ident("state", range), ident(site.rejectFlagField, range), range),
         new TrueExpression(range),
