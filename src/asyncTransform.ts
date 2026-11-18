@@ -400,6 +400,13 @@ export function transformAsyncFunctions(program: Program): void {
           fail("Async methods in generic classes are not yet supported", prototype.identifierNode.range);
           continue;
         }
+        if (receiverClass.parent.kind == ElementKind.Namespace) {
+          fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
+          continue;
+        }
+      } else if (prototype.parent.kind == ElementKind.Namespace) {
+        fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
+        continue;
       }
       if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
       let ctx: LiftContext = {
