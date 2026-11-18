@@ -229,6 +229,13 @@ function buildMethodMeta(
 ): MethodMeta | null {
   let bound = prototype.getBoundClassOrInterface();
   if (!bound) return null;
+  // A method on a generic class is transformed per instantiation and is
+  // drivable through its entry export, but the generated wrapper cannot
+  // name the instantiated class yet (Group 4): skip it silently, exactly
+  // like a method on a non-exported class.
+  let classPrototype = bound.prototype;
+  let typeParameters = classPrototype.typeParameterNodes;
+  if (typeParameters && typeParameters.length > 0) return null;
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);

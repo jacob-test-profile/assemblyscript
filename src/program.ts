@@ -143,6 +143,10 @@ import {
 } from "./asyncTransform";
 
 import {
+  FileArrowAliases
+} from "./asyncArrowExtract";
+
+import {
   desugarAsyncTryStatements
 } from "./asyncTryDesugar";
 
@@ -487,6 +491,29 @@ export class Program extends DiagnosticEmitter {
    *  inner async function the site awaits. The coordinator reads this to
    *  know which inner task a pending handle belongs to. */
   asyncNestedPending: Map<string, string> = new Map();
+  /** Per-instantiation clones of generic async functions and methods, by
+   *  declaration and combined type-argument key (`src/asyncGeneric.ts`).
+   *  The clone is created and registered before its transform runs, so a
+   *  recursive instantiation resolves to the same clone. */
+  asyncGenericInstances: Map<FunctionDeclaration, Map<string, FunctionPrototype>> = new Map();
+  /** Declarations of the clones above. The `resolveFunction` hook skips
+   *  them: a bound method clone still sits on a generic class instance,
+   *  so without this check the hook would clone the clone forever. */
+  asyncGenericCloneDeclarations: Set<object> = new Set();
+  /** Arrow aliases per file, from the CPS transform's file scan
+   *  (`src/asyncArrowExtract.ts`). Kept on the program so the generic
+   *  instantiation hook (which runs after the scan) can lift closures in
+   *  a clone with the same aliases. */
+  asyncFileAliases: Map<string, FileArrowAliases> = new Map();
+  /** Files whose externref spill pool was already emitted, by internal
+   *  name. Shared by the initialize-time transform and per-instantiation
+   *  clones, which must not emit the pool twice. */
+  asyncSpillPools: Set<string> = new Set();
+  /** Class-new exports already emitted, by export name
+   *  (`__async_<file>_<Class>_new`, with the class type arguments
+   *  encoded for generic classes). Keyed by name, not prototype: two
+   *  instantiations of one generic class need two exports. */
+  asyncClassNews: Set<string> = new Set();
 
   // Lookup maps
 
@@ -1577,6 +1604,12 @@ export class Program extends DiagnosticEmitter {
       }
       case NodeKind.FunctionDeclaration: {
         return this.initializeFunction(<FunctionDeclaration>declaration, parent) != null;
+      }
+      case NodeKind.MethodDeclaration: {
+        // A per-instantiation clone of an async method on a (possibly
+        // generic) class. The parent is the class prototype.
+        if (parent.kind != ElementKind.ClassPrototype) return false;
+        return this.initializeMethod(<MethodDeclaration>declaration, <ClassPrototype>parent) != null;
       }
       case NodeKind.Variable: {
         let statement = <VariableStatement>declaration;

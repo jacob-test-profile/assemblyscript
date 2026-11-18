@@ -1,7 +1,7 @@
 // Diagnostic fixture: one function per loud rejection that had no
 // pinned fixture (throw-await, try-in-switch, member-call await,
 // cross-file await, join member/argument await, arrow misuse,
-// field-assignment await, generic-class methods).
+// field-assignment await).
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getArray")
@@ -24,13 +24,6 @@ class W {
 
   static async staticM(n: i32): Promise<string> {
     let c = await getChunk(n);
-    return c;
-  }
-}
-
-class G<T> {
-  async fetch(): Promise<string> {
-    let c = await getChunk(0);
     return c;
   }
 }
@@ -128,7 +121,8 @@ export async function awaitVoid(): Promise<string> {
 
 // Member-call await stays loud when the callee is not a transformed
 // async method: a sync method, a static method, an unresolvable member,
-// a generic-class method, and a namespaced-class method.
+// and a namespaced-class method. (A generic-class method is no longer
+// loud: see async-generic-method.ts.)
 export async function awaitSync(): Promise<string> {
   let w = new W();
   let c = await w.sync(0);
@@ -143,12 +137,6 @@ export async function awaitStatic(): Promise<string> {
 export async function awaitNope(): Promise<string> {
   let w = new W();
   let c = await w.nope(0);
-  return c;
-}
-
-export async function awaitGeneric(): Promise<string> {
-  let g = new G<i32>();
-  let c = await g.fetch();
   return c;
 }
 

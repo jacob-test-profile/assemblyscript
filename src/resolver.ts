@@ -110,6 +110,10 @@ import {
   BuiltinTypesContext
 } from "./builtins";
 
+import {
+  ensureAsyncGenericInstance
+} from "./asyncGeneric";
+
 /** Indicates whether errors are reported or not. */
 export const enum ReportMode {
   /** Report errors. */
@@ -2883,6 +2887,32 @@ export class Resolver extends DiagnosticEmitter {
       assert(!prototype.isBound);
       let resolvedInstance = prototype.getResolvedInstance(instanceKey);
       if (resolvedInstance) return resolvedInstance;
+    }
+
+    // Generic async functions and async methods on generic classes are
+    // transformed once per instantiation (src/asyncGeneric.ts): the clone
+    // pipeline runs here and the call resolves to the clone's instance,
+    // whose body is the generated entry wrapper. This runs before the
+    // instance below is created, so the untransformed original is never
+    // cached under the type-argument key (a later resolution would
+    // return it directly and the compiler guard would reject it).
+    // Clones are skipped: a bound method clone still sits on a generic
+    // class instance, so without the check the hook would clone the clone.
+    if (
+      prototype.is(CommonFlags.Async) &&
+      !this.program.asyncGenericCloneDeclarations.has(prototype.declaration)
+    ) {
+      let hasOwnArgs = typeArguments != null && typeArguments.length > 0;
+      let hasClassArgs = classInstance != null
+        && classInstance.typeArguments != null
+        && classInstance.typeArguments.length > 0;
+      if (hasOwnArgs || hasClassArgs) {
+        let cloneInstance = ensureAsyncGenericInstance(this.program, prototype, typeArguments, classInstance);
+        if (cloneInstance) return cloneInstance;
+        // The clone pipeline already reported a specific diagnostic and
+        // marked the prototype rejected; fall through with the original
+        // instance so the compiler guard fails silently.
+      }
     }
 
     // override whatever is contextual with actual function type arguments
