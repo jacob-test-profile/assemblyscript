@@ -26,7 +26,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -1021,6 +1021,132 @@ const api = await instantiateAsync(bytes, {
     eq(await p, { x: 105, y: 0 }, "Box.makePoint must resolve {x:105,y:0}");
     box.dispose();
     console.log("PASS async methods with Array<i32> parameter and Point result");
+  }
+}
+
+// Loop closures: stored closures created in a loop, called after the
+// loop (close-gaps Group 5b item 2). Each sees its own iteration's
+// values; only names declared inside the loop are per-iteration.
+{
+  const wasmBytes = readFileSync(compile("loopclosures.ts"));
+  const loopCoord = join(dir, "loopclosures.async.js");
+  check(existsSync(loopCoord), "loopclosures.async.js must be emitted for the loopclosures fixture");
+  const { instantiateAsync: instantiateLoop } = await import(pathToFileURL(loopCoord).href);
+  const lNumDeferreds = [];
+  const lObjDeferreds = [];
+  const loopApi = await instantiateLoop(wasmBytes, {
+    env: {
+      getNumber() {
+        const d = deferred();
+        lNumDeferreds.push(d);
+        return d.promise;
+      },
+      getObj() {
+        const d = deferred();
+        lObjDeferreds.push(d);
+        return d.promise;
+      }
+    }
+  });
+
+  // Each getNumber() resolves 0; the sums below depend only on the
+  // captured iteration values, not on the awaited numbers.
+  // The first await is issued synchronously by the task's initial step,
+  // so the base is captured before the task starts, not inside resolveNums.
+  const resolveNums = async (count, base) => {
+    for (let k = 0; k < count; ++k) {
+      await tick();
+      check(lNumDeferreds.length > base + k, "loop test must issue getNumber await " + k);
+      lNumDeferreds[base + k].resolve(0);
+    }
+  };
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopStored must resolve 33");
+    console.log("PASS stored loop closures see their own iteration's value (33, not 39)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopBodyLet();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopBodyLet must resolve 30");
+    console.log("PASS stored loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNested();
+    await resolveNums(4, base);
+    check((await p) === 422, "loopNested must resolve 422");
+    console.log("PASS stored loop closures capture nested loop variables and shared outers");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileOuter();
+    await resolveNums(3, base);
+    check((await p) === 9, "loopWhileOuter must resolve 9 (one shared binding)");
+    console.log("PASS closures over a variable declared outside the loop share it (9)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileInner();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopWhileInner must resolve 30");
+    console.log("PASS stored while-loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStrings();
+    await resolveNums(3, base);
+    check((await p) === "s0s1s2", "loopStrings must resolve s0s1s2");
+    console.log("PASS stored loop closures capture reference-typed values per iteration");
+  }
+
+  {
+    const objA = { tag: "a" };
+    const objB = { tag: "b" };
+    const p = loopApi.loopExtern();
+    await tick();
+    check(lObjDeferreds.length === 1, "loopExtern must issue getObj once first");
+    lObjDeferreds[0].resolve(objA);
+    await tick();
+    check(lObjDeferreds.length === 2, "loopExtern must issue getObj again");
+    lObjDeferreds[1].resolve(objB);
+    check((await p) === objB, "loopExtern must resolve the second iteration's object");
+    console.log("PASS stored loop closures capture externref values per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopInline();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopInline must resolve 33");
+    console.log("PASS loop closures called in their iteration still work");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNoCapture();
+    await resolveNums(3, base);
+    check((await p) === 21, "loopNoCapture must resolve 21");
+    console.log("PASS loop closures capturing nothing loop-scoped keep working");
+  }
+
+  {
+    const c = new loopApi.Counter(5);
+    const base = lNumDeferreds.length;
+    const p = c.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 48, "Counter.loopStored must resolve 48");
+    c.dispose();
+    console.log("PASS loop closures in async methods capture per iteration");
   }
 }
 

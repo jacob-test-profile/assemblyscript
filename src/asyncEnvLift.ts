@@ -34,6 +34,8 @@ import {
   FunctionExpression,
   FunctionDeclaration,
   MethodDeclaration,
+  ParameterNode,
+  ParameterKind,
   BlockStatement,
   ExpressionStatement,
   ReturnStatement,
@@ -68,7 +70,10 @@ import {
 import {
   AsyncFail,
   ASYNC_THIS_NAME,
+  LOOP_ENV_PARAM,
+  LoopEnvInfo,
   ident,
+  intLit,
   namedType,
   blockStmt,
   callExpr,
@@ -112,6 +117,8 @@ export interface EnvLiftResult {
   hasAdapters: bool;
   /** Extracted async arrows awaiting their pre-passes. */
   arrows: ArrowWorkItem[];
+  /** Loop closures and their per-iteration envs, by adapter name. */
+  loopEnvs: Map<string, LoopEnvInfo>;
 }
 
 /** One arrow binding: how a local holding an extracted arrow is called. */
@@ -128,6 +135,15 @@ interface FrameEntry {
 interface ScopeFrame {
   names: Map<string, FrameEntry>;
   isClosure: bool;
+  /** Loop nesting at the point the frame was pushed; names declared in
+   *  a frame with loop depth > 0 are fresh bindings per iteration. */
+  loopDepth: i32;
+}
+
+/** Loop-scoped names one closure captures, in first-reference order. */
+interface CaptureCollector {
+  names: string[];
+  set: Set<string>;
 }
 
 /** Lifts closures and async arrows in one async body. Returns `null`
@@ -160,7 +176,8 @@ export function liftEnvInAsyncBody(
     methods: lifter.methods,
     adapters: lifter.adapters,
     hasAdapters: lifter.methods.length > 0,
-    arrows: lifter.arrows
+    arrows: lifter.arrows,
+    loopEnvs: lifter.loopEnvs
   };
 }
 
@@ -168,8 +185,12 @@ class EnvLifter {
   methods: MethodDeclaration[] = [];
   adapters = new Map<string, MethodDeclaration>();
   arrows: ArrowWorkItem[] = [];
+  loopEnvs = new Map<string, LoopEnvInfo>();
   private frames: ScopeFrame[] = [];
   private closureDepth: i32 = 0;
+  private loopDepth: i32 = 0;
+  /** One collector per closure being walked, innermost last. */
+  private captureStack: CaptureCollector[] = [];
   /** Frame index where each enclosing closure's parameters start, so a
    *  nested closure capturing an outer closure's locals is rejected. */
   private closureFrameBases: i32[] = [];
@@ -193,7 +214,7 @@ class EnvLifter {
   // === Scopes ===================================================================================
 
   pushFrame(isClosure: bool): void {
-    this.frames.push({ names: new Map(), isClosure });
+    this.frames.push({ names: new Map(), isClosure, loopDepth: this.loopDepth });
   }
 
   popFrame(): void {
@@ -308,65 +329,71 @@ class EnvLifter {
       }
       case NodeKind.While: {
         let stmt = <WhileStatement>node;
+        this.loopDepth++;
         let condition = this.walkExpression(stmt.condition);
-        if (!condition) return false;
+        if (!condition) {
+          this.loopDepth--;
+          return false;
+        }
         stmt.condition = condition;
-        return this.walkStatement(stmt.body);
+        let ok = this.walkStatement(stmt.body);
+        this.loopDepth--;
+        return ok;
       }
       case NodeKind.Do: {
         let stmt = <DoStatement>node;
-        if (!this.walkStatement(stmt.body)) return false;
+        this.loopDepth++;
+        if (!this.walkStatement(stmt.body)) {
+          this.loopDepth--;
+          return false;
+        }
         let condition = this.walkExpression(stmt.condition);
-        if (!condition) return false;
+        if (!condition) {
+          this.loopDepth--;
+          return false;
+        }
         stmt.condition = condition;
+        this.loopDepth--;
         return true;
       }
       case NodeKind.For: {
         let stmt = <ForStatement>node;
+        this.loopDepth++;
         this.pushFrame(this.closureDepth > 0);
+        let ok = true;
         if (stmt.initializer) {
           this.prescan([ stmt.initializer ]);
-          if (!this.walkStatement(stmt.initializer)) {
-            this.popFrame();
-            return false;
-          }
+          if (!this.walkStatement(stmt.initializer)) ok = false;
         }
-        if (stmt.condition) {
+        if (ok && stmt.condition) {
           let condition = this.walkExpression(stmt.condition);
-          if (!condition) {
-            this.popFrame();
-            return false;
-          }
-          stmt.condition = condition;
+          if (!condition) ok = false;
+          else stmt.condition = condition;
         }
-        if (stmt.incrementor) {
+        if (ok && stmt.incrementor) {
           let incrementor = this.walkExpression(stmt.incrementor);
-          if (!incrementor) {
-            this.popFrame();
-            return false;
-          }
-          stmt.incrementor = incrementor;
+          if (!incrementor) ok = false;
+          else stmt.incrementor = incrementor;
         }
-        let ok = this.walkStatement(stmt.body);
+        if (ok) ok = this.walkStatement(stmt.body);
         this.popFrame();
+        this.loopDepth--;
         return ok;
       }
       case NodeKind.ForOf: {
         let stmt = <ForOfStatement>node;
+        this.loopDepth++;
         this.pushFrame(this.closureDepth > 0);
         this.prescan([ stmt.variable ]);
-        if (!this.walkStatement(stmt.variable)) {
-          this.popFrame();
-          return false;
+        let ok = this.walkStatement(stmt.variable);
+        if (ok) {
+          let iterable = this.walkExpression(stmt.iterable);
+          if (!iterable) ok = false;
+          else stmt.iterable = iterable;
         }
-        let iterable = this.walkExpression(stmt.iterable);
-        if (!iterable) {
-          this.popFrame();
-          return false;
-        }
-        stmt.iterable = iterable;
-        let ok = this.walkStatement(stmt.body);
+        if (ok) ok = this.walkStatement(stmt.body);
         this.popFrame();
+        this.loopDepth--;
         return ok;
       }
       case NodeKind.Switch: {
@@ -540,9 +567,18 @@ class EnvLifter {
           if (this.closureDepth > 0) {
             let frameIndex = this.lookupFrame(name);
             let base = this.closureFrameBases[this.closureFrameBases.length - 1];
-            if (frameIndex >= 0 && frameIndex < base && this.frames[frameIndex].isClosure) {
-              this.fail(`Closures cannot capture '${name}' from an enclosing closure`, node.range);
-              return null;
+            if (frameIndex >= 0 && frameIndex < base) {
+              if (this.frames[frameIndex].isClosure) {
+                this.fail(`Closures cannot capture '${name}' from an enclosing closure`, node.range);
+                return null;
+              }
+              if (this.frames[frameIndex].loopDepth > 0) {
+                let collector = this.captureStack[this.captureStack.length - 1];
+                if (collector && !collector.set.has(name)) {
+                  collector.set.add(name);
+                  collector.names.push(name);
+                }
+              }
             }
           }
           return node;
@@ -867,14 +903,25 @@ class EnvLifter {
       this.fail("'await' inside a closure is not yet supported; use an async arrow", range);
       return null;
     }
-    let methodName = `__closure_${this.closureCounter}`;
-    let adapterName = `__adapt_${this.ctx.qualName}_${this.closureCounter++}`;
+    let index = this.closureCounter++;
+    let methodName = `__closure_${index}`;
+    let adapterBase = `__adapt_${this.ctx.qualName}_${index}`;
+    let envClassName = `__env_${this.ctx.qualName}_${index}`;
+    let captureName = `__capture_${this.ctx.qualName}_${index}`;
+    let envsName = `__adapt_envs_${this.ctx.qualName}_${index}`;
+    let fnsName = `__adapt_fns_${this.ctx.qualName}_${index}`;
+    let slotName = `__adapt_slot_${this.ctx.qualName}_${index}`;
     let methodSignature = copyFunctionSignature(declaration.signature, range);
-    let adapterSignature = copyFunctionSignature(declaration.signature, range);
     let bodyNode = declaration.body;
     if (!bodyNode) {
       this.fail("Closures must have a body", range);
       return null;
+    }
+    let inLoop = this.loopDepth > 0;
+    let collector: CaptureCollector | null = null;
+    if (inLoop) {
+      collector = { names: [], set: new Set<string>() };
+      this.captureStack.push(collector);
     }
     let methodBody: Statement;
     this.closureFrameBases.push(this.frames.length);
@@ -889,6 +936,7 @@ class EnvLifter {
         this.closureDepth--;
         this.closureFrameBases.pop();
         this.popFrame();
+        if (collector) this.captureStack.pop();
         return null;
       }
       methodBody = bodyNode;
@@ -898,6 +946,7 @@ class EnvLifter {
         this.closureDepth--;
         this.closureFrameBases.pop();
         this.popFrame();
+        if (collector) this.captureStack.pop();
         return null;
       }
       methodBody = blockStmt([ new ReturnStatement(expr, range) ], range);
@@ -905,12 +954,36 @@ class EnvLifter {
       this.closureDepth--;
       this.closureFrameBases.pop();
       this.popFrame();
+      if (collector) this.captureStack.pop();
       this.fail("Closures with this body shape are not yet supported", bodyNode.range);
       return null;
     }
     this.closureDepth--;
     this.closureFrameBases.pop();
     this.popFrame();
+    let captures: string[] = collector ? collector.names : [];
+    if (collector) this.captureStack.pop();
+    if (captures.length > 0) {
+      for (let i = 0, k = parameters.length; i < k; ++i) {
+        if (parameters[i].name.text == LOOP_ENV_PARAM) {
+          this.fail(`Closures cannot use '${LOOP_ENV_PARAM}' as a parameter name`, parameters[i].name.range);
+          return null;
+        }
+      }
+      for (let i = 0, k = captures.length; i < k; ++i) {
+        if (captures[i] == LOOP_ENV_PARAM || captures[i] == "__async_slot") {
+          this.fail(`Loop closures cannot capture '${captures[i]}'`, range);
+          return null;
+        }
+      }
+      methodSignature.parameters.unshift(new ParameterNode(
+        ParameterKind.Default,
+        ident(LOOP_ENV_PARAM, range),
+        namedType(envClassName, null, false, range),
+        null,
+        range
+      ));
+    }
     let method = new MethodDeclaration(
       ident(methodName, range),
       null,
@@ -920,6 +993,9 @@ class EnvLifter {
       methodBody,
       range
     );
+    this.methods.push(method);
+    let adapterName = captures.length > 0 ? `${adapterBase}_0` : adapterBase;
+    let adapterSignature = copyFunctionSignature(declaration.signature, range);
     let argIdents = new Array<Expression>();
     for (let i = 0, k = parameters.length; i < k; ++i) {
       argIdents.push(ident(parameters[i].name.text, parameters[i].name.range));
@@ -930,16 +1006,52 @@ class EnvLifter {
       [ ident(this.ctx.stateGlobalName, range) ],
       range
     );
-    let adapterBody = blockStmt([
-      new ReturnStatement(
-        callExpr(
-          new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
-          argIdents,
-          range
-        ),
+    let adapterBody: Statement;
+    if (captures.length > 0) {
+      // Slot 0's adapter: the env comes from the table's slot 0. It is
+      // built here, not by the core, so the closure's value identifier
+      // resolves while the core walks the body; the core builds slots
+      // 1..31 in generate() and always replaces this identifier with a
+      // capture call, so this adapter is only ever reached as slot 0.
+      let callArgs = new Array<Expression>();
+      callArgs.push(new ElementAccessExpression(
+        ident(envsName, range),
+        intLit(0, range),
         range
-      )
-    ], range);
+      ));
+      for (let i = 0, k = argIdents.length; i < k; ++i) callArgs.push(argIdents[i]);
+      adapterBody = blockStmt([
+        new ReturnStatement(
+          callExpr(
+            new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
+            callArgs,
+            range
+          ),
+          range
+        )
+      ], range);
+      this.loopEnvs.set(adapterName, {
+        envParam: LOOP_ENV_PARAM,
+        envClass: envClassName,
+        captureName,
+        captures,
+        adapterBase,
+        envsName,
+        fnsName,
+        slotName
+      });
+    } else {
+      adapterBody = blockStmt([
+        new ReturnStatement(
+          callExpr(
+            new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
+            argIdents,
+            range
+          ),
+          range
+        )
+      ], range);
+    }
     let adapter = new FunctionDeclaration(
       ident(adapterName, range),
       null,
@@ -958,7 +1070,6 @@ class EnvLifter {
       this.fail(`Could not register generated function '${adapterName}'`, range);
       return null;
     }
-    this.methods.push(method);
     this.adapters.set(adapterName, method);
     return ident(adapterName, range);
   }
