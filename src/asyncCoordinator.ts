@@ -45,19 +45,27 @@ import {
 
 /** Builds metadata for one transformed async function, or `null` (with a
  *  warning) when it cannot be driven. Non-exported functions are skipped
- *  silently: they cannot be called from JS. */
+ *  silently unless `forInner` is set: an inner function needs no export
+ *  (the coordinator never calls its entry, it only drives the handle the
+ *  outer task already started), so its exportName is `null` and the
+ *  caller keys it by file + qualified name instead. */
 function buildFunctionMeta(
   program: Program,
   prototype: FunctionPrototype,
-  notes: string[]
+  notes: string[],
+  forInner: boolean
 ): FunctionMeta | null {
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);
     return null;
   }
-  let exportName = findExportName(program, file, prototype);
-  if (!exportName) return null;
+  let exportName: string | null = null;
+  if (!forInner) {
+    let found = findExportName(program, file, prototype);
+    if (!found) return null;
+    exportName = found;
+  }
   let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
   if (!instance) {
     warnSkipped(program, prototype, "it cannot be resolved", notes);
@@ -126,11 +134,14 @@ function buildFunctionMeta(
         kind: member.kind,
         nullable: member.nullable,
         join: true,
+        nested: false,
         resumeExport: null,
         rejectExport: "__async_" + fileBase + "_" + fn + "_reject_" + n.toString(),
         storeExport: storeName,
         errorExport: "__async_" + fileBase + "_" + fn + "_join_error_" + n.toString(),
-        doneExport: doneName
+        doneExport: doneName,
+        pendingExport: null,
+        innerExportName: null
       });
       continue;
     }
@@ -155,15 +166,29 @@ function buildFunctionMeta(
       );
       return null;
     }
+    let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
+    let pendingMember = prototype.parent.getMember(pendingName);
+    if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
+    let innerExportName: string | null = null;
+    if (pendingMember) {
+      innerExportName = program.asyncNestedPending.get(pendingName) || null;
+      if (!innerExportName) {
+        warnSkipped(program, prototype, "nested await site " + n.toString() + " has no recorded inner function", notes);
+        return null;
+      }
+    }
     sites.push({
       kind: site.kind,
       nullable: site.nullable,
       join: false,
+      nested: !!pendingMember,
       resumeExport: resumeName,
       rejectExport: "__async_" + fileBase + "_" + fn + "_reject_" + n.toString(),
       storeExport: null,
       errorExport: null,
-      doneExport: null
+      doneExport: null,
+      pendingExport: pendingMember ? pendingName : null,
+      innerExportName
     });
   }
   return {
@@ -239,6 +264,62 @@ function buildImportMeta(
   };
 }
 
+/** Builds metadata for a nested inner function by qualified name, or
+ *  `null` when it cannot be found or driven. The inner lives in the
+ *  same file as the outer function and needs no export. */
+function buildInnerMeta(
+  program: Program,
+  outer: FunctionPrototype,
+  innerQual: string,
+  notes: string[]
+): FunctionMeta | null {
+  let file = owningFile(outer);
+  if (!file) return null;
+  for (let prototype of program.transformedAsyncFunctions) {
+    if (prototype.name != innerQual) continue;
+    if (owningFile(prototype) != file) continue;
+    return buildFunctionMeta(program, prototype, notes, true);
+  }
+  return null;
+}
+
+/** Resolves the metadata for every nested inner function the exported
+ *  functions await, keyed by file + qualified name. A function whose
+ *  inner cannot be found or driven is dropped (with a warning) —
+ *  driving it would deliver the inner import's raw value as the inner
+ *  result. A longer chain (A awaits B, B's own inner undrivable) is
+ *  not dropped here; it fails loudly at runtime in driveNested when
+ *  the inner task suspends at the broken site. */
+function resolveNestedInners(
+  program: Program,
+  entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }>,
+  notes: string[]
+): { [key: string]: FunctionMeta } {
+  let inners: { [key: string]: FunctionMeta } = {};
+  for (let i = entries.length - 1; i >= 0; --i) {
+    let entry = entries[i];
+    let sites = entry.meta.sites;
+    let dropped = false;
+    for (let j = 0, l = sites.length; j < l; ++j) {
+      let site = sites[j];
+      if (!site.nested || !site.innerExportName) continue;
+      let key = entry.meta.fileBase + "\0" + site.innerExportName;
+      if (inners[key]) continue;
+      let innerMeta = buildInnerMeta(program, entry.prototype, site.innerExportName, notes);
+      if (innerMeta) {
+        inners[key] = innerMeta;
+        continue;
+      }
+      warnSkipped(program, entry.prototype, "its nested await of '" + site.innerExportName + "' cannot be driven", notes);
+      entries.splice(i, 1);
+      dropped = true;
+      break;
+    }
+    if (dropped) continue;
+  }
+  return inners;
+}
+
 /**
  * Builds the generated JS coordinator for the program, or `null` when it
  * has no exported transformed async function. Call after compilation.
@@ -246,11 +327,15 @@ function buildImportMeta(
 export function buildAsyncCoordinator(program: Program): string | null {
   if (program.transformedAsyncFunctions.size == 0) return null;
   let notes: string[] = [];
-  let functions: FunctionMeta[] = [];
+  let entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
   for (let prototype of program.transformedAsyncFunctions) {
-    let meta = buildFunctionMeta(program, prototype, notes);
-    if (meta) functions.push(meta);
+    let meta = buildFunctionMeta(program, prototype, notes, false);
+    if (meta) entries.push({ prototype, meta });
   }
+  if (entries.length == 0) return null;
+  let inners = resolveNestedInners(program, entries, notes);
+  let functions: FunctionMeta[] = [];
+  for (let i = 0, k = entries.length; i < k; ++i) functions.push(entries[i].meta);
   if (functions.length == 0) return null;
   let imports: ImportMeta[] = [];
   let seen = new Set<string>();
@@ -264,7 +349,7 @@ export function buildAsyncCoordinator(program: Program): string | null {
     seen.add(key);
     imports.push(meta);
   }
-  let metadata = { functions, imports };
+  let metadata = { functions, inners, imports };
   let hasJoin = false;
   for (let i = 0, k = functions.length; i < k; ++i) {
     let sites = functions[i].sites;

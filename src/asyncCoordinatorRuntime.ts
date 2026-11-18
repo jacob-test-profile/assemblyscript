@@ -39,6 +39,8 @@ export function createCoordinator(metadata) {
   metadata = metadata || __ASYNC_METADATA__;
   const functionsByExport = new Map();
   metadata.functions.forEach(function (fn) { functionsByExport.set(fn.exportName, fn); });
+  const innerFunctionsByKey = new Map();
+  Object.keys(metadata.inners || {}).forEach(function (key) { innerFunctionsByKey.set(key, metadata.inners[key]); });
   const importsByKey = new Map();
   metadata.imports.forEach(function (imp) { importsByKey.set(imp.module + '\\0' + imp.name, imp); });
 
@@ -160,11 +162,13 @@ export function createCoordinator(metadata) {
       result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.resultKind, task.fn.resultNullable);
     } catch (e) {
       dropPin(task);
+      if (task.parent) { deliverInnerFailure(task, e); return; }
       task.reject(e);
       drain(task.fn.fileBase);
       return;
     }
     dropPin(task);
+    if (task.parent) { deliverInnerResult(task, result); return; }
     task.resolve(result);
     drain(task.fn.fileBase);
   }
@@ -178,6 +182,7 @@ export function createCoordinator(metadata) {
       if (ptr) message = getString(ptr);
     } catch (e) { /* keep the fallback message */ }
     dropPin(task);
+    if (task.parent) { deliverInnerFailure(task, new Error(message)); return; }
     task.reject(new Error(message));
     drain(task.fn.fileBase);
   }
@@ -186,8 +191,45 @@ export function createCoordinator(metadata) {
     if (!task || task.settled) return;
     task.settled = true;
     dropPin(task);
+    if (task.parent) { deliverInnerFailure(task, error); return; }
     task.reject(error instanceof Error ? error : new Error(String(error)));
     drain(task.fn.fileBase);
+  }
+
+  // Delivers a settled inner task's result to the outer task that awaited
+  // it: the inner task's failure becomes the outer await's rejection, so
+  // the outer's catch can catch it, exactly like a rejected promise.
+  function deliverInnerResult(innerTask, result) {
+    const parent = innerTask.parent;
+    const site = parent.fn.sites[innerTask.parentSite];
+    let lowered;
+    try {
+      lowered = lower(result, site.kind, site.nullable);
+    } catch (e) {
+      settleError(parent, e);
+      drain(innerTask.fn.fileBase);
+      return;
+    }
+    let rc;
+    try {
+      activeTask = parent;
+      try {
+        rc = wasmExports[site.resumeExport](parent.handle, lowered);
+      } finally {
+        activeTask = null;
+      }
+    } catch (e) {
+      settleError(parent, e);
+      drain(innerTask.fn.fileBase);
+      return;
+    }
+    afterStep(parent, rc);
+    drain(innerTask.fn.fileBase);
+  }
+
+  function deliverInnerFailure(innerTask, error) {
+    failTask(innerTask.parent, innerTask.parentSite, error);
+    drain(innerTask.fn.fileBase);
   }
 
   function failTask(task, site, error) {
@@ -402,6 +444,41 @@ export function createCoordinator(metadata) {
     failJoin(task, site, 'async coordinator: unknown join policy ' + policy);
   }
 
+  // Drives a nested await: the outer task suspended after starting the
+  // inner task, whose handle the pending export exposes. The inner
+  // task's first step already ran during the outer step, so whatever it
+  // issued (a pending promise, a pending join, a token) was recorded on
+  // the outer task and is transferred here; settlement delivers the
+  // inner result (or failure) to the outer resume/reject export.
+  function driveNested(task, site, siteMeta, pending, pendingToken, pendingJoin) {
+    let innerHandle = 0;
+    try {
+      innerHandle = wasmExports[siteMeta.pendingExport](task.handle);
+    } catch (e) {
+      settleError(task, e);
+      return;
+    }
+    if (!innerHandle) {
+      settleError(task, new Error("async coordinator: nested async call could not start"));
+      return;
+    }
+    const innerMeta = innerFunctionsByKey.get(task.fn.fileBase + "\0" + siteMeta.innerExportName);
+    if (!innerMeta) {
+      settleError(task, new Error("async coordinator: nested async function '" + siteMeta.innerExportName + "' cannot be driven"));
+      return;
+    }
+    const innerTask = {
+      fn: innerMeta, handle: innerHandle,
+      pending: pending, pendingToken: pendingToken, pendingJoin: pendingJoin, pendingWaitMissing: 0,
+      parent: task, parentSite: site,
+      settled: false, resolve: null, reject: null
+    };
+    if (pin) {
+      try { pin(innerHandle); } catch (e) { /* best-effort */ }
+    }
+    drive(innerTask);
+  }
+
   function drive(task) {
     let st;
     try {
@@ -424,12 +501,22 @@ export function createCoordinator(metadata) {
     }
     const pending = task.pending;
     const pendingToken = task.pendingToken;
+    const pendingWaitMissing = task.pendingWaitMissing;
     task.pending = null;
     task.pendingToken = null;
-    if (task.pendingWaitMissing) {
-      const token = task.pendingWaitMissing;
-      task.pendingWaitMissing = null;
-      settleError(task, new Error("async coordinator: await of a stored promise with an unknown or already-consumed token " + token));
+    task.pendingWaitMissing = null;
+    if (siteMeta.nested) {
+      const pendingJoin = task.pendingJoin;
+      task.pendingJoin = null;
+      if (pendingWaitMissing) {
+        failTask(task, site, new Error("async coordinator: await of a stored promise with an unknown or already-consumed token " + pendingWaitMissing));
+        return;
+      }
+      driveNested(task, site, siteMeta, pending, pendingToken, pendingJoin);
+      return;
+    }
+    if (pendingWaitMissing) {
+      settleError(task, new Error("async coordinator: await of a stored promise with an unknown or already-consumed token " + pendingWaitMissing));
       return;
     }
     if (siteMeta.join) {
@@ -476,7 +563,7 @@ export function createCoordinator(metadata) {
       const wasmArgs = jsArgs.map(function (arg, i) {
         return lower(arg, fn.params[i].kind, fn.params[i].nullable);
       });
-      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, settled: false, resolve: resolve, reject: reject };
+      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
         handle = wasmExports[fn.exportName].apply(null, wasmArgs);

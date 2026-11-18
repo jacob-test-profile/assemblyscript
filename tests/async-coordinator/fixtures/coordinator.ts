@@ -15,6 +15,9 @@ declare function useHandle(h: externref): Promise<i32>;
 //@ external("env", "issueNumber")
 declare function issueNumber(i: i32): i32;
 
+//@ external("env", "getNumber")
+declare function getNumber(): Promise<i32>;
+
 //@ external("env", "joinNumbers")
 declare function joinNumbers(policy: i32): Promise<string>;
 
@@ -144,6 +147,59 @@ export async function storedHandle(): Promise<i32> {
   let v = await h;
   let n = await useHandle(v);
   return n;
+}
+
+// Nested await: the coordinator drives the inner task and delivers its
+// result to the outer resume export (it must not deliver the inner
+// import's raw value).
+export async function innerAdd(n: i32): Promise<i32> {
+  let m = await getNumber();
+  return n + m;
+}
+
+export async function outerAdd(n: i32): Promise<i32> {
+  let r = await innerAdd(n);
+  return r * 2;
+}
+
+// An inner failure becomes the outer await's rejection, catchable here.
+export async function outerCatch(n: i32): Promise<string> {
+  try {
+    let r = await innerAdd(n);
+    return "ok-" + r.toString();
+  } catch (e) {
+    return "caught:" + e;
+  }
+}
+
+export async function outerNoCatch(n: i32): Promise<i32> {
+  let r = await innerAdd(n);
+  return r * 2;
+}
+
+// An async arrow awaited as a nested call: the extracted arrow function
+// has no export, so the coordinator drives it through the inners map.
+export async function arrowed(): Promise<i32> {
+  let getTen = async (): Promise<i32> => {
+    let m = await getNumber();
+    return m + 1;
+  };
+  let v = await getTen();
+  return v + 1;
+}
+
+// A closure over a shared counter, called before and after an await:
+// the counter must read 1 then 2 across the suspension.
+export async function closureCounter(): Promise<i32> {
+  let count = 0;
+  let inc = (): i32 => {
+    count += 1;
+    return count;
+  };
+  let a = inc();
+  await getChunk(0);
+  let b = inc();
+  return a * 10 + b;
 }
 
 export async function voidTask(): Promise<void> {

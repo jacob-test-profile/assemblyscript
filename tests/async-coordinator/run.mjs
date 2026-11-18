@@ -99,6 +99,7 @@ console.log("PASS missing suspending binding fails loudly");
 // deferred promise; the test decides when (and whether) each settles.
 const chunkCalls = [];
 const chunkDeferreds = [];
+const numDeferreds = [];
 const handleDeferreds = [];
 const useDeferreds = [];
 const seenHandles = [];
@@ -115,6 +116,11 @@ const api = await instantiateAsync(bytes, {
       chunkCalls.push(i);
       const d = deferred();
       chunkDeferreds.push(d);
+      return d.promise;
+    },
+    getNumber() {
+      const d = deferred();
+      numDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -310,6 +316,50 @@ const api = await instantiateAsync(bytes, {
   useDeferreds[uBase].resolve(42);
   check((await p) === 42, "storedHandle must resolve 42");
   console.log("PASS stored externref promise");
+}
+
+// Nested await: the inner task is driven, its result (not the inner
+// import's raw value) reaches the outer resume.
+{
+  let base = numDeferreds.length;
+  const p = api.outerAdd(10);
+  await tick();
+  check(numDeferreds.length === base + 1, "outerAdd must issue the inner import once");
+  numDeferreds[base].resolve(5);
+  check((await p) === 30, "outerAdd(10) with inner 10+5 must resolve 30");
+  console.log("PASS nested await, inner result delivered to outer");
+
+  base = numDeferreds.length;
+  const p2 = api.outerCatch(10);
+  await tick();
+  numDeferreds[base].reject(new Error("inner-boom"));
+  check((await p2) === "caught:inner-boom", "an inner failure must land in the outer catch");
+  console.log("PASS nested await, inner failure lands in outer catch");
+
+  base = numDeferreds.length;
+  const p3 = api.outerNoCatch(10);
+  await tick();
+  numDeferreds[base].reject(new Error("inner-boom-2"));
+  await assertRejects(p3, /inner-boom-2/, "an inner failure without a catch must reject the outer with the inner message");
+  console.log("PASS nested await, inner failure rejects outer");
+
+  base = numDeferreds.length;
+  const p4 = api.arrowed();
+  await tick();
+  check(numDeferreds.length === base + 1, "arrowed must issue the inner import once");
+  numDeferreds[base].resolve(10);
+  check((await p4) === 12, "awaited async arrow must resolve (10+1)+1");
+  console.log("PASS nested await of an extracted async arrow");
+}
+
+// Closure counter across an await: 1 then 2, shared storage exact.
+{
+  const base = chunkDeferreds.length;
+  const p = api.closureCounter();
+  await tick();
+  chunkDeferreds[base].resolve("X");
+  check((await p) === 12, "closure counter must read 1 then 2 across the await");
+  console.log("PASS closure counter 1-then-2 across await");
 }
 
 // A rejection that lands in a catch must drive the catch, not fail the task.

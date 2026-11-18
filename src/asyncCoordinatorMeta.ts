@@ -45,21 +45,29 @@ export interface ValueDesc {
 
 /** Metadata for one await site, per the chunk 1 wire protocol. A join
  *  site (chunk 5) has no resume export: settlements are delivered through
- *  the join_store/join_error exports and the site resumes via join_done. */
+ *  the join_store/join_error exports and the site resumes via join_done.
+ *  A nested site (chunk 3/7) awaits another async function in the same
+ *  file: the inner task's handle comes from the pending export, and the
+ *  inner function is named by innerExportName (its export name when it
+ *  is exported, else the generated name the inners map is keyed by). */
 export interface SiteMeta {
   kind: string;
   nullable: boolean;
   join: boolean;
+  nested: boolean;
   resumeExport: string | null;
   rejectExport: string;
   storeExport: string | null;
   errorExport: string | null;
   doneExport: string | null;
+  pendingExport: string | null;
+  innerExportName: string | null;
 }
 
 /** Metadata for one exported transformed async function. */
 export interface FunctionMeta {
-  exportName: string;
+  /** Wasm export name, or `null` for a non-exported inner function. */
+  exportName: string | null;
   fileBase: string;
   params: ValueDesc[];
   resultKind: string;
