@@ -29,7 +29,6 @@ import {
   TemplateLiteralExpression,
   AwaitExpression,
   FunctionExpression,
-  ClassExpression,
   BlockStatement,
   ExpressionStatement,
   ReturnStatement,
@@ -156,7 +155,7 @@ class ThisWalker {
         if (!condition) return false;
         stmt.condition = condition;
         return this.walkStatement(stmt.ifTrue)
-          && (!stmt.ifElse || this.walkStatement(stmt.ifElse));
+          && (!stmt.ifFalse || this.walkStatement(stmt.ifFalse));
       }
       case NodeKind.While: {
         let stmt = <WhileStatement>node;

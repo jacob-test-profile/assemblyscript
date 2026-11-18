@@ -13,7 +13,6 @@
 
 import {
   NodeKind,
-  Node,
   Statement,
   Expression,
   TypeNode,
@@ -40,7 +39,6 @@ import {
   ClassDeclaration,
   AwaitExpression,
   NewExpression,
-  IdentifierExpression,
   BinaryExpression,
   UnaryPrefixExpression,
   TernaryExpression,
@@ -360,7 +358,7 @@ class TryDesugar {
       case NodeKind.If: {
         let ifStmt = <IfStatement>stmt;
         this.analyzeStatement(ifStmt.ifTrue, tryDepth);
-        if (ifStmt.ifElse) this.analyzeStatement(ifStmt.ifElse, tryDepth);
+        if (ifStmt.ifFalse) this.analyzeStatement(ifStmt.ifFalse, tryDepth);
         return;
       }
       case NodeKind.While: {
@@ -571,7 +569,7 @@ class TryDesugar {
       case NodeKind.If: {
         let ifStmt = <IfStatement>stmt;
         ifStmt.ifTrue = this.desugarBranch(ifStmt.ifTrue, mode);
-        if (ifStmt.ifElse) ifStmt.ifElse = this.desugarBranch(ifStmt.ifElse, mode);
+        if (ifStmt.ifFalse) ifStmt.ifFalse = this.desugarBranch(ifStmt.ifFalse, mode);
         return [ stmt ];
       }
       case NodeKind.While: {
@@ -688,8 +686,8 @@ class TryDesugar {
   private stringifyThrow(value: Expression): Expression {
     if (value.kind == NodeKind.New) {
       let newExpr = <NewExpression>value;
-      let callee = newExpr.expression;
-      if (callee.kind == NodeKind.Identifier && (<IdentifierExpression>callee).text == "Error") {
+      let typeName = newExpr.typeName;
+      if (!typeName.next && typeName.identifier.text == "Error") {
         let args = newExpr.args;
         if (args.length > 0) return args[0];
         return strLit("", value.range);

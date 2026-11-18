@@ -428,6 +428,7 @@ export interface AsyncRewriter {
  *  method's parameters are shadowed so references to them stay plain,
  *  while captured locals become state-field accesses. */
 export function rewriteClosureMethod(method: MethodDeclaration, ctx: AsyncRewriter): bool {
+  if (!method.body) return false;
   ctx.scope.push();
   let parameters = method.signature.parameters;
   for (let i = 0, k = parameters.length; i < k; ++i) {

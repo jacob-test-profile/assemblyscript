@@ -32,7 +32,6 @@ import {
   TemplateLiteralExpression,
   AwaitExpression,
   FunctionExpression,
-  ClassExpression,
   FunctionDeclaration,
   MethodDeclaration,
   BlockStatement,
@@ -305,7 +304,7 @@ class EnvLifter {
         if (!condition) return false;
         stmt.condition = condition;
         return this.walkStatement(stmt.ifTrue)
-          && (!stmt.ifElse || this.walkStatement(stmt.ifElse));
+          && (!stmt.ifFalse || this.walkStatement(stmt.ifFalse));
       }
       case NodeKind.While: {
         let stmt = <WhileStatement>node;
@@ -686,7 +685,7 @@ class EnvLifter {
           this.fail("Async arrows must be assigned to a local or a field to be awaited", node.range);
           return null;
         }
-        return this.liftClosure(node);
+        return this.liftClosure(<FunctionExpression>node);
       }
       case NodeKind.Class: {
         return node;

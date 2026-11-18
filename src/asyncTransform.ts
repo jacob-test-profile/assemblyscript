@@ -26,6 +26,7 @@ import {
   WhileStatement,
   ForStatement,
   DoStatement,
+  ThrowStatement,
   FunctionDeclaration,
   MethodDeclaration,
   ClassDeclaration,
@@ -136,8 +137,7 @@ import {
 
 import {
   scanFileForAsyncArrows,
-  ArrowWorkItem,
-  FileArrowAliases
+  ArrowWorkItem
 } from "./asyncArrowExtract";
 
 import {
