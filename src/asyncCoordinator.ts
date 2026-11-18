@@ -47,6 +47,8 @@ import {
   collectSuspendingImports,
   findImportName,
   qualNameOf,
+  methodClassOf,
+  isStaticMethod,
   namespacePathOf
 } from "./asyncCoordinatorMeta";
 
@@ -219,23 +221,26 @@ function buildFunctionMeta(
 
 /** Builds metadata for one transformed async method on an exported class,
  *  or `null` when it cannot be driven. A method on a non-exported class
- *  is skipped silently (no wrapper class in v1); any other failure warns.
+ *  is skipped silently by design (no wrapper class: the class is not
+ *  nameable from JS, so its methods stay reachable only as nested
+ *  inners); any other failure warns.
  *  The resolved signature's parameterTypes are the declared params only —
  *  the receiver lives in signature.thisType — so they describe as-is and
- *  the runtime prepends the raw pointer. */
+ *  the runtime prepends the raw pointer. A static method has no receiver
+ *  at all: its entry takes only the declared params. */
 function buildMethodMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[]
 ): MethodMeta | null {
-  let bound = prototype.getBoundClassOrInterface();
-  if (!bound) return null;
+  let cls = methodClassOf(prototype);
+  if (!cls) return null;
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);
     return null;
   }
-  if (!findExportName(program, file, bound.prototype)) return null;
+  if (!findExportName(program, file, cls)) return null;
   let qualName = qualNameOf(prototype);
   let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
   if (!meta) return null;
@@ -243,6 +248,7 @@ function buildMethodMeta(
     ...meta,
     exportName: null,
     name: prototype.name,
+    isStatic: isStaticMethod(prototype),
     entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
   };
 }
@@ -371,7 +377,7 @@ function buildInnerMeta(
     // parent is the bound class) and for namespaced functions (whose
     // parent is the namespace); only a top-level function looks them up
     // under its own parent, the file itself.
-    let lookupParent: Element = prototype.getBoundClassOrInterface() || namespacePathOf(prototype).length > 0
+    let lookupParent: Element = methodClassOf(prototype) || namespacePathOf(prototype).length > 0
       ? innerFile
       : prototype.parent;
     return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
@@ -427,10 +433,10 @@ export function buildAsyncCoordinator(program: Program): string | null {
   let entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
   let methodEntries: Array<{ prototype: FunctionPrototype, meta: MethodMeta, classPrototype: ClassPrototype }> = [];
   for (let prototype of program.transformedAsyncFunctions) {
-    let bound = prototype.getBoundClassOrInterface();
-    if (bound && bound.kind == ElementKind.Class) {
+    let cls = methodClassOf(prototype);
+    if (cls) {
       let meta = buildMethodMeta(program, prototype, notes);
-      if (meta) methodEntries.push({ prototype, meta, classPrototype: bound.prototype });
+      if (meta) methodEntries.push({ prototype, meta, classPrototype: cls });
     } else if (namespacePathOf(prototype).length > 0) {
       // A namespaced function is not a wasm export, so it is driven
       // through its generated top-level entry alias. The entry exists

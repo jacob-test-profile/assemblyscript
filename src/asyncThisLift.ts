@@ -29,6 +29,7 @@ import {
   TemplateLiteralExpression,
   AwaitExpression,
   FunctionExpression,
+  FunctionDeclaration,
   BlockStatement,
   ExpressionStatement,
   ReturnStatement,
@@ -53,7 +54,8 @@ import {
 
 import {
   Program,
-  FunctionPrototype
+  FunctionPrototype,
+  ClassPrototype
 } from "./program";
 
 import {
@@ -86,25 +88,51 @@ export function liftThisInAsyncBody(
   }
   let bodyNode = prototype.bodyNode;
   if (!bodyNode) return true;
-  let walker = new ThisWalker(program, fail, hasReceiver, isStatic);
+  if (isStatic) {
+    // In a static method `this` is the class itself, so it rewrites to
+    // the class-name identifier, exactly as the user would write it.
+    // A local binding of the class name would shadow that identifier,
+    // so the rewrite fails loudly instead of miscompiling. The scan is
+    // deliberately conservative: a binding anywhere in the body,
+    // including inside a nested function where it would not actually
+    // shadow an outer use, still fails — renaming the local fixes it.
+    let className = (<ClassPrototype>prototype.parent).name;
+    let collector = new ThisWalker(program, noopFail, false, true, className, true);
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      collector.declared.add(parameters[i].name.text);
+    }
+    collector.walkStatement(bodyNode);
+    if (collector.sawThis && collector.declared.has(className)) {
+      fail(`'this' in static async method '${prototype.name}' cannot be rewritten because '${className}' is shadowed by a local of the same name; rename the local`, prototype.identifierNode.range);
+      return false;
+    }
+  }
+  let walker = new ThisWalker(program, fail, hasReceiver, isStatic, isStatic ? (<ClassPrototype>prototype.parent).name : null, false);
   return walker.walkStatement(bodyNode);
 }
 
+function noopFail(_message: string, _range: Range): void {}
+
 class ThisWalker {
+  /** Names bound anywhere in the body, collected when `collecting`. */
+  declared = new Set<string>();
+  /** Whether a `this` was seen, collected when `collecting`. */
+  sawThis: bool = false;
+
   constructor(
     private program: Program,
     private fail: AsyncFail,
     private hasReceiver: bool,
-    private isStatic: bool
+    private isStatic: bool,
+    /** Class name a static `this` rewrites to; `null` otherwise. */
+    private className: string | null = null,
+    /** When set, only record declarations and `this` uses; never fail
+     *  or rewrite, so the pass cannot abort the collection early. */
+    private collecting: bool = false
   ) {}
 
   private failThis(range: Range): bool {
-    this.fail(
-      this.isStatic
-        ? "'this' in static async methods is not yet supported"
-        : "'this' in async functions is not yet supported",
-      range
-    );
+    this.fail("'this' in async functions is not yet supported", range);
     return false;
   }
 
@@ -121,7 +149,8 @@ class ThisWalker {
         let declarations = (<VariableStatement>node).declarations;
         for (let i = 0, k = declarations.length; i < k; ++i) {
           let declaration = declarations[i];
-          if (declaration.name.text == ASYNC_THIS_NAME) {
+          if (this.collecting) this.declared.add(declaration.name.text);
+          if (!this.collecting && declaration.name.text == ASYNC_THIS_NAME) {
             this.fail(`'${ASYNC_THIS_NAME}' is reserved for the CPS transform and cannot be declared in an async function`, declaration.name.range);
             return false;
           }
@@ -131,6 +160,16 @@ class ThisWalker {
             declaration.initializer = initializer;
           }
         }
+        return true;
+      }
+      case NodeKind.FunctionDeclaration: {
+        if (!this.collecting) return true;
+        let declaration = <FunctionDeclaration>node;
+        let parameters = declaration.signature.parameters;
+        for (let i = 0, k = parameters.length; i < k; ++i) {
+          this.declared.add(parameters[i].name.text);
+        }
+        if (declaration.body) return this.walkStatement(declaration.body);
         return true;
       }
       case NodeKind.Expression: {
@@ -221,9 +260,13 @@ class ThisWalker {
         for (let i = 0, k = bodyStatements.length; i < k; ++i) {
           if (!this.walkStatement(bodyStatements[i])) return false;
         }
-        if (stmt.catchVariable && stmt.catchVariable.text == ASYNC_THIS_NAME) {
-          this.fail(`'${ASYNC_THIS_NAME}' is reserved for the CPS transform and cannot be a catch variable`, stmt.catchVariable.range);
-          return false;
+        if (stmt.catchVariable) {
+          if (this.collecting) {
+            this.declared.add(stmt.catchVariable.text);
+          } else if (stmt.catchVariable.text == ASYNC_THIS_NAME) {
+            this.fail(`'${ASYNC_THIS_NAME}' is reserved for the CPS transform and cannot be a catch variable`, stmt.catchVariable.range);
+            return false;
+          }
         }
         if (stmt.catchStatements) {
           let catchStatements = stmt.catchStatements;
@@ -255,6 +298,11 @@ class ThisWalker {
   walkExpression(node: Expression): Expression | null {
     switch (node.kind) {
       case NodeKind.This: {
+        if (this.collecting) {
+          this.sawThis = true;
+          return node;
+        }
+        if (this.isStatic) return ident(assert(this.className), node.range);
         if (!this.hasReceiver) {
           this.failThis(node.range);
           return null;
@@ -262,6 +310,7 @@ class ThisWalker {
         return ident(ASYNC_THIS_NAME, node.range);
       }
       case NodeKind.Super: {
+        if (this.collecting) return node;
         this.fail("'super' in async functions is not yet supported", node.range);
         return null;
       }
@@ -409,7 +458,9 @@ class ThisWalker {
         let declaration = (<FunctionExpression>node).declaration;
         let parameters = declaration.signature.parameters;
         for (let i = 0, k = parameters.length; i < k; ++i) {
-          if (parameters[i].name.text == ASYNC_THIS_NAME) {
+          if (this.collecting) {
+            this.declared.add(parameters[i].name.text);
+          } else if (parameters[i].name.text == ASYNC_THIS_NAME) {
             this.fail(`'${ASYNC_THIS_NAME}' is reserved for the CPS transform and cannot be a closure parameter`, parameters[i].name.range);
             return null;
           }

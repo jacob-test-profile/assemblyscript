@@ -21,11 +21,6 @@ class W {
   sync(n: i32): Promise<string> {
     return getChunk(n);
   }
-
-  static async staticM(n: i32): Promise<string> {
-    let c = await getChunk(n);
-    return c;
-  }
 }
 
 class G<T> {
@@ -127,16 +122,12 @@ export async function awaitVoid(): Promise<string> {
 }
 
 // Member-call await stays loud when the callee is not a transformed
-// async method: a sync method, a static method, an unresolvable member,
-// a generic-class method, and a namespaced-class method.
+// async method: a sync method, an unresolvable member, a generic-class
+// method, and a namespaced-class method. (A static method is drivable:
+// see async-static-method.ts.)
 export async function awaitSync(): Promise<string> {
   let w = new W();
   let c = await w.sync(0);
-  return c;
-}
-
-export async function awaitStatic(): Promise<string> {
-  let c = await W.staticM(0);
   return c;
 }
 

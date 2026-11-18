@@ -842,6 +842,102 @@ const api = await instantiateAsync(bytes, {
     c.dispose();
     console.log("PASS pinned instance survives churn + __collect");
   }
+
+  // Static async methods through the generated coordinator: statics on the
+// wrapper constructor, static state across awaits via `this`, a static
+// awaiting an instance method, concurrent statics, the static async
+// `dispose` not colliding with the sync dispose(), and methods on a
+// non-exported class reachable only from within async code.
+{
+  check(typeof methodsApi.Counter.create === "function", "generated wrapper class must expose static create");
+  check(typeof methodsApi.Counter.fetch === "function", "generated wrapper class must expose static fetch");
+  check(typeof methodsApi.Counter.viaInstance === "function", "generated wrapper class must expose static viaInstance");
+  check(typeof methodsApi.Counter.dispose === "function", "generated wrapper class must expose static dispose");
+  check(typeof methodsApi.viaHidden === "function", "generated coordinator must expose viaHidden");
+  check(typeof methodsApi.viaHiddenStatic === "function", "generated coordinator must expose viaHiddenStatic");
+  check(methodsApi.Hidden === undefined, "a non-exported class must get no wrapper class");
+  console.log("PASS static methods and non-exported class surface on the coordinator");
+
+  // Basic static, with static state accumulating across calls: create(5)
+  // with getNumber()=7 gives 12, then create(100) gives 119.
+  {
+    let base = methodNums.length;
+    let p = methodsApi.Counter.create(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.create(5) with getNumber()=7 must give 12");
+    base = methodNums.length;
+    p = methodsApi.Counter.create(100);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 119, "Counter.create(100) must give 119 with static state kept");
+    console.log("PASS basic static method, static state 12 then 119");
+  }
+
+  // Static method awaiting an import.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.fetch(3);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 10, "Counter.fetch(3) with getNumber()=7 must give 10");
+    console.log("PASS static method awaiting an import");
+  }
+
+  // Static method awaiting an instance method of a fresh instance.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.viaInstance(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.viaInstance(5) must give 12");
+    console.log("PASS static method awaiting an instance method");
+  }
+
+  // Two statics driven concurrently keep independent results.
+  {
+    const base = methodNums.length;
+    const p1 = methodsApi.Counter.fetch(1);
+    const p2 = methodsApi.Counter.fetch(2);
+    await tick();
+    check(methodNums.length === base + 2, "concurrent statics must issue two awaits");
+    methodNums[base].resolve(7);
+    methodNums[base + 1].resolve(7);
+    check((await p1) === 8, "first concurrent static must give 8");
+    check((await p2) === 9, "second concurrent static must give 9");
+    console.log("PASS two statics driven concurrently");
+  }
+
+  // Static async `dispose` and the sync instance dispose() coexist: the
+  // static drives a task, the sync one still releases the pin.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.dispose(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.dispose(5) static must give 12");
+    const c = new methodsApi.Counter();
+    c.dispose();
+    c.dispose();
+    console.log("PASS static async dispose does not shadow sync dispose()");
+  }
+
+  // Non-exported class: its instance method and its static method are
+  // both reachable from exported async functions, with no wrapper.
+  {
+    let base = methodNums.length;
+    const p = methodsApi.viaHidden(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "viaHidden(5) must give 12");
+    base = methodNums.length;
+    const p2 = methodsApi.viaHiddenStatic(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p2) === 12, "viaHiddenStatic(5) must give 12");
+    console.log("PASS non-exported class methods reachable only from async code");
+  }
+}
 }
 
 // Namespaced async functions through the generated coordinator: the api
