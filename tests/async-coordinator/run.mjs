@@ -7,7 +7,9 @@
 // await, the join engine (via the test-only join driver and via chunk 5's
 // real wasm join), rejection propagation, a void task, the spill-pool FIFO
 // queue, and heap churn + __collect mid-suspension. Also checks a sync-only
-// module emits no coordinator.
+// module emits no coordinator, cross-file await (direct, guarded, chain,
+// terminating mutual cycle, cross-file method), and join-member /
+// join-argument await through the real join engine.
 //
 // Run: npm run test:async-coordinator   (after npm run build)
 import { spawnSync } from "node:child_process";
@@ -26,7 +28,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -842,6 +844,184 @@ const api = await instantiateAsync(bytes, {
     c.dispose();
     console.log("PASS pinned instance survives churn + __collect");
   }
+}
+
+// Cross-file await through the generated coordinator: direct, guarded,
+// chain, terminating mutual cycle, cross-file method.
+{
+  const wasmBytes = readFileSync(compile("crossfile.ts"));
+  const crossCoord = join(dir, "crossfile.async.js");
+  check(existsSync(crossCoord), "crossfile.async.js must be emitted for the cross-file fixture");
+  const { instantiateAsync: instantiateCross } = await import(pathToFileURL(crossCoord).href);
+  const chunks = [];
+  const numsA = [];
+  const numsB = [];
+  const numsW = [];
+  const crossApi = await instantiateCross(wasmBytes, {
+    env: {
+      getChunk(i) { const d = deferred(); chunks.push(d); return d.promise; },
+      getNumberA() { const d = deferred(); numsA.push(d); return d.promise; },
+      getNumberB() { const d = deferred(); numsB.push(d); return d.promise; },
+      getNumberW() { const d = deferred(); numsW.push(d); return d.promise; }
+    }
+  });
+
+  let p = crossApi.awaitOtherFile();
+  await tick();
+  check(chunks.length === 1, "awaitOtherFile must issue one getChunk");
+  chunks[0].resolve("hello");
+  check((await p) === "hello", "cross-file await must return the helper result");
+  console.log("PASS cross-file await, direct");
+
+  p = crossApi.awaitOtherFileGuarded();
+  await tick();
+  check(chunks.length === 2, "guarded cross-file await must issue one getChunk");
+  chunks[1].reject(new Error("cross-boom"));
+  check((await p) === "caught", "cross-file await rejection must land in the catch");
+  console.log("PASS cross-file await, guarded by try/catch");
+
+  p = crossApi.awaitChain();
+  await tick();
+  check(chunks.length === 3, "awaitChain must issue one getChunk");
+  chunks[2].resolve("hello");
+  check((await p) === "hello2", "cross-file chain must return the chained result");
+  console.log("PASS cross-file await, chain");
+
+  p = crossApi.awaitCycle();
+  await tick();
+  check(numsA.length === 1, "awaitCycle must issue getNumberA first");
+  numsA[0].resolve(1);
+  await tick();
+  check(numsB.length === 1, "awaitCycle must issue getNumberB next");
+  numsB[0].resolve(10);
+  check((await p) === 11, "cross-file mutual cycle must terminate with 11");
+  console.log("PASS cross-file await, terminating mutual cycle");
+
+  p = crossApi.awaitCrossMethod();
+  await tick();
+  check(numsW.length === 1, "awaitCrossMethod must issue one getNumberW");
+  numsW[0].resolve(7);
+  check((await p) === 17, "cross-file method await must return 17");
+  console.log("PASS cross-file await, method in another file");
+}
+
+// Join-member and join-argument await through the generated coordinator.
+{
+  const wasmBytes = readFileSync(compile("joinmember.ts"));
+  const jmCoord = join(dir, "joinmember.async.js");
+  check(existsSync(jmCoord), "joinmember.async.js must be emitted for the join-member fixture");
+  const { instantiateAsync: instantiateJm } = await import(pathToFileURL(jmCoord).href);
+  const jmNums = [];
+  const jmFails = [];
+  const jmSlows = [];
+  const jmApi = await instantiateJm(wasmBytes, {
+    env: {
+      getNumber() { const d = deferred(); jmNums.push(d); return d.promise; },
+      getFailing() { const d = deferred(); jmFails.push(d); return d.promise; },
+      getSlow() { const d = deferred(); jmSlows.push(d); return d.promise; }
+    }
+  });
+
+  // allHoisted: the hoisted member suspends first; the join issues only
+  // after it settles, and the result keeps argument order.
+  let base = jmNums.length;
+  let p = jmApi.allHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "allHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmNums.length === base + 3, "allHoisted must issue the remaining members after the hoisted await");
+  jmNums[base + 2].resolve(30);
+  jmNums[base + 1].resolve(20);
+  check((await p) === "5|20|30", "join-member all must deliver results in argument order");
+  console.log("PASS join-member await, all");
+
+  // raceHoisted: the pre-resolved member wins even though the other
+  // member is still pending.
+  base = jmNums.length;
+  let slowBase = jmSlows.length;
+  p = jmApi.raceHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "raceHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmSlows.length === slowBase + 1, "raceHoisted must issue the slow member after the hoisted await");
+  check((await p) === 5, "join-member race must resolve with the pre-resolved member");
+  jmSlows[slowBase].resolve(99);
+  await tick();
+  console.log("PASS join-member await, race pre-resolved wins");
+
+  // anyHoisted: the hoisted member is issued first; the failing member
+  // is issued after it settles, and the pre-resolved member still wins
+  // over its concurrent rejection.
+  base = jmNums.length;
+  let failBase = jmFails.length;
+  p = jmApi.anyHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "anyHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmFails.length === failBase + 1, "anyHoisted must issue the failing member after the hoisted await");
+  jmFails[failBase].reject(new Error("no-a"));
+  check((await p) === 5, "join-member any must resolve with the hoisted member");
+  console.log("PASS join-member await, any");
+
+  // settledHoisted: pre-resolved fulfillment plus a rejection.
+  base = jmNums.length;
+  failBase = jmFails.length;
+  p = jmApi.settledHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "settledHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmFails.length === failBase + 1, "settledHoisted must issue the failing member after the hoisted await");
+  jmFails[failBase].reject(new Error("bad"));
+  check((await p) === "ok5;nobad;", "join-member allSettled must report both members");
+  console.log("PASS join-member await, allSettled");
+
+  // allHoistedFail: the hoisted rejection fails the task before the join issues.
+  base = jmFails.length;
+  let numBase = jmNums.length;
+  p = jmApi.allHoistedFail();
+  await tick();
+  check(jmFails.length === base + 1, "allHoistedFail must issue only the hoisted member first");
+  jmFails[base].reject(new Error("boom"));
+  await assertRejects(p, /boom/, "join-member rejection must fail the task");
+  check(jmNums.length === numBase, "allHoistedFail must never issue the join members");
+  console.log("PASS join-member await, rejection fails before the join issues");
+
+  // allHoistedCaught: the hoisted rejection lands in the catch, and the
+  // join members are never issued.
+  base = jmFails.length;
+  numBase = jmNums.length;
+  p = jmApi.allHoistedCaught();
+  await tick();
+  check(jmFails.length === base + 1, "allHoistedCaught must issue only the hoisted member first");
+  jmFails[base].reject(new Error("boom"));
+  check((await p) === "caught:boom", "join-member rejection must land in the catch");
+  check(jmNums.length === numBase, "allHoistedCaught must never issue the join members");
+  console.log("PASS join-member await, rejection caught, join never issued");
+
+  // argAwait: the nested helper builds the member array wasm-side.
+  base = jmNums.length;
+  p = jmApi.argAwait();
+  await tick();
+  check(jmNums.length === base + 2, "argAwait must issue both members from the nested helper");
+  jmNums[base + 1].resolve(20);
+  jmNums[base].resolve(10);
+  check((await p) === "10|20", "join-argument await must deliver results in order");
+  console.log("PASS join-argument await, all");
+
+  // argAwaitRace: the array-built race resolves with the first member.
+  base = jmNums.length;
+  p = jmApi.argAwaitRace();
+  await tick();
+  check(jmNums.length === base + 2, "argAwaitRace must issue both members");
+  jmNums[base + 1].resolve(20);
+  check((await p) === 20, "join-argument race must resolve with the first fulfillment");
+  jmNums[base].resolve(10);
+  await tick();
+  console.log("PASS join-argument await, race");
 }
 
 console.log("ALL COORDINATOR TESTS PASS");

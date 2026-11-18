@@ -131,6 +131,11 @@ export function desugarAsyncTryStatements(program: Program): void {
     let functions = new Array<FunctionPrototype>();
     collectAsyncFunctions(file, functions);
     for (let j = 0, l = functions.length; j < l; ++j) {
+      // File members include imported prototypes: only desugar
+      // functions declared in this file, or an imported callee is
+      // desugared under the wrong file (its reject targets are recorded
+      // against the wrong file) and desugared twice.
+      if (functions[j].declaration.range.source != file.source) continue;
       let desugar = new TryDesugar(program, file, functions[j]);
       if (!desugar.run()) {
         program.rejectedAsyncFunctions.add(functions[j]);

@@ -46,10 +46,11 @@ export interface ValueDesc {
 /** Metadata for one await site, per the chunk 1 wire protocol. A join
  *  site (chunk 5) has no resume export: settlements are delivered through
  *  the join_store/join_error exports and the site resumes via join_done.
- *  A nested site (chunk 3/7) awaits another async function in the same
- *  file: the inner task's handle comes from the pending export, and the
- *  inner function is named by innerExportName (its export name when it
- *  is exported, else the generated name the inners map is keyed by). */
+ *  A nested site (chunk 3/7) awaits another async function, in this file
+ *  or another: the inner task's handle comes from the pending export, and
+ *  the inner function is named by innerExportName (its file-qualified
+ *  `fileBase#qualName` key when it is exported, else the generated name
+ *  the inners map is keyed by). */
 export interface SiteMeta {
   kind: string;
   nullable: boolean;
@@ -60,6 +61,9 @@ export interface SiteMeta {
   storeExport: string | null;
   errorExport: string | null;
   doneExport: string | null;
+  /** Marks one pre-resolved member (a hoisted member await) as the
+   *  winning member for race/any; `null` for non-join sites. */
+  markExport: string | null;
   pendingExport: string | null;
   innerExportName: string | null;
 }
@@ -189,6 +193,21 @@ export function describeType(type: Type): ValueDesc | null {
   return null;
 }
 
+/** Describes a wasm-pointer value (an array or a non-string class) for
+ *  nested delivery only: the value is a heap pointer produced wasm-side
+ *  by an inner task, so the coordinator hands it from the inner result
+ *  to the outer resume untouched. It must never describe a value lowered
+ *  from JS — a JS array or object is not a wasm pointer — so callers gate
+ *  it on the nested (pending) path. */
+export function describePointerType(type: Type): ValueDesc | null {
+  let nullable = (type.flags & TypeFlags.Nullable) != 0;
+  let base = nullable ? type.nonNullableType : type;
+  let classReference = base.getClass();
+  if (!classReference) return null;
+  if (classReference.prototype.name == CommonNames.String) return null;
+  return { kind: "pointer", nullable };
+}
+
 /** Describes every parameter type, or `null` with the reason when one is unsupported. */
 export function describeParams(types: Type[], owner: string): { params: ValueDesc[], reason: string | null } {
   let out: ValueDesc[] = [];
@@ -224,12 +243,17 @@ export function owningFile(element: Element): File | null {
   return null;
 }
 
-/** Finds the wasm export name of an element, or `null` if not exported. */
+/** Finds the wasm export name of an element, or `null` if not exported.
+ *  Only UserEntry exports become WebAssembly exports: an element exported
+ *  from a non-entry file (a helper imported by the entry) is not one, so
+ *  only entry files count here. */
 export function findExportName(program: Program, file: File, element: Element): string | null {
-  let exports = file.exports;
-  if (exports) {
-    for (let name of exports.keys()) {
-      if (exports.get(name) === element) return name;
+  if (file.source.sourceKind == SourceKind.UserEntry) {
+    let exports = file.exports;
+    if (exports) {
+      for (let name of exports.keys()) {
+        if (exports.get(name) === element) return name;
+      }
     }
   }
   for (let other of program.filesByName.values()) {

@@ -41,6 +41,7 @@ import {
   warnSkipped,
   sanitizeName,
   describeType,
+  describePointerType,
   describeParams,
   owningFile,
   findExportName,
@@ -92,8 +93,15 @@ function buildFunctionMeta(
   }
   let result = describeType(unwrapped);
   if (!result) {
-    warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
-    return null;
+    // An inner function may return a wasm-pointer value (array/class):
+    // its result is handed to the awaiting parent untouched, never to JS.
+    // Top-level entry functions keep the loud skip — a raw pointer is
+    // not a usable JS result.
+    if (forInner) result = describePointerType(unwrapped);
+    if (!result) {
+      warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
+      return null;
+    }
   }
   let params = describeParams(signature.parameterTypes, prototype.name);
   if (params.reason) {
@@ -119,6 +127,12 @@ function buildFunctionMeta(
       let storeMember = lookupParent.getMember(storeName);
       if (!storeMember || storeMember.kind != ElementKind.FunctionPrototype) {
         warnSkipped(program, prototype, "join site " + n.toString() + " has no join_store export", notes);
+        return null;
+      }
+      let markName = "__async_" + fileBase + "_" + fn + "_join_mark_" + n.toString();
+      let markMember = lookupParent.getMember(markName);
+      if (!markMember || markMember.kind != ElementKind.FunctionPrototype) {
+        warnSkipped(program, prototype, "join site " + n.toString() + " has no join_mark export", notes);
         return null;
       }
       let storeInstance = program.resolver.resolveFunction(
@@ -152,6 +166,7 @@ function buildFunctionMeta(
         storeExport: storeName,
         errorExport: "__async_" + fileBase + "_" + fn + "_join_error_" + n.toString(),
         doneExport: doneName,
+        markExport: markName,
         pendingExport: null,
         innerExportName: null
       });
@@ -169,18 +184,24 @@ function buildFunctionMeta(
       warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
       return null;
     }
-    let site = describeType(valueTypes[1]);
-    if (!site) {
-      warnSkipped(
-        program, prototype,
-        "unsupported awaited type '" + valueTypes[1].toString() + "'",
-        notes
-      );
-      return null;
-    }
     let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
     let pendingMember = lookupParent.getMember(pendingName);
     if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
+    let site = describeType(valueTypes[1]);
+    if (!site) {
+      // A nested site may await a wasm-pointer value (array/class): the
+      // inner result is handed to the resume untouched, never lowered
+      // from JS. Any other site keeps the loud skip.
+      if (pendingMember) site = describePointerType(valueTypes[1]);
+      if (!site) {
+        warnSkipped(
+          program, prototype,
+          "unsupported awaited type '" + valueTypes[1].toString() + "'",
+          notes
+        );
+        return null;
+      }
+    }
     let innerExportName: string | null = null;
     if (pendingMember) {
       innerExportName = program.asyncNestedPending.get(pendingName) || null;
@@ -199,6 +220,7 @@ function buildFunctionMeta(
       storeExport: null,
       errorExport: null,
       doneExport: null,
+      markExport: null,
       pendingExport: pendingMember ? pendingName : null,
       innerExportName
     });
@@ -349,42 +371,75 @@ function buildImportMeta(
   };
 }
 
-/** Builds metadata for a nested inner function by qualified name, or
- *  `null` when it cannot be found or driven. The inner lives in the
- *  same file as the outer function and needs no export. A method inner
- *  has innerQual `Class_method`, so the match uses the qualified name,
- *  not `prototype.name` (which is just the method name). */
+/** Splits a file-qualified inner key (`fileBase#qualName`, set by the
+ *  transform) into its parts; a bare name means the outer file. */
+function splitInnerQual(innerQual: string): { fileBase: string | null, qual: string } {
+  let hash = innerQual.indexOf("#");
+  if (hash < 0) return { fileBase: null, qual: innerQual };
+  return { fileBase: innerQual.substring(0, hash), qual: innerQual.substring(hash + 1) };
+}
+
+/** Finds a nested inner prototype by file-qualified name, or `null`
+ *  when it cannot be found. A bare name means the outer file. */
+function findInnerPrototypeByBase(program: Program, innerBase: string, qual: string): FunctionPrototype | null {
+  for (let prototype of program.transformedAsyncFunctions) {
+    if (qualNameOf(prototype) != qual) continue;
+    let innerFile = owningFile(prototype);
+    if (!innerFile || sanitizeName(innerFile.source.simplePath) != innerBase) continue;
+    return prototype;
+  }
+  return null;
+}
+
+/** Builds metadata for a nested inner function by file-qualified name, or
+ *  `null` when it cannot be found or driven. The inner may live in another
+ *  file than the outer function and needs no export. A method inner has
+ *  innerQual `Class_method`, so the match uses the qualified name, not
+ *  `prototype.name` (which is just the method name). */
 function buildInnerMeta(
   program: Program,
   outer: FunctionPrototype,
   innerQual: string,
   notes: string[]
 ): FunctionMeta | null {
-  let file = owningFile(outer);
-  if (!file) return null;
-  for (let prototype of program.transformedAsyncFunctions) {
-    if (qualNameOf(prototype) != innerQual) continue;
-    let innerFile = owningFile(prototype);
-    if (!innerFile || innerFile != file) continue;
-    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
-    return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
-  }
-  return null;
+  let outerFile = owningFile(outer);
+  if (!outerFile) return null;
+  let parts = splitInnerQual(innerQual);
+  let innerBase = parts.fileBase ? parts.fileBase : sanitizeName(outerFile.source.simplePath);
+  let prototype = findInnerPrototypeByBase(program, innerBase, parts.qual);
+  if (!prototype) return null;
+  let innerFile = owningFile(prototype);
+  if (!innerFile) return null;
+  let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
+  return buildFunctionMeta(program, prototype, notes, true, parts.qual, lookupParent);
+}
+
+/** Finds the prototype for an inners-map key
+ *  (`outerFileBase\0innerQual`), or `null` when it cannot be found. */
+function findInnerPrototypeByKey(program: Program, key: string): FunctionPrototype | null {
+  let nul = key.indexOf("\0");
+  let innerQual = nul < 0 ? key : key.substring(nul + 1);
+  let outerBase = nul < 0 ? "" : key.substring(0, nul);
+  let parts = splitInnerQual(innerQual);
+  let innerBase = parts.fileBase ? parts.fileBase : outerBase;
+  return findInnerPrototypeByBase(program, innerBase, parts.qual);
 }
 
 /** Resolves the metadata for every nested inner function the exported
  *  functions await, keyed by file + qualified name. A function whose
  *  inner cannot be found or driven is dropped (with a warning) —
  *  driving it would deliver the inner import's raw value as the inner
- *  result. A longer chain (A awaits B, B's own inner undrivable) is
- *  not dropped here; it fails loudly at runtime in driveNested when
- *  the inner task suspends at the broken site. */
+ *  result. Inners of inners resolve transitively to a fixpoint, so a
+ *  chain (A awaits B, B awaits C) drives; a longer chain whose inner is
+ *  undrivable is not dropped here — it fails loudly at runtime in
+ *  driveNested when the inner task suspends at the broken site. */
 function resolveNestedInners(
   program: Program,
   entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }>,
   notes: string[]
 ): { [key: string]: FunctionMeta } {
   let inners: { [key: string]: FunctionMeta } = {};
+  let innerKeys = new Array<string>();
   for (let i = entries.length - 1; i >= 0; --i) {
     let entry = entries[i];
     let sites = entry.meta.sites;
@@ -397,14 +452,32 @@ function resolveNestedInners(
       let innerMeta = buildInnerMeta(program, entry.prototype, site.innerExportName, notes);
       if (innerMeta) {
         inners[key] = innerMeta;
+        innerKeys.push(key);
         continue;
       }
-      warnSkipped(program, entry.prototype, "its nested await of '" + site.innerExportName + "' cannot be driven", notes);
+      warnSkipped(program, entry.prototype, "its nested await of '" + splitInnerQual(site.innerExportName).qual + "' cannot be driven", notes);
       entries.splice(i, 1);
       dropped = true;
       break;
     }
     if (dropped) continue;
+  }
+  for (let q = 0; q < innerKeys.length; ++q) {
+    let key = innerKeys[q];
+    let meta = inners[key];
+    let outerPrototype = findInnerPrototypeByKey(program, key);
+    if (!outerPrototype) continue;
+    let sites = meta.sites;
+    for (let j = 0, l = sites.length; j < l; ++j) {
+      let site = sites[j];
+      if (!site.nested || !site.innerExportName) continue;
+      let innerKey = meta.fileBase + "\0" + site.innerExportName;
+      if (inners[innerKey]) continue;
+      let innerMeta = buildInnerMeta(program, outerPrototype, site.innerExportName, notes);
+      if (!innerMeta) continue;
+      inners[innerKey] = innerMeta;
+      innerKeys.push(innerKey);
+    }
   }
   return inners;
 }

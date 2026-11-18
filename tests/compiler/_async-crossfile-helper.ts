@@ -1,4 +1,4 @@
-// Helper for async-reject-more: an async function in another file.
+// Helper for async-crossfile: an async function in another file.
 // Underscore-prefixed, so the compiler-test harness does not treat it
 // as a test of its own.
 //@ external("env", "getChunk")
