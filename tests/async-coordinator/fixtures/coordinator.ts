@@ -36,6 +36,28 @@ export async function handleRoundtrip(): Promise<i32> {
   return n;
 }
 
+export function boom(): void {
+  unreachable();
+}
+
+// Traps after the first await, while holding both spill slots: the
+// coordinator must reclaim them so a queued task can start.
+export async function trapRoundtrip(): Promise<i32> {
+  let h = await getHandle();
+  boom();
+  let n = await useHandle(h);
+  return n;
+}
+
+// Traps before the first await, while holding the parameter's spill slot:
+// the entry never returns a handle, so the coordinator must recover it
+// from the last-handle global.
+export async function trapEntry(h: externref): Promise<i32> {
+  boom();
+  let n = await useHandle(h);
+  return n;
+}
+
 // Test-only join driver shape (chunk 5 has not landed the wasm side of
 // Promise.all): the test bindings issue member promises through
 // createJoinRegistry() and join them in joinNumbers().

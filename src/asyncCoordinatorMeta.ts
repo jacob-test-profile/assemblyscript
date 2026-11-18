@@ -75,6 +75,12 @@ export interface FunctionMeta {
   statusExport: string;
   resultExport: string;
   errorExport: string;
+  /** `__async_<file>_<fn>_last_handle`: the last entry's handle, for the
+   *  coordinator's trap reclaim when an entry's step traps. */
+  lastHandleExport: string;
+  /** `__async_<file>_<fn>_reclaim`: releases a trapped task's spill
+   *  slots without running its state machine. */
+  reclaimExport: string;
   sites: SiteMeta[];
 }
 
