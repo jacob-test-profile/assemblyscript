@@ -1988,7 +1988,7 @@ export class ExportStatement extends Statement {
       } else { // absolute
         if (!normalizedPath.startsWith(LIBRARY_PREFIX)) normalizedPath = LIBRARY_PREFIX + normalizedPath;
       }
-      this.internalPath = normalizedPath;
+      this.internalPath = mangleInternalPath(normalizedPath);
     } else {
       this.internalPath = null;
     }
@@ -2436,6 +2436,8 @@ export function mangleInternalPath(path: string): string {
   if (path.endsWith("/")) {
     path += "index";
   } else if (path.endsWith(".ts")) {
+    path = path.substring(0, path.length - 3);
+  } else if (path.endsWith(".js")) {
     path = path.substring(0, path.length - 3);
   }
   return path;

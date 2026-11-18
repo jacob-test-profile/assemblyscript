@@ -207,6 +207,7 @@
   "This member cannot have an 'override' modifier because it is not declared in the base class '{0}'.": 4117,
 
   "File '{0}' not found.": 6054,
+  "Relative import '{0}' must end with a '.ts' or '.js' extension.": 6055,
   "Numeric separators are not allowed here.": 6188,
   "Multiple consecutive numeric separators are not permitted.": 6189,
   "This expression is not callable because it is a 'get' accessor. Did you mean to use it without '()'?": 6234,

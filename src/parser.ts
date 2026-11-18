@@ -2608,6 +2608,30 @@ export class Parser extends DiagnosticEmitter {
     return null;
   }
 
+  /** Errors if a relative import path lacks a file extension, when required. */
+  checkImportExtension(
+    path: StringLiteralExpression
+  ): void {
+    let options = this.options;
+    if (!options || !options.requireImportExtensions) return;
+    let source = this.currentSource;
+    // Library sources live under `~lib/`, including the runtime entry file,
+    // which is parsed as a user entry so its setup runs first.
+    if (source && source.normalizedPath.startsWith(LIBRARY_PREFIX)) return;
+    let value = path.value;
+    if (
+      value.startsWith(".") &&
+      !value.endsWith(".ts") &&
+      !value.endsWith(".js")
+    ) {
+      this.error(
+        DiagnosticCode.Relative_import_0_must_end_with_a_ts_or_js_extension,
+        path.range,
+        value
+      );
+    }
+  }
+
   parseExport(
     tn: Tokenizer,
     startPos: i32,
@@ -2639,6 +2663,7 @@ export class Parser extends DiagnosticEmitter {
       if (tn.skip(Token.From)) {
         if (tn.skip(Token.StringLiteral)) {
           path = Node.createStringLiteralExpression(tn.readString(), tn.range());
+          this.checkImportExtension(path);
         } else {
           this.error(
             DiagnosticCode.String_literal_expected,
@@ -2662,6 +2687,7 @@ export class Parser extends DiagnosticEmitter {
       if (tn.skip(Token.From)) {
         if (tn.skip(Token.StringLiteral)) {
           path = Node.createStringLiteralExpression(tn.readString(), tn.range());
+          this.checkImportExtension(path);
           let ret = Node.createExportStatement(null, path, isDeclare, tn.range(startPos, tn.pos));
           let internalPath = assert(ret.internalPath);
           let source = tn.source;
@@ -2832,6 +2858,7 @@ export class Parser extends DiagnosticEmitter {
     if (skipFrom || tn.skip(Token.From)) {
       if (tn.skip(Token.StringLiteral)) {
         let path = Node.createStringLiteralExpression(tn.readString(), tn.range());
+        this.checkImportExtension(path);
         let ret: ImportStatement;
         if (namespaceName) {
           assert(!members);

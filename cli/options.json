@@ -359,6 +359,14 @@
     "type": "b",
     "default": false
   },
+  "requireImportExtensions": {
+    "description": [
+      "Requires relative imports to include a file extension,",
+      "e.g. './foo.ts' instead of './foo' (NodeNext module resolution)."
+    ],
+    "type": "b",
+    "default": false
+  },
   "lib": {
     "description": [
       "Adds one or multiple paths to custom library components and",

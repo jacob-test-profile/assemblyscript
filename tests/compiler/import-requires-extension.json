@@ -1,0 +1,8 @@
+{
+  "asc_flags": [
+    "--requireImportExtensions"
+  ],
+  "stderr": [
+    "TS6055: Relative import './export' must end with a '.ts' or '.js' extension."
+  ]
+}
