@@ -486,7 +486,7 @@ export class Compiler extends DiagnosticEmitter {
   /** Elements currently undergoing compilation. */
   pendingElements: Set<Element> = new Set();
   /** Elements, that are module exports, already processed */
-  doneModuleExports: Set<Element> = new Set();
+  doneModuleExports: Set<string> = new Set();
   /** Shadow stack reference. */
   shadowStack!: ShadowStackPass;
   /** Whether the module has custom function exports. */
@@ -957,8 +957,9 @@ export class Compiler extends DiagnosticEmitter {
    *  Re-scans until a full pass finds nothing new: compiling a body can
    *  register new exports (a generic async instantiation creates its
    *  clone and protocol exports mid-compilation), and a single pass over
-   *  a snapshot would miss them. Elements are tracked in
-   *  `doneModuleExports`, so each is processed once per compilation. */
+   *  a snapshot would miss them. Entries are tracked in
+   *  `doneModuleExports` by (name, element): one element can be
+   *  re-exported under several names, and each name is its own export. */
   private compileModuleExports(file: File): void {
     let files = new Array<File>();
     files.push(file);
@@ -975,8 +976,9 @@ export class Compiler extends DiagnosticEmitter {
           for (let _keys = Map_keys(exports), j = 0, l = _keys.length; j < l; ++j) {
             let elementName = unchecked(_keys[j]);
             let element = assert(exports.get(elementName));
-            if (this.doneModuleExports.has(element)) continue;
-            this.doneModuleExports.add(element);
+            let key = elementName + "\0" + element.internalName;
+            if (this.doneModuleExports.has(key)) continue;
+            this.doneModuleExports.add(key);
             progress = true;
             this.compileModuleExport(elementName, element);
           }
