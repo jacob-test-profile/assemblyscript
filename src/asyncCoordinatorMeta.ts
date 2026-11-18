@@ -78,6 +78,30 @@ export interface FunctionMeta {
   sites: SiteMeta[];
 }
 
+/** Metadata for one transformed async method on an exported class. Like
+ *  FunctionMeta, but the method is not a top-level api function
+ *  (exportName is `null`) and is driven through its entry export instead.
+ *  `params` describes only the declared params: the receiver is a raw
+ *  pointer the runtime prepends, never a described value. */
+export interface MethodMeta extends FunctionMeta {
+  exportName: null;
+  /** AS method name, e.g. `add`: the runtime puts the Promise-returning
+   *  method on the wrapper prototype under this name. It is not derived
+   *  from entryExport — the fileBase in there may contain underscores. */
+  name: string;
+  /** `__async_<file>_<Class>_<method>_entry` (chunk A). */
+  entryExport: string;
+}
+
+/** Metadata for one exported class with drivable async methods. */
+export interface ClassMeta {
+  name: string;
+  /** `__async_<file>_<Class>_new` (chunk A). */
+  newExport: string;
+  newParams: ValueDesc[];
+  methods: MethodMeta[];
+}
+
 /** Metadata for one suspending import (ambient fn returning Promise<T>). */
 export interface ImportMeta {
   module: string;
@@ -179,6 +203,15 @@ export function describeParams(types: Type[], owner: string): { params: ValueDes
     out.push(desc);
   }
   return { params: out, reason: null };
+}
+
+/** Qualified name used for all generated names: `Class_method` for a bound
+ *  method prototype (the transform binds methods to the resolved class, so
+ *  the parent chain carries the class), the plain name otherwise. */
+export function qualNameOf(prototype: FunctionPrototype): string {
+  let bound = prototype.getBoundClassOrInterface();
+  if (bound) return bound.prototype.name + "_" + prototype.name;
+  return prototype.name;
 }
 
 /** Finds the file owning an element, walking up through namespaces. */
