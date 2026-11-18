@@ -1642,7 +1642,7 @@ class AsyncFunctionTransform {
     let element = assert(this.flow).lookup(rootName);
     if (!element || element.kind != ElementKind.Namespace) return null;
     for (let i = 0, k = segments.length - 1; i < k; ++i) {
-      let next = (<Namespace>element).getMember(segments[i]);
+      let next: Element | null = (<Namespace>element).getMember(segments[i]);
       if (!next || next.kind != ElementKind.Namespace) return null;
       element = next;
     }
@@ -2633,7 +2633,6 @@ class AsyncFunctionTransform {
     if (emitEntry && !this.isStatic && this.prototype.name == "dispose") {
       this.fail("Async method 'dispose' conflicts with the coordinator's generated dispose() method on the wrapper class; rename the method", this.declaration.name.range);
       return false;
-    }
     }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       if (this.sites[i].isJoin) {
