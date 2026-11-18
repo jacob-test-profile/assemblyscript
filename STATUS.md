@@ -10,7 +10,13 @@ Base: fork `jacob-test-profile/assemblyscript`, origin is Jacob's fork only. No 
 - Externref across await is a first-class suspended value via proper spilling (table/global slots — externref cannot live in linear memory), NOT a permanent exclusion. Loud error only as a temporary guard if the spill is not ready; Phase 1 design must prove the spill or say exactly why not.
 
 ## Cross-track notes (not mine to implement)
-- `//@ external("env", "someFunc")` (space after @, REQUIRED) is the current external-declaration form; a parallel worker is updating Change 1 to it on `track/external-space`. The `async` base merged here still has the old `//@external` form (commit 0ab91f09). Phase 0 tests therefore use the `@external` decorator form for now; swap fixture spelling to `//@ external(...)` once that lands in `async`.
+- `//@ external("env", "someFunc")` (space after @, REQUIRED) LANDED in
+  `async` as c44a3642 (track/external-space 93700a4a): no-space
+  `//@external` is now an ordinary comment, misplaced directives are
+  loud (new diagnostic AS1144). Phase 0 tests use `//@ external(...)`.
+  (Rebased track/cps-phase0 onto c44a3642; derisk commit is now c0027248.)
+- Change 2 TS 7 migration merged into `async` as b0a3657c (HEAD 39f98d0d).
+  Rebase pending: track/cps-phase0 must move onto 39f98d0d before fixtures.
 - `std/assembly-async.json` (decision 7) does not exist on this base yet — Change 2 follow-up, not this track.
 
 ## Plan

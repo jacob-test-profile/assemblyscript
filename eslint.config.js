@@ -23,6 +23,9 @@ export default defineConfig([
     "tests/asconfig/**",
     "lib/loader/tests/**",
 
+    // CPS derisk probes: hand-written AS fixtures and Node drivers
+    "probe-cps/**",
+
     // FIXME: Tagged template literal tests with invalid escapes
     "tests/compiler/templateliteral.ts",
   ]),

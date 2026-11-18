@@ -2049,6 +2049,16 @@ declare class Float64Array extends TypedArray<f64> {
   static wrap(buffer: ArrayBuffer, byteOffset?: i32, length?: i32): Float64Array;
 }
 
+/** Class representing a value that will be available in the future. */
+declare class Promise<T> {
+
+  /** Returns a promise that resolves when all of the given promises settle, or rejects with the first rejection. */
+  static all<T>(values: Array<Promise<T>>): Promise<Array<T>>;
+
+  /** Returns a promise that settles with the first of the given promises to settle. */
+  static race<T>(values: Array<Promise<T>>): Promise<T>;
+}
+
 /** Class representing a sequence of values of type `T`. */
 declare class Array<T> {
 

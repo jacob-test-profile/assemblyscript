@@ -173,6 +173,7 @@ import {
   TemplateLiteralExpression,
   UnaryPostfixExpression,
   UnaryPrefixExpression,
+  AwaitExpression,
   CompiledExpression,
 
   TypeNode,
@@ -1603,6 +1604,18 @@ export class Compiler extends DiagnosticEmitter {
   ): bool {
     if (instance.is(CommonFlags.Errored)) return false;
     if (instance.is(CommonFlags.Compiled)) return true;
+
+    // Phase 0: async functions are parsed and resolved but not compiled.
+    // Phase 1's transform rewrites them into state machines in afterParse,
+    // so none should reach the compiler. Without this guard a valid async
+    // function would silently compile as a sync function.
+    if (instance.is(CommonFlags.Async)) {
+      this.error(
+        DiagnosticCode.Not_implemented_0,
+        instance.identifierNode.range, "Async functions"
+      );
+      return false;
+    }
 
     if (!forceStdAlternative) {
       if (instance.hasDecorator(DecoratorFlags.Builtin)) return true;
@@ -3531,6 +3544,10 @@ export class Compiler extends DiagnosticEmitter {
       }
       case NodeKind.UnaryPrefix: {
         expr = this.compileUnaryPrefixExpression(<UnaryPrefixExpression>expression, contextualType, constraints);
+        break;
+      }
+      case NodeKind.Await: {
+        expr = this.compileAwaitExpression(<AwaitExpression>expression, contextualType, constraints);
         break;
       }
       case NodeKind.Compiled: {
@@ -9558,6 +9575,34 @@ export class Compiler extends DiagnosticEmitter {
       setValue,
       module.local_get(tempLocal.index, typeRef)
     ], typeRef); // result of 'x++' / 'x--' might overflow
+  }
+
+  // Phase 0: await has no codegen. Resolving first (swallowing diagnostics,
+  // which the resolve phase already reported) tells a valid await, which
+  // gets the guard error below, from an operand error, which does not.
+  // A valid await only reaches the compiler when an async function escaped
+  // the compileFunction guard, e.g. through parser error recovery.
+  private compileAwaitExpression(
+    expression: AwaitExpression,
+    contextualType: Type,
+    constraints: Constraints
+  ): ExpressionRef {
+    let module = this.module;
+    let resolved = this.resolver.resolveExpression(
+      expression,
+      this.currentFlow,
+      contextualType,
+      ReportMode.Swallow
+    );
+    if (resolved) {
+      this.error(
+        DiagnosticCode.Not_implemented_0,
+        expression.range,
+        "Async functions"
+      );
+    }
+    this.currentType = Type.void;
+    return module.unreachable();
   }
 
   private compileUnaryPrefixExpression(
