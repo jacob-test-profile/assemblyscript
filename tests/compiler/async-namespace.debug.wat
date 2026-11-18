@@ -2,8 +2,8 @@
  (type $0 (func (param i32) (result i32)))
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32 i32) (result i32)))
- (type $3 (func (param i32 i32 i32) (result i32)))
- (type $4 (func (result i32)))
+ (type $3 (func (result i32)))
+ (type $4 (func (param i32 i32 i32) (result i32)))
  (type $5 (func (param i32)))
  (type $6 (func))
  (type $7 (func (param i32 i32 i32)))
@@ -38,10 +38,10 @@
  (global $async-namespace/__async_roots_Hidden_secret (mut i32) (i32.const 0))
  (global $async-namespace/__async_roots_viaHidden (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 2608))
- (global $~lib/memory/__data_end i32 (i32.const 2692))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35460))
- (global $~lib/memory/__heap_base i32 (i32.const 35460))
+ (global $~lib/rt/__rtti_base i32 (i32.const 2880))
+ (global $~lib/memory/__data_end i32 (i32.const 2964))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35732))
+ (global $~lib/memory/__heap_base i32 (i32.const 35732))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -65,52 +65,72 @@
  (data $19 (i32.const 2380) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00t\00o\00p\00-\00\00\00\00\00")
  (data $20 (i32.const 2412) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0e\00\00\00s\00e\00c\00r\00e\00t\00-\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $21 (i32.const 2460) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\16\00\00\00v\00i\00a\00-\00h\00i\00d\00d\00e\00n\00-\00\00\00\00\00\00\00")
- (data $22 (i32.const 2508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00t\00w\00o\00-\00\00\00\00\00")
- (data $23 (i32.const 2540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00v\00i\00a\00-\00\00\00\00\00")
- (data $24 (i32.const 2572) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\n\00\00\00d\00e\00e\00p\00-\00\00\00")
- (data $25 (i32.const 2608) "\14\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $22 (i32.const 2508) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
+ (data $23 (i32.const 2572) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
+ (data $24 (i32.const 2604) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
+ (data $25 (i32.const 2652) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $26 (i32.const 2780) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00t\00w\00o\00-\00\00\00\00\00")
+ (data $27 (i32.const 2812) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00v\00i\00a\00-\00\00\00\00\00")
+ (data $28 (i32.const 2844) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\n\00\00\00d\00e\00e\00p\00-\00\00\00")
+ (data $29 (i32.const 2880) "\14\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "chunkString" (func $async-namespace/chunkString))
  (export "topViaNs" (func $async-namespace/topViaNs))
  (export "viaHidden" (func $async-namespace/viaHidden))
+ (export "__async_async_namespace_mint" (func $async-namespace/__async_async_namespace_mint))
+ (export "__async_async_namespace_mint_string" (func $async-namespace/__async_async_namespace_mint_string))
+ (export "__async_async_namespace_NS_take_last_handle" (func $async-namespace/__async_async_namespace_NS_take_last_handle))
  (export "__async_async_namespace_NS_take_entry" (func $async-namespace/__async_async_namespace_NS_take_entry))
+ (export "__async_async_namespace_NS_takeTwo_last_handle" (func $async-namespace/__async_async_namespace_NS_takeTwo_last_handle))
  (export "__async_async_namespace_NS_takeTwo_entry" (func $async-namespace/__async_async_namespace_NS_takeTwo_entry))
+ (export "__async_async_namespace_NS_viaOther_last_handle" (func $async-namespace/__async_async_namespace_NS_viaOther_last_handle))
  (export "__async_async_namespace_NS_viaOther_entry" (func $async-namespace/__async_async_namespace_NS_viaOther_entry))
+ (export "__async_async_namespace_Outer_Inner_deep_last_handle" (func $async-namespace/__async_async_namespace_Outer_Inner_deep_last_handle))
  (export "__async_async_namespace_Outer_Inner_deep_entry" (func $async-namespace/__async_async_namespace_Outer_Inner_deep_entry))
+ (export "__async_async_namespace_topViaNs_last_handle" (func $async-namespace/__async_async_namespace_topViaNs_last_handle))
+ (export "__async_async_namespace_Hidden_secret_last_handle" (func $async-namespace/__async_async_namespace_Hidden_secret_last_handle))
+ (export "__async_async_namespace_viaHidden_last_handle" (func $async-namespace/__async_async_namespace_viaHidden_last_handle))
  (export "memory" (memory $0))
+ (export "__async_async_namespace_NS_take_reclaim" (func $export:async-namespace/__async_async_namespace_NS_take_reclaim))
  (export "__async_async_namespace_NS_take_resume_0" (func $export:async-namespace/__async_async_namespace_NS_take_resume_0))
  (export "__async_async_namespace_NS_take_reject_0" (func $export:async-namespace/__async_async_namespace_NS_take_reject_0))
  (export "__async_async_namespace_NS_take_result" (func $export:async-namespace/__async_async_namespace_NS_take_result))
  (export "__async_async_namespace_NS_take_error" (func $export:async-namespace/__async_async_namespace_NS_take_error))
  (export "__async_async_namespace_NS_take_status" (func $export:async-namespace/__async_async_namespace_NS_take_status))
+ (export "__async_async_namespace_NS_takeTwo_reclaim" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_reclaim))
  (export "__async_async_namespace_NS_takeTwo_resume_0" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_resume_0))
  (export "__async_async_namespace_NS_takeTwo_reject_0" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_reject_0))
  (export "__async_async_namespace_NS_takeTwo_result" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_result))
  (export "__async_async_namespace_NS_takeTwo_error" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_error))
  (export "__async_async_namespace_NS_takeTwo_status" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_status))
+ (export "__async_async_namespace_NS_viaOther_reclaim" (func $export:async-namespace/__async_async_namespace_NS_viaOther_reclaim))
  (export "__async_async_namespace_NS_viaOther_pending_0" (func $export:async-namespace/__async_async_namespace_NS_viaOther_pending_0))
  (export "__async_async_namespace_NS_viaOther_resume_0" (func $export:async-namespace/__async_async_namespace_NS_viaOther_resume_0))
  (export "__async_async_namespace_NS_viaOther_reject_0" (func $export:async-namespace/__async_async_namespace_NS_viaOther_reject_0))
  (export "__async_async_namespace_NS_viaOther_result" (func $export:async-namespace/__async_async_namespace_NS_viaOther_result))
  (export "__async_async_namespace_NS_viaOther_error" (func $export:async-namespace/__async_async_namespace_NS_viaOther_error))
  (export "__async_async_namespace_NS_viaOther_status" (func $export:async-namespace/__async_async_namespace_NS_viaOther_status))
+ (export "__async_async_namespace_Outer_Inner_deep_reclaim" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_reclaim))
  (export "__async_async_namespace_Outer_Inner_deep_resume_0" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_resume_0))
  (export "__async_async_namespace_Outer_Inner_deep_reject_0" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_reject_0))
  (export "__async_async_namespace_Outer_Inner_deep_result" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_result))
  (export "__async_async_namespace_Outer_Inner_deep_error" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_error))
  (export "__async_async_namespace_Outer_Inner_deep_status" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_status))
+ (export "__async_async_namespace_topViaNs_reclaim" (func $export:async-namespace/__async_async_namespace_topViaNs_reclaim))
  (export "__async_async_namespace_topViaNs_pending_0" (func $export:async-namespace/__async_async_namespace_topViaNs_pending_0))
  (export "__async_async_namespace_topViaNs_resume_0" (func $export:async-namespace/__async_async_namespace_topViaNs_resume_0))
  (export "__async_async_namespace_topViaNs_reject_0" (func $export:async-namespace/__async_async_namespace_topViaNs_reject_0))
  (export "__async_async_namespace_topViaNs_result" (func $export:async-namespace/__async_async_namespace_topViaNs_result))
  (export "__async_async_namespace_topViaNs_error" (func $export:async-namespace/__async_async_namespace_topViaNs_error))
  (export "__async_async_namespace_topViaNs_status" (func $export:async-namespace/__async_async_namespace_topViaNs_status))
+ (export "__async_async_namespace_Hidden_secret_reclaim" (func $export:async-namespace/__async_async_namespace_Hidden_secret_reclaim))
  (export "__async_async_namespace_Hidden_secret_resume_0" (func $export:async-namespace/__async_async_namespace_Hidden_secret_resume_0))
  (export "__async_async_namespace_Hidden_secret_reject_0" (func $export:async-namespace/__async_async_namespace_Hidden_secret_reject_0))
  (export "__async_async_namespace_Hidden_secret_result" (func $export:async-namespace/__async_async_namespace_Hidden_secret_result))
  (export "__async_async_namespace_Hidden_secret_error" (func $export:async-namespace/__async_async_namespace_Hidden_secret_error))
  (export "__async_async_namespace_Hidden_secret_status" (func $export:async-namespace/__async_async_namespace_Hidden_secret_status))
+ (export "__async_async_namespace_viaHidden_reclaim" (func $export:async-namespace/__async_async_namespace_viaHidden_reclaim))
  (export "__async_async_namespace_viaHidden_pending_0" (func $export:async-namespace/__async_async_namespace_viaHidden_pending_0))
  (export "__async_async_namespace_viaHidden_resume_0" (func $export:async-namespace/__async_async_namespace_viaHidden_resume_0))
  (export "__async_async_namespace_viaHidden_reject_0" (func $export:async-namespace/__async_async_namespace_viaHidden_reject_0))
@@ -3361,6 +3381,46 @@
   local.get $this
   i32.load offset=16
  )
+ (func $async-namespace/__async_async_namespace_mint (result i32)
+  i32.const 0
+  i32.const 8
+  call $~lib/arraybuffer/ArrayBuffer#constructor
+  return
+ )
+ (func $~lib/memory/memory.repeat (param $dst i32) (param $src i32) (param $srcLength i32) (param $count i32)
+  (local $index i32)
+  (local $total i32)
+  i32.const 0
+  local.set $index
+  local.get $srcLength
+  local.get $count
+  i32.mul
+  local.set $total
+  loop $while-continue|0
+   local.get $index
+   local.get $total
+   i32.lt_u
+   if
+    local.get $dst
+    local.get $index
+    i32.add
+    local.get $src
+    local.get $srcLength
+    memory.copy
+    local.get $index
+    local.get $srcLength
+    i32.add
+    local.set $index
+    br $while-continue|0
+   end
+  end
+ )
+ (func $async-namespace/__async_async_namespace_mint_string (param $len i32) (result i32)
+  i32.const 2592
+  local.get $len
+  call $~lib/string/String#repeat
+  return
+ )
  (func $async-namespace/__Cps_NS_take#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3373,14 +3433,13 @@
   call $async-namespace/NS.take
   return
  )
- (func $async-namespace/__Cps_NS_takeTwo#set:__pend0 (param $this i32) (param $__pend0 i32)
+ (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length_ (param $this i32) (result i32)
   local.get $this
-  local.get $__pend0
-  i32.store offset=12
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:dataStart (param $this i32) (result i32)
   local.get $this
-  local.get $__pend0
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  i32.load offset=4
  )
  (func $async-namespace/__Cps_NS_takeTwo#get:state (param $this i32) (result i32)
   local.get $this
@@ -3390,6 +3449,15 @@
   local.get $this
   local.get $state
   i32.store
+ )
+ (func $async-namespace/__Cps_NS_takeTwo#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
  )
  (func $async-namespace/__Cps_NS_takeTwo#get:__cps_i_0 (param $this i32) (result i32)
   local.get $this
@@ -3421,14 +3489,6 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length_ (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
- )
- (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:dataStart (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=4
- )
  (func $async-namespace/__Cps_NS_takeTwo#set:__error (param $this i32) (param $__error i32)
   local.get $this
   local.get $__error
@@ -3456,6 +3516,23 @@
   call $async-namespace/NS.takeTwo
   return
  )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $async-namespace/__Cps_NS_viaOther#get:state (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $async-namespace/__Cps_NS_viaOther#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
  (func $async-namespace/__Cps_NS_viaOther#get:__handle0 (param $this i32) (result i32)
   local.get $this
   i32.load offset=20
@@ -3468,15 +3545,6 @@
   local.get $__pend0
   i32.const 0
   call $~lib/rt/itcms/__link
- )
- (func $async-namespace/__Cps_NS_viaOther#get:state (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $async-namespace/__Cps_NS_viaOther#set:state (param $this i32) (param $state i32)
-  local.get $this
-  local.get $state
-  i32.store
  )
  (func $async-namespace/__Cps_NS_viaOther#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
@@ -3509,14 +3577,6 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length_ (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
- )
- (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:dataStart (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=4
- )
  (func $async-namespace/__Cps_NS_viaOther#set:__error (param $this i32) (param $__error i32)
   local.get $this
   local.get $__error
@@ -3538,14 +3598,13 @@
   call $async-namespace/NS.viaOther
   return
  )
- (func $async-namespace/__Cps_Outer_Inner_deep#set:__pend0 (param $this i32) (param $__pend0 i32)
+ (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length_ (param $this i32) (result i32)
   local.get $this
-  local.get $__pend0
-  i32.store offset=12
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:dataStart (param $this i32) (result i32)
   local.get $this
-  local.get $__pend0
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  i32.load offset=4
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#get:state (param $this i32) (result i32)
   local.get $this
@@ -3555,6 +3614,15 @@
   local.get $this
   local.get $state
   i32.store
+ )
+ (func $async-namespace/__Cps_Outer_Inner_deep#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=12
+  local.get $this
+  local.get $__pend0
+  i32.const 0
+  call $~lib/rt/itcms/__link
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#get:__pend0 (param $this i32) (result i32)
   local.get $this
@@ -3581,14 +3649,6 @@
   local.get $__result
   i32.const 0
   call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length_ (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
- )
- (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:dataStart (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=4
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#set:__error (param $this i32) (param $__error i32)
   local.get $this
@@ -3649,6 +3709,9 @@
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 32
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 2672
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 128
@@ -4098,8 +4161,8 @@
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 35488
-   i32.const 35536
+   i32.const 35760
+   i32.const 35808
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -7952,6 +8015,325 @@
   local.get $1
   return
  )
+ (func $~lib/string/String#repeat (param $this i32) (param $count i32) (result i32)
+  (local $length i32)
+  (local $out i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/string/String#get:length
+  local.set $length
+  local.get $count
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i64.extend_i32_s
+   local.get $count
+   i64.extend_i32_s
+   i64.mul
+   i64.const 1
+   i64.const 28
+   i64.shl
+   i64.gt_u
+  end
+  if
+   i32.const 32
+   i32.const 2624
+   i32.const 334
+   i32.const 7
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $count
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i32.eqz
+  end
+  if
+   i32.const 2336
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  local.get $count
+  i32.const 1
+  i32.eq
+  if
+   local.get $this
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  local.get $count
+  i32.mul
+  i32.const 1
+  i32.shl
+  i32.const 2
+  call $~lib/rt/itcms/__new
+  local.tee $out
+  i32.store offset=4
+  local.get $out
+  local.get $this
+  local.get $length
+  i32.const 1
+  i32.shl
+  local.get $count
+  call $~lib/memory/memory.repeat
+  local.get $out
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_take>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_take>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_NS_take_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_NS_take
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_NS_take
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_NS_take
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-namespace/__async_async_namespace_NS_take_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_take#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_NS_take#set:state
+  global.get $async-namespace/__async_roots_NS_take
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_NS_take
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_NS_take>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_NS_take_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8129,6 +8511,151 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_NS_takeTwo_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_NS_takeTwo
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_NS_takeTwo
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_NS_takeTwo
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
   return
  )
  (func $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
@@ -8387,6 +8914,78 @@
   local.get $17
   return
  )
+ (func $async-namespace/__async_async_namespace_NS_takeTwo_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_takeTwo#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_NS_takeTwo#set:state
+  global.get $async-namespace/__async_roots_NS_takeTwo
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_NS_takeTwo
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__Cps_NS_takeTwo#step (param $this i32) (result i32)
   (local $1 i32)
   (local $2 i32)
@@ -8507,7 +9106,7 @@
       local.get $2
       i32.store
       local.get $2
-      i32.const 2528
+      i32.const 2800
       local.get $this
       local.set $2
       global.get $~lib/memory/__stack_pointer
@@ -8982,7 +9581,7 @@
   local.get $2
   return
  )
- (func $async-namespace/__async_async_namespace_NS_viaOther_pending_0 (param $state i32) (result i32)
+ (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length (param $this i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -8992,19 +9591,139 @@
   global.get $~lib/memory/__stack_pointer
   i32.const 0
   i32.store
-  local.get $state
+  local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
   local.get $1
   i32.store
   local.get $1
-  call $async-namespace/__Cps_NS_viaOther#get:__handle0
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length_
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_NS_viaOther_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_NS_viaOther
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_NS_viaOther
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_NS_viaOther
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
   return
  )
  (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
@@ -9263,6 +9982,103 @@
   local.get $17
   return
  )
+ (func $async-namespace/__async_async_namespace_NS_viaOther_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_viaOther#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_NS_viaOther#set:state
+  global.get $async-namespace/__async_roots_NS_viaOther
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_NS_viaOther
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-namespace/__async_async_namespace_NS_viaOther_pending_0 (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_viaOther#get:__handle0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__Cps_NS_viaOther#step (param $this i32) (result i32)
   (local $1 i32)
   (local $2 i32)
@@ -9383,7 +10199,7 @@
       local.get $2
       i32.store
       local.get $2
-      i32.const 2560
+      i32.const 2832
       local.get $this
       local.set $2
       global.get $~lib/memory/__stack_pointer
@@ -9850,6 +10666,151 @@
   local.get $1
   return
  )
+ (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_Outer_Inner_deep_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_Outer_Inner_deep
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_Outer_Inner_deep
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_Outer_Inner_deep
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
  (func $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#indexOf (param $this i32) (param $value i32) (param $fromIndex i32) (result i32)
   (local $len i32)
   (local $4 i32)
@@ -10106,6 +11067,78 @@
   local.get $17
   return
  )
+ (func $async-namespace/__async_async_namespace_Outer_Inner_deep_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_Outer_Inner_deep#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_Outer_Inner_deep#set:state
+  global.get $async-namespace/__async_roots_Outer_Inner_deep
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_Outer_Inner_deep
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__Cps_Outer_Inner_deep#step (param $this i32) (result i32)
   (local $1 i32)
   (local $2 i32)
@@ -10220,7 +11253,7 @@
       local.get $2
       i32.store
       local.get $2
-      i32.const 2592
+      i32.const 2864
       local.get $this
       local.set $2
       global.get $~lib/memory/__stack_pointer
@@ -10679,6 +11712,223 @@
   local.get $1
   return
  )
+ (func $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_topViaNs>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_topViaNs_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_topViaNs
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_topViaNs
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_topViaNs
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-namespace/__async_async_namespace_topViaNs_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_topViaNs#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_topViaNs#set:state
+  global.get $async-namespace/__async_roots_topViaNs
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_topViaNs
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_topViaNs>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_topViaNs_pending_0 (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10883,6 +12133,223 @@
   local.get $1
   return
  )
+ (func $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_Hidden_secret_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_Hidden_secret
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_Hidden_secret
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_Hidden_secret
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-namespace/__async_async_namespace_Hidden_secret_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_Hidden_secret#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_Hidden_secret#set:state
+  global.get $async-namespace/__async_roots_Hidden_secret
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_Hidden_secret
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_Hidden_secret_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11057,6 +12524,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-namespace/__Cps_viaHidden>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2672
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-namespace/__async_async_namespace_viaHidden_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-namespace/__async_roots_viaHidden
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-namespace/__async_roots_viaHidden
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-namespace/__async_roots_viaHidden
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-namespace/__async_async_namespace_viaHidden_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_viaHidden#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-namespace/__Cps_viaHidden#set:state
+  global.get $async-namespace/__async_roots_viaHidden
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-namespace/__async_roots_viaHidden
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-namespace/__Cps_viaHidden>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -12045,6 +13729,66 @@
   local.get $7
   return
  )
+ (func $~lib/arraybuffer/ArrayBuffer#constructor (param $this i32) (param $length i32) (result i32)
+  (local $buffer i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $length
+  i32.const 1073741820
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 2528
+   i32.const 52
+   i32.const 43
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $buffer
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $export:async-namespace/__async_async_namespace_NS_take_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_take_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_NS_take_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12148,6 +13892,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_NS_takeTwo_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_takeTwo_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_NS_takeTwo_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12244,6 +14007,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_NS_takeTwo_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_NS_viaOther_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_viaOther_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -12373,6 +14155,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_Outer_Inner_deep_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12469,6 +14270,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_Outer_Inner_deep_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_topViaNs_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_topViaNs_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -12598,6 +14418,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_Hidden_secret_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_Hidden_secret_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_Hidden_secret_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12694,6 +14533,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_Hidden_secret_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_viaHidden_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_viaHidden_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
