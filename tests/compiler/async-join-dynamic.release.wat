@@ -1,9 +1,9 @@
 (module
  (type $0 (func (param i32) (result i32)))
  (type $1 (func (param i32 i32) (result i32)))
- (type $2 (func (param i32 i32 i32)))
- (type $3 (func (result i32)))
- (type $4 (func (param i32 i32)))
+ (type $2 (func (param i32 i32)))
+ (type $3 (func (param i32 i32 i32)))
+ (type $4 (func (result i32)))
  (type $5 (func))
  (type $6 (func (param i32)))
  (type $7 (func (param i32 i32 i32 i32)))
@@ -77,6 +77,7 @@
  (export "__async_async_join_dynamic_dynamicAll_join_store_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_store_0))
  (export "__async_async_join_dynamic_dynamicAll_join_error_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_error_0))
  (export "__async_async_join_dynamic_dynamicAll_join_done_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_done_0))
+ (export "__async_async_join_dynamic_dynamicAll_join_mark_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0))
  (export "__async_async_join_dynamic_dynamicAll_reject_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_reject_0))
  (export "__async_async_join_dynamic_dynamicAll_result" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_result))
  (export "__async_async_join_dynamic_dynamicAll_error" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_error))
@@ -85,6 +86,7 @@
  (export "__async_async_join_dynamic_dynamicEmpty_join_store_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_store_0))
  (export "__async_async_join_dynamic_dynamicEmpty_join_error_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_error_0))
  (export "__async_async_join_dynamic_dynamicEmpty_join_done_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_done_0))
+ (export "__async_async_join_dynamic_dynamicEmpty_join_mark_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0))
  (export "__async_async_join_dynamic_dynamicEmpty_reject_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_reject_0))
  (export "__async_async_join_dynamic_dynamicEmpty_result" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_result))
  (export "__async_async_join_dynamic_dynamicEmpty_error" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_error))
@@ -933,7 +935,7 @@
    global.get $~lib/memory/__stack_pointer
    local.get $0
    i32.store
-   block $__inlined_func$~lib/rt/itcms/__renew$392
+   block $__inlined_func$~lib/rt/itcms/__renew$402
     i32.const 1073741820
     local.get $2
     i32.const 1
@@ -976,7 +978,7 @@
      i32.store offset=16
      local.get $2
      local.set $1
-     br $__inlined_func$~lib/rt/itcms/__renew$392
+     br $__inlined_func$~lib/rt/itcms/__renew$402
     end
     local.get $3
     local.get $4
@@ -1734,7 +1736,7 @@
    local.get $1
    global.set $~lib/rt/itcms/iter
   end
-  block $__inlined_func$~lib/rt/itcms/Object#unlink$409
+  block $__inlined_func$~lib/rt/itcms/Object#unlink$421
    local.get $0
    i32.load offset=4
    i32.const -4
@@ -1758,7 +1760,7 @@
      call $~lib/builtins/abort
      unreachable
     end
-    br $__inlined_func$~lib/rt/itcms/Object#unlink$409
+    br $__inlined_func$~lib/rt/itcms/Object#unlink$421
    end
    local.get $0
    i32.load offset=8
@@ -4353,7 +4355,7 @@
      i32.const 1
      i32.shl
      local.set $3
-     block $__inlined_func$~lib/string/String#substring$416
+     block $__inlined_func$~lib/string/String#substring$428
       local.get $2
       i32.const 0
       local.get $2
@@ -4374,7 +4376,7 @@
        global.set $~lib/memory/__stack_pointer
        i32.const 3360
        local.set $0
-       br $__inlined_func$~lib/string/String#substring$416
+       br $__inlined_func$~lib/string/String#substring$428
       end
       local.get $3
       i32.eqz
@@ -4389,7 +4391,7 @@
        i32.const 8
        i32.add
        global.set $~lib/memory/__stack_pointer
-       br $__inlined_func$~lib/string/String#substring$416
+       br $__inlined_func$~lib/string/String#substring$428
       end
       global.get $~lib/memory/__stack_pointer
       local.get $4
@@ -5168,6 +5170,68 @@
   call $~lib/builtins/abort
   unreachable
  )
+ (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3736
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3736
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 1
+   i32.eq
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    local.get $1
+    i32.store offset=28
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const 1
+    i32.store8 offset=32
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  i32.const 36528
+  i32.const 36576
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
  (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_error_0 (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5547,6 +5611,68 @@
   call $~lib/builtins/abort
   unreachable
  )
+ (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3736
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3736
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 1
+   i32.eq
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    local.get $1
+    i32.store offset=32
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const 1
+    i32.store8 offset=36
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  i32.const 36528
+  i32.const 36576
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
  (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_error_0 (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5738,7 +5864,7 @@
    global.get $~lib/memory/__stack_pointer
    local.get $3
    i32.store
-   block $__inlined_func$~lib/string/String#concat$415
+   block $__inlined_func$~lib/string/String#concat$427
     local.get $3
     i32.const 20
     i32.sub
@@ -5757,7 +5883,7 @@
      global.set $~lib/memory/__stack_pointer
      i32.const 3360
      local.set $0
-     br $__inlined_func$~lib/string/String#concat$415
+     br $__inlined_func$~lib/string/String#concat$427
     end
     global.get $~lib/memory/__stack_pointer
     local.get $0

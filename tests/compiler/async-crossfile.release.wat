@@ -1,8 +1,8 @@
 (module
- (type $0 (func (param i32 i32) (result i32)))
- (type $1 (func (param i32) (result i32)))
- (type $2 (func (param i32 i32)))
- (type $3 (func (result i32)))
+ (type $0 (func (param i32) (result i32)))
+ (type $1 (func (param i32 i32) (result i32)))
+ (type $2 (func (result i32)))
+ (type $3 (func (param i32 i32)))
  (type $4 (func))
  (type $5 (func (param i32)))
  (type $6 (func (param i32 i32 i32 i32)))
@@ -33,7 +33,7 @@
  (global $async-crossfile/__async_roots_awaitChain (mut i32) (i32.const 0))
  (global $async-crossfile/__async_roots_awaitCycle (mut i32) (i32.const 0))
  (global $async-crossfile/__async_roots_awaitCrossMethod (mut i32) (i32.const 0))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 36356))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 36628))
  (memory $0 1)
  (data $0 (i32.const 1036) ",")
  (data $0.1 (i32.const 1048) "\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h")
@@ -70,8 +70,16 @@
  (data $19.1 (i32.const 3416) "\02\00\00\00\n\00\00\00w\00o\00r\00l\00d")
  (data $20 (i32.const 3436) "\1c")
  (data $20.1 (i32.const 3448) "\02\00\00\00\0c\00\00\00c\00a\00u\00g\00h\00t")
- (data $21 (i32.const 3472) "\1c\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A")
- (data $21.1 (i32.const 3532) "\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A")
+ (data $21 (i32.const 3468) "<")
+ (data $21.1 (i32.const 3480) "\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s")
+ (data $22 (i32.const 3532) "\1c")
+ (data $22.1 (i32.const 3544) "\02\00\00\00\02\00\00\00 ")
+ (data $23 (i32.const 3564) ",")
+ (data $23.1 (i32.const 3576) "\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s")
+ (data $24 (i32.const 3612) "|")
+ (data $24.1 (i32.const 3624) "\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y")
+ (data $25 (i32.const 3744) "\1c\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A")
+ (data $25.1 (i32.const 3804) "\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A")
  (export "mintString" (func $async-crossfile/mintString))
  (export "chunkString" (func $async-crossfile/chunkString))
  (export "awaitOtherFile" (func $async-crossfile/awaitOtherFile))
@@ -79,6 +87,13 @@
  (export "awaitChain" (func $async-crossfile/awaitChain))
  (export "awaitCycle" (func $async-crossfile/awaitCycle))
  (export "awaitCrossMethod" (func $async-crossfile/awaitCrossMethod))
+ (export "__async_async_crossfile_mint" (func $async-crossfile/__async_async_crossfile_mint))
+ (export "__async_async_crossfile_mint_string" (func $async-crossfile/__async_async_crossfile_mint_string))
+ (export "__async_async_crossfile_awaitOtherFile_last_handle" (func $async-crossfile/__async_async_crossfile_awaitOtherFile_last_handle))
+ (export "__async_async_crossfile_awaitOtherFileGuarded_last_handle" (func $async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_last_handle))
+ (export "__async_async_crossfile_awaitChain_last_handle" (func $async-crossfile/__async_async_crossfile_awaitChain_last_handle))
+ (export "__async_async_crossfile_awaitCycle_last_handle" (func $async-crossfile/__async_async_crossfile_awaitCycle_last_handle))
+ (export "__async_async_crossfile_awaitCrossMethod_last_handle" (func $async-crossfile/__async_async_crossfile_awaitCrossMethod_last_handle))
  (export "memory" (memory $0))
  (export "__async__async_crossfile_helper_helper_resume_0" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_resume_0))
  (export "__async__async_crossfile_helper_helper_reject_0" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_reject_0))
@@ -112,30 +127,35 @@
  (export "__async__async_crossfile_cycle_b_cycleB_result" (func $export:_async-crossfile-cycle-a/__async__async_crossfile_cycle_a_cycleA_result))
  (export "__async__async_crossfile_cycle_b_cycleB_error" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_error))
  (export "__async__async_crossfile_cycle_b_cycleB_status" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_status))
+ (export "__async_async_crossfile_awaitOtherFile_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_reclaim))
  (export "__async_async_crossfile_awaitOtherFile_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_pending_0))
  (export "__async_async_crossfile_awaitOtherFile_resume_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_resume_0))
  (export "__async_async_crossfile_awaitOtherFile_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_reject_0))
  (export "__async_async_crossfile_awaitOtherFile_result" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_result))
  (export "__async_async_crossfile_awaitOtherFile_error" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_error))
  (export "__async_async_crossfile_awaitOtherFile_status" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_status))
+ (export "__async_async_crossfile_awaitOtherFileGuarded_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_reclaim))
  (export "__async_async_crossfile_awaitOtherFileGuarded_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_pending_0))
  (export "__async_async_crossfile_awaitOtherFileGuarded_resume_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_resume_0))
  (export "__async_async_crossfile_awaitOtherFileGuarded_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_reject_0))
  (export "__async_async_crossfile_awaitOtherFileGuarded_result" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_result))
  (export "__async_async_crossfile_awaitOtherFileGuarded_error" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_error))
  (export "__async_async_crossfile_awaitOtherFileGuarded_status" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_status))
+ (export "__async_async_crossfile_awaitChain_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitChain_reclaim))
  (export "__async_async_crossfile_awaitChain_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_pending_0))
  (export "__async_async_crossfile_awaitChain_resume_0" (func $export:async-crossfile/__async_async_crossfile_awaitChain_resume_0))
  (export "__async_async_crossfile_awaitChain_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitChain_reject_0))
  (export "__async_async_crossfile_awaitChain_result" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_result))
  (export "__async_async_crossfile_awaitChain_error" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_error))
  (export "__async_async_crossfile_awaitChain_status" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_status))
+ (export "__async_async_crossfile_awaitCycle_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_reclaim))
  (export "__async_async_crossfile_awaitCycle_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_pending_0))
  (export "__async_async_crossfile_awaitCycle_resume_0" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_resume_0))
  (export "__async_async_crossfile_awaitCycle_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_reject_0))
  (export "__async_async_crossfile_awaitCycle_result" (func $export:_async-crossfile-cycle-a/__async__async_crossfile_cycle_a_cycleA_result))
  (export "__async_async_crossfile_awaitCycle_error" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_error))
  (export "__async_async_crossfile_awaitCycle_status" (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_status))
+ (export "__async_async_crossfile_awaitCrossMethod_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_reclaim))
  (export "__async_async_crossfile_awaitCrossMethod_pending_0" (func $export:_async-crossfile-chain/__async__async_crossfile_chain_chain_pending_0))
  (export "__async_async_crossfile_awaitCrossMethod_resume_0" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_resume_0))
  (export "__async_async_crossfile_awaitCrossMethod_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_reject_0))
@@ -548,11 +568,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -626,11 +646,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -663,11 +683,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -710,6 +730,35 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length (param $0 i32) (result i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#push (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -723,7 +772,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -744,7 +793,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -775,7 +824,7 @@
     global.get $~lib/memory/__stack_pointer
     local.get $0
     i32.store
-    block $__inlined_func$~lib/rt/itcms/__renew$716
+    block $__inlined_func$~lib/rt/itcms/__renew$752
      i32.const 1073741820
      local.get $2
      i32.const 1
@@ -818,7 +867,7 @@
       i32.store offset=16
       local.get $2
       local.set $3
-      br $__inlined_func$~lib/rt/itcms/__renew$716
+      br $__inlined_func$~lib/rt/itcms/__renew$752
      end
      local.get $5
      local.get $4
@@ -886,8 +935,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -900,7 +949,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -911,7 +960,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -932,8 +981,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -946,7 +995,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -957,7 +1006,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -978,12 +1027,75 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
   unreachable
+ )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get (param $0 i32) (param $1 i32) (result i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $1
+  local.get $0
+  i32.load offset=12
+  i32.ge_u
+  if
+   i32.const 1344
+   i32.const 1104
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $0
+  i32.store offset=4
+  local.get $0
+  i32.eqz
+  if
+   i32.const 3632
+   i32.const 1104
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
  )
  (func $export:_async-crossfile-helper/__async__async_crossfile_helper_helper_result (param $0 i32) (result i32)
   global.get $~lib/memory/__stack_pointer
@@ -992,7 +1104,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1003,7 +1115,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1024,8 +1136,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -1038,7 +1150,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1049,7 +1161,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1070,8 +1182,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -1492,7 +1604,7 @@
    local.get $1
    global.set $~lib/rt/itcms/iter
   end
-  block $__inlined_func$~lib/rt/itcms/Object#unlink$759
+  block $__inlined_func$~lib/rt/itcms/Object#unlink$800
    local.get $0
    i32.load offset=4
    i32.const -4
@@ -1504,7 +1616,7 @@
     i32.load offset=8
     i32.eqz
     local.get $0
-    i32.const 36356
+    i32.const 36628
     i32.lt_u
     i32.and
     i32.eqz
@@ -1516,7 +1628,7 @@
      call $~lib/builtins/abort
      unreachable
     end
-    br $__inlined_func$~lib/rt/itcms/Object#unlink$759
+    br $__inlined_func$~lib/rt/itcms/Object#unlink$800
    end
    local.get $0
    i32.load offset=8
@@ -1553,7 +1665,7 @@
    i32.const 1
   else
    local.get $1
-   i32.const 3472
+   i32.const 3744
    i32.load
    i32.gt_u
    if
@@ -1567,7 +1679,7 @@
    local.get $1
    i32.const 2
    i32.shl
-   i32.const 3476
+   i32.const 3748
    i32.add
    i32.load
    i32.const 32
@@ -1651,7 +1763,7 @@
             i32.sub
             global.set $~lib/memory/__stack_pointer
             global.get $~lib/memory/__stack_pointer
-            i32.const 3588
+            i32.const 3860
             i32.lt_s
             br_if $folding-inner3
             global.get $~lib/memory/__stack_pointer
@@ -1736,7 +1848,7 @@
      i32.sub
      global.set $~lib/memory/__stack_pointer
      global.get $~lib/memory/__stack_pointer
-     i32.const 3588
+     i32.const 3860
      i32.lt_s
      br_if $folding-inner3
      global.get $~lib/memory/__stack_pointer
@@ -1784,8 +1896,8 @@
     call $~lib/rt/itcms/__visit
     return
    end
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -1802,6 +1914,621 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded>#splice (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1
+  local.get $0
+  i32.load offset=12
+  local.tee $2
+  local.get $1
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $1
+   local.get $2
+   i32.add
+   local.tee $1
+   i32.const 0
+   local.get $1
+   i32.const 0
+   i32.gt_s
+   select
+  else
+   local.get $1
+   local.get $2
+   local.get $1
+   local.get $2
+   i32.lt_s
+   select
+  end
+  local.tee $4
+  i32.sub
+  local.tee $1
+  local.get $1
+  i32.const 1
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 0
+  local.get $1
+  i32.const 0
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 21
+  call $~lib/rt/__newArray
+  local.tee $3
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  i32.load offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=4
+  local.tee $3
+  local.get $4
+  i32.const 2
+  i32.shl
+  i32.add
+  local.tee $5
+  local.get $1
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $2
+  local.get $1
+  local.get $4
+  i32.add
+  local.tee $4
+  i32.ne
+  if
+   local.get $5
+   local.get $3
+   local.get $4
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $2
+   local.get $4
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.sub
+  i32.store offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#splice (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1
+  local.get $0
+  i32.load offset=12
+  local.tee $2
+  local.get $1
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $1
+   local.get $2
+   i32.add
+   local.tee $1
+   i32.const 0
+   local.get $1
+   i32.const 0
+   i32.gt_s
+   select
+  else
+   local.get $1
+   local.get $2
+   local.get $1
+   local.get $2
+   i32.lt_s
+   select
+  end
+  local.tee $4
+  i32.sub
+  local.tee $1
+  local.get $1
+  i32.const 1
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 0
+  local.get $1
+  i32.const 0
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 19
+  call $~lib/rt/__newArray
+  local.tee $3
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  i32.load offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=4
+  local.tee $3
+  local.get $4
+  i32.const 2
+  i32.shl
+  i32.add
+  local.tee $5
+  local.get $1
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $2
+  local.get $1
+  local.get $4
+  i32.add
+  local.tee $4
+  i32.ne
+  if
+   local.get $5
+   local.get $3
+   local.get $4
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $2
+   local.get $4
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.sub
+  i32.store offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitCycle>#splice (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1
+  local.get $0
+  i32.load offset=12
+  local.tee $2
+  local.get $1
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $1
+   local.get $2
+   i32.add
+   local.tee $1
+   i32.const 0
+   local.get $1
+   i32.const 0
+   i32.gt_s
+   select
+  else
+   local.get $1
+   local.get $2
+   local.get $1
+   local.get $2
+   i32.lt_s
+   select
+  end
+  local.tee $4
+  i32.sub
+  local.tee $1
+  local.get $1
+  i32.const 1
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 0
+  local.get $1
+  i32.const 0
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 25
+  call $~lib/rt/__newArray
+  local.tee $3
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  i32.load offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=4
+  local.tee $3
+  local.get $4
+  i32.const 2
+  i32.shl
+  i32.add
+  local.tee $5
+  local.get $1
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $2
+  local.get $1
+  local.get $4
+  i32.add
+  local.tee $4
+  i32.ne
+  if
+   local.get $5
+   local.get $3
+   local.get $4
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $2
+   local.get $4
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.sub
+  i32.store offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod>#splice (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1
+  local.get $0
+  i32.load offset=12
+  local.tee $2
+  local.get $1
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $1
+   local.get $2
+   i32.add
+   local.tee $1
+   i32.const 0
+   local.get $1
+   i32.const 0
+   i32.gt_s
+   select
+  else
+   local.get $1
+   local.get $2
+   local.get $1
+   local.get $2
+   i32.lt_s
+   select
+  end
+  local.tee $4
+  i32.sub
+  local.tee $1
+  local.get $1
+  i32.const 1
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 0
+  local.get $1
+  i32.const 0
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 27
+  call $~lib/rt/__newArray
+  local.tee $3
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  i32.load offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=4
+  local.tee $3
+  local.get $4
+  i32.const 2
+  i32.shl
+  i32.add
+  local.tee $5
+  local.get $1
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $2
+  local.get $1
+  local.get $4
+  i32.add
+  local.tee $4
+  i32.ne
+  if
+   local.get $5
+   local.get $3
+   local.get $4
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $2
+   local.get $4
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.sub
+  i32.store offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-crossfile/__Cps_awaitChain>#splice (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1
+  local.get $0
+  i32.load offset=12
+  local.tee $2
+  local.get $1
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   local.get $1
+   local.get $2
+   i32.add
+   local.tee $1
+   i32.const 0
+   local.get $1
+   i32.const 0
+   i32.gt_s
+   select
+  else
+   local.get $1
+   local.get $2
+   local.get $1
+   local.get $2
+   i32.lt_s
+   select
+  end
+  local.tee $4
+  i32.sub
+  local.tee $1
+  local.get $1
+  i32.const 1
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 0
+  local.get $1
+  i32.const 0
+  i32.gt_s
+  select
+  local.tee $1
+  i32.const 23
+  call $~lib/rt/__newArray
+  local.tee $3
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  i32.load offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  i32.load offset=4
+  local.tee $3
+  local.get $4
+  i32.const 2
+  i32.shl
+  i32.add
+  local.tee $5
+  local.get $1
+  i32.const 2
+  i32.shl
+  memory.copy
+  local.get $2
+  local.get $1
+  local.get $4
+  i32.add
+  local.tee $4
+  i32.ne
+  if
+   local.get $5
+   local.get $3
+   local.get $4
+   i32.const 2
+   i32.shl
+   i32.add
+   local.get $2
+   local.get $4
+   i32.sub
+   i32.const 2
+   i32.shl
+   memory.copy
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.sub
+  i32.store offset=12
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_pending_0 (param $0 i32) (result i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -1809,7 +2536,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1820,7 +2547,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -1841,8 +2568,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -1856,11 +2583,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -2570,7 +3297,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -2585,7 +3312,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -2680,8 +3407,8 @@
    local.get $1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -2695,11 +3422,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -2948,7 +3675,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner2
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner2
    global.get $~lib/memory/__stack_pointer
@@ -3100,7 +3827,7 @@
          global.set $~lib/memory/__stack_pointer
          block $folding-inner00
           global.get $~lib/memory/__stack_pointer
-          i32.const 3588
+          i32.const 3860
           i32.lt_s
           br_if $folding-inner00
           global.get $~lib/memory/__stack_pointer
@@ -3115,7 +3842,7 @@
           i32.sub
           global.set $~lib/memory/__stack_pointer
           global.get $~lib/memory/__stack_pointer
-          i32.const 3588
+          i32.const 3860
           i32.lt_s
           br_if $folding-inner00
           global.get $~lib/memory/__stack_pointer
@@ -3322,8 +4049,8 @@
    i32.const 1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -3339,7 +4066,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -3356,7 +4083,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -3376,7 +4103,7 @@
    global.get $~lib/memory/__stack_pointer
    local.get $1
    i32.store
-   block $__inlined_func$~lib/string/String#concat$765
+   block $__inlined_func$~lib/string/String#concat$806
     local.get $1
     i32.const 20
     i32.sub
@@ -3395,7 +4122,7 @@
      global.set $~lib/memory/__stack_pointer
      i32.const 1552
      local.set $0
-     br $__inlined_func$~lib/string/String#concat$765
+     br $__inlined_func$~lib/string/String#concat$806
     end
     global.get $~lib/memory/__stack_pointer
     local.get $0
@@ -3425,8 +4152,8 @@
    local.get $0
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -3580,10 +4307,10 @@
   if
    unreachable
   end
-  i32.const 36368
+  i32.const 36640
   i32.const 0
   i32.store
-  i32.const 37936
+  i32.const 38208
   i32.const 0
   i32.store
   loop $for-loop|0
@@ -3594,7 +4321,7 @@
     local.get $0
     i32.const 2
     i32.shl
-    i32.const 36368
+    i32.const 36640
     i32.add
     i32.const 0
     i32.store offset=4
@@ -3612,7 +4339,7 @@
       i32.add
       i32.const 2
       i32.shl
-      i32.const 36368
+      i32.const 36640
       i32.add
       i32.const 0
       i32.store offset=96
@@ -3630,14 +4357,14 @@
     br $for-loop|0
    end
   end
-  i32.const 36368
-  i32.const 37940
+  i32.const 36640
+  i32.const 38212
   memory.size
   i64.extend_i32_s
   i64.const 16
   i64.shl
   call $~lib/rt/tlsf/addMemory
-  i32.const 36368
+  i32.const 36640
   global.set $~lib/rt/tlsf/ROOT
  )
  (func $~lib/rt/tlsf/addMemory (param $0 i32) (param $1 i32) (param $2 i64)
@@ -3761,6 +4488,8 @@
   call $~lib/rt/itcms/__visit
   i32.const 1056
   call $~lib/rt/itcms/__visit
+  i32.const 3632
+  call $~lib/rt/itcms/__visit
   i32.const 1152
   call $~lib/rt/itcms/__visit
   i32.const 2208
@@ -3876,11 +4605,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -4086,621 +4815,6 @@
   end
   local.get $2
  )
- (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded>#splice (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  global.get $~lib/memory/__stack_pointer
-  i32.const 3588
-  i32.lt_s
-  if
-   i32.const 36384
-   i32.const 36432
-   i32.const 1
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  global.get $~lib/memory/__stack_pointer
-  i32.const 1
-  local.get $0
-  i32.load offset=12
-  local.tee $2
-  local.get $1
-  i32.const 0
-  i32.lt_s
-  if (result i32)
-   local.get $1
-   local.get $2
-   i32.add
-   local.tee $1
-   i32.const 0
-   local.get $1
-   i32.const 0
-   i32.gt_s
-   select
-  else
-   local.get $1
-   local.get $2
-   local.get $1
-   local.get $2
-   i32.lt_s
-   select
-  end
-  local.tee $4
-  i32.sub
-  local.tee $1
-  local.get $1
-  i32.const 1
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 0
-  local.get $1
-  i32.const 0
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 21
-  call $~lib/rt/__newArray
-  local.tee $3
-  i32.store offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $3
-  i32.store
-  local.get $3
-  i32.load offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  i32.load offset=4
-  local.tee $3
-  local.get $4
-  i32.const 2
-  i32.shl
-  i32.add
-  local.tee $5
-  local.get $1
-  i32.const 2
-  i32.shl
-  memory.copy
-  local.get $2
-  local.get $1
-  local.get $4
-  i32.add
-  local.tee $4
-  i32.ne
-  if
-   local.get $5
-   local.get $3
-   local.get $4
-   i32.const 2
-   i32.shl
-   i32.add
-   local.get $2
-   local.get $4
-   i32.sub
-   i32.const 2
-   i32.shl
-   memory.copy
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  local.get $2
-  local.get $1
-  i32.sub
-  i32.store offset=12
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#splice (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  global.get $~lib/memory/__stack_pointer
-  i32.const 3588
-  i32.lt_s
-  if
-   i32.const 36384
-   i32.const 36432
-   i32.const 1
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  global.get $~lib/memory/__stack_pointer
-  i32.const 1
-  local.get $0
-  i32.load offset=12
-  local.tee $2
-  local.get $1
-  i32.const 0
-  i32.lt_s
-  if (result i32)
-   local.get $1
-   local.get $2
-   i32.add
-   local.tee $1
-   i32.const 0
-   local.get $1
-   i32.const 0
-   i32.gt_s
-   select
-  else
-   local.get $1
-   local.get $2
-   local.get $1
-   local.get $2
-   i32.lt_s
-   select
-  end
-  local.tee $4
-  i32.sub
-  local.tee $1
-  local.get $1
-  i32.const 1
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 0
-  local.get $1
-  i32.const 0
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 19
-  call $~lib/rt/__newArray
-  local.tee $3
-  i32.store offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $3
-  i32.store
-  local.get $3
-  i32.load offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  i32.load offset=4
-  local.tee $3
-  local.get $4
-  i32.const 2
-  i32.shl
-  i32.add
-  local.tee $5
-  local.get $1
-  i32.const 2
-  i32.shl
-  memory.copy
-  local.get $2
-  local.get $1
-  local.get $4
-  i32.add
-  local.tee $4
-  i32.ne
-  if
-   local.get $5
-   local.get $3
-   local.get $4
-   i32.const 2
-   i32.shl
-   i32.add
-   local.get $2
-   local.get $4
-   i32.sub
-   i32.const 2
-   i32.shl
-   memory.copy
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  local.get $2
-  local.get $1
-  i32.sub
-  i32.store offset=12
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-crossfile/__Cps_awaitCycle>#splice (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  global.get $~lib/memory/__stack_pointer
-  i32.const 3588
-  i32.lt_s
-  if
-   i32.const 36384
-   i32.const 36432
-   i32.const 1
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  global.get $~lib/memory/__stack_pointer
-  i32.const 1
-  local.get $0
-  i32.load offset=12
-  local.tee $2
-  local.get $1
-  i32.const 0
-  i32.lt_s
-  if (result i32)
-   local.get $1
-   local.get $2
-   i32.add
-   local.tee $1
-   i32.const 0
-   local.get $1
-   i32.const 0
-   i32.gt_s
-   select
-  else
-   local.get $1
-   local.get $2
-   local.get $1
-   local.get $2
-   i32.lt_s
-   select
-  end
-  local.tee $4
-  i32.sub
-  local.tee $1
-  local.get $1
-  i32.const 1
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 0
-  local.get $1
-  i32.const 0
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 25
-  call $~lib/rt/__newArray
-  local.tee $3
-  i32.store offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $3
-  i32.store
-  local.get $3
-  i32.load offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  i32.load offset=4
-  local.tee $3
-  local.get $4
-  i32.const 2
-  i32.shl
-  i32.add
-  local.tee $5
-  local.get $1
-  i32.const 2
-  i32.shl
-  memory.copy
-  local.get $2
-  local.get $1
-  local.get $4
-  i32.add
-  local.tee $4
-  i32.ne
-  if
-   local.get $5
-   local.get $3
-   local.get $4
-   i32.const 2
-   i32.shl
-   i32.add
-   local.get $2
-   local.get $4
-   i32.sub
-   i32.const 2
-   i32.shl
-   memory.copy
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  local.get $2
-  local.get $1
-  i32.sub
-  i32.store offset=12
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod>#splice (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  global.get $~lib/memory/__stack_pointer
-  i32.const 3588
-  i32.lt_s
-  if
-   i32.const 36384
-   i32.const 36432
-   i32.const 1
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  global.get $~lib/memory/__stack_pointer
-  i32.const 1
-  local.get $0
-  i32.load offset=12
-  local.tee $2
-  local.get $1
-  i32.const 0
-  i32.lt_s
-  if (result i32)
-   local.get $1
-   local.get $2
-   i32.add
-   local.tee $1
-   i32.const 0
-   local.get $1
-   i32.const 0
-   i32.gt_s
-   select
-  else
-   local.get $1
-   local.get $2
-   local.get $1
-   local.get $2
-   i32.lt_s
-   select
-  end
-  local.tee $4
-  i32.sub
-  local.tee $1
-  local.get $1
-  i32.const 1
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 0
-  local.get $1
-  i32.const 0
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 27
-  call $~lib/rt/__newArray
-  local.tee $3
-  i32.store offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $3
-  i32.store
-  local.get $3
-  i32.load offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  i32.load offset=4
-  local.tee $3
-  local.get $4
-  i32.const 2
-  i32.shl
-  i32.add
-  local.tee $5
-  local.get $1
-  i32.const 2
-  i32.shl
-  memory.copy
-  local.get $2
-  local.get $1
-  local.get $4
-  i32.add
-  local.tee $4
-  i32.ne
-  if
-   local.get $5
-   local.get $3
-   local.get $4
-   i32.const 2
-   i32.shl
-   i32.add
-   local.get $2
-   local.get $4
-   i32.sub
-   i32.const 2
-   i32.shl
-   memory.copy
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  local.get $2
-  local.get $1
-  i32.sub
-  i32.store offset=12
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-crossfile/__Cps_awaitChain>#splice (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $4 i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  global.get $~lib/memory/__stack_pointer
-  i32.const 3588
-  i32.lt_s
-  if
-   i32.const 36384
-   i32.const 36432
-   i32.const 1
-   i32.const 1
-   call $~lib/builtins/abort
-   unreachable
-  end
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  global.get $~lib/memory/__stack_pointer
-  i32.const 1
-  local.get $0
-  i32.load offset=12
-  local.tee $2
-  local.get $1
-  i32.const 0
-  i32.lt_s
-  if (result i32)
-   local.get $1
-   local.get $2
-   i32.add
-   local.tee $1
-   i32.const 0
-   local.get $1
-   i32.const 0
-   i32.gt_s
-   select
-  else
-   local.get $1
-   local.get $2
-   local.get $1
-   local.get $2
-   i32.lt_s
-   select
-  end
-  local.tee $4
-  i32.sub
-  local.tee $1
-  local.get $1
-  i32.const 1
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 0
-  local.get $1
-  i32.const 0
-  i32.gt_s
-  select
-  local.tee $1
-  i32.const 23
-  call $~lib/rt/__newArray
-  local.tee $3
-  i32.store offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $3
-  i32.store
-  local.get $3
-  i32.load offset=4
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  i32.load offset=4
-  local.tee $3
-  local.get $4
-  i32.const 2
-  i32.shl
-  i32.add
-  local.tee $5
-  local.get $1
-  i32.const 2
-  i32.shl
-  memory.copy
-  local.get $2
-  local.get $1
-  local.get $4
-  i32.add
-  local.tee $4
-  i32.ne
-  if
-   local.get $5
-   local.get $3
-   local.get $4
-   i32.const 2
-   i32.shl
-   i32.add
-   local.get $2
-   local.get $4
-   i32.sub
-   i32.const 2
-   i32.shl
-   memory.copy
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $0
-  i32.store
-  local.get $0
-  local.get $2
-  local.get $1
-  i32.sub
-  i32.store offset=12
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
  (func $~lib/array/Array<_async-crossfile-methods/__Cps_W2_helper>#splice (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -4711,11 +4825,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -4834,11 +4948,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -4957,11 +5071,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5080,11 +5194,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5203,11 +5317,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5324,7 +5438,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5338,7 +5452,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5393,8 +5507,8 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -5408,7 +5522,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5422,7 +5536,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5477,8 +5591,8 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -5491,7 +5605,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5502,7 +5616,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5523,8 +5637,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -5537,7 +5651,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5548,7 +5662,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -5569,8 +5683,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -5584,11 +5698,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5750,11 +5864,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -5903,7 +6017,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner1
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner1
    global.get $~lib/memory/__stack_pointer
@@ -5962,7 +6076,7 @@
       i32.sub
       global.set $~lib/memory/__stack_pointer
       global.get $~lib/memory/__stack_pointer
-      i32.const 3588
+      i32.const 3860
       i32.lt_s
       br_if $folding-inner1
       global.get $~lib/memory/__stack_pointer
@@ -6015,7 +6129,7 @@
        global.set $~lib/memory/__stack_pointer
        block $folding-inner00
         global.get $~lib/memory/__stack_pointer
-        i32.const 3588
+        i32.const 3860
         i32.lt_s
         br_if $folding-inner00
         global.get $~lib/memory/__stack_pointer
@@ -6030,7 +6144,7 @@
         i32.sub
         global.set $~lib/memory/__stack_pointer
         global.get $~lib/memory/__stack_pointer
-        i32.const 3588
+        i32.const 3860
         i32.lt_s
         br_if $folding-inner00
         global.get $~lib/memory/__stack_pointer
@@ -6230,8 +6344,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -6246,7 +6360,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner1
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner1
    global.get $~lib/memory/__stack_pointer
@@ -6308,7 +6422,7 @@
        global.set $~lib/memory/__stack_pointer
        block $folding-inner0
         global.get $~lib/memory/__stack_pointer
-        i32.const 3588
+        i32.const 3860
         i32.lt_s
         br_if $folding-inner0
         global.get $~lib/memory/__stack_pointer
@@ -6323,7 +6437,7 @@
         i32.sub
         global.set $~lib/memory/__stack_pointer
         global.get $~lib/memory/__stack_pointer
-        i32.const 3588
+        i32.const 3860
         i32.lt_s
         br_if $folding-inner0
         global.get $~lib/memory/__stack_pointer
@@ -6534,8 +6648,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -6549,11 +6663,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -6703,11 +6817,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -6867,7 +6981,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -6882,7 +6996,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -6995,8 +7109,8 @@
    local.get $2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -7010,11 +7124,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -7189,7 +7303,7 @@
   memory.size
   i32.const 16
   i32.shl
-  i32.const 36356
+  i32.const 36628
   i32.sub
   i32.const 1
   i32.shr_u
@@ -7224,7 +7338,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -7315,7 +7429,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -7406,7 +7520,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -7497,7 +7611,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -7588,7 +7702,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -7677,8 +7791,8 @@
    call $start:async-crossfile
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -7766,7 +7880,7 @@
      local.set $0
      loop $while-continue|0
       local.get $0
-      i32.const 36356
+      i32.const 36628
       i32.lt_u
       if
        local.get $0
@@ -7862,7 +7976,7 @@
      unreachable
     end
     local.get $0
-    i32.const 36356
+    i32.const 36628
     i32.lt_u
     if
      local.get $0
@@ -7885,7 +7999,7 @@
      i32.const 4
      i32.add
      local.tee $0
-     i32.const 36356
+     i32.const 36628
      i32.ge_u
      if
       global.get $~lib/rt/tlsf/ROOT
@@ -7953,7 +8067,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8044,7 +8158,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8135,7 +8249,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8226,7 +8340,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8317,7 +8431,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8405,8 +8519,8 @@
    global.set $async-crossfile/__async_roots_awaitCrossMethod
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8419,7 +8533,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8433,7 +8547,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8467,8 +8581,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8482,7 +8596,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8496,7 +8610,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8551,8 +8665,86 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 0
+   i32.ge_s
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const -2
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitOtherFile
+    local.tee $1
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitOtherFile
+    local.tee $2
+    i32.store offset=4
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store offset=8
+    local.get $1
+    local.get $2
+    local.get $0
+    call $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#indexOf
+    call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#splice
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 2
+   return
+  end
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8565,7 +8757,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8579,7 +8771,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8613,8 +8805,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8627,7 +8819,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8641,7 +8833,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8681,8 +8873,86 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 0
+   i32.ge_s
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const -2
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitOtherFileGuarded
+    local.tee $1
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitOtherFileGuarded
+    local.tee $2
+    i32.store offset=4
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store offset=8
+    local.get $1
+    local.get $2
+    local.get $0
+    call $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#indexOf
+    call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded>#splice
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 2
+   return
+  end
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8695,7 +8965,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8706,7 +8976,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8727,8 +8997,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8741,7 +9011,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8752,7 +9022,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8779,8 +9049,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8794,7 +9064,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8808,7 +9078,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8863,8 +9133,86 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitCycle_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 0
+   i32.ge_s
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const -2
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitCycle
+    local.tee $1
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitCycle
+    local.tee $2
+    i32.store offset=4
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store offset=8
+    local.get $1
+    local.get $2
+    local.get $0
+    call $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#indexOf
+    call $~lib/array/Array<async-crossfile/__Cps_awaitCycle>#splice
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 2
+   return
+  end
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8877,7 +9225,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8888,7 +9236,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8915,8 +9263,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -8930,7 +9278,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8944,7 +9292,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -8999,8 +9347,86 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 0
+   i32.ge_s
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const -2
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitCrossMethod
+    local.tee $1
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitCrossMethod
+    local.tee $2
+    i32.store offset=4
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store offset=8
+    local.get $1
+    local.get $2
+    local.get $0
+    call $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#indexOf
+    call $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod>#splice
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 2
+   return
+  end
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9013,7 +9439,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9027,7 +9453,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9061,8 +9487,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9076,7 +9502,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9090,7 +9516,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9145,8 +9571,86 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitChain_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 3860
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 0
+   i32.ge_s
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const -2
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitChain
+    local.tee $1
+    i32.store
+    global.get $~lib/memory/__stack_pointer
+    global.get $async-crossfile/__async_roots_awaitChain
+    local.tee $2
+    i32.store offset=4
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store offset=8
+    local.get $1
+    local.get $2
+    local.get $0
+    call $~lib/array/Array<_async-crossfile-helper/__Cps_helper>#indexOf
+    call $~lib/array/Array<async-crossfile/__Cps_awaitChain>#splice
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 2
+   return
+  end
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9159,7 +9663,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9170,7 +9674,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9197,8 +9701,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9212,7 +9716,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9226,7 +9730,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9281,8 +9785,8 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9295,7 +9799,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9309,7 +9813,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9343,8 +9847,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9358,7 +9862,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9372,7 +9876,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9427,8 +9931,8 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9441,7 +9945,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9452,7 +9956,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9479,8 +9983,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9493,7 +9997,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9504,7 +10008,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9531,8 +10035,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9545,7 +10049,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9556,7 +10060,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9583,8 +10087,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9597,7 +10101,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9608,7 +10112,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9635,8 +10139,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9649,7 +10153,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9663,7 +10167,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9697,8 +10201,8 @@
    global.set $~lib/memory/__stack_pointer
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9712,7 +10216,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9726,7 +10230,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9781,8 +10285,8 @@
    i32.const 2
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -9794,11 +10298,11 @@
   i32.sub
   global.set $~lib/memory/__stack_pointer
   global.get $~lib/memory/__stack_pointer
-  i32.const 3588
+  i32.const 3860
   i32.lt_s
   if
-   i32.const 36384
-   i32.const 36432
+   i32.const 36656
+   i32.const 36704
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -9839,7 +10343,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -9854,7 +10358,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10025,8 +10529,8 @@
    local.get $0
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -10041,7 +10545,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10056,7 +10560,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10157,8 +10661,8 @@
    local.get $1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -10173,7 +10677,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10188,7 +10692,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10277,8 +10781,8 @@
    local.get $1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -10293,7 +10797,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10308,7 +10812,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10407,8 +10911,8 @@
    local.get $1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
@@ -10423,7 +10927,7 @@
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10438,7 +10942,7 @@
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
-   i32.const 3588
+   i32.const 3860
    i32.lt_s
    br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
@@ -10539,11 +11043,439 @@
    local.get $1
    return
   end
-  i32.const 36384
-  i32.const 36432
+  i32.const 36656
+  i32.const 36704
   i32.const 1
   i32.const 1
   call $~lib/builtins/abort
   unreachable
+ )
+ (func $async-crossfile/__async_async_crossfile_mint_string (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3552
+  i32.store
+  i32.const 3548
+  i32.load
+  i32.const 1
+  i32.shr_u
+  local.set $3
+  local.get $0
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   i32.const 1
+  else
+   local.get $3
+   i64.extend_i32_s
+   local.get $0
+   i64.extend_i32_s
+   i64.mul
+   i64.const 268435456
+   i64.gt_u
+  end
+  if
+   i32.const 1056
+   i32.const 3584
+   i32.const 334
+   i32.const 7
+   call $~lib/builtins/abort
+   unreachable
+  end
+  block $__inlined_func$~lib/string/String#repeat$90
+   local.get $3
+   i32.eqz
+   local.get $0
+   i32.eqz
+   i32.or
+   if
+    global.get $~lib/memory/__stack_pointer
+    i32.const 8
+    i32.add
+    global.set $~lib/memory/__stack_pointer
+    i32.const 1552
+    local.set $1
+    br $__inlined_func$~lib/string/String#repeat$90
+   end
+   local.get $0
+   i32.const 1
+   i32.eq
+   if
+    global.get $~lib/memory/__stack_pointer
+    i32.const 8
+    i32.add
+    global.set $~lib/memory/__stack_pointer
+    i32.const 3552
+    local.set $1
+    br $__inlined_func$~lib/string/String#repeat$90
+   end
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   local.get $3
+   i32.mul
+   i32.const 1
+   i32.shl
+   i32.const 2
+   call $~lib/rt/itcms/__new
+   local.tee $1
+   i32.store offset=4
+   local.get $3
+   i32.const 1
+   i32.shl
+   local.tee $3
+   local.get $0
+   i32.mul
+   local.set $0
+   loop $while-continue|0
+    local.get $0
+    local.get $2
+    i32.gt_u
+    if
+     local.get $1
+     local.get $2
+     i32.add
+     i32.const 3552
+     local.get $3
+     memory.copy
+     local.get $2
+     local.get $3
+     i32.add
+     local.set $2
+     br $while-continue|0
+    end
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+  end
+  local.get $1
+ )
+ (func $async-crossfile/__async_async_crossfile_mint (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitOtherFile_last_handle (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFile
+  local.tee $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 0
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFile
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFile
+  local.tee $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_last_handle (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFileGuarded
+  local.tee $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 0
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFileGuarded
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitOtherFileGuarded
+  local.tee $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitCycle_last_handle (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCycle
+  local.tee $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 0
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCycle
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCycle
+  local.tee $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitCrossMethod_last_handle (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCrossMethod
+  local.tee $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 0
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCrossMethod
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitCrossMethod
+  local.tee $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitChain_last_handle (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 3860
+  i32.lt_s
+  if
+   i32.const 36656
+   i32.const 36704
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitChain
+  local.tee $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   i32.const 0
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitChain
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  global.get $async-crossfile/__async_roots_awaitChain
+  local.tee $1
+  i32.store offset=4
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#__get
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
 )

@@ -97,6 +97,7 @@
  (export "__async_async_join_allsettled_settledMixed_join_store_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_store_0))
  (export "__async_async_join_allsettled_settledMixed_join_error_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_error_0))
  (export "__async_async_join_allsettled_settledMixed_join_done_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_done_0))
+ (export "__async_async_join_allsettled_settledMixed_join_mark_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_mark_0))
  (export "__async_async_join_allsettled_settledMixed_reject_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_reject_0))
  (export "__async_async_join_allsettled_settledMixed_result" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_result))
  (export "__async_async_join_allsettled_settledMixed_error" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_error))
@@ -105,6 +106,7 @@
  (export "__async_async_join_allsettled_settledEmpty_join_store_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_store_0))
  (export "__async_async_join_allsettled_settledEmpty_join_error_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_error_0))
  (export "__async_async_join_allsettled_settledEmpty_join_done_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledEmpty_join_done_0))
+ (export "__async_async_join_allsettled_settledEmpty_join_mark_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_mark_0))
  (export "__async_async_join_allsettled_settledEmpty_reject_0" (func $export:async-join-allsettled/__async_async_join_allsettled_settledEmpty_reject_0))
  (export "__async_async_join_allsettled_settledEmpty_result" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_result))
  (export "__async_async_join_allsettled_settledEmpty_error" (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_error))
@@ -888,7 +890,7 @@
    global.get $~lib/memory/__stack_pointer
    local.get $1
    i32.store
-   block $__inlined_func$~lib/string/String#concat$409
+   block $__inlined_func$~lib/string/String#concat$415
     local.get $1
     i32.const 20
     i32.sub
@@ -907,7 +909,7 @@
      global.set $~lib/memory/__stack_pointer
      i32.const 3360
      local.set $0
-     br $__inlined_func$~lib/string/String#concat$409
+     br $__inlined_func$~lib/string/String#concat$415
     end
     global.get $~lib/memory/__stack_pointer
     local.get $0
@@ -1071,7 +1073,7 @@
    global.get $~lib/memory/__stack_pointer
    local.get $0
    i32.store
-   block $__inlined_func$~lib/rt/itcms/__renew$388
+   block $__inlined_func$~lib/rt/itcms/__renew$393
     i32.const 1073741820
     local.get $2
     i32.const 1
@@ -1114,7 +1116,7 @@
      i32.store offset=16
      local.get $2
      local.set $1
-     br $__inlined_func$~lib/rt/itcms/__renew$388
+     br $__inlined_func$~lib/rt/itcms/__renew$393
     end
     local.get $3
     local.get $4
@@ -1672,7 +1674,7 @@
    local.get $1
    global.set $~lib/rt/itcms/iter
   end
-  block $__inlined_func$~lib/rt/itcms/Object#unlink$403
+  block $__inlined_func$~lib/rt/itcms/Object#unlink$409
    local.get $0
    i32.load offset=4
    i32.const -4
@@ -1696,7 +1698,7 @@
      call $~lib/builtins/abort
      unreachable
     end
-    br $__inlined_func$~lib/rt/itcms/Object#unlink$403
+    br $__inlined_func$~lib/rt/itcms/Object#unlink$409
    end
    local.get $0
    i32.load offset=8
@@ -3388,6 +3390,68 @@
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
    i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  i32.const 36880
+  i32.const 36928
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $export:async-join-allsettled/__async_async_join_allsettled_settledMixed_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4088
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4088
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   i32.load
+   i32.const 1
+   i32.eq
+   if
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    local.get $1
+    i32.store offset=24
+    global.get $~lib/memory/__stack_pointer
+    local.get $0
+    i32.store
+    local.get $0
+    i32.const 1
+    i32.store8 offset=28
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return

@@ -3,9 +3,9 @@
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32 i32) (result i32)))
  (type $3 (func (param i32 i32 i32)))
- (type $4 (func (param i32 i32 i32) (result i32)))
- (type $5 (func (param i32)))
- (type $6 (func (result i32)))
+ (type $4 (func (result i32)))
+ (type $5 (func (param i32 i32 i32) (result i32)))
+ (type $6 (func (param i32)))
  (type $7 (func))
  (type $8 (func (param i32 i32 i32 i32)))
  (type $9 (func (param i32 i32 i32 i32) (result i32)))
@@ -38,10 +38,10 @@
  (global $async-join-member/__async_roots_settledHoisted (mut i32) (i32.const 0))
  (global $async-join-member/__async_roots_allHoistedCaught (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 2816))
- (global $~lib/memory/__data_end i32 (i32.const 2892))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35660))
- (global $~lib/memory/__heap_base i32 (i32.const 35660))
+ (global $~lib/rt/__rtti_base i32 (i32.const 2960))
+ (global $~lib/memory/__data_end i32 (i32.const 3036))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35804))
+ (global $~lib/memory/__heap_base i32 (i32.const 35804))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -71,7 +71,10 @@
  (data $25 (i32.const 2700) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00;\00\00\00\00\00\00\00\00\00\00\00")
  (data $26 (i32.const 2732) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\04\00\00\00n\00o\00\00\00\00\00\00\00\00\00")
  (data $27 (i32.const 2764) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0e\00\00\00c\00a\00u\00g\00h\00t\00:\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $28 (i32.const 2816) "\12\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $28 (i32.const 2812) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
+ (data $29 (i32.const 2876) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
+ (data $30 (i32.const 2908) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
+ (data $31 (i32.const 2960) "\12\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "mintString" (func $async-join-member/mintString))
@@ -80,7 +83,14 @@
  (export "raceHoisted" (func $async-join-member/raceHoisted))
  (export "settledHoisted" (func $async-join-member/settledHoisted))
  (export "allHoistedCaught" (func $async-join-member/allHoistedCaught))
+ (export "__async_async_join_member_mint" (func $async-join-member/__async_async_join_member_mint))
+ (export "__async_async_join_member_mint_string" (func $async-join-member/__async_async_join_member_mint_string))
+ (export "__async_async_join_member_allHoisted_last_handle" (func $async-join-member/__async_async_join_member_allHoisted_last_handle))
+ (export "__async_async_join_member_raceHoisted_last_handle" (func $async-join-member/__async_async_join_member_raceHoisted_last_handle))
+ (export "__async_async_join_member_settledHoisted_last_handle" (func $async-join-member/__async_async_join_member_settledHoisted_last_handle))
+ (export "__async_async_join_member_allHoistedCaught_last_handle" (func $async-join-member/__async_async_join_member_allHoistedCaught_last_handle))
  (export "memory" (memory $0))
+ (export "__async_async_join_member_allHoisted_reclaim" (func $export:async-join-member/__async_async_join_member_allHoisted_reclaim))
  (export "__async_async_join_member_allHoisted_resume_0" (func $export:async-join-member/__async_async_join_member_allHoisted_resume_0))
  (export "__async_async_join_member_allHoisted_reject_0" (func $export:async-join-member/__async_async_join_member_allHoisted_reject_0))
  (export "__async_async_join_member_allHoisted_join_store_1" (func $export:async-join-member/__async_async_join_member_allHoisted_join_store_1))
@@ -91,6 +101,7 @@
  (export "__async_async_join_member_allHoisted_result" (func $export:async-join-member/__async_async_join_member_allHoisted_result))
  (export "__async_async_join_member_allHoisted_error" (func $export:async-join-member/__async_async_join_member_allHoisted_error))
  (export "__async_async_join_member_allHoisted_status" (func $export:async-join-member/__async_async_join_member_allHoisted_status))
+ (export "__async_async_join_member_raceHoisted_reclaim" (func $export:async-join-member/__async_async_join_member_raceHoisted_reclaim))
  (export "__async_async_join_member_raceHoisted_resume_0" (func $export:async-join-member/__async_async_join_member_raceHoisted_resume_0))
  (export "__async_async_join_member_raceHoisted_reject_0" (func $export:async-join-member/__async_async_join_member_raceHoisted_reject_0))
  (export "__async_async_join_member_raceHoisted_join_store_1" (func $export:async-join-member/__async_async_join_member_raceHoisted_join_store_1))
@@ -101,6 +112,7 @@
  (export "__async_async_join_member_raceHoisted_result" (func $export:async-join-member/__async_async_join_member_raceHoisted_result))
  (export "__async_async_join_member_raceHoisted_error" (func $export:async-join-member/__async_async_join_member_raceHoisted_error))
  (export "__async_async_join_member_raceHoisted_status" (func $export:async-join-member/__async_async_join_member_raceHoisted_status))
+ (export "__async_async_join_member_settledHoisted_reclaim" (func $export:async-join-member/__async_async_join_member_settledHoisted_reclaim))
  (export "__async_async_join_member_settledHoisted_resume_0" (func $export:async-join-member/__async_async_join_member_settledHoisted_resume_0))
  (export "__async_async_join_member_settledHoisted_reject_0" (func $export:async-join-member/__async_async_join_member_settledHoisted_reject_0))
  (export "__async_async_join_member_settledHoisted_join_store_1" (func $export:async-join-member/__async_async_join_member_settledHoisted_join_store_1))
@@ -111,6 +123,7 @@
  (export "__async_async_join_member_settledHoisted_result" (func $export:async-join-member/__async_async_join_member_settledHoisted_result))
  (export "__async_async_join_member_settledHoisted_error" (func $export:async-join-member/__async_async_join_member_settledHoisted_error))
  (export "__async_async_join_member_settledHoisted_status" (func $export:async-join-member/__async_async_join_member_settledHoisted_status))
+ (export "__async_async_join_member_allHoistedCaught_reclaim" (func $export:async-join-member/__async_async_join_member_allHoistedCaught_reclaim))
  (export "__async_async_join_member_allHoistedCaught_resume_0" (func $export:async-join-member/__async_async_join_member_allHoistedCaught_resume_0))
  (export "__async_async_join_member_allHoistedCaught_reject_0" (func $export:async-join-member/__async_async_join_member_allHoistedCaught_reject_0))
  (export "__async_async_join_member_allHoistedCaught_join_store_1" (func $export:async-join-member/__async_async_join_member_allHoistedCaught_join_store_1))
@@ -3954,6 +3967,46 @@
   local.get $this
   i32.load offset=28
  )
+ (func $async-join-member/__async_async_join_member_mint (result i32)
+  i32.const 0
+  i32.const 8
+  call $~lib/arraybuffer/ArrayBuffer#constructor
+  return
+ )
+ (func $~lib/memory/memory.repeat (param $dst i32) (param $src i32) (param $srcLength i32) (param $count i32)
+  (local $index i32)
+  (local $total i32)
+  i32.const 0
+  local.set $index
+  local.get $srcLength
+  local.get $count
+  i32.mul
+  local.set $total
+  loop $while-continue|0
+   local.get $index
+   local.get $total
+   i32.lt_u
+   if
+    local.get $dst
+    local.get $index
+    i32.add
+    local.get $src
+    local.get $srcLength
+    memory.copy
+    local.get $index
+    local.get $srcLength
+    i32.add
+    local.set $index
+    br $while-continue|0
+   end
+  end
+ )
+ (func $async-join-member/__async_async_join_member_mint_string (param $len i32) (result i32)
+  i32.const 2896
+  local.get $len
+  call $~lib/string/String#repeat
+  return
+ )
  (func $async-join-member/__Cps_allHoisted#get:__joinReasons1 (param $this i32) (result i32)
   local.get $this
   i32.load offset=24
@@ -4420,8 +4473,8 @@
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 35680
-   i32.const 35728
+   i32.const 35824
+   i32.const 35872
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -11652,6 +11705,325 @@
   local.get $1
   return
  )
+ (func $~lib/string/String#repeat (param $this i32) (param $count i32) (result i32)
+  (local $length i32)
+  (local $out i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/string/String#get:length
+  local.set $length
+  local.get $count
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i64.extend_i32_s
+   local.get $count
+   i64.extend_i32_s
+   i64.mul
+   i64.const 1
+   i64.const 28
+   i64.shl
+   i64.gt_u
+  end
+  if
+   i32.const 32
+   i32.const 2928
+   i32.const 334
+   i32.const 7
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $count
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i32.eqz
+  end
+  if
+   i32.const 2336
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  local.get $count
+  i32.const 1
+  i32.eq
+  if
+   local.get $this
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  local.get $count
+  i32.mul
+  i32.const 1
+  i32.shl
+  i32.const 2
+  call $~lib/rt/itcms/__new
+  local.tee $out
+  i32.store offset=4
+  local.get $out
+  local.get $this
+  local.get $length
+  i32.const 1
+  i32.shl
+  local.get $count
+  call $~lib/memory/memory.repeat
+  local.get $out
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_allHoisted>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2560
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-join-member/__async_async_join_member_allHoisted_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-join-member/__async_roots_allHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-join-member/__async_roots_allHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-join-member/__async_roots_allHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-join-member/__async_async_join_member_allHoisted_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-member/__Cps_allHoisted#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-join-member/__Cps_allHoisted#set:state
+  global.get $async-join-member/__async_roots_allHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-join-member/__async_roots_allHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-join-member/__Cps_allHoisted>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-member/__async_async_join_member_allHoisted_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12183,6 +12555,223 @@
   local.get $1
   return
  )
+ (func $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_raceHoisted>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2560
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-join-member/__async_async_join_member_raceHoisted_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-join-member/__async_roots_raceHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-join-member/__async_roots_raceHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-join-member/__async_roots_raceHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-join-member/__async_async_join_member_raceHoisted_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-member/__Cps_raceHoisted#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-join-member/__Cps_raceHoisted#set:state
+  global.get $async-join-member/__async_roots_raceHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-join-member/__async_roots_raceHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-join-member/__Cps_raceHoisted>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-member/__async_async_join_member_raceHoisted_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12641,6 +13230,223 @@
   local.get $1
   return
  )
+ (func $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_settledHoisted>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2560
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-join-member/__async_async_join_member_settledHoisted_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-join-member/__async_roots_settledHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-join-member/__async_roots_settledHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-join-member/__async_roots_settledHoisted
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-join-member/__async_async_join_member_settledHoisted_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-member/__Cps_settledHoisted#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-join-member/__Cps_settledHoisted#set:state
+  global.get $async-join-member/__async_roots_settledHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-join-member/__async_roots_settledHoisted
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-join-member/__Cps_settledHoisted>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-member/__async_async_join_member_settledHoisted_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13094,6 +13900,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:length_
+  i32.ge_u
+  if
+   i32.const 320
+   i32.const 80
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 2560
+   i32.const 80
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-join-member/__async_async_join_member_allHoistedCaught_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-join-member/__async_roots_allHoistedCaught
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-join-member/__async_roots_allHoistedCaught
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-join-member/__async_roots_allHoistedCaught
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-join-member/__async_async_join_member_allHoistedCaught_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-member/__Cps_allHoistedCaught#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-join-member/__Cps_allHoistedCaught#set:state
+  global.get $async-join-member/__async_roots_allHoistedCaught
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-join-member/__async_roots_allHoistedCaught
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-join-member/__Cps_allHoistedCaught>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -14246,6 +15269,66 @@
   local.get $7
   return
  )
+ (func $~lib/arraybuffer/ArrayBuffer#constructor (param $this i32) (param $length i32) (result i32)
+  (local $buffer i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $length
+  i32.const 1073741820
+  i32.gt_u
+  if
+   i32.const 32
+   i32.const 2832
+   i32.const 52
+   i32.const 43
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $buffer
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $export:async-join-member/__async_async_join_member_allHoisted_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-member/__async_async_join_member_allHoisted_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-join-member/__async_async_join_member_allHoisted_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14437,6 +15520,25 @@
   i32.store
   local.get $0
   call $async-join-member/__async_async_join_member_allHoisted_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-join-member/__async_async_join_member_raceHoisted_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-member/__async_async_join_member_raceHoisted_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14642,6 +15744,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-member/__async_async_join_member_settledHoisted_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-member/__async_async_join_member_settledHoisted_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-join-member/__async_async_join_member_settledHoisted_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14833,6 +15954,25 @@
   i32.store
   local.get $0
   call $async-join-member/__async_async_join_member_settledHoisted_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-join-member/__async_async_join_member_allHoistedCaught_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-member/__async_async_join_member_allHoistedCaught_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
