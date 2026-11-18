@@ -30,19 +30,23 @@ for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "names
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
-function compile(name) {
+function compileTo(cwd, name, flags) {
   const base = name.replace(/\.ts$/, "");
   const r = spawnSync(
     process.execPath,
-    [ascBin, name, "-o", base + ".wasm", "--exportRuntime", "--debug", "--enable", "reference-types"],
-    { cwd: dir, encoding: "utf8" }
+    [ascBin, name, "-o", base + ".wasm", ...flags],
+    { cwd, encoding: "utf8" }
   );
   if (r.status !== 0) {
     console.log(r.stdout, r.stderr);
     console.log("FAIL: asc failed for " + name);
     process.exit(1);
   }
-  return join(dir, base + ".wasm");
+  return join(cwd, base + ".wasm");
+}
+
+function compile(name) {
+  return compileTo(dir, name, ["--exportRuntime", "--debug", "--enable", "reference-types"]);
 }
 
 function check(cond, msg) {
@@ -449,6 +453,148 @@ const api = await instantiateAsync(bytes, {
   await Promise.all(tasks);
   check(results.join(",") === "42,42,42,42,42", "all 5 pool tasks must resolve 42, got " + results);
   console.log("PASS spill-pool FIFO queue (4 start, 5th queues, then runs)");
+}
+
+// Trap slot reclaim: fill the pool, trap a task on resume and a task on
+// entry, and the queued tasks must run instead of stalling behind the
+// leaked slots. No slots may leak: a fresh set of 4 tasks must all start
+// after every trap.
+{
+  const hBase = handleDeferreds.length;
+  const uBase = useDeferreds.length;
+  const results = [];
+  const traps = [];
+  for (let i = 0; i < 4; i++) {
+    const p = api.trapRoundtrip();
+    p.then(
+      () => results.push("ok"),
+      (e) => results.push("trap:" + e.message)
+    );
+    traps.push(p);
+  }
+  await tick();
+  check(handleDeferreds.length === hBase + 4, "4 trap tasks must fill the pool, got " + (handleDeferreds.length - hBase));
+  const entryTrap = api.trapEntry(sentinel);
+  entryTrap.then(
+    () => results.push("entry-ok"),
+    (e) => results.push("entry-trap:" + e.message)
+  );
+  const queued = api.handleRoundtrip();
+  queued.then((v) => results.push(v));
+  await tick();
+  check(handleDeferreds.length === hBase + 4, "no queued task may start while the pool is full");
+  handleDeferreds[hBase].resolve(sentinel);
+  await tick();
+  check(results[0] && results[0].startsWith("trap:"), "resumed trap task must reject, got " + results[0]);
+  check(/unreachable/.test(results[0]), "resumed trap must report the trap, got " + results[0]);
+  await tick();
+  check(results[1] && results[1].startsWith("entry-trap:"), "entry trap task must reject, got " + results[1]);
+  check(/unreachable/.test(results[1]), "entry trap must report the trap, got " + results[1]);
+  check(handleDeferreds.length === hBase + 5, "the queued handleRoundtrip must start once the trapped slots free, got " + (handleDeferreds.length - hBase));
+  handleDeferreds[hBase + 4].resolve(sentinel);
+  await tick();
+  check(seenHandles[uBase] === sentinel, "queued task must keep externref identity");
+  useDeferreds[uBase].resolve(42);
+  check((await queued) === 42, "queued task must resolve 42");
+  for (let i = 1; i < 4; i++) {
+    handleDeferreds[hBase + i].resolve(sentinel);
+    await tick();
+  }
+  await Promise.allSettled(traps);
+  check(
+    results.filter((r) => typeof r === "string" && r.startsWith("trap:")).length === 4,
+    "all 4 trap tasks must reject, got " + results.join(",")
+  );
+  const freshBase = handleDeferreds.length;
+  const fresh = [];
+  for (let i = 0; i < 4; i++) fresh.push(api.handleRoundtrip());
+  await tick();
+  check(handleDeferreds.length === freshBase + 4, "a fresh 4 tasks must all start (no leaked slots), got " + (handleDeferreds.length - freshBase));
+  for (let i = 0; i < 4; i++) {
+    handleDeferreds[freshBase + i].resolve(sentinel);
+    await tick();
+    useDeferreds[uBase + 1 + i].resolve(42);
+  }
+  check((await Promise.all(fresh)).join(",") === "42,42,42,42", "fresh tasks must all resolve 42");
+  console.log("PASS trap slot reclaim (resume trap + entry trap, queued tasks run, no leak)");
+}
+
+// No --exportRuntime: the wasm-side mint exports replace __new for
+// tokens, string lowering and error messages, so a module with no
+// classes drives fully without the flag.
+{
+  const dirNoRt = mkdtempSync(join(tmpdir(), "async-coord-nort-"));
+  copyFileSync(join(fixtures, "coordinator.ts"), join(dirNoRt, "coordinator.ts"));
+  const wasmNoRt = compileTo(dirNoRt, "coordinator.ts", ["--debug", "--enable", "reference-types"]);
+  const coordNoRt = join(dirNoRt, "coordinator.async.js");
+  check(existsSync(coordNoRt), "coordinator.async.js must be emitted without --exportRuntime");
+  const bytesNoRt = readFileSync(wasmNoRt);
+  const exportNames = WebAssembly.Module.exports(new WebAssembly.Module(bytesNoRt)).map((e) => e.name);
+  check(!exportNames.includes("__new"), "wasm without --exportRuntime must not export __new");
+  check(exportNames.includes("__async_coordinator_mint"), "wasm must export the token mint");
+  check(exportNames.includes("__async_coordinator_mint_string"), "wasm must export the string mint");
+  const { instantiateAsync: instantiateNoRt } = await import(pathToFileURL(coordNoRt).href);
+  const nrChunks = [];
+  const nrHandles = [];
+  const nrUses = [];
+  const nrSentinel = { tag: "no-rt-handle" };
+  const apiNoRt = await instantiateNoRt(bytesNoRt, {
+    env: {
+      getChunk(i) {
+        const d = deferred();
+        nrChunks.push(d);
+        return d.promise;
+      },
+      getHandle() {
+        const d = deferred();
+        nrHandles.push(d);
+        return d.promise;
+      },
+      useHandle(h) {
+        check(h === nrSentinel, "no-rt handleRoundtrip must keep externref identity");
+        const d = deferred();
+        nrUses.push(d);
+        return d.promise;
+      },
+      // Unused by the driven functions, but the coordinator requires a
+      // binding for every suspending import in the module.
+      getNumber() {
+        return new Promise(() => {});
+      },
+      issueNumber() {
+        return 0;
+      },
+      joinNumbers() {
+        return new Promise(() => {});
+      }
+    }
+  });
+  const pNoRt = apiNoRt.concatThree();
+  await tick();
+  nrChunks[0].resolve("AAA");
+  await tick();
+  nrChunks[1].resolve("BBB");
+  await tick();
+  nrChunks[2].resolve("CCC");
+  check((await pNoRt) === "AAABBBCCC", "loop+await must work without --exportRuntime");
+  console.log("PASS no --exportRuntime: loop+await through the wasm mint");
+
+  const pHandle = apiNoRt.handleRoundtrip();
+  await tick();
+  nrHandles[0].resolve(nrSentinel);
+  await tick();
+  nrUses[0].resolve(42);
+  check((await pHandle) === 42, "externref roundtrip must work without --exportRuntime");
+  console.log("PASS no --exportRuntime: externref identity across await");
+
+  const base = nrChunks.length;
+  const pFail = apiNoRt.failingConcat();
+  await tick();
+  nrChunks[base].resolve("A");
+  await tick();
+  nrChunks[base + 1].reject(new Error("chunk-1 failed"));
+  await assertRejects(pFail, /chunk-1 failed/, "rejection must propagate without --exportRuntime (error message via the string mint)");
+  console.log("PASS no --exportRuntime: rejection propagates with its message");
 }
 
 // Join engine unit checks for the policies the e2e does not drive.

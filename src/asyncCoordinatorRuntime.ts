@@ -13,6 +13,10 @@
 /** JS source of the driver loop, without the metadata line. */
 export const ASYNC_COORDINATOR_RUNTIME = `const STRING_ID = 2;
 const SIZE_OFFSET = -4;
+// Must match CPS_SEGMENT_BASE in src/asyncTransform.ts: a task observed
+// with status >= this value was executing a segment when it trapped;
+// a suspended task reads site + 1 (1..sites).
+const CPS_SEGMENT_BASE = 1024;
 
 function asyncGetString(buffer, ptr) {
   if (!ptr) return null;
@@ -46,11 +50,30 @@ export function createCoordinator(metadata) {
   let wasmExports = null;
   let memory = null;
   let alloc = null;
+  let mint = null;
+  let mintString = null;
   let pin = null;
   let unpin = null;
   let activeTask = null;
   const queues = new Map();
+  const liveHandles = new Set();
   const api = {};
+
+  // Functions per file, for the trap sweep: a task that traps during
+  // entry stays on its function's roots registry, which the sweep reads
+  // through the last-handle export.
+  const functionsByFile = new Map();
+  function noteFunctions(list) {
+    if (!list) return;
+    list.forEach(function (fn) {
+      let filed = functionsByFile.get(fn.fileBase);
+      if (!filed) { filed = []; functionsByFile.set(fn.fileBase, filed); }
+      filed.push(fn);
+    });
+  }
+  noteFunctions(metadata.functions);
+  (metadata.classes || []).forEach(function (cls) { noteFunctions(cls.methods); });
+  Object.keys(metadata.inners || {}).forEach(function (key) { noteFunctions([metadata.inners[key]]); });
 
   // Member tokens: one fresh heap-pointer token per suspending-import
   // call (chunk 5's protocol). The token must be a heap pointer, not a
@@ -63,13 +86,15 @@ export function createCoordinator(metadata) {
   let nextToken = 1;
   const joinMembers = new Map();
 
-  function needAlloc() {
-    if (!alloc) throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
-    return alloc;
-  }
-
   function newString(str) {
-    return asyncNewString(memory, needAlloc(), str);
+    if (alloc) return asyncNewString(memory, alloc, str);
+    if (mintString) {
+      const ptr = mintString(str.length);
+      const view = new Uint16Array(memory.buffer);
+      for (let i = 0, p = ptr >>> 1; i < str.length; ++i) view[p + i] = str.charCodeAt(i);
+      return ptr;
+    }
+    throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
   }
 
   function getString(ptr) {
@@ -143,6 +168,47 @@ export function createCoordinator(metadata) {
     }
   }
 
+  function reclaimTask(task) {
+    if (!task || !task.handle || !task.fn.reclaimExport) return;
+    const reclaim = wasmExports[task.fn.reclaimExport];
+    if (typeof reclaim !== 'function') return;
+    try { reclaim(task.handle); } catch (e) { /* reclaim is best-effort; the task is already dead */ }
+  }
+
+  // Sweeps each file's roots registries for tasks that trapped during
+  // entry: status 0 (never stepped) or >= CPS_SEGMENT_BASE (a step was
+  // executing a segment when it trapped) means the task never suspended,
+  // completed or failed, so it is dead and its slots are leaked. The
+  // live set disambiguates status 1024, which a task suspended at the
+  // last site of a 1024-site function also reads: a live handle is never
+  // reclaimed. Reclaiming splices the task out, so the loop re-reads
+  // until the registry top is live or empty; the guard bounds it. This
+  // also covers a nested inner entry trapping inside the abandoned
+  // task's step, since the inner never registered live.
+  function sweepTrapped(fileBase) {
+    const list = functionsByFile.get(fileBase);
+    if (!list) return;
+    for (let i = 0; i < list.length; ++i) {
+      const fn = list[i];
+      if (!fn.lastHandleExport || !fn.reclaimExport) continue;
+      for (let guard = 0; guard < 1024; ++guard) {
+        let handle = 0;
+        try { handle = wasmExports[fn.lastHandleExport](); } catch (e) { break; }
+        if (!handle || liveHandles.has(handle)) break;
+        let st = 0;
+        try { st = wasmExports[fn.statusExport](handle); } catch (e) { break; }
+        if (st !== 0 && st < CPS_SEGMENT_BASE) break;
+        try { wasmExports[fn.reclaimExport](handle); } catch (e) { break; }
+      }
+    }
+  }
+
+  function reclaimTrap(task) {
+    if (!task) return;
+    reclaimTask(task);
+    sweepTrapped(task.fn.fileBase);
+  }
+
   function drain(fileBase) {
     const queue = queues.get(fileBase);
     if (!queue || queue.length === 0 || queue.draining) return;
@@ -161,6 +227,7 @@ export function createCoordinator(metadata) {
   function settleComplete(task) {
     if (task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
     let result;
     try {
       result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.resultKind, task.fn.resultNullable);
@@ -180,6 +247,7 @@ export function createCoordinator(metadata) {
   function settleFailed(task) {
     if (task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
     let message = 'async task failed';
     try {
       const ptr = wasmExports[task.fn.errorExport](task.handle);
@@ -194,6 +262,12 @@ export function createCoordinator(metadata) {
   function settleError(task, error) {
     if (!task || task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
+    // The task will never be driven again, so release its spill slots
+    // here: every abandonment (trap, logic error, missing binding) flows
+    // through this function, and the reclaim is a no-op for a task that
+    // already reached a terminal state.
+    reclaimTrap(task);
     dropPin(task);
     if (task.parent) { deliverInnerFailure(task, error); return; }
     task.reject(error instanceof Error ? error : new Error(String(error)));
@@ -480,6 +554,7 @@ export function createCoordinator(metadata) {
     if (pin) {
       try { pin(innerHandle); } catch (e) { /* best-effort */ }
     }
+    liveHandles.add(innerHandle);
     drive(innerTask);
   }
 
@@ -567,12 +642,17 @@ export function createCoordinator(metadata) {
   // queues behind the running tasks for its file and starts when one
   // settles, with the receiver carried along.
   function attemptEntry(fn, jsArgs, resolve, reject, queueOnExhausted, receiver) {
-    let task = null;
+    let wasmArgs;
+    try {
+      wasmArgs = lowerArgs(jsArgs, fn.params);
+      if (receiver != null) wasmArgs.unshift(receiver);
+    } catch (e) {
+      reject(e instanceof Error ? e : new Error(String(e)));
+      return true;
+    }
+    const task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
     let handle = 0;
     try {
-      const wasmArgs = lowerArgs(jsArgs, fn.params);
-      if (receiver != null) wasmArgs.unshift(receiver);
-      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
         handle = wasmExports[fn.entryExport || fn.exportName].apply(null, wasmArgs);
@@ -580,8 +660,7 @@ export function createCoordinator(metadata) {
         activeTask = null;
       }
     } catch (e) {
-      if (task) settleError(task, e);
-      else reject(e instanceof Error ? e : new Error(String(e)));
+      settleError(task, e);
       return true;
     }
     if (handle === 0) {
@@ -596,6 +675,7 @@ export function createCoordinator(metadata) {
     if (pin) {
       try { pin(handle); } catch (e) { /* best-effort */ }
     }
+    liveHandles.add(handle);
     let st;
     try {
       st = statusOf(fn, handle);
@@ -686,8 +766,14 @@ export function createCoordinator(metadata) {
           result = Promise.reject(e);
         }
         if (task) {
-          let token = newString("token" + nextToken++);
-          while (joinMembers.has(token)) token = newString("token" + nextToken++);
+          let token;
+          if (mint) {
+            token = mint();
+            while (joinMembers.has(token)) token = mint();
+          } else {
+            token = newString("token" + nextToken++);
+            while (joinMembers.has(token)) token = newString("token" + nextToken++);
+          }
           const promise = Promise.resolve(result);
           joinMembers.set(token, promise);
           task.pending = promise;
@@ -751,6 +837,8 @@ export function createCoordinator(metadata) {
     wasmExports = instance.exports;
     memory = wasmExports.memory || memory;
     alloc = wasmExports.__new || null;
+    mint = (metadata.mintExport && wasmExports[metadata.mintExport]) || null;
+    mintString = (metadata.mintStringExport && wasmExports[metadata.mintStringExport]) || null;
     pin = wasmExports.__pin || null;
     unpin = wasmExports.__unpin || null;
     api.instance = instance;

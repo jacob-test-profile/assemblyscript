@@ -215,6 +215,8 @@ function buildFunctionMeta(
     statusExport: "__async_" + fileBase + "_" + fn + "_status",
     resultExport: "__async_" + fileBase + "_" + fn + "_result",
     errorExport: "__async_" + fileBase + "_" + fn + "_error",
+    lastHandleExport: "__async_" + fileBase + "_" + fn + "_last_handle",
+    reclaimExport: "__async_" + fileBase + "_" + fn + "_reclaim",
     sites
   };
 }
@@ -500,7 +502,19 @@ export function buildAsyncCoordinator(program: Program): string | null {
     seen.add(key);
     imports.push(meta);
   }
-  let metadata = { functions, classes, inners, imports };
+  // The mint is per file and file-independent: any transformed
+  // function's file carries one, so the first entry's file will do.
+  let mintFileBase = functions.length > 0
+    ? functions[0].fileBase
+    : classes[0].methods[0].fileBase;
+  let metadata = {
+    functions,
+    classes,
+    inners,
+    imports,
+    mintExport: "__async_" + mintFileBase + "_mint",
+    mintStringExport: "__async_" + mintFileBase + "_mint_string"
+  };
   let hasJoin = false;
   for (let i = 0, k = functions.length; i < k; ++i) {
     let sites = functions[i].sites;

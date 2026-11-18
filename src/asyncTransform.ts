@@ -334,6 +334,7 @@ interface TransformWorkItem {
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
   let pools = new Set<string>();
+  let mints = new Set<string>();
   let classNews = new Set<ClassPrototype>();
   let files = Map_values(program.filesByName);
   for (let i = 0, k = files.length; i < k; ++i) {
@@ -444,7 +445,7 @@ export function transformAsyncFunctions(program: Program): void {
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, classNews);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, mints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, classNews);
       transform.run();
     }
   }
@@ -576,6 +577,7 @@ class AsyncFunctionTransform {
     private file: File,
     private prototype: FunctionPrototype,
     private pools: Set<string>,
+    private mints: Set<string>,
     lift: EnvLiftResult,
     qualName: string,
     genParent: Element,
@@ -2650,17 +2652,22 @@ class AsyncFunctionTransform {
     if (this.hasNameCollision(this.resultName())) return false;
     if (this.hasNameCollision(this.errorName())) return false;
     if (this.hasNameCollision(this.statusName())) return false;
+    if (this.hasNameCollision(this.lastHandleName())) return false;
+    if (this.hasNameCollision(this.reclaimName())) return false;
     if (this.hasAdapters) {
       if (this.hasNameCollision(this.stateGlobalName)) return false;
     }
     if (this.slots.length > 0) {
       if (!this.ensureSpillPool()) return false;
     }
+    if (!this.ensureMint()) return false;
     let declarations = new Array<Statement>();
     let stateClass = this.buildStateClass();
     if (!stateClass) return false;
     declarations.push(stateClass);
     declarations.push(this.buildRootsGlobal());
+    declarations.push(this.buildLastHandleGetter());
+    declarations.push(this.buildReclaim());
     if (this.hasAdapters) declarations.push(this.buildStateGlobal());
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
@@ -2738,6 +2745,110 @@ class AsyncFunctionTransform {
 
   private statusName(): string {
     return `__async_${this.fileBase}_${this.fnName}_status`;
+  }
+
+  private mintName(): string {
+    return `__async_${this.fileBase}_mint`;
+  }
+
+  private mintStringName(): string {
+    return `__async_${this.fileBase}_mint_string`;
+  }
+
+  private lastHandleName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_last_handle`;
+  }
+
+  private reclaimName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_reclaim`;
+  }
+
+  /** Emits the per-file token/string mint exports, once per file. The
+   *  mint allocates inside wasm, so the coordinator needs no exported
+   *  `__new` (`--exportRuntime`) to obtain fresh heap pointers. */
+  private ensureMint(): bool {
+    let key = this.file.internalName;
+    if (this.mints.has(key)) return true;
+    this.mints.add(key);
+    let range = this.range;
+    let file = this.file;
+    if (file.getMember(this.mintName())) {
+      this.fail(`Generated name '${this.mintName()}' collides with an existing declaration`, range);
+      return false;
+    }
+    if (file.getMember(this.mintStringName())) {
+      this.fail(`Generated name '${this.mintStringName()}' collides with an existing declaration`, range);
+      return false;
+    }
+    let statements = new Array<Statement>();
+    statements.push(this.buildMint());
+    statements.push(this.buildMintString());
+    let fileStatements = file.source.statements;
+    for (let i = 0, k = statements.length; i < k; ++i) {
+      fileStatements.push(statements[i]);
+    }
+    for (let i = 0, k = statements.length; i < k; ++i) {
+      if (!this.program.initializeGeneratedDeclaration(statements[i], file)) return false;
+    }
+    return true;
+  }
+
+  /** Fresh heap-pointer token: any heap object will do (only the pointer
+   *  is the token), so a small ArrayBuffer is the cheapest allocation. */
+  private buildMint(): FunctionDeclaration {
+    let range = this.range;
+    let signature = new FunctionTypeNode(
+      [],
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ new NewExpression(
+          new TypeName(ident("ArrayBuffer", range), null, range),
+          null,
+          [ intLit(8, range) ],
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.mintName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  /** Fresh string of exactly `len` chars: the coordinator writes the
+   *  message's UTF-16 units over the blank string. */
+  private buildMintString(): FunctionDeclaration {
+    let range = this.range;
+    let signature = new FunctionTypeNode(
+      [ new ParameterNode(ParameterKind.Default, ident("len", range), namedType("i32", null, false, range), null, range) ],
+      namedType("string", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      callExpr(
+        new PropertyAccessExpression(strLit(" ", range), ident("repeat", range), range),
+        [ ident("len", range) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.mintStringName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
   }
 
   private ensureSpillPool(): bool {
@@ -3394,6 +3505,97 @@ class AsyncFunctionTransform {
     ));
     return new FunctionDeclaration(
       ident(this.statusName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  /** Last task on the roots registry: the registry is the liveness
+   *  record, so the handle can never dangle — a settled task is spliced
+   *  out and a live one stays a traced reference. A raw pointer global
+   *  would go stale once the GC reuses the address. */
+  private buildLastHandleGetter(): FunctionDeclaration {
+    let range = this.range;
+    let signature = new FunctionTypeNode(
+      [],
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new IfStatement(
+      new BinaryExpression(
+        Token.Equals_Equals,
+        new PropertyAccessExpression(ident(this.rootsName, range), ident("length", range), range),
+        intLit(0, range),
+        range
+      ),
+      blockStmt([ new ReturnStatement(intLit(0, range), range) ], range),
+      null,
+      range
+    ));
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ new ElementAccessExpression(
+          ident(this.rootsName, range),
+          new BinaryExpression(
+            Token.Minus,
+            new PropertyAccessExpression(ident(this.rootsName, range), ident("length", range), range),
+            intLit(1, range),
+            range
+          ),
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.lastHandleName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  /** Export releasing a trapped task's spill slots: the terminal cleanup
+   *  without running the state machine. Already-terminal is a no-op, so
+   *  a repeated reclaim cannot release a slot twice. */
+  private buildReclaim(): FunctionDeclaration {
+    let range = this.range;
+    let stateParam = new ParameterNode(
+      ParameterKind.Default,
+      ident("state", range),
+      namedType(this.stateClassName, null, false, range),
+      null,
+      range
+    );
+    let signature = new FunctionTypeNode(
+      [ stateParam ],
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new IfStatement(
+      new BinaryExpression(
+        Token.LessThan,
+        new PropertyAccessExpression(ident("state", range), ident("state", range), range),
+        intLit(0, range),
+        range
+      ),
+      blockStmt([ new ReturnStatement(intLit(2, range), range) ], range),
+      null,
+      range
+    ));
+    let terminalStmts = this.terminalStatements(false, range, -2);
+    for (let i = 0, k = terminalStmts.length; i < k; ++i) {
+      body.push(terminalStmts[i]);
+    }
+    body.push(new ReturnStatement(intLit(2, range), range));
+    return new FunctionDeclaration(
+      ident(this.reclaimName(), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }
