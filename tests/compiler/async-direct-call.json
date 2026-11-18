@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: Direct calls to async functions are not supported; await them","AS235: Only variables, functions and enums become WebAssembly module exports."]}

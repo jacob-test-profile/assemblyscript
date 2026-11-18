@@ -1,1 +1,1 @@
-{"stderr":["TS1152: An async function must return a 'Promise'.","AS100: Not implemented: Async functions","AS235: Only variables, functions and enums become WebAssembly module exports."]}
+{"stderr":["TS1152: An async function must return a 'Promise'.","AS235: Only variables, functions and enums become WebAssembly module exports."]}
