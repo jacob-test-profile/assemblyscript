@@ -202,6 +202,114 @@ export async function closureCounter(): Promise<i32> {
   return a * 10 + b;
 }
 
+// Await in switch: the dispatch survives suspension; fallthrough from
+// one case into the next and the default keep their ordinary meaning.
+export async function switchAwait(n: i32): Promise<string> {
+  let out = "";
+  switch (n) {
+    case 1: out = await getChunk(0); break;
+    case 2: out = await getChunk(1);
+    case 3: { let c = await getChunk(2); out = out + c; break; }
+    default: out = "dflt";
+  }
+  return out;
+}
+
+// A switch inside a loop: continue skips to the next iteration, break
+// leaves the switch only.
+export async function switchInLoop(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 4; i++) {
+    switch (i) {
+      case 1: continue;
+      case 2: { let c = await getChunk(2); out = out + c; break; }
+      default: out = out + "x";
+    }
+  }
+  return out;
+}
+
+// A finally may await: it runs exactly once, never on suspend.
+export async function finallyAwait(mode: i32): Promise<string> {
+  let out = "";
+  try {
+    let c = await getChunk(0);
+    if (mode == 1) throw "body-boom";
+    out = "ok-" + c;
+  } catch (e) {
+    out = "caught";
+  } finally {
+    let d = await getChunk(1);
+    out = out + "/" + d;
+  }
+  return out;
+}
+
+// A rejection of a finally await replaces the pending body error.
+export async function finallyRejectOuter(): Promise<string> {
+  try {
+    try {
+      throw "body-boom";
+    } finally {
+      await getChunk(0);
+    }
+  } catch (e) {
+    return "outer-caught:" + e;
+  }
+}
+
+// Try inside a switch case, with catch and finally; a break out of the
+// switch from inside the try must still run the finally, then leave.
+export async function tryInSwitch(n: i32): Promise<string> {
+  let out = "";
+  switch (n) {
+    case 1:
+      try {
+        let c = await getChunk(0);
+        out = "t-" + c;
+        break;
+      } catch (e) {
+        out = "t-caught";
+      } finally {
+        out = out + "!";
+      }
+      out = out + "unreached";
+      break;
+    case 2:
+      try {
+        await getChunk(0);
+        throw "sw-boom";
+      } catch (e) {
+        out = "sw-caught:" + e;
+      }
+      break;
+    default: out = "sw-dflt";
+  }
+  return out;
+}
+
+// For-of over an array: the iterator state survives suspension.
+export async function forOfAwait(): Promise<string> {
+  let xs = [0, 1, 2];
+  let out = "";
+  for (const x of xs) {
+    let c = await getChunk(x);
+    out = out + c;
+  }
+  return out;
+}
+
+export async function forOfBreak(): Promise<i32> {
+  let xs = [10, 20, 30, 40];
+  let s = 0;
+  for (const x of xs) {
+    let v = await getNumber();
+    if (v == 20) break;
+    s += v;
+  }
+  return s;
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
 }

@@ -1,7 +1,7 @@
 // Diagnostic fixture: one function per loud rejection that had no
-// pinned fixture (throw-await, try-in-switch, member-call await,
+// pinned fixture (throw-await, member-call await,
 // cross-file await, join member/argument await, arrow misuse,
-// field-assignment await, generic-class methods).
+// field-assignment await, generic-class methods, labeled break).
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getArray")
@@ -48,19 +48,14 @@ export async function throwAwait(): Promise<string> {
   throw await getChunk(0);
 }
 
-export async function tryInSwitch(x: i32): Promise<string> {
-  switch (x) {
-    case 1: {
-      try {
-        let c = await getChunk(0);
-        return c;
-      } catch (e) {
-        return "caught";
-      }
-    }
-    default:
-      return "d";
+export async function labeledBreak(): Promise<string> {
+  let i = 0;
+  while (i < 3) {
+    i++;
+    if (i == 2) break outer;
+    let c = await getChunk(i);
   }
+  return "x";
 }
 
 export async function awaitOtherFile(): Promise<string> {
