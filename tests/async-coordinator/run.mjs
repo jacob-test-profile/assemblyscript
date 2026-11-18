@@ -375,6 +375,25 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS closure counter 1-then-2 across await");
 }
 
+// Nested closures capturing outer-closure names, driven through the
+// generated coordinator: the outer capture is passed as an argument.
+{
+  const base = numDeferreds.length;
+  const p1 = api.nestedParam();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 21, "nestedParam must resolve 11 + 10");
+  const p2 = api.nestedMixed();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 121, "nestedMixed must resolve 111 + 10");
+  const p3 = api.nestedMixedLocal();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 1027, "nestedMixedLocal must resolve 1017 + 10");
+  console.log("PASS nested closures capture outer-closure names");
+}
+
 // A rejection that lands in a catch must drive the catch, not fail the task.
 {
   const base = chunkDeferreds.length;
