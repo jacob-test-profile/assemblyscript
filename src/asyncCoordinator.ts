@@ -439,7 +439,6 @@ function findInnerPrototypeByKey(program: Program, key: string): FunctionPrototy
   let innerBase = parts.fileBase ? parts.fileBase : outerBase;
   return findInnerPrototypeByBase(program, innerBase, parts.qual);
 }
-}
 
 /** Resolves the metadata for every nested inner function the exported
  *  functions await, keyed by file + qualified name. A function whose
