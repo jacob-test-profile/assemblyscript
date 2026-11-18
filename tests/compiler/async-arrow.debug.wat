@@ -3,8 +3,8 @@
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32 i32) (result i32)))
  (type $3 (func (param i32 i32 i32) (result i32)))
- (type $4 (func (param i32)))
- (type $5 (func (result i32)))
+ (type $4 (func (result i32)))
+ (type $5 (func (param i32)))
  (type $6 (func))
  (type $7 (func (param i32 i32 i32)))
  (type $8 (func (param i32 i32 i32 i32)))
@@ -58,6 +58,8 @@
  (export "arrowed" (func $async-arrow/arrowed))
  (export "startWorker" (func $async-arrow/startWorker))
  (export "startHolderFetch" (func $async-arrow/startHolderFetch))
+ (export "__async_async_arrow_Worker_new" (func $async-arrow/__async_async_arrow_Worker_new))
+ (export "__async_async_arrow_Holder_new" (func $async-arrow/__async_async_arrow_Holder_new))
  (export "memory" (memory $0))
  (export "__async_async_arrow_arrowed_pending_0" (func $export:async-arrow/__async_async_arrow_arrowed_pending_0))
  (export "__async_async_arrow_arrowed_resume_0" (func $export:async-arrow/__async_async_arrow_arrowed_resume_0))
@@ -71,12 +73,14 @@
  (export "__async_async_arrow_Worker_run_result" (func $export:async-arrow/__async_async_arrow_Worker_run_result))
  (export "__async_async_arrow_Worker_run_error" (func $export:async-arrow/__async_async_arrow_Worker_run_error))
  (export "__async_async_arrow_Worker_run_status" (func $export:async-arrow/__async_async_arrow_Worker_run_status))
+ (export "__async_async_arrow_Worker_run_entry" (func $export:async-arrow/__async_async_arrow_Worker_run_entry))
  (export "__async_async_arrow_Holder_fetch_pending_0" (func $export:async-arrow/__async_async_arrow_Holder_fetch_pending_0))
  (export "__async_async_arrow_Holder_fetch_resume_0" (func $export:async-arrow/__async_async_arrow_Holder_fetch_resume_0))
  (export "__async_async_arrow_Holder_fetch_reject_0" (func $export:async-arrow/__async_async_arrow_Holder_fetch_reject_0))
  (export "__async_async_arrow_Holder_fetch_result" (func $export:async-arrow/__async_async_arrow_Holder_fetch_result))
  (export "__async_async_arrow_Holder_fetch_error" (func $export:async-arrow/__async_async_arrow_Holder_fetch_error))
  (export "__async_async_arrow_Holder_fetch_status" (func $export:async-arrow/__async_async_arrow_Holder_fetch_status))
+ (export "__async_async_arrow_Holder_fetch_entry" (func $export:async-arrow/__async_async_arrow_Holder_fetch_entry))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_resume_0" (func $export:async-arrow/__async_async_arrow___async_arrow_Holder_getValue_0_resume_0))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_reject_0" (func $export:async-arrow/__async_async_arrow___async_arrow_Holder_getValue_0_reject_0))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_result" (func $export:async-arrow/__async_async_arrow___async_arrow_Holder_getValue_0_result))
@@ -3042,6 +3046,11 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow/__async_async_arrow_Worker_new (result i32)
+  i32.const 0
+  call $async-arrow/Worker#constructor
+  return
+ )
  (func $async-arrow/__Cps_Holder_fetch#get:__handle0 (param $this i32) (result i32)
   local.get $this
   i32.load offset=24
@@ -3053,6 +3062,11 @@
  (func $async-arrow/__Cps_Holder_fetch#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-arrow/__async_async_arrow_Holder_new (result i32)
+  i32.const 0
+  call $async-arrow/Holder#constructor
+  return
  )
  (func $async-arrow/__Cps___async_arrow_Holder_getValue_0#get:__result (param $this i32) (result i32)
   local.get $this
@@ -9018,6 +9032,31 @@
   local.get $1
   return
  )
+ (func $async-arrow/__async_async_arrow_Worker_run_entry (param $receiver i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow/Worker#run
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow/__async_async_arrow_Holder_fetch_pending_0 (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9209,6 +9248,31 @@
   i32.store
   local.get $1
   call $async-arrow/__Cps_Holder_fetch#get:state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-arrow/__async_async_arrow_Holder_fetch_entry (param $receiver i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow/Holder#fetch
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -10576,6 +10640,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow/__async_async_arrow_Worker_run_entry (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow/__async_async_arrow_Worker_run_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow/__async_async_arrow_Holder_fetch_pending_0 (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10688,6 +10771,25 @@
   i32.store
   local.get $0
   call $async-arrow/__async_async_arrow_Holder_fetch_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow/__async_async_arrow_Holder_fetch_entry (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow/__async_async_arrow_Holder_fetch_entry
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
