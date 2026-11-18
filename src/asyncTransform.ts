@@ -383,15 +383,6 @@ export function transformAsyncFunctions(program: Program): void {
       // resolved class; bind up front so the pre-passes, the core and
       // the compiler guard all see the same prototype.
       let transformPrototype = prototype;
-      if (item.isMethod) {
-        let receiverClass = assert(item.receiverClass);
-        let classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
-        if (!classInstance) {
-          program.rejectedAsyncFunctions.add(prototype);
-          continue;
-        }
-        transformPrototype = prototype.toBound(classInstance);
-      }
       let fail = (message: string, range: Range): void => {
         program.error(DiagnosticCode.Not_implemented_0, range, message);
         program.rejectedAsyncFunctions.add(transformPrototype);
@@ -407,6 +398,12 @@ export function transformAsyncFunctions(program: Program): void {
           fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
           continue;
         }
+        let classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
+        if (!classInstance) {
+          program.rejectedAsyncFunctions.add(prototype);
+          continue;
+        }
+        transformPrototype = prototype.toBound(classInstance);
       } else if (prototype.parent.kind == ElementKind.Namespace) {
         fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
         continue;
