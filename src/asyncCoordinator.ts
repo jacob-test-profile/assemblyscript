@@ -364,6 +364,7 @@ function buildInnerMeta(
   let file = owningFile(outer);
   if (!file) return null;
   for (let prototype of program.transformedAsyncFunctions) {
+    if (qualNameOf(prototype) != innerQual) continue;
     let innerFile = owningFile(prototype);
     if (!innerFile || innerFile != file) continue;
     // Protocol members register under the owning file for methods (whose
