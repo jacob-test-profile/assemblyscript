@@ -93,7 +93,8 @@ Do NOT push to main or to async. Do NOT merge into async — main agent merges.
   import-type-value (`new`), import-type-value-call, import-type-commonjs.
   `new`-plus-`instanceof` probe: `instanceof` was checked and left alone
   (type position, ReportMode.Swallow).
-- Q9c DONE + verified (uncommitted at this writing). `export type` (leading
+- Q9c DONE + verified, committed `a43f6f33`, pushed to track/nodenext-module.
+  `export type` (leading
   `export type {…}` / `export type *` + inline `export { type Foo }`),
   gated on nodenext; commonjs keeps TS2304 "Cannot find name 'type'."
   AST `isType` on ExportStatement/ExportMember. Program: File.typeExports
@@ -147,6 +148,7 @@ Do NOT push to main or to async. Do NOT merge into async — main agent merges.
   add type-plain helper).
 
 ## Remains
-- Q9c commit + push to track/nodenext-module.
-- Final acceptance: `check` + `build` green; test:compiler --parallel +
-  test:parser green; then report back to the main agent (main agent merges).
+- Final acceptance (this run): build green; test:compiler --parallel
+  SUCCESS (rc 0, 112.8s, 68 expected-error FAILURE lines, no mismatches);
+  test:parser SUCCESS (rc 0); npm run check green (rc 0).
+- Report back to the main agent (main agent merges into async).
