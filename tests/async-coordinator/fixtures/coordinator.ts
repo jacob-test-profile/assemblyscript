@@ -284,6 +284,28 @@ export async function outerVoid(): Promise<string> {
   return "outer-void-done";
 }
 
+// Default / optional / rest parameters: defaults are filled per call by
+// the varargs stub, rest arguments collect into an array, and both
+// survive suspension as state fields.
+export async function defInt(x: i32 = 5): Promise<i32> {
+  const v = await getNumber();
+  return x + v;
+}
+export async function defOther(a: i32, b: i32 = a + 1): Promise<i32> {
+  const v = await getNumber();
+  return b + v;
+}
+export async function restNums(first: i32, ...rest: i32[]): Promise<i32> {
+  const v = await getNumber();
+  let sum = first + v;
+  for (let i = 0; i < rest.length; ++i) sum += rest[i];
+  return sum;
+}
+export async function restStrings(...words: string[]): Promise<string> {
+  const v = await getChunk(0);
+  return words.join(",") + "|" + v;
+}
+
 // Allocates garbage so the e2e can churn the heap (plus __collect) while
 // a task is suspended, proving the roots registry keeps it alive.
 export function allocSpam(n: i32): void {

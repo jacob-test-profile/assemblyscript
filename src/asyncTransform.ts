@@ -161,6 +161,7 @@ import {
   rewriteStatement,
   rewriteClosureMethod,
   containsAwait,
+  containsThisOrSuper,
   validateBody,
   cpsStateClassName,
   cpsStateGlobalName,
@@ -172,7 +173,7 @@ import {
 } from "./asyncRewrite";
 
 import {
-  describeParams,
+  describeParamsAndRest,
   findExportName,
   warnSkipped
 } from "./asyncCoordinatorMeta";
@@ -600,8 +601,12 @@ class AsyncFunctionTransform {
     let parameters = prototype.functionTypeNode.parameters;
     for (let i = 0, k = parameters.length; i < k; ++i) {
       let parameter = parameters[i];
-      if (parameter.parameterKind != ParameterKind.Default || parameter.initializer) {
-        this.fail("Async functions with default, optional or rest parameters are not yet supported", parameter.range);
+      // Optional parameters without an initializer are a stock AS215
+      // error (the compiler needs an initializer to fill the omitted
+      // argument); defaulted and rest parameters go through the varargs
+      // stub, whose defaults are evaluated per call by the stub itself.
+      if (parameter.parameterKind == ParameterKind.Optional && !parameter.initializer) {
+        this.fail("Async functions with optional parameters without an initializer are not yet supported (AssemblyScript requires an initializer for optional parameters)", parameter.range);
         return TransformOutcome.Rejected;
       }
     }
@@ -3293,16 +3298,36 @@ class AsyncFunctionTransform {
     let signature = assert(this.instance).signature;
     for (let i = 0, k = parameters.length; i < k; ++i) {
       let parameter = parameters[i];
+      // A rest array built by the coordinator cannot be forwarded
+      // through the entry: AssemblyScript cannot pass a pre-built array
+      // as a rest argument (the call wraps it into a one-element array
+      // instead). The method stays transformable — nested await passes
+      // elements, which wrap normally — but it is not drivable through
+      // the coordinator.
+      if (parameter.parameterKind == ParameterKind.Rest) {
+        warnSkipped(this.program, this.prototype, "rest parameters cannot be driven through the coordinator (a pre-built array cannot be passed as a rest argument)", []);
+        return null;
+      }
       let typeNode = parameter.type || typeToTypeNode(signature.parameterTypes[i], range);
       if (!typeNode) {
         warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has no usable type", []);
         return null;
       }
+      // The entry mirrors the method's parameter kinds and initializers
+      // so it gets its own varargs stub: omitted arguments are filled by
+      // the stub exactly as a direct call would fill them. An initializer
+      // that mentions `this` or `super` cannot be evaluated in the entry
+      // (a free function, so it has no `this`); such a method stays
+      // transformable but is not drivable through the coordinator.
+      if (parameter.initializer && containsThisOrSuper(parameter.initializer)) {
+        warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has a default value that references 'this' or 'super'", []);
+        return null;
+      }
       entryParams.push(new ParameterNode(
-        ParameterKind.Default,
+        parameter.parameterKind,
         ident(parameter.name.text, range),
         typeNode,
-        null,
+        parameter.initializer,
         range
       ));
       callArgs.push(ident(parameter.name.text, range));
@@ -3344,7 +3369,7 @@ class AsyncFunctionTransform {
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
-      let described = describeParams(ctor.signature.parameterTypes, className);
+      let described = describeParamsAndRest(ctor.signature, className);
       if (described.reason) {
         warnSkipped(this.program, this.prototype, described.reason, []);
         return null;
@@ -3352,16 +3377,30 @@ class AsyncFunctionTransform {
       let ctorParams = ctorPrototype.functionTypeNode.parameters;
       for (let i = 0, k = ctorParams.length; i < k; ++i) {
         let parameter = ctorParams[i];
+        // As in buildMethodEntry: a rest array cannot be forwarded
+        // through _new, so a class with a rest constructor is not
+        // drivable through the coordinator.
+        if (parameter.parameterKind == ParameterKind.Rest) {
+          warnSkipped(this.program, this.prototype, "rest parameters cannot be driven through the coordinator (a pre-built array cannot be passed as a rest argument)", []);
+          return null;
+        }
         let typeNode = parameter.type || typeToTypeNode(ctor.signature.parameterTypes[i], range);
         if (!typeNode) {
           warnSkipped(this.program, this.prototype, "constructor of '" + className + "' has a parameter without a usable type", []);
           return null;
         }
+        // As in buildMethodEntry: the _new mirrors the constructor's
+        // parameter kinds and initializers so it gets its own varargs
+        // stub, and a `this`/`super` default is not drivable.
+        if (parameter.initializer && containsThisOrSuper(parameter.initializer)) {
+          warnSkipped(this.program, this.prototype, "constructor parameter '" + parameter.name.text + "' has a default value that references 'this' or 'super'", []);
+          return null;
+        }
         parameters.push(new ParameterNode(
-          ParameterKind.Default,
+          parameter.parameterKind,
           ident(parameter.name.text, range),
           typeNode,
-          null,
+          parameter.initializer,
           range
         ));
         args.push(ident(parameter.name.text, range));

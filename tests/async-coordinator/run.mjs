@@ -417,6 +417,67 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS nested await of an extracted async arrow");
 }
 
+// Default / optional / rest parameters: the coordinator sets
+// __setArgumentsLength before the entry call so the varargs stub fills
+// omitted defaults, and extra arguments collect into a rest array.
+{
+  let base = numDeferreds.length;
+  let p = api.defInt();
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 105, "defInt() must fill the default 5");
+  console.log("PASS default parameter filled when omitted");
+
+  base = numDeferreds.length;
+  p = api.defInt(2);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 102, "defInt(2) must give 102");
+  console.log("PASS default parameter overridden when passed");
+
+  base = numDeferreds.length;
+  p = api.defOther(3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 104, "defOther(3) must default b to a + 1");
+  console.log("PASS default parameter referencing another parameter");
+
+  base = numDeferreds.length;
+  p = api.defOther(3, 10);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 110, "defOther(3, 10) must give 110");
+  console.log("PASS default parameter overridden with an explicit value");
+
+  base = numDeferreds.length;
+  p = api.restNums(1);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 101, "restNums(1) must give 101 with an empty rest");
+  console.log("PASS rest parameter empty when no extra arguments");
+
+  base = numDeferreds.length;
+  p = api.restNums(1, 2, 3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 106, "restNums(1, 2, 3) must give 106");
+  console.log("PASS rest parameter collects extra arguments into an array");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings();
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "|S", "restStrings() must give '|S'");
+  console.log("PASS rest parameter of strings empty when no extra arguments");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings("a", "b");
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "a,b|S", "restStrings('a', 'b') must give 'a,b|S'");
+  console.log("PASS rest parameter of strings collects extra arguments");
+}
+
 // Closure counter across an await: 1 then 2, shared storage exact.
 {
   const base = chunkDeferreds.length;
@@ -741,6 +802,55 @@ const api = await instantiateAsync(bytes, {
     check((await p) === 130, "Counter.viaArrow(1) must give 130");
     c.dispose();
     console.log("PASS basic async method, known values 12/119/130");
+  }
+
+  // Default parameters on a method and its constructor: the entry and
+  // the _new fill omitted defaults through their own varargs stubs.
+  {
+    const g = new methodsApi.Greeter();
+    let base = methodNums.length;
+    let p = g.greet();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hi there 100", "Greeter().greet() must give 'hi there 100'");
+    g.dispose();
+    console.log("PASS constructor and method defaults filled when omitted");
+
+    const g2 = new methodsApi.Greeter("hey");
+    base = methodNums.length;
+    p = g2.greet("bob");
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hey bob 100", "Greeter('hey').greet('bob') must give 'hey bob 100'");
+    g2.dispose();
+    console.log("PASS constructor and method defaults overridden when passed");
+
+    const c = new methodsApi.Counter();
+    base = methodNums.length;
+    p = c.addDefault();
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 8, "Counter.addDefault() must give 8 with the default step 1");
+    base = methodNums.length;
+    p = c.addDefault(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 20, "Counter.addDefault(5) must give 20");
+    c.dispose();
+    console.log("PASS method default filled when omitted, overridden when passed");
+  }
+
+  // A rest method has no wrapper class (its entry is skipped), but a
+  // top-level fn awaiting it still drives it through nested await.
+  {
+    check(typeof methodsApi.RestCounter === "undefined", "a rest method's class must have no wrapper class");
+    check(typeof methodsApi.driveRest === "function", "generated coordinator must expose driveRest");
+    const base = methodNums.length;
+    const p = methodsApi.driveRest();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === 106, "driveRest() must give 106 through nested await of a rest method");
+    console.log("PASS rest method driven through nested await, no wrapper class");
   }
 
   // Two instances driven concurrently keep independent counts.

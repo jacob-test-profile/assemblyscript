@@ -54,7 +54,9 @@ import {
   AwaitExpression,
   FunctionTypeNode,
   ParameterNode,
-  ParameterKind
+  ParameterKind,
+  ArrowKind,
+  ThrowStatement
 } from "./ast";
 
 import {
@@ -993,6 +995,170 @@ function containsAwaitExpression(node: Expression): bool {
     return false;
   }
   if (node instanceof AwaitExpression) return true;
+  return false;
+}
+
+/** Tests whether the subtree references `this` or `super`. Used when a
+ *  parameter initializer is copied into a generated entry function (a
+ *  free function, so it has no `this`): an initializer that mentions
+ *  `this` cannot be evaluated there. Arrow functions inherit the
+ *  enclosing `this`, so they are descended into; regular function
+ *  expressions and class expressions have their own `this` and are not. */
+export function containsThisOrSuper(node: Node): bool {
+  if (node.kind == NodeKind.This || node.kind == NodeKind.Super) return true;
+  if (node instanceof FunctionExpression) {
+    let declaration = node.declaration;
+    if (declaration.arrowKind == ArrowKind.None) return false;
+    let body = declaration.body;
+    return body ? containsThisOrSuper(body) : false;
+  }
+  if (node instanceof ClassExpression) return false;
+  if (node instanceof BlockStatement) {
+    let statements = node.statements;
+    for (let i = 0, k = statements.length; i < k; ++i) {
+      if (containsThisOrSuper(statements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ExpressionStatement) return containsThisOrSuper(node.expression);
+  if (node instanceof VariableStatement) {
+    let declarations = node.declarations;
+    for (let i = 0, k = declarations.length; i < k; ++i) {
+      let initializer = declarations[i].initializer;
+      if (initializer && containsThisOrSuper(initializer)) return true;
+    }
+    return false;
+  }
+  if (node instanceof ReturnStatement) {
+    return node.value ? containsThisOrSuper(node.value) : false;
+  }
+  if (node instanceof ThrowStatement) return containsThisOrSuper(node.value);
+  if (node instanceof IfStatement) {
+    return containsThisOrSuper(node.condition)
+      || containsThisOrSuper(node.ifTrue)
+      || (node.ifFalse ? containsThisOrSuper(node.ifFalse) : false);
+  }
+  if (node instanceof WhileStatement) {
+    return containsThisOrSuper(node.condition) || containsThisOrSuper(node.body);
+  }
+  if (node instanceof DoStatement) {
+    return containsThisOrSuper(node.body) || containsThisOrSuper(node.condition);
+  }
+  if (node instanceof ForStatement) {
+    return (node.initializer ? containsThisOrSuper(node.initializer) : false)
+      || (node.condition ? containsThisOrSuper(node.condition) : false)
+      || (node.incrementor ? containsThisOrSuper(node.incrementor) : false)
+      || containsThisOrSuper(node.body);
+  }
+  if (node instanceof SwitchStatement) {
+    if (containsThisOrSuper(node.condition)) return true;
+    let cases = node.cases;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      let switchCase = cases[i];
+      if (switchCase.label && containsThisOrSuper(switchCase.label)) return true;
+      let statements = switchCase.statements;
+      for (let j = 0, l = statements.length; j < l; ++j) {
+        if (containsThisOrSuper(statements[j])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof TryStatement) {
+    let bodyStatements = node.bodyStatements;
+    for (let i = 0, k = bodyStatements.length; i < k; ++i) {
+      if (containsThisOrSuper(bodyStatements[i])) return true;
+    }
+    if (node.catchStatements) {
+      let catchStatements = node.catchStatements;
+      for (let i = 0, k = catchStatements.length; i < k; ++i) {
+        if (containsThisOrSuper(catchStatements[i])) return true;
+      }
+    }
+    if (node.finallyStatements) {
+      let finallyStatements = node.finallyStatements;
+      for (let i = 0, k = finallyStatements.length; i < k; ++i) {
+        if (containsThisOrSuper(finallyStatements[i])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof Expression) {
+    return containsThisOrSuperExpression(<Expression>node);
+  }
+  return false;
+}
+
+function containsThisOrSuperExpression(node: Expression): bool {
+  if (node.kind == NodeKind.This || node.kind == NodeKind.Super) return true;
+  if (node instanceof FunctionExpression) {
+    let declaration = node.declaration;
+    if (declaration.arrowKind == ArrowKind.None) return false;
+    let body = declaration.body;
+    return body ? containsThisOrSuper(body) : false;
+  }
+  if (node instanceof ClassExpression) return false;
+  if (node instanceof BinaryExpression) {
+    return containsThisOrSuperExpression(node.left) || containsThisOrSuperExpression(node.right);
+  }
+  if (node instanceof CallExpression) {
+    if (containsThisOrSuperExpression(node.expression)) return true;
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof PropertyAccessExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof ElementAccessExpression) {
+    return containsThisOrSuperExpression(node.expression) || containsThisOrSuperExpression(node.elementExpression);
+  }
+  if (node instanceof UnaryPrefixExpression) return containsThisOrSuperExpression(node.operand);
+  if (node instanceof UnaryPostfixExpression) return containsThisOrSuperExpression(node.operand);
+  if (node instanceof TernaryExpression) {
+    return containsThisOrSuperExpression(node.condition)
+      || containsThisOrSuperExpression(node.ifThen)
+      || containsThisOrSuperExpression(node.ifElse);
+  }
+  if (node instanceof AssertionExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof ParenthesizedExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof CommaExpression) {
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof InstanceOfExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof NewExpression) {
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ArrayLiteralExpression) {
+    let elements = node.elementExpressions;
+    for (let i = 0, k = elements.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(elements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ObjectLiteralExpression) {
+    let values = node.values;
+    for (let i = 0, k = values.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(values[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof TemplateLiteralExpression) {
+    if (node.tag && containsThisOrSuperExpression(node.tag)) return true;
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof AwaitExpression) return containsThisOrSuperExpression(node.operand);
   return false;
 }
 

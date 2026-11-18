@@ -38,10 +38,12 @@ import {
   ClassMeta,
   ImportMeta,
   ValueDesc,
+  RestDesc,
   warnSkipped,
   sanitizeName,
   describeType,
   describeParams,
+  describeParamsAndRest,
   owningFile,
   findExportName,
   collectSuspendingImports,
@@ -95,7 +97,7 @@ function buildFunctionMeta(
     warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
     return null;
   }
-  let params = describeParams(signature.parameterTypes, prototype.name);
+  let params = describeParamsAndRest(signature, prototype.name);
   if (params.reason) {
     warnSkipped(program, prototype, params.reason, notes);
     return null;
@@ -213,6 +215,8 @@ function buildFunctionMeta(
     exportName,
     fileBase,
     params: params.params,
+    varargs: params.varargs,
+    rest: params.rest,
     resultKind: result.kind,
     resultNullable: result.nullable,
     statusExport: "__async_" + fileBase + "_" + fn + "_status",
@@ -244,11 +248,21 @@ function buildMethodMeta(
   let qualName = qualNameOf(prototype);
   let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
   if (!meta) return null;
+  let entryExport = "__async_" + meta.fileBase + "_" + qualName + "_entry";
+  // The transform skips the entry when the method cannot be driven
+  // through it (e.g. a default value referencing `this`): without the
+  // entry the wrapper method would call a missing export, so the method
+  // is skipped here instead.
+  let entryMember = file.getMember(entryExport);
+  if (!entryMember || entryMember.kind != ElementKind.FunctionPrototype) {
+    warnSkipped(program, prototype, "its generated entry was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
+    return null;
+  }
   return {
     ...meta,
     exportName: null,
     name: prototype.name,
-    entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
+    entryExport
   };
 }
 
@@ -265,6 +279,8 @@ function buildClassMeta(
   let fileBase = methods[0].fileBase;
   let name = classPrototype.name;
   let newParams: ValueDesc[] = [];
+  let newVarargs = false;
+  let newRest: RestDesc | null = null;
   let ctor = classPrototype.constructorPrototype;
   if (ctor) {
     // The constructor prototype is flagged Instance but unbound, so
@@ -280,17 +296,33 @@ function buildClassMeta(
       warnSkipped(program, ctor, "its constructor cannot be resolved", notes);
       return null;
     }
-    let params = describeParams(ctorInstance.signature.parameterTypes, name);
+    let params = describeParamsAndRest(ctorInstance.signature, name);
     if (params.reason) {
       warnSkipped(program, ctor, params.reason, notes);
       return null;
     }
     newParams = params.params;
+    newVarargs = params.varargs;
+    newRest = params.rest;
+    // The transform skips _new when the constructor cannot be driven
+    // through it (e.g. a default value referencing `this`): without it
+    // the wrapper cannot be constructed, so the whole class is skipped.
+    let file = owningFile(classPrototype);
+    let newExport = "__async_" + fileBase + "_" + name + "_new";
+    if (file) {
+      let newMember = file.getMember(newExport);
+      if (!newMember || newMember.kind != ElementKind.FunctionPrototype) {
+        warnSkipped(program, ctor, "its generated _new was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
+        return null;
+      }
+    }
   }
   return {
     name,
     newExport: "__async_" + fileBase + "_" + name + "_new",
     newParams,
+    newVarargs,
+    newRest,
     methods
   };
 }
