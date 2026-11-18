@@ -16,6 +16,7 @@ declare function useHandle(h: externref): Promise<i32>;
 declare function log(msg: string): void;
 
 export class Counter {
+  static total: i32 = 0;
   count: i32 = 0;
 
   // Fields mutated before and after the await; both visible in the result.
@@ -49,6 +50,33 @@ export class Counter {
     let h = await getHandle();
     let n = await useHandle(h);
     return n;
+  }
+
+  // Static state across awaits: `this` in a static method is the class.
+  static async create(n: i32): Promise<i32> {
+    let m = await getNumber();
+    this.total += n + m;
+    return this.total;
+  }
+
+  // A static method awaiting an import.
+  static async fetch(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
+  }
+
+  // A static method awaiting an instance method of a fresh instance.
+  static async viaInstance(n: i32): Promise<i32> {
+    let c = new Counter();
+    let v = await c.add(n);
+    return v;
+  }
+
+  // A static async `dispose` lives on the constructor and does not
+  // collide with the wrapper's sync dispose() on the prototype.
+  static async dispose(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
   }
 }
 
@@ -94,6 +122,35 @@ export async function viaObj(n: i32): Promise<i32> {
   let w = new Worker();
   let h = await w.helper(n);
   return h;
+}
+
+// Not exported: no wrapper class, no entry export. Its async methods
+// stay reachable only from within async code, as nested inners.
+class Hidden {
+  count: i32 = 0;
+
+  async add(n: i32): Promise<i32> {
+    this.count += n;
+    let m = await getNumber();
+    this.count += m;
+    return this.count;
+  }
+
+  static async make(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
+  }
+}
+
+export async function viaHidden(n: i32): Promise<i32> {
+  let h = new Hidden();
+  let v = await h.add(n);
+  return v;
+}
+
+export async function viaHiddenStatic(n: i32): Promise<i32> {
+  let v = await Hidden.make(n);
+  return v;
 }
 
 // An inner method failure must reach the outer catch.
