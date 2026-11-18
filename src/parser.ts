@@ -118,6 +118,8 @@ export class Parser extends DiagnosticEmitter {
   pendingExternalDecorators: DecoratorNode[] | null = null;
   /** Line of the most recent `//@ external` comment, or -1 if there is none pending. */
   pendingExternalLine: i32 = -1;
+  /** Whether the function body currently being parsed is async, i.e. `await` is allowed. */
+  inAsyncFunction: bool = false;
   /** Current file being parsed. */
   currentSource: Source | null = null;
   /** Map of dependees being depended upon by a source, by path. */
@@ -358,6 +360,31 @@ export class Parser extends DiagnosticEmitter {
         statement = this.parseEnum(tn, flags, decorators, startPos);
         decorators = null;
         break;
+      }
+      case Token.Async: {
+        let state = tn.mark();
+        let asyncStart = tn.tokenPos;
+        let asyncEnd = tn.pos;
+        tn.next();
+        if (tn.peekOnNewLine()) {
+          tn.reset(state);
+          statement = this.parseStatement(tn, true);
+          break;
+        }
+        if (tn.peek() != Token.Function) {
+          tn.reset(state);
+          statement = this.parseStatement(tn, true);
+          break;
+        }
+        if (flags & CommonFlags.Declare) {
+          this.error(
+            DiagnosticCode.An_async_function_cannot_be_declared_in_an_ambient_context,
+            tn.range(asyncStart, asyncEnd)
+          );
+        }
+        tn.discard(state);
+        flags |= CommonFlags.Async;
+        // fall through
       }
       case Token.Function: {
         tn.next();
@@ -1841,7 +1868,10 @@ export class Parser extends DiagnosticEmitter {
         ); // recoverable
       }
 
+      let prevInAsyncFunction = this.inAsyncFunction;
+      this.inAsyncFunction = (flags & CommonFlags.Async) != 0;
       body = this.parseBlockStatement(tn, false);
+      this.inAsyncFunction = prevInAsyncFunction;
       if (!body) return null;
     } else if (!(flags & CommonFlags.Ambient)) {
       this.error(
@@ -1865,7 +1895,7 @@ export class Parser extends DiagnosticEmitter {
     return ret;
   }
 
-  parseFunctionExpression(tn: Tokenizer): FunctionExpression | null {
+  parseFunctionExpression(tn: Tokenizer, flags: CommonFlags = CommonFlags.None): FunctionExpression | null {
     let startPos = tn.tokenPos;
     let name: IdentifierExpression;
     let arrowKind = ArrowKind.None;
@@ -1905,7 +1935,7 @@ export class Parser extends DiagnosticEmitter {
     let parameters = this.parseParameters(tn);
     if (!parameters) return null;
 
-    return this.parseFunctionExpressionCommon(tn, name, parameters, this.parseParametersThis, arrowKind, startPos, signatureStart);
+    return this.parseFunctionExpressionCommon(tn, name, parameters, this.parseParametersThis, arrowKind, flags, startPos, signatureStart);
   }
 
   private parseFunctionExpressionCommon(
@@ -1914,6 +1944,7 @@ export class Parser extends DiagnosticEmitter {
     parameters: ParameterNode[],
     explicitThis: NamedTypeNode | null,
     arrowKind: ArrowKind,
+    flags: CommonFlags,
     startPos: i32 = -1,
     signatureStart: i32 = -1
   ): FunctionExpression | null {
@@ -1946,6 +1977,8 @@ export class Parser extends DiagnosticEmitter {
       tn.range(signatureStart, tn.pos)
     );
 
+    let prevInAsyncFunction = this.inAsyncFunction;
+    this.inAsyncFunction = (flags & CommonFlags.Async) != 0;
     let body: Statement | null = null;
     if (arrowKind) {
       if (tn.skip(Token.OpenBrace)) {
@@ -1960,16 +1993,18 @@ export class Parser extends DiagnosticEmitter {
           DiagnosticCode._0_expected,
           tn.range(tn.pos), "{"
         );
+        this.inAsyncFunction = prevInAsyncFunction;
         return null;
       }
       body = this.parseBlockStatement(tn, false);
     }
+    this.inAsyncFunction = prevInAsyncFunction;
     if (!body) return null;
 
     let declaration = Node.createFunctionDeclaration(
       name,
       null,
-      CommonFlags.None,
+      flags,
       null,
       signature,
       body,
@@ -2344,6 +2379,22 @@ export class Parser extends DiagnosticEmitter {
       }
     }
 
+    let asyncStart = 0;
+    let asyncEnd = 0;
+    if (tn.peek() == Token.Async) {
+      let state = tn.mark();
+      tn.next();
+      if (tn.peek(IdentifierHandling.Prefer) == Token.Identifier && !tn.peekOnNewLine()) {
+        tn.discard(state);
+        flags |= CommonFlags.Async;
+        asyncStart = tn.tokenPos;
+        asyncEnd = tn.pos;
+        if (!startPos) startPos = asyncStart;
+      } else { // identifier named `async`, e.g. a field `async: i32` or method `async()`
+        tn.reset(state);
+      }
+    }
+
     // check if accessor: ('get' | 'set') ^\n Identifier
     let state = tn.mark();
     let isConstructor = false;
@@ -2412,6 +2463,19 @@ export class Parser extends DiagnosticEmitter {
     }
 
     let isGetterOrSetter = isGetter || isSetter;
+    if (flags & CommonFlags.Async) {
+      if (isGetter || isSetter || isConstructor) {
+        this.error(
+          DiagnosticCode.An_async_modifier_cannot_be_used_on_an_accessor_or_constructor,
+          tn.range(asyncStart, asyncEnd)
+        ); // recoverable
+      } else if (flags & CommonFlags.Ambient) {
+        this.error(
+          DiagnosticCode.An_async_function_cannot_be_declared_in_an_ambient_context,
+          tn.range(asyncStart, asyncEnd)
+        ); // recoverable
+      }
+    }
     let name: IdentifierExpression;
     if (isConstructor) {
       name = Node.createConstructorExpression(tn.range());
@@ -2609,7 +2673,10 @@ export class Parser extends DiagnosticEmitter {
             tn.range(), ";"
           ); // recoverable
         }
+        let prevInAsyncFunction = this.inAsyncFunction;
+        this.inAsyncFunction = (flags & CommonFlags.Async) != 0;
         body = this.parseBlockStatement(tn, false);
+        this.inAsyncFunction = prevInAsyncFunction;
         if (!body) return null;
       } else if (!isInterface && !(flags & (CommonFlags.Ambient | CommonFlags.Abstract))) {
         this.error(
@@ -2646,6 +2713,12 @@ export class Parser extends DiagnosticEmitter {
 
     // field: (':' Type)? ('=' Expression)? ';'?
     } else {
+      if (flags & CommonFlags.Async) {
+        this.error(
+          DiagnosticCode.An_async_modifier_cannot_be_used_on_a_property,
+          tn.range(asyncStart, asyncEnd)
+        ); // recoverable
+      }
       if (flags & CommonFlags.Declare) {
         this.error(
           DiagnosticCode.Not_implemented_0,
@@ -4088,6 +4161,17 @@ export class Parser extends DiagnosticEmitter {
         if (!operand) return null;
         return Node.createUnaryPrefixExpression(token, operand, tn.range(startPos, tn.pos));
       }
+      case Token.Await: {
+        if (!this.inAsyncFunction) {
+          this.error(
+            DiagnosticCode._await_is_only_allowed_within_an_async_function,
+            tn.range(startPos, tn.pos)
+          );
+        }
+        let operand = this.parseExpression(tn, Precedence.UnaryPrefix);
+        if (!operand) return null;
+        return Node.createAwaitExpression(operand, tn.range(startPos, tn.pos));
+      }
       case Token.Plus_Plus:
       case Token.Minus_Minus: {
         let operand = this.parseExpression(tn, Precedence.UnaryPrefix);
@@ -4153,7 +4237,8 @@ export class Parser extends DiagnosticEmitter {
             Node.createEmptyIdentifierExpression(tn.range(startPos)),
             [],
             null,
-            ArrowKind.Parenthesized
+            ArrowKind.Parenthesized,
+            CommonFlags.None
           );
         }
         let state = tn.mark();
@@ -4355,6 +4440,7 @@ export class Parser extends DiagnosticEmitter {
             ],
             null,
             ArrowKind.Single,
+            CommonFlags.None,
             startPos
           );
         }
@@ -4407,6 +4493,62 @@ export class Parser extends DiagnosticEmitter {
         let expr = this.parseFunctionExpression(tn);
         if (!expr) return null;
         return this.maybeParseCallExpression(tn, expr);
+      }
+      case Token.Async: {
+        // At entry the current token is `async`; peek at the token after it.
+        let asyncStart = tn.tokenPos;
+        let asyncEnd = tn.pos;
+        let next = tn.peek(IdentifierHandling.Prefer);
+        if (tn.peekOnNewLine()) {
+          this.error(
+            DiagnosticCode.Expression_expected,
+            tn.range(asyncStart, asyncEnd)
+          );
+          return null;
+        }
+        if (next == Token.Function || next == Token.OpenParen) {
+          tn.next();
+          let expr = this.parseFunctionExpression(tn, CommonFlags.Async);
+          if (!expr) return null;
+          return this.maybeParseCallExpression(tn, expr);
+        }
+        if (next == Token.Identifier) {
+          tn.next(IdentifierHandling.Prefer);
+          let identifierText = tn.readIdentifier();
+          let identifier = Node.createIdentifierExpression(
+            identifierText,
+            tn.range(tn.tokenPos, tn.pos)
+          );
+          if (tn.peek() == Token.Equals_GreaterThan && !tn.peekOnNewLine()) {
+            return this.parseFunctionExpressionCommon(
+              tn,
+              Node.createEmptyIdentifierExpression(tn.range(startPos)),
+              [
+                Node.createParameter(
+                  ParameterKind.Default,
+                  identifier,
+                  Node.createOmittedType(identifier.range.atEnd),
+                  null,
+                  identifier.range
+                )
+              ],
+              null,
+              ArrowKind.Single,
+              CommonFlags.Async,
+              startPos
+            );
+          }
+          this.error(
+            DiagnosticCode.Expression_expected,
+            tn.range(asyncStart, asyncEnd)
+          );
+          return null;
+        }
+        this.error(
+          DiagnosticCode.Expression_expected,
+          tn.range(asyncStart, asyncEnd)
+        );
+        return null;
       }
       case Token.Class: {
         return this.parseClassExpression(tn);

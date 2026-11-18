@@ -61,6 +61,7 @@ import {
   LiteralKind,
   ParenthesizedExpression,
   AssertionExpression,
+  AwaitExpression,
   Expression,
   IntegerLiteralExpression,
   UnaryPrefixExpression,
@@ -1182,9 +1183,52 @@ export class Resolver extends DiagnosticEmitter {
           ctxFlow, ctxType, reportMode
         );
       }
+      case NodeKind.Await: {
+        return this.resolveAwaitExpression(
+          <AwaitExpression>node,
+          ctxFlow, ctxType, reportMode
+        );
+      }
     }
     assert(false);
     return null;
+  }
+
+  /** Unwraps a `Promise<T>` type to `T`, flattening nested promises like `Promise<Promise<T>>`. Returns `null` if the type is not a `Promise<T>`. */
+  unwrapPromiseType(type: Type): Type | null {
+    let classReference = type.getClass();
+    if (!classReference) return null;
+    if (classReference.prototype.name != CommonNames.Promise) return null;
+    let typeArguments = classReference.typeArguments;
+    if (!typeArguments || typeArguments.length != 1) return null;
+    let innerType = typeArguments[0];
+    let unwrappedInner = this.unwrapPromiseType(innerType);
+    return unwrappedInner ? unwrappedInner : innerType;
+  }
+
+  /** Resolves an await expression, unwrapping `Promise<T>` to `T`. */
+  resolveAwaitExpression(
+    node: AwaitExpression,
+    ctxFlow: Flow,
+    ctxType: Type = Type.auto,
+    reportMode: ReportMode = ReportMode.Report
+  ): Type | null {
+    let operand = this.resolveExpression(
+      node.operand,
+      ctxFlow, Type.auto, reportMode
+    );
+    if (!operand) return null;
+    let unwrapped = this.unwrapPromiseType(operand);
+    if (!unwrapped) {
+      if (reportMode == ReportMode.Report) {
+        this.error(
+          DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
+          node.operand.range
+        );
+      }
+      return null;
+    }
+    return unwrapped;
   }
 
   /** Looks up the program element the specified identifier expression refers to. */
@@ -2944,6 +2988,16 @@ export class Resolver extends DiagnosticEmitter {
       );
       if (!type) return null;
       returnType = type;
+      if (
+        prototype.is(CommonFlags.Async) &&
+        reportMode == ReportMode.Report &&
+        !this.unwrapPromiseType(returnType)
+      ) {
+        this.error(
+          DiagnosticCode.An_async_function_must_return_a_Promise,
+          typeNode.range
+        );
+      }
     }
 
     let signature = Signature.create(this.program, parameterTypes, returnType, thisType, requiredParameters, hasRest);

@@ -122,7 +122,10 @@ export const enum NodeKind {
   ExportMember,
   SwitchCase,
   IndexSignature,
-  Comment
+  Comment,
+
+  // expressions
+  Await
 }
 
 /** Base class of all nodes. */
@@ -435,6 +438,13 @@ export abstract class Node {
     range: Range
   ): UnaryPrefixExpression {
     return new UnaryPrefixExpression(operator, operand, range);
+  }
+
+  static createAwaitExpression(
+    operand: Expression,
+    range: Range
+  ): AwaitExpression {
+    return new AwaitExpression(operand, range);
   }
 
   static createCompiledExpression(
@@ -1630,6 +1640,18 @@ export class UnaryPrefixExpression extends UnaryExpression {
     range: Range
   ) {
     super(NodeKind.UnaryPrefix, operator, operand, range);
+  }
+}
+
+/** Represents an await expression, e.g. `await promise`. */
+export class AwaitExpression extends UnaryExpression {
+  constructor(
+    /** Operand expression. Must resolve to a `Promise<T>`. */
+    operand: Expression,
+    /** Source range. */
+    range: Range
+  ) {
+    super(NodeKind.Await, Token.Await, operand, range);
   }
 }
 

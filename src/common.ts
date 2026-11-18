@@ -80,8 +80,8 @@ export const enum CommonFlags {
 
   // Other
 
-  /** Is quoted. */
-  Quoted = 1 << 30,
+  /** Is an async function, i.e. declared with the `async` modifier. Reuses the bit formerly known as Quoted, which was defined but never read. */
+  Async = 1 << 30,
   /** Is internally nullable. */
   InternallyNullable = 1 << 31
 }
@@ -247,6 +247,7 @@ export namespace CommonNames {
   export const Float64Array = "Float64Array";
   export const TemplateStringsArray = "TemplateStringsArray";
   export const Error = "Error";
+  export const Promise = "Promise";
   // runtime
   export const abort = "abort";
   export const trace = "trace";

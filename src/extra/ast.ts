@@ -31,6 +31,7 @@ import {
   ArrayLiteralExpression,
   AssertionExpression,
   AssertionKind,
+  AwaitExpression,
   BinaryExpression,
   CallExpression,
   CommaExpression,
@@ -214,6 +215,10 @@ export class ASTBuilder {
       }
       case NodeKind.UnaryPrefix: {
         this.visitUnaryPrefixExpression(<UnaryPrefixExpression>node);
+        break;
+      }
+      case NodeKind.Await: {
+        this.visitAwaitExpression(<AwaitExpression>node);
         break;
       }
 
@@ -654,6 +659,9 @@ export class ASTBuilder {
 
   visitFunctionExpression(node: FunctionExpression): void {
     let declaration = node.declaration;
+    if (declaration.is(CommonFlags.Async)) {
+      this.sb.push("async ");
+    }
     if (!declaration.arrowKind) {
       if (declaration.name.text.length) {
         this.sb.push("function ");
@@ -794,8 +802,17 @@ export class ASTBuilder {
         this.visitUnaryPrefixExpression(<UnaryPrefixExpression>node);
         break;
       }
+      case NodeKind.Await: {
+        this.visitAwaitExpression(<AwaitExpression>node);
+        break;
+      }
       default: assert(false);
     }
+  }
+
+  visitAwaitExpression(node: AwaitExpression): void {
+    this.sb.push("await ");
+    this.visitNode(node.operand);
   }
 
   visitUnaryPostfixExpression(node: UnaryPostfixExpression): void {
@@ -1153,6 +1170,9 @@ export class ASTBuilder {
       this.serializeExternalModifiers(node);
       this.serializeAccessModifiers(node);
     }
+    if (node.is(CommonFlags.Async)) {
+      sb.push("async ");
+    }
     if (node.name.text.length) {
       sb.push("function ");
     } else {
@@ -1358,6 +1378,9 @@ export class ASTBuilder {
       }
     }
     this.serializeAccessModifiers(node);
+    if (node.is(CommonFlags.Async)) {
+      this.sb.push("async ");
+    }
     if (node.is(CommonFlags.Get)) {
       this.sb.push("get ");
     } else if (node.is(CommonFlags.Set)) {
