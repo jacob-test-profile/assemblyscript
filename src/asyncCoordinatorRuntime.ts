@@ -52,11 +52,15 @@ export function createCoordinator(metadata) {
   const queues = new Map();
   const api = {};
 
-  // Request ids for join members: one fresh id per suspending-import call
-  // (chunk 5's protocol). The single-await path ignores the returned id;
-  // the join path records it. Entries are consumed by the single path
-  // (drive) or by the join that references them, so the map stays bounded.
-  let nextReqId = 1;
+  // Member tokens: one fresh heap-pointer token per suspending-import
+  // call (chunk 5's protocol). The token must be a heap pointer, not a
+  // small integer: a member value stored in the user's Array<Promise<T>>
+  // is linked by the GC, and a small int is a bogus reference that traps.
+  // Only the pointer is the token; the string content is meaningless.
+  // A minted pointer can never equal a live token's pointer (a live
+  // token's string still occupies its address), but a collected token's
+  // address can be reused, so re-mint on a clash with a live key.
+  let nextToken = 1;
   const joinMembers = new Map();
 
   function needAlloc() {
@@ -228,7 +232,7 @@ export function createCoordinator(metadata) {
 
   // Drives one suspended join (chunk 5's protocol): the members were
   // issued before the single suspending __async_join call, which recorded
-  // their req ids and the policy on the task. Store/error calls deliver
+  // their tokens and the policy on the task. Store/error calls deliver
   // settlements to the wasm side; join_done resumes once the policy is
   // satisfied, reject_<j> fails fast. Late settlements are dropped.
   function runJoin(task, site) {
@@ -399,14 +403,14 @@ export function createCoordinator(metadata) {
       return;
     }
     const pending = task.pending;
-    const pendingReqId = task.pendingReqId;
+    const pendingToken = task.pendingToken;
     task.pending = null;
-    task.pendingReqId = null;
+    task.pendingToken = null;
     if (siteMeta.join) {
       runJoin(task, siteMeta);
       return;
     }
-    if (pendingReqId) joinMembers.delete(pendingReqId);
+    if (pendingToken) joinMembers.delete(pendingToken);
     if (!pending) {
       settleError(task, new Error('async coordinator: task suspended with no pending operation'));
       return;
@@ -446,7 +450,7 @@ export function createCoordinator(metadata) {
       const wasmArgs = jsArgs.map(function (arg, i) {
         return lower(arg, fn.params[i].kind, fn.params[i].nullable);
       });
-      task = { fn: fn, handle: 0, pending: null, pendingReqId: 0, pendingJoin: null, settled: false, resolve: resolve, reject: reject };
+      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
         handle = wasmExports[fn.exportName].apply(null, wasmArgs);
@@ -543,12 +547,13 @@ export function createCoordinator(metadata) {
           result = Promise.reject(e);
         }
         if (task) {
-          const reqId = nextReqId++;
+          let token = newString("token" + nextToken++);
+          while (joinMembers.has(token)) token = newString("token" + nextToken++);
           const promise = Promise.resolve(result);
-          joinMembers.set(reqId, promise);
+          joinMembers.set(token, promise);
           task.pending = promise;
-          task.pendingReqId = reqId;
-          return reqId;
+          task.pendingToken = token;
+          return token;
         }
         return 0;
       };

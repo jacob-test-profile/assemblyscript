@@ -4,10 +4,10 @@
 // asc (real CPS transform), asserts the generated `<base>.async.js` was
 // emitted next to the wasm, imports it, and drives the async functions
 // through its public API only: loop+await, externref identity across an
-// await, the join engine (via the test-only join driver — chunk 5 has
-// not landed the wasm side of Promise.all), rejection propagation, a
-// void task, the spill-pool FIFO queue, and heap churn + __collect
-// mid-suspension. Also checks a sync-only module emits no coordinator.
+// await, the join engine (via the test-only join driver and via chunk 5's
+// real wasm join), rejection propagation, a void task, the spill-pool FIFO
+// queue, and heap churn + __collect mid-suspension. Also checks a sync-only
+// module emits no coordinator.
 //
 // Run: npm run test:async-coordinator   (after npm run build)
 import { spawnSync } from "node:child_process";
@@ -383,6 +383,43 @@ const api = await instantiateAsync(bytes, {
   const anyError = await assertRejects(p, /AggregateError: no-a; no-b/, "real join any must reject when all members reject");
   check(anyError.message === "AggregateError: no-a; no-b", "real join any rejection message must list errors in order");
   console.log("PASS real join any all-rejected");
+
+  // Dynamic join: loop-built member list. The coordinator must return a
+  // fresh heap-pointer token per suspending-import call: a small-int token
+  // is a bogus reference that the GC links in Array#push and traps.
+  base = joinMembers.length;
+  p = joinApi.dynamicAll();
+  await tick();
+  check(joinMembers.length === base + 3, "dynamicAll must issue 3 members");
+  joinMembers[base + 2].resolve(30);
+  joinMembers[base].resolve(10);
+  joinMembers[base + 1].resolve(20);
+  check((await p) === "10|20|30", "real dynamic join must deliver results in argument order");
+  console.log("PASS real dynamic join, loop-built member list");
+
+  // An await site after a join site in the same function: the site
+  // enumeration must include both (join sites have no resume_<n>).
+  base = joinMembers.length;
+  p = joinApi.joinThenAwait();
+  await tick();
+  check(joinMembers.length === base + 3, "joinThenAwait must issue 3 members (2 join + 1 await)");
+  joinMembers[base].resolve(1);
+  joinMembers[base + 1].resolve(2);
+  await tick();
+  joinMembers[base + 2].resolve(3);
+  check((await p) === "1|2:3", "join followed by await must return both results in order");
+  console.log("PASS await site after join site");
+
+  // allSettled through the real wasm join, mixed fulfill/reject.
+  base = joinMembers.length;
+  p = joinApi.settledNumbers();
+  await tick();
+  joinMembers[base].resolve(10);
+  joinMembers[base + 1].reject(new Error("bad"));
+  joinMembers[base + 2].resolve(30);
+  const settled = await p;
+  check(settled === "ok10;nobad;ok30;", "real join allSettled must report every member, got " + settled);
+  console.log("PASS real join allSettled, mixed fulfill/reject");
 }
 
 console.log("ALL COORDINATOR TESTS PASS");

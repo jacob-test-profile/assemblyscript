@@ -54,11 +54,11 @@ import {
   AssertionExpression,
   TypeName,
   ArrowKind,
-  FalseExpression,
   TrueExpression,
+  FalseExpression,
   NullExpression,
-  NamespaceDeclaration,
   ThisExpression,
+  NamespaceDeclaration,
   SourceKind
 } from "./ast";
 
@@ -98,6 +98,7 @@ import {
 import {
   ReportMode
 } from "./resolver";
+
 import {
   JOIN_IMPORT_NAME,
   AGGREGATE_ERROR_EMPTY,
@@ -120,8 +121,30 @@ import {
 } from "./asyncJoin";
 
 import {
+  rejectTargetFor
+} from "./asyncTryDesugar";
+
+import {
+  liftThisInAsyncBody
+} from "./asyncThisLift";
+
+import {
+  liftEnvInAsyncBody,
+  LiftContext,
+  EnvLiftResult
+} from "./asyncEnvLift";
+
+import {
+  scanFileForAsyncArrows,
+  ArrowWorkItem,
+  FileArrowAliases
+} from "./asyncArrowExtract";
+
+import {
   AsyncScope,
+  AsyncRewriter,
   AsyncFail,
+  ASYNC_THIS_NAME,
   ident,
   thisProp,
   intLit,
@@ -136,8 +159,11 @@ import {
   zeroValue,
   rewriteExpression,
   rewriteStatement,
+  rewriteClosureMethod,
   containsAwait,
   validateBody,
+  cpsStateClassName,
+  cpsStateGlobalName,
   SPILL_POOL_SIZE,
   SPILL_ACQUIRE,
   SPILL_RELEASE,
@@ -186,6 +212,17 @@ class AwaitSite {
     public memberType: Type | null = null,
     /** Type node denoting the member type for a join site, else null. */
     public memberTypeNode: TypeNode | null = null,
+    /** State field holding the enclosing try's error flag, when a
+     *  coordinator rejection of this site must land in a catch. */
+    public rejectFlagField: string = "",
+    /** State field holding the enclosing try's error message, same. */
+    public rejectErrField: string = "",
+    /** Whether this site awaits a nested async function in the same file. */
+    public isNested: bool = false,
+    /** State field holding the inner task's handle, for a nested site. */
+    public handleField: string = "",
+    /** Qualified name of the inner async function, for a nested site. */
+    public innerQual: string = ""
   ) {}
 }
 
@@ -231,6 +268,7 @@ class SegmentEnd {
     public site: i32 = -1
   ) {}
 }
+
 /** Outcome of emitting a join. */
 const enum JoinEmitOutcome {
   /** The join suspends; the caller continues in the resume segment. */
@@ -259,6 +297,25 @@ class PreparedJoin {
   ) {}
 }
 
+/** One async function or method awaiting the pre-passes and the core. */
+interface TransformWorkItem {
+  prototype: FunctionPrototype;
+  /** Whether the prototype is an instance method (receiver via `this`). */
+  isMethod: bool;
+  /** Enclosing class, for methods and for arrows closing over a receiver. */
+  receiverClass: ClassPrototype | null;
+  /** Element generated declarations are registered under. */
+  genParent: Element;
+  /** Qualified name used for all generated names. */
+  qualName: string;
+  /** Local name bound to an extracted arrow (for recursion), or `null`. */
+  selfName: string | null;
+  /** Enclosing locals the body must not reference (captures). */
+  forbidden: Set<string>;
+  /** Whether the prototype is an extracted async arrow (its receiver, if
+   *  any, arrives as a generated `__async_this` parameter). */
+  isExtracted: bool;
+}
 
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
@@ -267,23 +324,120 @@ export function transformAsyncFunctions(program: Program): void {
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
     if (file.source.sourceKind == SourceKind.LibraryEntry) continue;
+    // Collect the user async functions and methods first: the file scan
+    // below registers generated async functions for global and field
+    // arrows, and those belong on the worklist as extracted arrows, not
+    // as plain functions.
     let functions = new Array<FunctionPrototype>();
     let methods = new Array<FunctionPrototype>();
     collectAsyncFunctions(file, functions, methods);
-    for (let j = 0, l = methods.length; j < l; ++j) {
-      let method = methods[j];
-      program.error(
-        DiagnosticCode.Not_implemented_0,
-        method.identifierNode.range,
-        "Async methods are not yet supported"
-      );
-      program.rejectedAsyncFunctions.add(method);
-    }
+    // Chunk 2 slot: try desugar runs per function below, before the
+    // this-lift and env-lift, when it lands.
+    let scan = scanFileForAsyncArrows(program, file, (message: string, range: Range): void => {
+      program.error(DiagnosticCode.Not_implemented_0, range, message);
+    });
+    if (!scan) continue;
+    let aliases = scan.aliases;
+    let fileBase = sanitizeName(file.source.simplePath);
+    let worklist = new Array<TransformWorkItem>();
     for (let j = 0, l = functions.length; j < l; ++j) {
-      let transform = new AsyncFunctionTransform(program, file, functions[j], pools);
+      let prototype = functions[j];
+      worklist.push({
+        prototype,
+        isMethod: false,
+        receiverClass: null,
+        genParent: file,
+        qualName: prototype.name,
+        selfName: null,
+        forbidden: new Set<string>(),
+        isExtracted: false
+      });
+    }
+    for (let j = 0, l = methods.length; j < l; ++j) {
+      let prototype = methods[j];
+      let receiverClass = <ClassPrototype>prototype.parent;
+      worklist.push({
+        prototype,
+        isMethod: true,
+        receiverClass,
+        genParent: receiverClass.parent,
+        qualName: `${receiverClass.name}_${prototype.name}`,
+        selfName: null,
+        forbidden: new Set<string>(),
+        isExtracted: false
+      });
+    }
+    for (let j = 0, l = scan.arrows.length; j < l; ++j) {
+      worklist.push(arrowWorkItem(scan.arrows[j]));
+    }
+    for (let w = 0; w < worklist.length; ++w) {
+      let item = worklist[w];
+      let prototype = item.prototype;
+      // Functions the try desugar rejected already carry a specific
+      // diagnostic; skip them so the core does not double-report.
+      if (program.rejectedAsyncFunctions.has(prototype)) continue;
+      // Instance methods resolve through a prototype bound to the
+      // resolved class; bind up front so the pre-passes, the core and
+      // the compiler guard all see the same prototype.
+      let transformPrototype = prototype;
+      if (item.isMethod) {
+        let receiverClass = assert(item.receiverClass);
+        let classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
+        if (!classInstance) {
+          program.rejectedAsyncFunctions.add(prototype);
+          continue;
+        }
+        transformPrototype = prototype.toBound(classInstance);
+      }
+      let fail = (message: string, range: Range): void => {
+        program.error(DiagnosticCode.Not_implemented_0, range, message);
+        program.rejectedAsyncFunctions.add(transformPrototype);
+      };
+      if (item.isMethod) {
+        let receiverClass = assert(item.receiverClass);
+        let typeParameters = receiverClass.typeParameterNodes;
+        if (typeParameters && typeParameters.length > 0) {
+          fail("Async methods in generic classes are not yet supported", prototype.identifierNode.range);
+          continue;
+        }
+      }
+      if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
+      let ctx: LiftContext = {
+        program,
+        file,
+        genParent: item.genParent,
+        qualName: item.qualName,
+        stateClassName: cpsStateClassName(item.qualName),
+        stateGlobalName: cpsStateGlobalName(fileBase, item.qualName),
+        hasReceiver: item.isMethod || item.receiverClass != null,
+        receiverClass: item.receiverClass,
+        aliases
+      };
+      let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, fail);
+      if (!lift) continue;
+      for (let a = 0, b = lift.arrows.length; a < b; ++a) {
+        worklist.push(arrowWorkItem(lift.arrows[a]));
+      }
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod);
       transform.run();
     }
   }
+}
+
+/** Turns an extracted arrow into a worklist item. Extracted arrows are
+ *  plain functions whose receiver, when present, arrives as a leading
+ *  `__async_this` parameter, so they are not methods for the core. */
+function arrowWorkItem(arrow: ArrowWorkItem): TransformWorkItem {
+  return {
+    prototype: arrow.prototype,
+    isMethod: false,
+    receiverClass: arrow.receiverClass,
+    genParent: arrow.genParent,
+    qualName: arrow.prototype.name,
+    selfName: arrow.selfName,
+    forbidden: arrow.forbidden,
+    isExtracted: true
+  };
 }
 
 function collectAsyncFunctions(
@@ -346,20 +500,42 @@ class AsyncFunctionTransform {
   private stateClassName: string;
   private rootsName: string;
   private fileBase: string;
+  /** Element generated declarations are registered under. */
+  private genParent: Element;
+  /** Whether the prototype is an instance method (receiver via `this`). */
+  private isMethod: bool;
+  /** Lifted closure methods, appended to the state class. */
+  private liftedMethods: MethodDeclaration[];
+  /** Adapter name to lifted method, for the rewrite hook; `null` when none. */
+  private adapters: Map<string, MethodDeclaration> | null;
+  /** Whether any adapter exists, so the state global is needed. */
+  private hasAdapters: bool;
+  /** Module global holding the currently-stepping state object. */
+  private stateGlobalName: string;
 
   constructor(
     private program: Program,
     private file: File,
     private prototype: FunctionPrototype,
-    private pools: Set<string>
+    private pools: Set<string>,
+    lift: EnvLiftResult,
+    qualName: string,
+    genParent: Element,
+    isMethod: bool
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
-    this.fnName = prototype.name;
+    this.genParent = genParent;
+    this.isMethod = isMethod;
+    this.fnName = qualName;
     this.range = this.declaration.range;
     this.fileBase = sanitizeName(file.source.simplePath);
-    this.stateClassName = `__Cps_${this.fnName}`;
-    this.rootsName = `__async_roots_${this.fnName}`;
+    this.stateClassName = cpsStateClassName(qualName);
+    this.rootsName = `__async_roots_${qualName}`;
+    this.stateGlobalName = cpsStateGlobalName(this.fileBase, qualName);
+    this.liftedMethods = lift.methods;
+    this.adapters = lift.adapters.size > 0 ? lift.adapters : null;
+    this.hasAdapters = lift.hasAdapters;
   }
 
   private get fail(): AsyncFail {
@@ -387,10 +563,6 @@ class AsyncFunctionTransform {
     let typeParameters = prototype.typeParameterNodes;
     if (typeParameters && typeParameters.length > 0) {
       this.fail("Generic async functions are not yet supported", this.declaration.name.range);
-      return TransformOutcome.Rejected;
-    }
-    if (this.declaration.kind == NodeKind.MethodDeclaration) {
-      this.fail("Async methods are not yet supported", this.declaration.name.range);
       return TransformOutcome.Rejected;
     }
     let instance = this.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Report);
@@ -438,6 +610,20 @@ class AsyncFunctionTransform {
       let outcome = this.declareLocal(parameter.name.text, parameter.type, parameterTypes[i], parameter.name.range, parameter, true);
       if (outcome != TransformOutcome.Transformed) return outcome;
     }
+    if (this.isMethod) {
+      let receiverType = signature.thisType;
+      if (!receiverType) {
+        this.fail("Async methods need a receiver type", this.declaration.name.range);
+        return TransformOutcome.Rejected;
+      }
+      let receiverTypeNode = typeToTypeNode(receiverType, this.declaration.name.range);
+      if (!receiverTypeNode) {
+        this.fail(`Async methods cannot lift receivers of type '${receiverType.toString()}' yet`, this.declaration.name.range);
+        return TransformOutcome.Rejected;
+      }
+      let outcome = this.declareLocal(ASYNC_THIS_NAME, receiverTypeNode, receiverType, this.declaration.name.range, this.declaration, true);
+      if (outcome != TransformOutcome.Transformed) return outcome;
+    }
     this.newSegment();
     let statements: Statement[];
     if (bodyNode.kind == NodeKind.Block) {
@@ -448,6 +634,17 @@ class AsyncFunctionTransform {
     this.transformList(statements, CONT_TERMINAL, NO_TARGET, NO_TARGET);
     if (this.failed) return TransformOutcome.Rejected;
     if (this.punted) return TransformOutcome.Untransformed;
+    // Any lifted closure whose adapter identifier never passed through
+    // the rewrite hook (it should have) is rewritten now with the
+    // top-level scope, so a missed body fails loudly instead of
+    // compiling with unresolved captures.
+    let adapters = this.adapters;
+    if (adapters) {
+      let remaining = Map_values(adapters);
+      for (let i = 0, k = remaining.length; i < k; ++i) {
+        if (!rewriteClosureMethod(remaining[i], this.rewriter())) return TransformOutcome.Rejected;
+      }
+    }
     if (this.slots.length > SPILL_POOL_SIZE) {
       this.fail(`Async function needs ${this.slots.length} externref spill slots, but the pool has only ${SPILL_POOL_SIZE}`, this.declaration.name.range);
       return TransformOutcome.Rejected;
@@ -473,8 +670,8 @@ class AsyncFunctionTransform {
     this.flow = assert(flow.parent);
   }
 
-  private rewriter(): { scope: AsyncScope, fail: AsyncFail } {
-    return { scope: this.scope, fail: this.fail };
+  private rewriter(): AsyncRewriter {
+    return { scope: this.scope, fail: this.fail, adapters: this.adapters };
   }
 
   // === Locals =====================================================================================
@@ -715,6 +912,15 @@ class AsyncFunctionTransform {
         this.closeCurrent(new SegmentEnd("jump", continueTarget));
         return;
       }
+      case NodeKind.Throw: {
+        // The try desugar's fail-the-task primitive: set the error slot
+        // and close the task as failed. Reaching here with an await in the
+        // value is a loud error via `rewriteChecked`.
+        let value = this.rewriteChecked((<ThrowStatement>stmt).value);
+        if (!value) return;
+        this.emitFail(value, stmt.range);
+        return;
+      }
       case NodeKind.Empty: {
         return;
       }
@@ -758,6 +964,7 @@ class AsyncFunctionTransform {
       let name = declaration.name.text;
       let initializer = declaration.initializer;
       if (initializer && unwrapParens(initializer).kind == NodeKind.Await) {
+        let awaitExpr = <AwaitExpression>unwrapParens(initializer);
         let joinCall = this.joinCallOf(awaitExpr);
         if (joinCall) {
           let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, declaration.type);
@@ -779,7 +986,6 @@ class AsyncFunctionTransform {
           if (status == JoinEmitOutcome.FailedInline) return;
           continue;
         }
-        let awaitExpr = <AwaitExpression>unwrapParens(initializer);
         let site = this.transformAwait(awaitExpr, true);
         if (!site) return;
         let type: Type | null = site.type;
@@ -1135,9 +1341,81 @@ class AsyncFunctionTransform {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
       return null;
     }
+    let calleeName = (<IdentifierExpression>callee).text;
+    let flow = assert(this.flow);
+    // Nested await of a same-file async function: an extracted async
+    // arrow, or a direct call to another async function in this file.
+    // The call starts the inner task; its handle is kept in a state
+    // field, and the coordinator drives the inner task, then delivers
+    // the result through this site's resume export.
+    let element = flow.lookup(calleeName);
+    if (element && element.kind == ElementKind.FunctionPrototype && (<FunctionPrototype>element).is(CommonFlags.Async)) {
+      let innerPrototype = <FunctionPrototype>element;
+      if (innerPrototype.declaration.range.source != this.file.source) {
+        this.fail("await of an async function in another file is not yet supported", node.range);
+        return null;
+      }
+      let args = call.args;
+      for (let i = 0, k = args.length; i < k; ++i) {
+        this.checkDirectAsyncCalls(args[i]);
+        if (this.failed) return null;
+      }
+      let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
+      if (!operandType) {
+        this.punted = true;
+        return null;
+      }
+      let unwrapped = this.resolver.unwrapPromiseType(operandType);
+      if (!unwrapped) {
+        this.program.error(
+          DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
+          operand.range
+        );
+        this.failed = true;
+        return null;
+      }
+      let typeNode = typeToTypeNode(unwrapped, node.range);
+      if (!typeNode) {
+        this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+        return null;
+      }
+      if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
+        this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+        return null;
+      }
+      let rewrittenCall = rewriteExpression(call, this.rewriter());
+      if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
+        this.failed = true;
+        return null;
+      }
+      let site = new AwaitSite(
+        this.sites.length, unwrapped, typeNode, used,
+        <CallExpression>rewrittenCall, "", node.range
+      );
+      site.isNested = true;
+      site.handleField = `__handle${site.id}`;
+      site.innerQual = calleeName;
+      this.sites.push(site);
+      // A coordinator rejection of this site lands in the enclosing try's
+      // catch when the desugar recorded one: resolve the error locals to
+      // state fields now, while the scope still holds them.
+      let rejectTarget = rejectTargetFor(this.file, node.range);
+      if (rejectTarget) {
+        let flagBinding = this.scope.lookup(rejectTarget.flagVar);
+        let errBinding = this.scope.lookup(rejectTarget.errorVar);
+        if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
+          site.rejectFlagField = flagBinding.field;
+          site.rejectErrField = errBinding.field;
+        }
+      }
+      if (unwrapped.kind == TypeKind.Extern) {
+        site.slotField = `__slot_pend${site.id}`;
+        this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
+      }
+      return site;
+    }
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
-    let flow = assert(this.flow);
     let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
     if (!operandType) {
       this.punted = true;
@@ -1152,8 +1430,6 @@ class AsyncFunctionTransform {
       this.failed = true;
       return null;
     }
-    let calleeName = (<IdentifierExpression>callee).text;
-    let element = flow.lookup(calleeName);
     if (!element) {
       this.punted = true;
       return null;
@@ -1181,12 +1457,25 @@ class AsyncFunctionTransform {
       <CallExpression>rewrittenCall, "", node.range
     );
     this.sites.push(site);
+    // A coordinator rejection of this site lands in the enclosing try's
+    // catch when the desugar recorded one: resolve the error locals to
+    // state fields now, while the scope still holds them.
+    let rejectTarget = rejectTargetFor(this.file, node.range);
+    if (rejectTarget) {
+      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
+      let errBinding = this.scope.lookup(rejectTarget.errorVar);
+      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
+        site.rejectFlagField = flagBinding.field;
+        site.rejectErrField = errBinding.field;
+      }
+    }
     if (unwrapped.kind == TypeKind.Extern) {
       site.slotField = `__slot_pend${site.id}`;
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
     }
     return site;
   }
+
   // === Join =====================================================================================
 
   /** Returns the join call when the await operand is `await Promise.<policy>(...)`. */
@@ -1694,7 +1983,6 @@ class AsyncFunctionTransform {
     this.closeCurrent(new SegmentEnd("fail"));
   }
 
-
   /** Rejects direct (non-awaited) calls to async functions in an expression. */
   private checkDirectAsyncCalls(expr: Expression): void {
     if (expr instanceof CallExpression) {
@@ -1805,7 +2093,23 @@ class AsyncFunctionTransform {
 
   /** Closes the current segment with a suspension at the site. */
   private suspendCurrent(site: AwaitSite, next: i32 = -1): void {
-    this.emit(exprStmt(site.call));
+    if (site.isNested) {
+      // A nested call starts the inner task; keep its handle so the
+      // coordinator can drive it and deliver its result to the resume
+      // export. The handle is a reference, stored as a raw usize.
+      this.emit(exprStmt(assignExpr(
+        thisProp(site.handleField, site.range),
+        new CallExpression(
+          ident("changetype", site.range),
+          [ namedType("usize", null, false, site.range) ],
+          [ site.call ],
+          site.range
+        ),
+        site.range
+      )));
+    } else {
+      this.emit(exprStmt(site.call));
+    }
     if (next < 0) {
       next = this.segments.length;
       this.closeCurrent(new SegmentEnd("suspend", next, site.id));
@@ -1913,6 +2217,9 @@ class AsyncFunctionTransform {
         if (this.hasNameCollision(joinErrorName(this.fileBase, this.fnName, i))) return false;
         if (this.hasNameCollision(joinDoneName(this.fileBase, this.fnName, i))) return false;
       } else {
+        if (this.sites[i].isNested) {
+          if (this.hasNameCollision(this.pendingName(i))) return false;
+        }
         if (this.hasNameCollision(this.resumeName(i))) return false;
       }
       if (this.hasNameCollision(this.rejectName(i))) return false;
@@ -1920,6 +2227,9 @@ class AsyncFunctionTransform {
     if (this.hasNameCollision(this.resultName())) return false;
     if (this.hasNameCollision(this.errorName())) return false;
     if (this.hasNameCollision(this.statusName())) return false;
+    if (this.hasAdapters) {
+      if (this.hasNameCollision(this.stateGlobalName)) return false;
+    }
     if (this.slots.length > 0) {
       if (!this.ensureSpillPool()) return false;
     }
@@ -1928,6 +2238,7 @@ class AsyncFunctionTransform {
     if (!stateClass) return false;
     declarations.push(stateClass);
     declarations.push(this.buildRootsGlobal());
+    if (this.hasAdapters) declarations.push(this.buildStateGlobal());
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
       if (site.isJoin) {
@@ -1935,6 +2246,10 @@ class AsyncFunctionTransform {
         declarations.push(buildJoinError(this.fileBase, this.fnName, this.stateClassName, i, this.range));
         declarations.push(buildJoinDone(this.fileBase, this.fnName, this.stateClassName, i, this.range));
       } else {
+        if (site.isNested) {
+          declarations.push(this.buildPending(i));
+          this.program.asyncNestedPending.set(this.pendingName(i), site.innerQual);
+        }
         declarations.push(this.buildResume(i));
       }
       declarations.push(this.buildReject(i));
@@ -1947,14 +2262,14 @@ class AsyncFunctionTransform {
       statements.push(declarations[i]);
     }
     for (let i = 0, k = declarations.length; i < k; ++i) {
-      if (!this.program.initializeGeneratedDeclaration(declarations[i], this.parent)) return false;
+      if (!this.program.initializeGeneratedDeclaration(declarations[i], this.genParent)) return false;
     }
     this.declaration.body = this.buildWrapperBody();
     return true;
   }
 
   private hasNameCollision(name: string): bool {
-    if (this.parent.getMember(name)) {
+    if (this.genParent.getMember(name)) {
       this.fail(`Generated name '${name}' collides with an existing declaration`, this.range);
       return true;
     }
@@ -1962,10 +2277,10 @@ class AsyncFunctionTransform {
   }
 
   private parentStatements(): Statement[] {
-    if (this.parent.kind == ElementKind.File) {
+    if (this.genParent.kind == ElementKind.File) {
       return this.file.source.statements;
     }
-    let namespace = <Namespace>this.parent;
+    let namespace = <Namespace>this.genParent;
     return (<NamespaceDeclaration>namespace.declaration).members;
   }
 
@@ -2217,12 +2532,24 @@ class AsyncFunctionTransform {
         zero, -1, range
       ));
     }
+    for (let i = 0, k = this.sites.length; i < k; ++i) {
+      let site = this.sites[i];
+      if (!site.isNested) continue;
+      members.push(new FieldDeclaration(
+        ident(site.handleField, range), null, CommonFlags.None,
+        namedType("usize", null, false, range),
+        intLit(0, range), -1, range
+      ));
+    }
     for (let i = 0, k = this.slots.length; i < k; ++i) {
       members.push(new FieldDeclaration(
         ident(this.slots[i].slotField, range), null, CommonFlags.None,
         namedType("i32", null, false, range),
         new UnaryPrefixExpression(Token.Minus, intLit(1, range), range), -1, range
       ));
+    }
+    for (let i = 0, k = this.liftedMethods.length; i < k; ++i) {
+      members.push(this.liftedMethods[i]);
     }
     members.push(this.buildStepMethod());
     return new ClassDeclaration(
@@ -2280,13 +2607,13 @@ class AsyncFunctionTransform {
         for (let j = 0, l = terminalStmts.length; j < l; ++j) {
           statements.push(terminalStmts[j]);
         }
+        statements.push(new ReturnStatement(intLit(1, range), range));
       } else if (end!.kind == "fail") {
         let terminalStmts = this.terminalStatements(true, range, -2);
         for (let j = 0, l = terminalStmts.length; j < l; ++j) {
           statements.push(terminalStmts[j]);
         }
         statements.push(new ReturnStatement(intLit(2, range), range));
-        statements.push(new ReturnStatement(intLit(1, range), range));
       }
       cases.push(new SwitchCase(this.segState(segment.id, range), statements, range));
     }
@@ -2322,9 +2649,24 @@ class AsyncFunctionTransform {
       false,
       range
     );
+    let body = new Array<Statement>();
+    if (this.hasAdapters) {
+      // Adapters forward through the currently-stepping state object.
+      body.push(exprStmt(assignExpr(
+        ident(this.stateGlobalName, range),
+        new CallExpression(
+          ident("changetype", range),
+          [ namedType("usize", null, false, range) ],
+          [ new ThisExpression(range) ],
+          range
+        ),
+        range
+      )));
+    }
+    body.push(loop);
     return new MethodDeclaration(
       ident("step", range), null, CommonFlags.Instance,
-      null, signature, blockStmt([ loop ], range), range
+      null, signature, blockStmt(body, range), range
     );
   }
 
@@ -2345,6 +2687,54 @@ class AsyncFunctionTransform {
         range
       ) ],
       range
+    );
+  }
+
+  private buildStateGlobal(): VariableStatement {
+    let range = this.range;
+    return new VariableStatement(
+      null,
+      [ new VariableDeclaration(
+        ident(this.stateGlobalName, range), null, CommonFlags.None,
+        namedType("usize", null, false, range),
+        intLit(0, range),
+        range
+      ) ],
+      range
+    );
+  }
+
+  private pendingName(site: i32): string {
+    return `__async_${this.fileBase}_${this.fnName}_pending_${site}`;
+  }
+
+  /** Export returning the inner task's handle for a nested await site, so
+   *  the coordinator can drive the inner task to completion. */
+  private buildPending(siteId: i32): FunctionDeclaration {
+    let range = this.range;
+    let site = this.sites[siteId];
+    let stateParam = new ParameterNode(
+      ParameterKind.Default,
+      ident("state", range),
+      namedType(this.stateClassName, null, false, range),
+      null,
+      range
+    );
+    let signature = new FunctionTypeNode(
+      [ stateParam ],
+      namedType("usize", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new PropertyAccessExpression(ident("state", range), ident(site.handleField, range), range),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.pendingName(siteId), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }
 
@@ -2428,17 +2818,44 @@ class AsyncFunctionTransform {
       false,
       range
     );
+    let site = this.sites[siteId];
     let body = new Array<Statement>();
-    body.push(exprStmt(assignExpr(
-      new PropertyAccessExpression(ident("state", range), ident("__error", range), range),
-      ident("message", range),
-      range
-    )));
-    let terminalStmts = this.terminalStatements(false, range, -2);
-    for (let i = 0, k = terminalStmts.length; i < k; ++i) {
-      body.push(terminalStmts[i]);
+    if (!site.isJoin && site.rejectFlagField != "") {
+      // A coordinator rejection lands in the enclosing try's catch: set
+      // the error flag/message and resume the state machine at the segment
+      // after the suspending call (the task is suspended at this site, so
+      // `step()` dispatches there). The desugared guards skip the rest of
+      // the try body and the dispatch runs catch/finally/propagation.
+      body.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(ident("state", range), ident(site.rejectFlagField, range), range),
+        new TrueExpression(range),
+        range
+      )));
+      body.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(ident("state", range), ident(site.rejectErrField, range), range),
+        ident("message", range),
+        range
+      )));
+      body.push(new ReturnStatement(
+        callExpr(
+          new PropertyAccessExpression(ident("state", range), ident("step", range), range),
+          [],
+          range
+        ),
+        range
+      ));
+    } else {
+      body.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(ident("state", range), ident("__error", range), range),
+        ident("message", range),
+        range
+      )));
+      let terminalStmts = this.terminalStatements(false, range, -2);
+      for (let i = 0, k = terminalStmts.length; i < k; ++i) {
+        body.push(terminalStmts[i]);
+      }
+      body.push(new ReturnStatement(intLit(2, range), range));
     }
-    body.push(new ReturnStatement(intLit(2, range), range));
     return new FunctionDeclaration(
       ident(this.rejectName(siteId), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
@@ -2621,6 +3038,15 @@ class AsyncFunctionTransform {
       body.push(exprStmt(assignExpr(
         new PropertyAccessExpression(ident("__st", range), ident(binding!.field, range), range),
         ident(name, range),
+        range
+      )));
+    }
+    if (this.isMethod) {
+      let receiverBinding = this.scope.lookup(ASYNC_THIS_NAME);
+      assert(receiverBinding != null);
+      body.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(ident("__st", range), ident(receiverBinding!.field, range), range),
+        new ThisExpression(range),
         range
       )));
     }

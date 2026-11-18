@@ -50,7 +50,11 @@ import {
   DoStatement,
   FunctionExpression,
   ClassExpression,
+  MethodDeclaration,
   AwaitExpression,
+  FunctionTypeNode,
+  ParameterNode,
+  ParameterKind
 } from "./ast";
 
 import {
@@ -63,7 +67,8 @@ import {
 
 import {
   Type,
-  TypeKind
+  TypeKind,
+  Signature
 } from "./types";
 
 import {
@@ -77,6 +82,22 @@ export const SPILL_ACQUIRE = "__async_spill_acquire";
 export const SPILL_RELEASE = "__async_spill_release";
 export const SPILL_GET = "__async_spill_get";
 export const SPILL_SET = "__async_spill_set";
+
+/** Local holding the receiver of an async method, introduced by the
+ *  this-lift pre-pass (`this` is rewritten to this identifier). */
+export const ASYNC_THIS_NAME = "__async_this";
+
+/** State class name for an async function or method, from its qualified
+ *  name (the plain function name, or `<Class>_<method>` for methods). */
+export function cpsStateClassName(qualName: string): string {
+  return `__Cps_${qualName}`;
+}
+
+/** Module-global holding the currently-stepping state object (as a raw
+ *  pointer) for an async function or method. */
+export function cpsStateGlobalName(fileBase: string, qualName: string): string {
+  return `__async_state_${fileBase}_${qualName}`;
+}
 
 /** How a lifted local is stored in the state object. */
 export interface AsyncLocalBinding {
@@ -185,6 +206,37 @@ export function namedType(name: string, typeArguments: TypeNode[] | null, isNull
   );
 }
 
+/** Unwraps parenthesized expressions. */
+export function unwrapParens(expr: Expression): Expression {
+  while (expr.kind == NodeKind.Parenthesized) {
+    expr = (<ParenthesizedExpression>expr).expression;
+  }
+  return expr;
+}
+
+/** Copies a function signature with fresh parameter nodes (shared type
+ *  nodes). Initializers are dropped; callers must reject them first. */
+export function copyFunctionSignature(signature: FunctionTypeNode, range: Range): FunctionTypeNode {
+  let parameters = new Array<ParameterNode>(signature.parameters.length);
+  for (let i = 0, k = signature.parameters.length; i < k; ++i) {
+    let parameter = signature.parameters[i];
+    parameters[i] = new ParameterNode(
+      parameter.parameterKind,
+      ident(parameter.name.text, parameter.name.range),
+      parameter.type,
+      null,
+      parameter.range
+    );
+  }
+  return new FunctionTypeNode(
+    parameters,
+    signature.returnType,
+    signature.explicitThisType,
+    signature.isNullable,
+    range
+  );
+}
+
 // === Resolved type to type node ==================================================================
 
 const primitiveNames = new Map<TypeKind, string>();
@@ -225,11 +277,60 @@ export function typeToTypeNode(type: Type, range: Range): TypeNode | null {
     }
     return namedType(classReference.prototype.name, typeArguments, type.isNullableReference, range);
   }
+  // Function types are usize-based too, so the signature check must
+  // precede the primitive lookup or every function would spell as `usize`.
+  let signature = type.getSignature();
+  if (signature) {
+    return functionTypeNodeFromSignature(signature, type.isNullableReference, range);
+  }
   let primitiveName = primitiveNames.get(type.kind);
   if (primitiveName) return namedType(primitiveName, null, false, range);
   if (type.kind == TypeKind.Extern) return namedType("externref", null, type.isNullableReference, range);
   if (type.kind == TypeKind.Void) return null;
   return null;
+}
+
+/** Builds a function type node denoting the specified signature, or `null`
+ *  if a parameter or return type has no spelling. */
+export function functionTypeNodeFromSignature(
+  signature: Signature,
+  isNullable: bool,
+  range: Range
+): FunctionTypeNode | null {
+  let parameterTypes = signature.parameterTypes;
+  let parameters = new Array<ParameterNode>(parameterTypes.length);
+  for (let i = 0, k = parameterTypes.length; i < k; ++i) {
+    let parameterTypeNode = typeToTypeNode(parameterTypes[i], range);
+    if (!parameterTypeNode) return null;
+    let kind = ParameterKind.Default;
+    if (i == k - 1 && signature.hasRest) {
+      kind = ParameterKind.Rest;
+    } else if (i >= signature.requiredParameters) {
+      kind = ParameterKind.Optional;
+    }
+    parameters[i] = new ParameterNode(
+      kind,
+      ident(`__arg${i}`, range),
+      parameterTypeNode,
+      null,
+      range
+    );
+  }
+  let returnTypeNode: TypeNode | null;
+  if (signature.returnType.kind == TypeKind.Void) {
+    returnTypeNode = namedType("void", null, false, range);
+  } else {
+    returnTypeNode = typeToTypeNode(signature.returnType, range);
+    if (!returnTypeNode) return null;
+  }
+  let explicitThisType: NamedTypeNode | null = null;
+  let thisType = signature.thisType;
+  if (thisType) {
+    let thisTypeNode = typeToTypeNode(thisType, range);
+    if (!thisTypeNode || thisTypeNode.kind != NodeKind.NamedType) return null;
+    explicitThisType = <NamedTypeNode>thisTypeNode;
+  }
+  return new FunctionTypeNode(parameters, returnTypeNode, explicitThisType, isNullable, range);
 }
 
 /** Extracts the inner `T` node of a `Promise<T>` type node, or `null`. */
@@ -274,6 +375,17 @@ export function zeroValue(type: Type, typeNode: TypeNode, range: Range): Express
       range
     );
   }
+  // Function types are usize-based too, so the signature check must
+  // precede the primitive switch or every function would zero as `0`.
+  // A null function value is `changetype<Fn>(0)`, like a null class.
+  if (type.getSignature()) {
+    return new CallExpression(
+      ident("changetype", range),
+      [ typeNode ],
+      [ intLit(0, range) ],
+      range
+    );
+  }
   switch (type.kind) {
     case TypeKind.Bool: return new FalseExpression(range);
     case TypeKind.I8:
@@ -305,11 +417,42 @@ export function zeroValue(type: Type, typeNode: TypeNode, range: Range): Express
 export interface AsyncRewriter {
   scope: AsyncScope;
   fail: AsyncFail;
+  /** Lifted closure methods awaiting a rewrite, by adapter name. The
+   *  rewrite of a method body happens when its adapter identifier is
+   *  first rewritten, while the enclosing scope is still live; the entry
+   *  is removed then. `null` when the transform has no lifted closures. */
+  adapters: Map<string, MethodDeclaration> | null;
+}
+
+/** Rewrites one lifted closure method body with the enclosing scope: the
+ *  method's parameters are shadowed so references to them stay plain,
+ *  while captured locals become state-field accesses. */
+export function rewriteClosureMethod(method: MethodDeclaration, ctx: AsyncRewriter): bool {
+  ctx.scope.push();
+  let parameters = method.signature.parameters;
+  for (let i = 0, k = parameters.length; i < k; ++i) {
+    ctx.scope.declare(parameters[i].name.text, shadowBinding(parameters[i].name.range));
+  }
+  let rewritten = rewriteStatement(method.body, ctx);
+  ctx.scope.pop();
+  if (!rewritten) return false;
+  method.body = rewritten;
+  return true;
 }
 
 function rewriteIdentifier(node: IdentifierExpression, ctx: AsyncRewriter): Expression | null {
   let binding = ctx.scope.lookup(node.text);
-  if (!binding || binding.shadowed) return node;
+  if (!binding || binding.shadowed) {
+    let adapters = ctx.adapters;
+    if (adapters) {
+      let method = adapters.get(node.text);
+      if (method) {
+        adapters.delete(node.text);
+        if (!rewriteClosureMethod(method, ctx)) return null;
+      }
+    }
+    return node;
+  }
   if (binding.spilled) {
     return callExpr(
       ident(SPILL_GET, node.range),
@@ -930,10 +1073,6 @@ function validateStatement(node: Statement, fail: AsyncFail): bool {
       return true;
     }
     case NodeKind.Try: {
-      if (containsAwait(node)) {
-        fail("Async functions with 'await' in a 'try' statement are not yet supported", node.range);
-        return false;
-      }
       let stmt = <TryStatement>node;
       let bodyStatements = stmt.bodyStatements;
       for (let i = 0, k = bodyStatements.length; i < k; ++i) {
@@ -954,8 +1093,9 @@ function validateStatement(node: Statement, fail: AsyncFail): bool {
       return true;
     }
     case NodeKind.Throw: {
-      fail("'throw' in async functions is not yet supported", node.range);
-      return false;
+      // `throw` reaches the core only as the desugar's fail-the-task
+      // primitive (or a top-level throw); the transform lowers it.
+      return true;
     }
     case NodeKind.Break: {
       if ((<BreakStatement>node).label) {

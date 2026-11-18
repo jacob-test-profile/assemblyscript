@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: closures with default, optional or rest parameters are not yet supported","AS100: Not implemented: Closures cannot capture 'x' from an enclosing closure","AS100: Not implemented: 'super' in async functions is not yet supported","AS100: Not implemented: Async arrows cannot capture 'x' from the enclosing function"]}

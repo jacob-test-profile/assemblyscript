@@ -143,6 +143,10 @@ import {
 } from "./asyncTransform";
 
 import {
+  desugarAsyncTryStatements
+} from "./asyncTryDesugar";
+
+import {
   Flow,
   LocalFlags
 } from "./flow";
@@ -479,6 +483,10 @@ export class Program extends DiagnosticEmitter {
   transformedAsyncFunctions: Set<FunctionPrototype> = new Set();
   /** Async functions the CPS transform rejected with a specific diagnostic. */
   rejectedAsyncFunctions: Set<FunctionPrototype> = new Set();
+  /** Nested await sites, by pending-export name: the qualified name of the
+   *  inner async function the site awaits. The coordinator reads this to
+   *  know which inner task a pending handle belongs to. */
+  asyncNestedPending: Map<string, string> = new Map();
 
   // Lookup maps
 
@@ -1552,8 +1560,12 @@ export class Program extends DiagnosticEmitter {
       }
     }
 
-    // rewrite async functions into explicit state machines (CPS transform).
-    // runs last so every prototype, import and export is registered first.
+    // desugar try/catch/finally in async functions into the explicit
+    // flag-and-dispatch shape, then rewrite async functions into explicit
+    // state machines (CPS transform). Both run last so every prototype,
+    // import and export is registered first; the desugar runs first so the
+    // core never sees a `try` statement.
+    desugarAsyncTryStatements(this);
     transformAsyncFunctions(this);
   }
 
