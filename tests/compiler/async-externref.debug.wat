@@ -43,9 +43,9 @@
  (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
  (global $async-externref/__async_roots_handleRoundtrip (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 976))
- (global $~lib/memory/__data_end i32 (i32.const 1016))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33784))
- (global $~lib/memory/__heap_base i32 (i32.const 33784))
+ (global $~lib/memory/__data_end i32 (i32.const 1020))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33788))
+ (global $~lib/memory/__heap_base i32 (i32.const 33788))
  (memory $0 1)
  (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\00\07\00\00\00\06\00\00\00\05\00\00\00\04\00\00\00\03\00\00\00\02\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $1 (i32.const 76) ",\00\00\00\00\00\00\00\00\00\00\00\06\00\00\00\10\00\00\00 \00\00\00 \00\00\00 \00\00\00\08\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
@@ -65,7 +65,7 @@
  (data $15 (i32.const 764) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $16 (i32.const 796) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $17 (i32.const 844) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $18 (i32.const 976) "\t\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\02\t\00\00\00\00\00\00\02A\00\00")
+ (data $18 (i32.const 976) "\n\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\02\t\00\00\00\00\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "handleRoundtrip" (func $async-externref/handleRoundtrip))
@@ -80,6 +80,7 @@
  (export "__async_async_externref_handleRoundtrip_reject_1" (func $export:async-externref/__async_async_externref_handleRoundtrip_reject_1))
  (export "__async_async_externref_handleRoundtrip_result" (func $export:async-externref/__async_async_externref_handleRoundtrip_result))
  (export "__async_async_externref_handleRoundtrip_error" (func $export:async-externref/__async_async_externref_handleRoundtrip_error))
+ (export "__async_async_externref_handleRoundtrip_errorValue" (func $export:async-externref/__async_async_externref_handleRoundtrip_errorValue))
  (export "__async_async_externref_handleRoundtrip_status" (func $export:async-externref/__async_async_externref_handleRoundtrip_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2491,25 +2492,34 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-externref/__Cps_handleRoundtrip#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-externref/__Cps_handleRoundtrip#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-externref/__Cps_handleRoundtrip#set:__cps_n_1 (param $this i32) (param $__cps_n_1 i32)
   local.get $this
   local.get $__cps_n_1
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-externref/__Cps_handleRoundtrip#set:__slot_pend0 (param $this i32) (param $__slot_pend0 i32)
   local.get $this
   local.get $__slot_pend0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-externref/__Cps_handleRoundtrip#set:__slot_h_0 (param $this i32) (param $__slot_h_0 i32)
   local.get $this
   local.get $__slot_h_0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2525,11 +2535,11 @@
  )
  (func $async-externref/__Cps_handleRoundtrip#get:__slot_h_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-externref/__Cps_handleRoundtrip#get:__slot_pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-externref/__async_spill_get (param $slot i32) (result externref)
   (local $1 i32)
@@ -2690,11 +2700,11 @@
  )
  (func $async-externref/__Cps_handleRoundtrip#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-externref/__Cps_handleRoundtrip#get:__cps_n_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2773,6 +2783,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-externref/__Cps_handleRoundtrip#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
   i32.const 432
@@ -2838,6 +2852,28 @@
   i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -2854,43 +2890,49 @@
  (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
   block $invalid
    block $~lib/array/Array<async-externref/__Cps_handleRoundtrip>
-    block $async-externref/__Cps_handleRoundtrip
-     block $~lib/array/Array<i32>
-      block $~lib/promise/Promise<ref_extern|null>
-       block $~lib/promise/Promise<i32>
-        block $~lib/arraybuffer/ArrayBufferView
-         block $~lib/string/String
-          block $~lib/arraybuffer/ArrayBuffer
-           block $~lib/object/Object
-            local.get $0
-            i32.const 8
-            i32.sub
-            i32.load
-            br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/promise/Promise<ref_extern|null> $~lib/array/Array<i32> $async-externref/__Cps_handleRoundtrip $~lib/array/Array<async-externref/__Cps_handleRoundtrip> $invalid
+    block $~lib/error/Error
+     block $async-externref/__Cps_handleRoundtrip
+      block $~lib/array/Array<i32>
+       block $~lib/promise/Promise<ref_extern|null>
+        block $~lib/promise/Promise<i32>
+         block $~lib/arraybuffer/ArrayBufferView
+          block $~lib/string/String
+           block $~lib/arraybuffer/ArrayBuffer
+            block $~lib/object/Object
+             local.get $0
+             i32.const 8
+             i32.sub
+             i32.load
+             br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/promise/Promise<ref_extern|null> $~lib/array/Array<i32> $async-externref/__Cps_handleRoundtrip $~lib/error/Error $~lib/array/Array<async-externref/__Cps_handleRoundtrip> $invalid
+            end
+            return
            end
            return
           end
           return
          end
+         local.get $0
+         local.get $1
+         call $~lib/arraybuffer/ArrayBufferView~visit
          return
         end
-        local.get $0
-        local.get $1
-        call $~lib/arraybuffer/ArrayBufferView~visit
         return
        end
        return
       end
+      local.get $0
+      local.get $1
+      call $~lib/array/Array<i32>~visit
       return
      end
      local.get $0
      local.get $1
-     call $~lib/array/Array<i32>~visit
+     call $async-externref/__Cps_handleRoundtrip~visit
      return
     end
     local.get $0
     local.get $1
-    call $async-externref/__Cps_handleRoundtrip~visit
+    call $~lib/error/Error~visit
     return
    end
    local.get $0
@@ -2938,7 +2980,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3405,7 +3447,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
+   i32.const 32
    i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -3445,6 +3487,14 @@
   local.get $1
   i32.const 688
   call $async-externref/__Cps_handleRoundtrip#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-externref/__Cps_handleRoundtrip#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3733,7 +3783,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4784,6 +4834,31 @@
   local.get $1
   return
  )
+ (func $async-externref/__async_async_externref_handleRoundtrip_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-externref/__Cps_handleRoundtrip#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-externref/__async_async_externref_handleRoundtrip_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5163,6 +5238,25 @@
   i32.store
   local.get $0
   call $async-externref/__async_async_externref_handleRoundtrip_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-externref/__async_async_externref_handleRoundtrip_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-externref/__async_async_externref_handleRoundtrip_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

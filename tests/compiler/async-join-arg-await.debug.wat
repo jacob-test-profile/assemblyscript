@@ -35,9 +35,9 @@
  (global $async-join-arg-await/__async_roots_argAwait (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 2656))
- (global $~lib/memory/__data_end i32 (i32.const 2716))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35484))
- (global $~lib/memory/__heap_base i32 (i32.const 35484))
+ (global $~lib/memory/__data_end i32 (i32.const 2720))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35488))
+ (global $~lib/memory/__heap_base i32 (i32.const 35488))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -62,7 +62,7 @@
  (data $20 (i32.const 2508) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
  (data $21 (i32.const 2572) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $22 (i32.const 2604) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
- (data $23 (i32.const 2656) "\0e\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02A\00\00 \00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $23 (i32.const 2656) "\0f\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02A\00\00 \00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "mintString" (func $async-join-arg-await/mintString))
@@ -75,6 +75,7 @@
  (export "__async_async_join_arg_await_makeArray_reclaim" (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_reclaim))
  (export "__async_async_join_arg_await_makeArray_result" (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_result))
  (export "__async_async_join_arg_await_makeArray_error" (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_error))
+ (export "__async_async_join_arg_await_makeArray_errorValue" (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_errorValue))
  (export "__async_async_join_arg_await_makeArray_status" (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_status))
  (export "__async_async_join_arg_await_argAwait_reclaim" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_reclaim))
  (export "__async_async_join_arg_await_argAwait_pending_0" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_pending_0))
@@ -87,6 +88,7 @@
  (export "__async_async_join_arg_await_argAwait_reject_1" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_reject_1))
  (export "__async_async_join_arg_await_argAwait_result" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_result))
  (export "__async_async_join_arg_await_argAwait_error" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_error))
+ (export "__async_async_join_arg_await_argAwait_errorValue" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_errorValue))
  (export "__async_async_join_arg_await_argAwait_status" (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2887,6 +2889,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-join-arg-await/__Cps_argAwait#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<~lib/promise/Promise<i32>>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
   local.get $buffer
@@ -2914,7 +2925,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2947,7 +2958,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__joinVals1 (param $this i32) (param $__joinVals1 i32)
   local.get $this
   local.get $__joinVals1
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__joinVals1
   i32.const 0
@@ -2956,7 +2967,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__joinStatus1 (param $this i32) (param $__joinStatus1 i32)
   local.get $this
   local.get $__joinStatus1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__joinStatus1
   i32.const 0
@@ -2989,7 +3000,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__joinReasons1 (param $this i32) (param $__joinReasons1 i32)
   local.get $this
   local.get $__joinReasons1
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__joinReasons1
   i32.const 0
@@ -2998,17 +3009,17 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__joinIdx1 (param $this i32) (param $__joinIdx1 i32)
   local.get $this
   local.get $__joinIdx1
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $async-join-arg-await/__Cps_argAwait#set:__joinHasValue1 (param $this i32) (param $__joinHasValue1 i32)
   local.get $this
   local.get $__joinHasValue1
-  i32.store8 offset=32
+  i32.store8 offset=36
  )
  (func $async-join-arg-await/__Cps_argAwait#set:__joinReqs1 (param $this i32) (param $__joinReqs1 i32)
   local.get $this
   local.get $__joinReqs1
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__joinReqs1
   i32.const 0
@@ -3017,7 +3028,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__joinMembers1 (param $this i32) (param $__joinMembers1 i32)
   local.get $this
   local.get $__joinMembers1
-  i32.store offset=40
+  i32.store offset=44
   local.get $this
   local.get $__joinMembers1
   i32.const 0
@@ -3026,7 +3037,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__cps_xs_0 (param $this i32) (param $__cps_xs_0 i32)
   local.get $this
   local.get $__cps_xs_0
-  i32.store offset=44
+  i32.store offset=48
   local.get $this
   local.get $__cps_xs_0
   i32.const 0
@@ -3035,7 +3046,7 @@
  (func $async-join-arg-await/__Cps_argAwait#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=48
+  i32.store offset=52
  )
  (func $~lib/array/Array<async-join-arg-await/__Cps_argAwait>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3130,6 +3141,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-join-arg-await/__Cps_makeArray#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<async-join-arg-await/__Cps_makeArray>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -3168,15 +3188,15 @@
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__joinMembers1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=40
+  i32.load offset=44
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__joinReqs1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3188,11 +3208,11 @@
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__joinVals1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__cps_xs_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=44
+  i32.load offset=48
  )
  (func $~lib/util/number/itoa_buffered<i32> (param $buffer i32) (param $value i32) (result i32)
   (local $sign i32)
@@ -3336,17 +3356,21 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-join-arg-await/__Cps_makeArray#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-join-arg-await/__Cps_argAwait#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=48
+  i32.load offset=52
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__joinStatus1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-join-arg-await/__Cps_argAwait#get:__joinReasons1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/array/Array<~lib/string/String>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3363,6 +3387,10 @@
  (func $async-join-arg-await/__Cps_argAwait#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-join-arg-await/__Cps_argAwait#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3460,6 +3488,28 @@
   i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-join-arg-await/__Cps_makeArray>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3503,7 +3553,7 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=36
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -3512,6 +3562,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=44
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=48
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3532,58 +3586,64 @@
    block $~lib/array/Array<async-join-arg-await/__Cps_argAwait>
     block $async-join-arg-await/__Cps_argAwait
      block $~lib/array/Array<async-join-arg-await/__Cps_makeArray>
-      block $async-join-arg-await/__Cps_makeArray
-       block $~lib/array/Array<~lib/string/String>
-        block $~lib/array/Array<i32>
-         block $~lib/promise/Promise<~lib/string/String>
-          block $~lib/promise/Promise<~lib/array/Array<~lib/promise/Promise<i32>>>
-           block $~lib/array/Array<~lib/promise/Promise<i32>>
-            block $~lib/promise/Promise<i32>
-             block $~lib/arraybuffer/ArrayBufferView
-              block $~lib/string/String
-               block $~lib/arraybuffer/ArrayBuffer
-                block $~lib/object/Object
-                 local.get $0
-                 i32.const 8
-                 i32.sub
-                 i32.load
-                 br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/array/Array<~lib/promise/Promise<i32>> $~lib/promise/Promise<~lib/array/Array<~lib/promise/Promise<i32>>> $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $async-join-arg-await/__Cps_makeArray $~lib/array/Array<async-join-arg-await/__Cps_makeArray> $async-join-arg-await/__Cps_argAwait $~lib/array/Array<async-join-arg-await/__Cps_argAwait> $invalid
+      block $~lib/error/Error
+       block $async-join-arg-await/__Cps_makeArray
+        block $~lib/array/Array<~lib/string/String>
+         block $~lib/array/Array<i32>
+          block $~lib/promise/Promise<~lib/string/String>
+           block $~lib/promise/Promise<~lib/array/Array<~lib/promise/Promise<i32>>>
+            block $~lib/array/Array<~lib/promise/Promise<i32>>
+             block $~lib/promise/Promise<i32>
+              block $~lib/arraybuffer/ArrayBufferView
+               block $~lib/string/String
+                block $~lib/arraybuffer/ArrayBuffer
+                 block $~lib/object/Object
+                  local.get $0
+                  i32.const 8
+                  i32.sub
+                  i32.load
+                  br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/array/Array<~lib/promise/Promise<i32>> $~lib/promise/Promise<~lib/array/Array<~lib/promise/Promise<i32>>> $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $async-join-arg-await/__Cps_makeArray $~lib/error/Error $~lib/array/Array<async-join-arg-await/__Cps_makeArray> $async-join-arg-await/__Cps_argAwait $~lib/array/Array<async-join-arg-await/__Cps_argAwait> $invalid
+                 end
+                 return
                 end
                 return
                end
                return
               end
+              local.get $0
+              local.get $1
+              call $~lib/arraybuffer/ArrayBufferView~visit
               return
              end
-             local.get $0
-             local.get $1
-             call $~lib/arraybuffer/ArrayBufferView~visit
              return
             end
+            local.get $0
+            local.get $1
+            call $~lib/array/Array<~lib/promise/Promise<i32>>~visit
             return
            end
-           local.get $0
-           local.get $1
-           call $~lib/array/Array<~lib/promise/Promise<i32>>~visit
            return
           end
           return
          end
+         local.get $0
+         local.get $1
+         call $~lib/array/Array<i32>~visit
          return
         end
         local.get $0
         local.get $1
-        call $~lib/array/Array<i32>~visit
+        call $~lib/array/Array<~lib/string/String>~visit
         return
        end
        local.get $0
        local.get $1
-       call $~lib/array/Array<~lib/string/String>~visit
+       call $async-join-arg-await/__Cps_makeArray~visit
        return
       end
       local.get $0
       local.get $1
-      call $async-join-arg-await/__Cps_makeArray~visit
+      call $~lib/error/Error~visit
       return
      end
      local.get $0
@@ -3611,8 +3671,8 @@
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 35504
-   i32.const 35552
+   i32.const 35520
+   i32.const 35568
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -3641,7 +3701,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3779,7 +3839,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4461,8 +4521,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 52
-   i32.const 12
+   i32.const 56
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4501,6 +4561,14 @@
   local.get $1
   i32.const 2336
   call $async-join-arg-await/__Cps_argAwait#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-join-arg-await/__Cps_argAwait#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4839,7 +4907,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 16
    i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -4886,6 +4954,14 @@
   local.get $1
   i32.const 2336
   call $async-join-arg-await/__Cps_makeArray#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-join-arg-await/__Cps_makeArray#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5215,7 +5291,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6197,7 +6273,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 14
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7175,6 +7251,31 @@
   local.get $1
   return
  )
+ (func $async-join-arg-await/__async_async_join_arg_await_makeArray_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-arg-await/__Cps_makeArray#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-arg-await/__async_async_join_arg_await_makeArray_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8022,6 +8123,31 @@
   local.get $1
   return
  )
+ (func $async-join-arg-await/__async_async_join_arg_await_argAwait_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-arg-await/__Cps_argAwait#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-arg-await/__async_async_join_arg_await_argAwait_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8714,6 +8840,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-arg-await/__async_async_join_arg_await_makeArray_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-join-arg-await/__async_async_join_arg_await_makeArray_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8946,6 +9091,25 @@
   i32.store
   local.get $0
   call $async-join-arg-await/__async_async_join_arg_await_argAwait_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-join-arg-await/__async_async_join_arg_await_argAwait_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-arg-await/__async_async_join_arg_await_argAwait_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

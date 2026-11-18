@@ -31,9 +31,9 @@
  (global $async-await-try/__async_roots_f (mut i32) (i32.const 0))
  (global $async-await-try/__async_roots_g (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 1088))
- (global $~lib/memory/__data_end i32 (i32.const 1132))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33900))
- (global $~lib/memory/__heap_base i32 (i32.const 33900))
+ (global $~lib/memory/__data_end i32 (i32.const 1136))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33904))
+ (global $~lib/memory/__heap_base i32 (i32.const 33904))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -57,7 +57,7 @@
  (data $19 (i32.const 876) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $20 (i32.const 908) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $21 (i32.const 956) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $22 (i32.const 1088) "\n\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $22 (i32.const 1088) "\0b\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "f" (func $async-await-try/f))
@@ -73,12 +73,14 @@
  (export "__async_async_await_try_f_reject_0" (func $export:async-await-try/__async_async_await_try_f_reject_0))
  (export "__async_async_await_try_f_result" (func $export:async-await-try/__async_async_await_try_f_result))
  (export "__async_async_await_try_f_error" (func $export:async-await-try/__async_async_await_try_f_error))
+ (export "__async_async_await_try_f_errorValue" (func $export:async-await-try/__async_async_await_try_f_errorValue))
  (export "__async_async_await_try_f_status" (func $export:async-await-try/__async_async_await_try_f_status))
  (export "__async_async_await_try_g_reclaim" (func $export:async-await-try/__async_async_await_try_g_reclaim))
  (export "__async_async_await_try_g_resume_0" (func $export:async-await-try/__async_async_await_try_g_resume_0))
  (export "__async_async_await_try_g_reject_0" (func $export:async-await-try/__async_async_await_try_g_reject_0))
  (export "__async_async_await_try_g_result" (func $export:async-await-try/__async_async_await_try_g_result))
  (export "__async_async_await_try_g_error" (func $export:async-await-try/__async_async_await_try_g_error))
+ (export "__async_async_await_try_g_errorValue" (func $export:async-await-try/__async_async_await_try_g_errorValue))
  (export "__async_async_await_try_g_status" (func $export:async-await-try/__async_async_await_try_g_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2450,10 +2452,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-await-try/__Cps_f#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-await-try/__Cps_f#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2462,82 +2473,109 @@
  (func $async-await-try/__Cps_f#set:__cps_mode_0 (param $this i32) (param $__cps_mode_0 i32)
   local.get $this
   local.get $__cps_mode_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-await-try/__Cps_f#set:__cps___async_try_ret_0_1 (param $this i32) (param $__cps___async_try_ret_0_1 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_1
-  i32.store8 offset=20
+  i32.store8 offset=24
  )
  (func $async-await-try/__Cps_f#set:__cps___async_try_brk_1_2 (param $this i32) (param $__cps___async_try_brk_1_2 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_2
-  i32.store8 offset=21
+  i32.store8 offset=25
  )
  (func $async-await-try/__Cps_f#set:__cps___async_try_cnt_2_3 (param $this i32) (param $__cps___async_try_cnt_2_3 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_3
-  i32.store8 offset=22
+  i32.store8 offset=26
  )
  (func $async-await-try/__Cps_f#set:__cps___async_try_pendErr_3_4 (param $this i32) (param $__cps___async_try_pendErr_3_4 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_f#set:__cps___async_try_pendFail_4_5 (param $this i32) (param $__cps___async_try_pendFail_4_5 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_pendVal_4_5 (param $this i32) (param $__cps___async_try_pendVal_4_5 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_5
-  i32.store8 offset=28
- )
- (func $async-await-try/__Cps_f#set:__cps___async_try_retVal_5_6 (param $this i32) (param $__cps___async_try_retVal_5_6 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_6
+  local.get $__cps___async_try_pendVal_4_5
   i32.store offset=32
   local.get $this
-  local.get $__cps___async_try_retVal_5_6
+  local.get $__cps___async_try_pendVal_4_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7 (param $this i32) (param $__cps___async_try_flag_7_7 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_pendFail_5_6 (param $this i32) (param $__cps___async_try_pendFail_5_6 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_7
+  local.get $__cps___async_try_pendFail_5_6
   i32.store8 offset=36
  )
- (func $async-await-try/__Cps_f#set:__cps___async_try_err_6_8 (param $this i32) (param $__cps___async_try_err_6_8 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_retVal_6_7 (param $this i32) (param $__cps___async_try_retVal_6_7 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_8
+  local.get $__cps___async_try_retVal_6_7
   i32.store offset=40
   local.get $this
-  local.get $__cps___async_try_err_6_8
+  local.get $__cps___async_try_retVal_6_7
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_f#set:__cps_c_9 (param $this i32) (param $__cps_c_9 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8 (param $this i32) (param $__cps___async_try_flag_9_8 i32)
   local.get $this
-  local.get $__cps_c_9
-  i32.store offset=44
-  local.get $this
-  local.get $__cps_c_9
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  local.get $__cps___async_try_flag_9_8
+  i32.store8 offset=44
  )
- (func $async-await-try/__Cps_f#set:__cps_e_10 (param $this i32) (param $__cps_e_10 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_err_7_9 (param $this i32) (param $__cps___async_try_err_7_9 i32)
   local.get $this
-  local.get $__cps_e_10
+  local.get $__cps___async_try_err_7_9
   i32.store offset=48
   local.get $this
-  local.get $__cps_e_10
+  local.get $__cps___async_try_err_7_9
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_f#set:__cps___async_try_fin_8_11 (param $this i32) (param $__cps___async_try_fin_8_11 i32)
+ (func $async-await-try/__Cps_f#set:__cps___async_try_errVal_8_10 (param $this i32) (param $__cps___async_try_errVal_8_10 i32)
   local.get $this
-  local.get $__cps___async_try_fin_8_11
-  i32.store8 offset=52
+  local.get $__cps___async_try_errVal_8_10
+  i32.store offset=52
+  local.get $this
+  local.get $__cps___async_try_errVal_8_10
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_f#set:__cps_c_11 (param $this i32) (param $__cps_c_11 i32)
+  local.get $this
+  local.get $__cps_c_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps_c_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_f#set:__cps___async_try_throwVal_11_12 (param $this i32) (param $__cps___async_try_throwVal_11_12 i32)
+  local.get $this
+  local.get $__cps___async_try_throwVal_11_12
+  i32.store offset=60
+  local.get $this
+  local.get $__cps___async_try_throwVal_11_12
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_f#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+  local.get $this
+  local.get $__cps_e_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps_e_13
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_f#set:__cps___async_try_fin_10_14 (param $this i32) (param $__cps___async_try_fin_10_14 i32)
+  local.get $this
+  local.get $__cps___async_try_fin_10_14
+  i32.store8 offset=68
  )
  (func $~lib/array/Array<async-await-try/__Cps_f>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2609,37 +2647,41 @@
   local.get $this
   i32.load
  )
- (func $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=36
+  i32.load8_u offset=44
  )
  (func $async-await-try/__Cps_f#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-await-try/__Cps_f#get:__cps___async_try_ret_0_1 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=20
+  i32.load8_u offset=24
  )
  (func $async-await-try/__Cps_f#get:__cps___async_try_brk_1_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=21
+  i32.load8_u offset=25
  )
  (func $async-await-try/__Cps_f#get:__cps___async_try_cnt_2_3 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=22
+  i32.load8_u offset=26
  )
- (func $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=28
+  i32.load8_u offset=36
  )
  (func $async-await-try/__Cps_f#get:__cps_mode_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
- (func $async-await-try/__Cps_f#get:__cps_c_9 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_f#get:__cps___async_try_throwVal_11_12 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=44
+  i32.load offset=60
+ )
+ (func $async-await-try/__Cps_f#get:__cps_c_11 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=56
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2654,13 +2696,17 @@
   i32.shr_u
   return
  )
- (func $async-await-try/__Cps_f#get:__cps___async_try_err_6_8 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=40
- )
- (func $async-await-try/__Cps_f#get:__cps_e_10 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_f#get:__cps___async_try_err_7_9 (param $this i32) (result i32)
   local.get $this
   i32.load offset=48
+ )
+ (func $async-await-try/__Cps_f#get:__cps_e_13 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=64
+ )
+ (func $async-await-try/__Cps_f#get:__cps___async_try_errVal_8_10 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=52
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2678,13 +2724,17 @@
   local.get $buffer
   return
  )
- (func $async-await-try/__Cps_f#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=24
- )
- (func $async-await-try/__Cps_f#get:__cps___async_try_retVal_5_6 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_f#get:__cps___async_try_pendVal_4_5 (param $this i32) (result i32)
   local.get $this
   i32.load offset=32
+ )
+ (func $async-await-try/__Cps_f#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-await-try/__Cps_f#get:__cps___async_try_retVal_6_7 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=40
  )
  (func $async-await-try/__Cps_g#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2709,10 +2759,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-await-try/__Cps_g#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-await-try/__Cps_g#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2721,82 +2780,109 @@
  (func $async-await-try/__Cps_g#set:__cps_mode_0 (param $this i32) (param $__cps_mode_0 i32)
   local.get $this
   local.get $__cps_mode_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-await-try/__Cps_g#set:__cps___async_try_ret_0_1 (param $this i32) (param $__cps___async_try_ret_0_1 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_1
-  i32.store8 offset=20
+  i32.store8 offset=24
  )
  (func $async-await-try/__Cps_g#set:__cps___async_try_brk_1_2 (param $this i32) (param $__cps___async_try_brk_1_2 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_2
-  i32.store8 offset=21
+  i32.store8 offset=25
  )
  (func $async-await-try/__Cps_g#set:__cps___async_try_cnt_2_3 (param $this i32) (param $__cps___async_try_cnt_2_3 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_3
-  i32.store8 offset=22
+  i32.store8 offset=26
  )
  (func $async-await-try/__Cps_g#set:__cps___async_try_pendErr_3_4 (param $this i32) (param $__cps___async_try_pendErr_3_4 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_g#set:__cps___async_try_pendFail_4_5 (param $this i32) (param $__cps___async_try_pendFail_4_5 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_pendVal_4_5 (param $this i32) (param $__cps___async_try_pendVal_4_5 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_5
-  i32.store8 offset=28
- )
- (func $async-await-try/__Cps_g#set:__cps___async_try_retVal_5_6 (param $this i32) (param $__cps___async_try_retVal_5_6 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_6
+  local.get $__cps___async_try_pendVal_4_5
   i32.store offset=32
   local.get $this
-  local.get $__cps___async_try_retVal_5_6
+  local.get $__cps___async_try_pendVal_4_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7 (param $this i32) (param $__cps___async_try_flag_7_7 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_pendFail_5_6 (param $this i32) (param $__cps___async_try_pendFail_5_6 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_7
+  local.get $__cps___async_try_pendFail_5_6
   i32.store8 offset=36
  )
- (func $async-await-try/__Cps_g#set:__cps___async_try_err_6_8 (param $this i32) (param $__cps___async_try_err_6_8 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_retVal_6_7 (param $this i32) (param $__cps___async_try_retVal_6_7 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_8
+  local.get $__cps___async_try_retVal_6_7
   i32.store offset=40
   local.get $this
-  local.get $__cps___async_try_err_6_8
+  local.get $__cps___async_try_retVal_6_7
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_g#set:__cps_c_9 (param $this i32) (param $__cps_c_9 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8 (param $this i32) (param $__cps___async_try_flag_9_8 i32)
   local.get $this
-  local.get $__cps_c_9
-  i32.store offset=44
-  local.get $this
-  local.get $__cps_c_9
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  local.get $__cps___async_try_flag_9_8
+  i32.store8 offset=44
  )
- (func $async-await-try/__Cps_g#set:__cps_e_10 (param $this i32) (param $__cps_e_10 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_err_7_9 (param $this i32) (param $__cps___async_try_err_7_9 i32)
   local.get $this
-  local.get $__cps_e_10
+  local.get $__cps___async_try_err_7_9
   i32.store offset=48
   local.get $this
-  local.get $__cps_e_10
+  local.get $__cps___async_try_err_7_9
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-await-try/__Cps_g#set:__cps___async_try_fin_8_11 (param $this i32) (param $__cps___async_try_fin_8_11 i32)
+ (func $async-await-try/__Cps_g#set:__cps___async_try_errVal_8_10 (param $this i32) (param $__cps___async_try_errVal_8_10 i32)
   local.get $this
-  local.get $__cps___async_try_fin_8_11
-  i32.store8 offset=52
+  local.get $__cps___async_try_errVal_8_10
+  i32.store offset=52
+  local.get $this
+  local.get $__cps___async_try_errVal_8_10
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_g#set:__cps___async_try_throwVal_11_11 (param $this i32) (param $__cps___async_try_throwVal_11_11 i32)
+  local.get $this
+  local.get $__cps___async_try_throwVal_11_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps___async_try_throwVal_11_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_g#set:__cps_c_12 (param $this i32) (param $__cps_c_12 i32)
+  local.get $this
+  local.get $__cps_c_12
+  i32.store offset=60
+  local.get $this
+  local.get $__cps_c_12
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_g#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+  local.get $this
+  local.get $__cps_e_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps_e_13
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-await-try/__Cps_g#set:__cps___async_try_fin_10_14 (param $this i32) (param $__cps___async_try_fin_10_14 i32)
+  local.get $this
+  local.get $__cps___async_try_fin_10_14
+  i32.store8 offset=68
  )
  (func $~lib/array/Array<async-await-try/__Cps_g>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2810,53 +2896,65 @@
   local.get $this
   i32.load
  )
- (func $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=36
+  i32.load8_u offset=44
  )
  (func $async-await-try/__Cps_g#get:__cps_mode_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-await-try/__Cps_g#get:__cps___async_try_ret_0_1 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=20
+  i32.load8_u offset=24
  )
  (func $async-await-try/__Cps_g#get:__cps___async_try_brk_1_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=21
+  i32.load8_u offset=25
  )
  (func $async-await-try/__Cps_g#get:__cps___async_try_cnt_2_3 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=22
+  i32.load8_u offset=26
  )
- (func $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=28
+  i32.load8_u offset=36
+ )
+ (func $async-await-try/__Cps_g#get:__cps___async_try_throwVal_11_11 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=56
  )
  (func $async-await-try/__Cps_g#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
- (func $async-await-try/__Cps_g#get:__cps_c_9 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps_c_12 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=44
+  i32.load offset=60
  )
- (func $async-await-try/__Cps_g#get:__cps___async_try_err_6_8 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=40
- )
- (func $async-await-try/__Cps_g#get:__cps_e_10 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps___async_try_err_7_9 (param $this i32) (result i32)
   local.get $this
   i32.load offset=48
  )
- (func $async-await-try/__Cps_g#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps_e_13 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=64
  )
- (func $async-await-try/__Cps_g#get:__cps___async_try_retVal_5_6 (param $this i32) (result i32)
+ (func $async-await-try/__Cps_g#get:__cps___async_try_errVal_8_10 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=52
+ )
+ (func $async-await-try/__Cps_g#get:__cps___async_try_pendVal_4_5 (param $this i32) (result i32)
   local.get $this
   i32.load offset=32
+ )
+ (func $async-await-try/__Cps_g#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-await-try/__Cps_g#get:__cps___async_try_retVal_6_7 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=40
  )
  (func $async-await-try/chunkString (param $i i32) (result i32)
   i32.const 800
@@ -2910,6 +3008,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-await-try/__Cps_f#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-await-try/__Cps_g#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -2917,6 +3019,10 @@
  (func $async-await-try/__Cps_g#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-await-try/__Cps_g#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -2959,6 +3065,24 @@
  )
  (func $~lib/object/Object~visit (param $0 i32) (param $1 i32)
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-await-try/__Cps_f~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -2977,7 +3101,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -2989,11 +3117,23 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=48
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=48
+  i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=60
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3027,7 +3167,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -3039,11 +3183,23 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=48
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=48
+  i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=60
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3078,28 +3234,34 @@
      block $async-await-try/__Cps_g
       block $~lib/array/Array<async-await-try/__Cps_f>
        block $async-await-try/__Cps_f
-        block $~lib/promise/Promise<~lib/string/String>
-         block $~lib/arraybuffer/ArrayBufferView
-          block $~lib/string/String
-           block $~lib/arraybuffer/ArrayBuffer
-            block $~lib/object/Object
-             local.get $0
-             i32.const 8
-             i32.sub
-             i32.load
-             br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-await-try/__Cps_f $~lib/array/Array<async-await-try/__Cps_f> $async-await-try/__Cps_g $~lib/array/Array<async-await-try/__Cps_g> $~lib/array/Array<i32> $invalid
+        block $~lib/error/Error
+         block $~lib/promise/Promise<~lib/string/String>
+          block $~lib/arraybuffer/ArrayBufferView
+           block $~lib/string/String
+            block $~lib/arraybuffer/ArrayBuffer
+             block $~lib/object/Object
+              local.get $0
+              i32.const 8
+              i32.sub
+              i32.load
+              br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/error/Error $async-await-try/__Cps_f $~lib/array/Array<async-await-try/__Cps_f> $async-await-try/__Cps_g $~lib/array/Array<async-await-try/__Cps_g> $~lib/array/Array<i32> $invalid
+             end
+             return
             end
             return
            end
            return
           end
+          local.get $0
+          local.get $1
+          call $~lib/arraybuffer/ArrayBufferView~visit
           return
          end
-         local.get $0
-         local.get $1
-         call $~lib/arraybuffer/ArrayBufferView~visit
          return
         end
+        local.get $0
+        local.get $1
+        call $~lib/error/Error~visit
         return
        end
        local.get $0
@@ -3137,8 +3299,8 @@
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 33920
-   i32.const 33968
+   i32.const 33936
+   i32.const 33984
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
@@ -3167,7 +3329,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3305,7 +3467,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3435,8 +3597,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 53
-   i32.const 5
+   i32.const 69
+   i32.const 6
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3475,6 +3637,14 @@
   local.get $1
   i32.const 528
   call $async-await-try/__Cps_f#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_f#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3530,15 +3700,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_4_5
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_f#set:__cps___async_try_retVal_5_6
+  call $async-await-try/__Cps_f#set:__cps___async_try_pendVal_4_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3546,7 +3708,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7
+  call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_5_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3554,23 +3716,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-await-try/__Cps_f#set:__cps___async_try_err_6_8
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_f#set:__cps_c_9
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_f#set:__cps_e_10
+  call $async-await-try/__Cps_f#set:__cps___async_try_retVal_6_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3578,7 +3724,55 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_f#set:__cps___async_try_fin_8_11
+  call $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_f#set:__cps___async_try_err_7_9
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_f#set:__cps___async_try_errVal_8_10
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_f#set:__cps_c_11
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_f#set:__cps___async_try_throwVal_11_12
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_f#set:__cps_e_13
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_f#set:__cps___async_try_fin_10_14
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4061,7 +4255,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4342,7 +4536,7 @@
                            i32.store
                            local.get $2
                            i32.const 0
-                           call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_4_5
+                           call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_5_6
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -4350,7 +4544,7 @@
                            i32.store
                            local.get $2
                            i32.const 0
-                           call $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7
+                           call $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -4358,7 +4552,7 @@
                            i32.store
                            local.get $2
                            i32.const 528
-                           call $async-await-try/__Cps_f#set:__cps___async_try_err_6_8
+                           call $async-await-try/__Cps_f#set:__cps___async_try_err_7_9
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -4375,7 +4569,7 @@
                           local.get $2
                           i32.store
                           local.get $2
-                          call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+                          call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
                           if
                            local.get $this
                            local.set $2
@@ -4447,14 +4641,14 @@
                        local.get $2
                        i32.store offset=4
                        local.get $2
-                       call $async-await-try/__Cps_f#set:__cps_c_9
+                       call $async-await-try/__Cps_f#set:__cps_c_11
                        local.get $this
                        local.set $2
                        global.get $~lib/memory/__stack_pointer
                        local.get $2
                        i32.store
                        local.get $2
-                       call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+                       call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
                        if (result i32)
                         i32.const 1
                        else
@@ -4497,7 +4691,7 @@
                         local.get $2
                         i32.store
                         local.get $2
-                        call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+                        call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
                        end
                        if
                         local.get $this
@@ -4566,7 +4760,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+                    call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
                     if (result i32)
                      i32.const 1
                     else
@@ -4609,7 +4803,7 @@
                      local.get $2
                      i32.store
                      local.get $2
-                     call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+                     call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
                     end
                     if
                      local.get $this
@@ -4632,6 +4826,14 @@
                     end
                     br $break|1
                    end
+                   local.get $this
+                   local.set $2
+                   global.get $~lib/memory/__stack_pointer
+                   local.get $2
+                   i32.store
+                   local.get $2
+                   i32.const 560
+                   call $async-await-try/__Cps_f#set:__cps___async_try_throwVal_11_12
                    local.get $this
                    local.set $2
                    global.get $~lib/memory/__stack_pointer
@@ -4662,23 +4864,63 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 560
-                   call $async-await-try/__Cps_f#set:__cps___async_try_err_6_8
+                   call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
+                   i32.eqz
+                   if
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store offset=8
+                    local.get $2
+                    call $async-await-try/__Cps_f#get:__cps___async_try_throwVal_11_12
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store offset=4
+                    local.get $2
+                    call $async-await-try/__Cps_f#set:__cps___async_try_err_7_9
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store offset=8
+                    local.get $2
+                    call $async-await-try/__Cps_f#get:__cps___async_try_throwVal_11_12
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store offset=4
+                    local.get $2
+                    call $async-await-try/__Cps_f#set:__cps___async_try_errVal_8_10
+                    local.get $this
+                    local.set $2
+                    global.get $~lib/memory/__stack_pointer
+                    local.get $2
+                    i32.store
+                    local.get $2
+                    i32.const 1
+                    call $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8
+                   end
                    local.get $this
                    local.set $2
                    global.get $~lib/memory/__stack_pointer
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 1
-                   call $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7
-                   local.get $this
-                   local.set $2
-                   global.get $~lib/memory/__stack_pointer
-                   local.get $2
-                   i32.store
-                   local.get $2
-                   call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+                   call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
                    if (result i32)
                     i32.const 1
                    else
@@ -4721,7 +4963,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+                    call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
                    end
                    if
                     local.get $this
@@ -4791,7 +5033,7 @@
                  local.get $2
                  i32.store offset=12
                  local.get $2
-                 call $async-await-try/__Cps_f#get:__cps_c_9
+                 call $async-await-try/__Cps_f#get:__cps_c_11
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
                  local.get $2
@@ -4803,7 +5045,7 @@
                  local.get $2
                  i32.store offset=4
                  local.get $2
-                 call $async-await-try/__Cps_f#set:__cps___async_try_retVal_5_6
+                 call $async-await-try/__Cps_f#set:__cps___async_try_retVal_6_7
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
@@ -4818,7 +5060,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+                 call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
                  if (result i32)
                   i32.const 1
                  else
@@ -4861,7 +5103,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+                  call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
                  end
                  if
                   local.get $this
@@ -4921,7 +5163,7 @@
              i32.store
              local.get $2
              i32.const 0
-             call $async-await-try/__Cps_f#set:__cps___async_try_fin_8_11
+             call $async-await-try/__Cps_f#set:__cps___async_try_fin_10_14
              i32.const 640
              call $async-await-try/log
              local.get $this
@@ -4930,7 +5172,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-await-try/__Cps_f#get:__cps___async_try_flag_7_7
+             call $async-await-try/__Cps_f#get:__cps___async_try_flag_9_8
              if
               local.get $this
               local.set $2
@@ -4959,7 +5201,7 @@
             i32.store
             local.get $2
             i32.const 0
-            call $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7
+            call $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8
             local.get $this
             local.set $2
             global.get $~lib/memory/__stack_pointer
@@ -4972,13 +5214,13 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-await-try/__Cps_f#get:__cps___async_try_err_6_8
+            call $async-await-try/__Cps_f#get:__cps___async_try_err_7_9
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
             i32.store offset=4
             local.get $2
-            call $async-await-try/__Cps_f#set:__cps_e_10
+            call $async-await-try/__Cps_f#set:__cps_e_13
             i32.const 688
             local.get $this
             local.set $2
@@ -4986,7 +5228,7 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-await-try/__Cps_f#get:__cps_e_10
+            call $async-await-try/__Cps_f#get:__cps_e_13
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
@@ -5037,7 +5279,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+             call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
             end
             i32.eqz
             if
@@ -5092,7 +5334,7 @@
            i32.store
            local.get $2
            i32.const 720
-           call $async-await-try/__Cps_f#set:__cps___async_try_retVal_5_6
+           call $async-await-try/__Cps_f#set:__cps___async_try_retVal_6_7
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -5123,7 +5365,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-await-try/__Cps_f#get:__cps___async_try_err_6_8
+          call $async-await-try/__Cps_f#get:__cps___async_try_errVal_8_10
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-await-try/__Cps_f#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-await-try/__Cps_f#get:__cps___async_try_err_7_9
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -5176,7 +5437,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_4_5
+         call $async-await-try/__Cps_f#get:__cps___async_try_pendFail_5_6
          if
           local.get $this
           local.set $2
@@ -5205,7 +5466,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_4_5
+        call $async-await-try/__Cps_f#set:__cps___async_try_pendFail_5_6
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-await-try/__Cps_f#get:__cps___async_try_pendVal_4_5
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-try/__Cps_f#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -5313,7 +5593,7 @@
       local.get $2
       i32.store offset=8
       local.get $2
-      call $async-await-try/__Cps_f#get:__cps___async_try_retVal_5_6
+      call $async-await-try/__Cps_f#get:__cps___async_try_retVal_6_7
       local.set $2
       global.get $~lib/memory/__stack_pointer
       local.get $2
@@ -5459,8 +5739,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 53
-   i32.const 7
+   i32.const 69
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5499,6 +5779,14 @@
   local.get $1
   i32.const 528
   call $async-await-try/__Cps_g#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_g#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5554,15 +5842,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_4_5
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_g#set:__cps___async_try_retVal_5_6
+  call $async-await-try/__Cps_g#set:__cps___async_try_pendVal_4_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5570,7 +5850,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7
+  call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_5_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5578,23 +5858,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-await-try/__Cps_g#set:__cps___async_try_err_6_8
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_g#set:__cps_c_9
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-await-try/__Cps_g#set:__cps_e_10
+  call $async-await-try/__Cps_g#set:__cps___async_try_retVal_6_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5602,7 +5866,55 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-await-try/__Cps_g#set:__cps___async_try_fin_8_11
+  call $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_g#set:__cps___async_try_err_7_9
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_g#set:__cps___async_try_errVal_8_10
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_g#set:__cps___async_try_throwVal_11_11
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_g#set:__cps_c_12
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-await-try/__Cps_g#set:__cps_e_13
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-try/__Cps_g#set:__cps___async_try_fin_10_14
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5859,7 +6171,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6140,7 +6452,7 @@
                            i32.store
                            local.get $2
                            i32.const 0
-                           call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_4_5
+                           call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_5_6
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -6148,7 +6460,7 @@
                            i32.store
                            local.get $2
                            i32.const 0
-                           call $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7
+                           call $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -6156,7 +6468,7 @@
                            i32.store
                            local.get $2
                            i32.const 528
-                           call $async-await-try/__Cps_g#set:__cps___async_try_err_6_8
+                           call $async-await-try/__Cps_g#set:__cps___async_try_err_7_9
                            local.get $this
                            local.set $2
                            global.get $~lib/memory/__stack_pointer
@@ -6173,7 +6485,7 @@
                           local.get $2
                           i32.store
                           local.get $2
-                          call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+                          call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
                           if
                            local.get $this
                            local.set $2
@@ -6243,7 +6555,7 @@
                        local.get $2
                        i32.store
                        local.get $2
-                       call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+                       call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
                        if (result i32)
                         i32.const 1
                        else
@@ -6286,7 +6598,7 @@
                         local.get $2
                         i32.store
                         local.get $2
-                        call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+                        call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
                        end
                        if
                         local.get $this
@@ -6309,6 +6621,14 @@
                        end
                        br $break|1
                       end
+                      local.get $this
+                      local.set $2
+                      global.get $~lib/memory/__stack_pointer
+                      local.get $2
+                      i32.store
+                      local.get $2
+                      i32.const 752
+                      call $async-await-try/__Cps_g#set:__cps___async_try_throwVal_11_11
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
@@ -6339,23 +6659,63 @@
                       local.get $2
                       i32.store
                       local.get $2
-                      i32.const 752
-                      call $async-await-try/__Cps_g#set:__cps___async_try_err_6_8
+                      call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
+                      i32.eqz
+                      if
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store
+                       local.get $2
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store offset=8
+                       local.get $2
+                       call $async-await-try/__Cps_g#get:__cps___async_try_throwVal_11_11
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store offset=4
+                       local.get $2
+                       call $async-await-try/__Cps_g#set:__cps___async_try_err_7_9
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store
+                       local.get $2
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store offset=8
+                       local.get $2
+                       call $async-await-try/__Cps_g#get:__cps___async_try_throwVal_11_11
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store offset=4
+                       local.get $2
+                       call $async-await-try/__Cps_g#set:__cps___async_try_errVal_8_10
+                       local.get $this
+                       local.set $2
+                       global.get $~lib/memory/__stack_pointer
+                       local.get $2
+                       i32.store
+                       local.get $2
+                       i32.const 1
+                       call $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8
+                      end
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
                       local.get $2
                       i32.store
                       local.get $2
-                      i32.const 1
-                      call $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7
-                      local.get $this
-                      local.set $2
-                      global.get $~lib/memory/__stack_pointer
-                      local.get $2
-                      i32.store
-                      local.get $2
-                      call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+                      call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
                       if (result i32)
                        i32.const 1
                       else
@@ -6398,7 +6758,7 @@
                        local.get $2
                        i32.store
                        local.get $2
-                       call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+                       call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
                       end
                       if
                        local.get $this
@@ -6479,14 +6839,14 @@
                   local.get $2
                   i32.store offset=4
                   local.get $2
-                  call $async-await-try/__Cps_g#set:__cps_c_9
+                  call $async-await-try/__Cps_g#set:__cps_c_12
                   local.get $this
                   local.set $2
                   global.get $~lib/memory/__stack_pointer
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+                  call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
                   if (result i32)
                    i32.const 1
                   else
@@ -6529,7 +6889,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+                   call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
                   end
                   if
                    local.get $this
@@ -6589,7 +6949,7 @@
                  local.get $2
                  i32.store offset=12
                  local.get $2
-                 call $async-await-try/__Cps_g#get:__cps_c_9
+                 call $async-await-try/__Cps_g#get:__cps_c_12
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
                  local.get $2
@@ -6601,7 +6961,7 @@
                  local.get $2
                  i32.store offset=4
                  local.get $2
-                 call $async-await-try/__Cps_g#set:__cps___async_try_retVal_5_6
+                 call $async-await-try/__Cps_g#set:__cps___async_try_retVal_6_7
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
@@ -6616,7 +6976,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+                 call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
                  if (result i32)
                   i32.const 1
                  else
@@ -6659,7 +7019,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+                  call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
                  end
                  if
                   local.get $this
@@ -6719,7 +7079,7 @@
              i32.store
              local.get $2
              i32.const 0
-             call $async-await-try/__Cps_g#set:__cps___async_try_fin_8_11
+             call $async-await-try/__Cps_g#set:__cps___async_try_fin_10_14
              i32.const 640
              call $async-await-try/log
              local.get $this
@@ -6728,7 +7088,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-await-try/__Cps_g#get:__cps___async_try_flag_7_7
+             call $async-await-try/__Cps_g#get:__cps___async_try_flag_9_8
              if
               local.get $this
               local.set $2
@@ -6757,7 +7117,7 @@
             i32.store
             local.get $2
             i32.const 0
-            call $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7
+            call $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8
             local.get $this
             local.set $2
             global.get $~lib/memory/__stack_pointer
@@ -6770,13 +7130,13 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-await-try/__Cps_g#get:__cps___async_try_err_6_8
+            call $async-await-try/__Cps_g#get:__cps___async_try_err_7_9
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
             i32.store offset=4
             local.get $2
-            call $async-await-try/__Cps_g#set:__cps_e_10
+            call $async-await-try/__Cps_g#set:__cps_e_13
             i32.const 688
             local.get $this
             local.set $2
@@ -6784,7 +7144,7 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-await-try/__Cps_g#get:__cps_e_10
+            call $async-await-try/__Cps_g#get:__cps_e_13
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
@@ -6835,7 +7195,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+             call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
             end
             i32.eqz
             if
@@ -6890,7 +7250,7 @@
            i32.store
            local.get $2
            i32.const 720
-           call $async-await-try/__Cps_g#set:__cps___async_try_retVal_5_6
+           call $async-await-try/__Cps_g#set:__cps___async_try_retVal_6_7
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -6921,7 +7281,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-await-try/__Cps_g#get:__cps___async_try_err_6_8
+          call $async-await-try/__Cps_g#get:__cps___async_try_errVal_8_10
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-await-try/__Cps_g#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-await-try/__Cps_g#get:__cps___async_try_err_7_9
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -6974,7 +7353,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_4_5
+         call $async-await-try/__Cps_g#get:__cps___async_try_pendFail_5_6
          if
           local.get $this
           local.set $2
@@ -7003,7 +7382,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_4_5
+        call $async-await-try/__Cps_g#set:__cps___async_try_pendFail_5_6
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-await-try/__Cps_g#get:__cps___async_try_pendVal_4_5
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-await-try/__Cps_g#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -7111,7 +7509,7 @@
       local.get $2
       i32.store offset=8
       local.get $2
-      call $async-await-try/__Cps_g#get:__cps___async_try_retVal_5_6
+      call $async-await-try/__Cps_g#get:__cps___async_try_retVal_6_7
       local.set $2
       global.get $~lib/memory/__stack_pointer
       local.get $2
@@ -7617,7 +8015,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-await-try/__Cps_f#set:__cps___async_try_flag_7_7
+  call $async-await-try/__Cps_f#set:__cps___async_try_flag_9_8
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -7630,7 +8028,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-await-try/__Cps_f#set:__cps___async_try_err_6_8
+  call $async-await-try/__Cps_f#set:__cps___async_try_err_7_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -7688,6 +8086,31 @@
   i32.store
   local.get $1
   call $async-await-try/__Cps_f#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-try/__async_async_await_try_f_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-try/__Cps_f#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -7993,7 +8416,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-await-try/__Cps_g#set:__cps___async_try_flag_7_7
+  call $async-await-try/__Cps_g#set:__cps___async_try_flag_9_8
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -8006,7 +8429,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-await-try/__Cps_g#set:__cps___async_try_err_6_8
+  call $async-await-try/__Cps_g#set:__cps___async_try_err_7_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -8064,6 +8487,31 @@
   i32.store
   local.get $1
   call $async-await-try/__Cps_g#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-try/__async_async_await_try_g_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-try/__Cps_g#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -8488,6 +8936,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-await-try/__async_async_await_try_f_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-try/__async_async_await_try_f_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-await-try/__async_async_await_try_f_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8603,6 +9070,25 @@
   i32.store
   local.get $0
   call $async-await-try/__async_async_await_try_g_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-try/__async_async_await_try_g_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-try/__async_async_await_try_g_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

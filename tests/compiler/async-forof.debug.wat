@@ -32,9 +32,9 @@
  (global $async-forof/__async_roots_g (mut i32) (i32.const 0))
  (global $async-forof/__async_roots_h (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 1056))
- (global $~lib/memory/__data_end i32 (i32.const 1112))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33880))
- (global $~lib/memory/__heap_base i32 (i32.const 33880))
+ (global $~lib/memory/__data_end i32 (i32.const 1116))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33884))
+ (global $~lib/memory/__heap_base i32 (i32.const 33884))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -58,7 +58,7 @@
  (data $19 (i32.const 844) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $20 (i32.const 876) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $21 (i32.const 924) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $22 (i32.const 1056) "\r\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $22 (i32.const 1056) "\0e\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "f" (func $async-forof/f))
@@ -76,18 +76,21 @@
  (export "__async_async_forof_f_reject_0" (func $export:async-forof/__async_async_forof_f_reject_0))
  (export "__async_async_forof_f_result" (func $export:async-forof/__async_async_forof_f_result))
  (export "__async_async_forof_f_error" (func $export:async-forof/__async_async_forof_f_error))
+ (export "__async_async_forof_f_errorValue" (func $export:async-forof/__async_async_forof_f_errorValue))
  (export "__async_async_forof_f_status" (func $export:async-forof/__async_async_forof_f_status))
  (export "__async_async_forof_g_reclaim" (func $export:async-forof/__async_async_forof_g_reclaim))
  (export "__async_async_forof_g_resume_0" (func $export:async-forof/__async_async_forof_g_resume_0))
  (export "__async_async_forof_g_reject_0" (func $export:async-forof/__async_async_forof_g_reject_0))
  (export "__async_async_forof_g_result" (func $export:async-forof/__async_async_forof_g_result))
  (export "__async_async_forof_g_error" (func $export:async-forof/__async_async_forof_g_error))
+ (export "__async_async_forof_g_errorValue" (func $export:async-forof/__async_async_forof_g_errorValue))
  (export "__async_async_forof_g_status" (func $export:async-forof/__async_async_forof_g_status))
  (export "__async_async_forof_h_reclaim" (func $export:async-forof/__async_async_forof_h_reclaim))
  (export "__async_async_forof_h_resume_0" (func $export:async-forof/__async_async_forof_h_resume_0))
  (export "__async_async_forof_h_reject_0" (func $export:async-forof/__async_async_forof_h_reject_0))
  (export "__async_async_forof_h_result" (func $export:async-forof/__async_async_forof_h_result))
  (export "__async_async_forof_h_error" (func $export:async-forof/__async_async_forof_h_error))
+ (export "__async_async_forof_h_errorValue" (func $export:async-forof/__async_async_forof_h_errorValue))
  (export "__async_async_forof_h_status" (func $export:async-forof/__async_async_forof_h_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2487,10 +2490,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-forof/__Cps_f#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-forof/__Cps_f#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2523,7 +2535,7 @@
  (func $async-forof/__Cps_f#set:__cps_xs_0 (param $this i32) (param $__cps_xs_0 i32)
   local.get $this
   local.get $__cps_xs_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_xs_0
   i32.const 0
@@ -2532,7 +2544,7 @@
  (func $async-forof/__Cps_f#set:__cps_out_1 (param $this i32) (param $__cps_out_1 i32)
   local.get $this
   local.get $__cps_out_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_out_1
   i32.const 0
@@ -2541,7 +2553,7 @@
  (func $async-forof/__Cps_f#set:__cps___async_of_2_2 (param $this i32) (param $__cps___async_of_2_2 i32)
   local.get $this
   local.get $__cps___async_of_2_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps___async_of_2_2
   i32.const 0
@@ -2550,17 +2562,17 @@
  (func $async-forof/__Cps_f#set:__cps___async_ofi_3_3 (param $this i32) (param $__cps___async_ofi_3_3 i32)
   local.get $this
   local.get $__cps___async_ofi_3_3
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $async-forof/__Cps_f#set:__cps_x_4 (param $this i32) (param $__cps_x_4 i32)
   local.get $this
   local.get $__cps_x_4
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $async-forof/__Cps_f#set:__cps_c_5 (param $this i32) (param $__cps_c_5 i32)
   local.get $this
   local.get $__cps_c_5
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__cps_c_5
   i32.const 0
@@ -2654,19 +2666,19 @@
  )
  (func $async-forof/__Cps_f#get:__cps_xs_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-forof/__Cps_f#get:__cps_out_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-forof/__Cps_f#get:__cps___async_ofi_3_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-forof/__Cps_f#get:__cps___async_of_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2678,15 +2690,15 @@
  )
  (func $async-forof/__Cps_f#get:__cps_x_4 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $async-forof/__Cps_f#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-forof/__Cps_f#get:__cps_c_5 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2720,15 +2732,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-forof/__Cps_g#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-forof/__Cps_g#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-forof/__Cps_g#set:__cps_xs_0 (param $this i32) (param $__cps_xs_0 i32)
   local.get $this
   local.get $__cps_xs_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_xs_0
   i32.const 0
@@ -2737,12 +2758,12 @@
  (func $async-forof/__Cps_g#set:__cps_s_1 (param $this i32) (param $__cps_s_1 i32)
   local.get $this
   local.get $__cps_s_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-forof/__Cps_g#set:__cps___async_of_2_2 (param $this i32) (param $__cps___async_of_2_2 i32)
   local.get $this
   local.get $__cps___async_of_2_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps___async_of_2_2
   i32.const 0
@@ -2751,17 +2772,17 @@
  (func $async-forof/__Cps_g#set:__cps___async_ofi_3_3 (param $this i32) (param $__cps___async_ofi_3_3 i32)
   local.get $this
   local.get $__cps___async_ofi_3_3
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $async-forof/__Cps_g#set:__cps_x_4 (param $this i32) (param $__cps_x_4 i32)
   local.get $this
   local.get $__cps_x_4
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $async-forof/__Cps_g#set:__cps_v_5 (param $this i32) (param $__cps_v_5 i32)
   local.get $this
   local.get $__cps_v_5
-  i32.store offset=36
+  i32.store offset=40
  )
  (func $~lib/array/Array<async-forof/__Cps_g>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2777,31 +2798,31 @@
  )
  (func $async-forof/__Cps_g#get:__cps_xs_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-forof/__Cps_g#get:__cps_s_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-forof/__Cps_g#get:__cps___async_ofi_3_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-forof/__Cps_g#get:__cps___async_of_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-forof/__Cps_g#get:__cps_x_4 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $async-forof/__Cps_g#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-forof/__Cps_g#get:__cps_v_5 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $async-forof/__Cps_h#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2826,10 +2847,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-forof/__Cps_h#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-forof/__Cps_h#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2838,98 +2868,116 @@
  (func $async-forof/__Cps_h#set:__cps___async_try_ret_0_0 (param $this i32) (param $__cps___async_try_ret_0_0 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_0
-  i32.store8 offset=16
+  i32.store8 offset=20
  )
  (func $async-forof/__Cps_h#set:__cps___async_try_brk_1_1 (param $this i32) (param $__cps___async_try_brk_1_1 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_1
-  i32.store8 offset=17
+  i32.store8 offset=21
  )
  (func $async-forof/__Cps_h#set:__cps___async_try_cnt_2_2 (param $this i32) (param $__cps___async_try_cnt_2_2 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_2
-  i32.store8 offset=18
+  i32.store8 offset=22
  )
  (func $async-forof/__Cps_h#set:__cps___async_try_pendErr_3_3 (param $this i32) (param $__cps___async_try_pendErr_3_3 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-forof/__Cps_h#set:__cps___async_try_pendFail_4_4 (param $this i32) (param $__cps___async_try_pendFail_4_4 i32)
+ (func $async-forof/__Cps_h#set:__cps___async_try_pendVal_4_4 (param $this i32) (param $__cps___async_try_pendVal_4_4 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_4
-  i32.store8 offset=24
- )
- (func $async-forof/__Cps_h#set:__cps_xs_5 (param $this i32) (param $__cps_xs_5 i32)
-  local.get $this
-  local.get $__cps_xs_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.store offset=28
   local.get $this
-  local.get $__cps_xs_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-forof/__Cps_h#set:__cps_out_6 (param $this i32) (param $__cps_out_6 i32)
+ (func $async-forof/__Cps_h#set:__cps___async_try_pendFail_5_5 (param $this i32) (param $__cps___async_try_pendFail_5_5 i32)
   local.get $this
-  local.get $__cps_out_6
-  i32.store offset=32
-  local.get $this
-  local.get $__cps_out_6
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  local.get $__cps___async_try_pendFail_5_5
+  i32.store8 offset=32
  )
- (func $async-forof/__Cps_h#set:__cps___async_of_7_7 (param $this i32) (param $__cps___async_of_7_7 i32)
+ (func $async-forof/__Cps_h#set:__cps_xs_6 (param $this i32) (param $__cps_xs_6 i32)
   local.get $this
-  local.get $__cps___async_of_7_7
+  local.get $__cps_xs_6
   i32.store offset=36
   local.get $this
-  local.get $__cps___async_of_7_7
+  local.get $__cps_xs_6
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-forof/__Cps_h#set:__cps___async_ofi_8_8 (param $this i32) (param $__cps___async_ofi_8_8 i32)
+ (func $async-forof/__Cps_h#set:__cps_out_7 (param $this i32) (param $__cps_out_7 i32)
   local.get $this
-  local.get $__cps___async_ofi_8_8
+  local.get $__cps_out_7
   i32.store offset=40
- )
- (func $async-forof/__Cps_h#set:__cps_x_9 (param $this i32) (param $__cps_x_9 i32)
   local.get $this
-  local.get $__cps_x_9
+  local.get $__cps_out_7
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-forof/__Cps_h#set:__cps___async_of_8_8 (param $this i32) (param $__cps___async_of_8_8 i32)
+  local.get $this
+  local.get $__cps___async_of_8_8
   i32.store offset=44
- )
- (func $async-forof/__Cps_h#set:__cps___async_try_flag_6_10 (param $this i32) (param $__cps___async_try_flag_6_10 i32)
   local.get $this
-  local.get $__cps___async_try_flag_6_10
-  i32.store8 offset=48
+  local.get $__cps___async_of_8_8
+  i32.const 0
+  call $~lib/rt/itcms/__link
  )
- (func $async-forof/__Cps_h#set:__cps___async_try_err_5_11 (param $this i32) (param $__cps___async_try_err_5_11 i32)
+ (func $async-forof/__Cps_h#set:__cps___async_ofi_9_9 (param $this i32) (param $__cps___async_ofi_9_9 i32)
   local.get $this
-  local.get $__cps___async_try_err_5_11
+  local.get $__cps___async_ofi_9_9
+  i32.store offset=48
+ )
+ (func $async-forof/__Cps_h#set:__cps_x_10 (param $this i32) (param $__cps_x_10 i32)
+  local.get $this
+  local.get $__cps_x_10
   i32.store offset=52
-  local.get $this
-  local.get $__cps___async_try_err_5_11
-  i32.const 0
-  call $~lib/rt/itcms/__link
  )
- (func $async-forof/__Cps_h#set:__cps_c_12 (param $this i32) (param $__cps_c_12 i32)
+ (func $async-forof/__Cps_h#set:__cps___async_try_flag_8_11 (param $this i32) (param $__cps___async_try_flag_8_11 i32)
   local.get $this
-  local.get $__cps_c_12
-  i32.store offset=56
-  local.get $this
-  local.get $__cps_c_12
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  local.get $__cps___async_try_flag_8_11
+  i32.store8 offset=56
  )
- (func $async-forof/__Cps_h#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+ (func $async-forof/__Cps_h#set:__cps___async_try_err_6_12 (param $this i32) (param $__cps___async_try_err_6_12 i32)
   local.get $this
-  local.get $__cps_e_13
+  local.get $__cps___async_try_err_6_12
   i32.store offset=60
   local.get $this
-  local.get $__cps_e_13
+  local.get $__cps___async_try_err_6_12
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-forof/__Cps_h#set:__cps___async_try_errVal_7_13 (param $this i32) (param $__cps___async_try_errVal_7_13 i32)
+  local.get $this
+  local.get $__cps___async_try_errVal_7_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps___async_try_errVal_7_13
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-forof/__Cps_h#set:__cps_c_14 (param $this i32) (param $__cps_c_14 i32)
+  local.get $this
+  local.get $__cps_c_14
+  i32.store offset=68
+  local.get $this
+  local.get $__cps_c_14
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-forof/__Cps_h#set:__cps_e_15 (param $this i32) (param $__cps_e_15 i32)
+  local.get $this
+  local.get $__cps_e_15
+  i32.store offset=72
+  local.get $this
+  local.get $__cps_e_15
   i32.const 0
   call $~lib/rt/itcms/__link
  )
@@ -2945,61 +2993,69 @@
   local.get $this
   i32.load
  )
- (func $async-forof/__Cps_h#get:__cps_xs_5 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=28
- )
- (func $async-forof/__Cps_h#get:__cps_out_6 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=32
- )
- (func $async-forof/__Cps_h#get:__cps___async_ofi_8_8 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=40
- )
- (func $async-forof/__Cps_h#get:__cps___async_of_7_7 (param $this i32) (result i32)
+ (func $async-forof/__Cps_h#get:__cps_xs_6 (param $this i32) (result i32)
   local.get $this
   i32.load offset=36
  )
- (func $async-forof/__Cps_h#get:__cps___async_try_flag_6_10 (param $this i32) (result i32)
+ (func $async-forof/__Cps_h#get:__cps_out_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=48
+  i32.load offset=40
  )
- (func $async-forof/__Cps_h#get:__cps_x_9 (param $this i32) (result i32)
+ (func $async-forof/__Cps_h#get:__cps___async_ofi_9_9 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=48
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_of_8_8 (param $this i32) (result i32)
   local.get $this
   i32.load offset=44
  )
- (func $async-forof/__Cps_h#get:__pend0 (param $this i32) (result i32)
+ (func $async-forof/__Cps_h#get:__cps___async_try_flag_8_11 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load8_u offset=56
  )
- (func $async-forof/__Cps_h#get:__cps___async_try_ret_0_0 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=16
- )
- (func $async-forof/__Cps_h#get:__cps___async_try_brk_1_1 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=17
- )
- (func $async-forof/__Cps_h#get:__cps___async_try_cnt_2_2 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=18
- )
- (func $async-forof/__Cps_h#get:__cps___async_try_pendFail_4_4 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=24
- )
- (func $async-forof/__Cps_h#get:__cps_c_12 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=56
- )
- (func $async-forof/__Cps_h#get:__cps___async_try_err_5_11 (param $this i32) (result i32)
+ (func $async-forof/__Cps_h#get:__cps_x_10 (param $this i32) (result i32)
   local.get $this
   i32.load offset=52
  )
+ (func $async-forof/__Cps_h#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_ret_0_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=20
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_brk_1_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=21
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_cnt_2_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=22
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_pendFail_5_5 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=32
+ )
+ (func $async-forof/__Cps_h#get:__cps_c_14 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=68
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_err_6_12 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=60
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_errVal_7_13 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=64
+ )
+ (func $async-forof/__Cps_h#get:__cps___async_try_pendVal_4_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
  (func $async-forof/__Cps_h#get:__cps___async_try_pendErr_3_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-forof/chunkString (param $i i32) (result i32)
   local.get $i
@@ -3067,6 +3123,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-forof/__Cps_f#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-forof/__Cps_g#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3075,6 +3135,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-forof/__Cps_g#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-forof/__Cps_h#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3082,6 +3146,10 @@
  (func $async-forof/__Cps_h#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-forof/__Cps_h#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3143,6 +3211,24 @@
   local.get $1
   call $~lib/array/Array<i32>#__visit
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-forof/__Cps_f~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -3173,7 +3259,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=36
+  i32.load offset=28
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3199,11 +3289,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3237,7 +3331,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -3245,23 +3343,31 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=32
-  local.get $1
-  call $~lib/rt/itcms/__visit
-  local.get $0
   i32.load offset=36
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=52
+  i32.load offset=40
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=56
+  i32.load offset=44
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=60
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=68
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=72
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3285,37 +3391,43 @@
       block $async-forof/__Cps_g
        block $~lib/array/Array<async-forof/__Cps_f>
         block $async-forof/__Cps_f
-         block $~lib/promise/Promise<i32>
-          block $~lib/array/Array<i32>
-           block $~lib/promise/Promise<~lib/string/String>
-            block $~lib/arraybuffer/ArrayBufferView
-             block $~lib/string/String
-              block $~lib/arraybuffer/ArrayBuffer
-               block $~lib/object/Object
-                local.get $0
-                i32.const 8
-                i32.sub
-                i32.load
-                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/promise/Promise<i32> $async-forof/__Cps_f $~lib/array/Array<async-forof/__Cps_f> $async-forof/__Cps_g $~lib/array/Array<async-forof/__Cps_g> $async-forof/__Cps_h $~lib/array/Array<async-forof/__Cps_h> $invalid
+         block $~lib/error/Error
+          block $~lib/promise/Promise<i32>
+           block $~lib/array/Array<i32>
+            block $~lib/promise/Promise<~lib/string/String>
+             block $~lib/arraybuffer/ArrayBufferView
+              block $~lib/string/String
+               block $~lib/arraybuffer/ArrayBuffer
+                block $~lib/object/Object
+                 local.get $0
+                 i32.const 8
+                 i32.sub
+                 i32.load
+                 br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/promise/Promise<i32> $~lib/error/Error $async-forof/__Cps_f $~lib/array/Array<async-forof/__Cps_f> $async-forof/__Cps_g $~lib/array/Array<async-forof/__Cps_g> $async-forof/__Cps_h $~lib/array/Array<async-forof/__Cps_h> $invalid
+                end
+                return
                end
                return
               end
               return
              end
+             local.get $0
+             local.get $1
+             call $~lib/arraybuffer/ArrayBufferView~visit
              return
             end
-            local.get $0
-            local.get $1
-            call $~lib/arraybuffer/ArrayBufferView~visit
             return
            end
+           local.get $0
+           local.get $1
+           call $~lib/array/Array<i32>~visit
            return
           end
-          local.get $0
-          local.get $1
-          call $~lib/array/Array<i32>~visit
           return
          end
+         local.get $0
+         local.get $1
+         call $~lib/error/Error~visit
          return
         end
         local.get $0
@@ -3388,7 +3500,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3526,7 +3638,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3664,7 +3776,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 12
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3935,8 +4047,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
-   i32.const 7
+   i32.const 44
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3975,6 +4087,14 @@
   local.get $1
   i32.const 528
   call $async-forof/__Cps_f#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-forof/__Cps_f#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4420,7 +4540,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5167,8 +5287,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
-   i32.const 9
+   i32.const 44
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5207,6 +5327,14 @@
   local.get $1
   i32.const 528
   call $async-forof/__Cps_g#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-forof/__Cps_g#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5533,7 +5661,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 10
+  i32.const 11
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6123,8 +6251,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 64
-   i32.const 11
+   i32.const 76
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6163,6 +6291,14 @@
   local.get $1
   i32.const 528
   call $async-forof/__Cps_h#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-forof/__Cps_h#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6210,7 +6346,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-forof/__Cps_h#set:__cps___async_try_pendFail_4_4
+  call $async-forof/__Cps_h#set:__cps___async_try_pendVal_4_4
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-forof/__Cps_h#set:__cps___async_try_pendFail_5_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6225,7 +6369,7 @@
   local.get $1
   i32.store offset=8
   local.get $1
-  call $async-forof/__Cps_h#set:__cps_xs_5
+  call $async-forof/__Cps_h#set:__cps_xs_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6233,7 +6377,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-forof/__Cps_h#set:__cps_out_6
+  call $async-forof/__Cps_h#set:__cps_out_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6248,7 +6392,7 @@
   local.get $1
   i32.store offset=8
   local.get $1
-  call $async-forof/__Cps_h#set:__cps___async_of_7_7
+  call $async-forof/__Cps_h#set:__cps___async_of_8_8
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6256,7 +6400,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-forof/__Cps_h#set:__cps___async_ofi_8_8
+  call $async-forof/__Cps_h#set:__cps___async_ofi_9_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6264,7 +6408,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-forof/__Cps_h#set:__cps_x_9
+  call $async-forof/__Cps_h#set:__cps_x_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6272,7 +6416,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-forof/__Cps_h#set:__cps___async_try_flag_6_10
+  call $async-forof/__Cps_h#set:__cps___async_try_flag_8_11
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6280,7 +6424,15 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-forof/__Cps_h#set:__cps___async_try_err_5_11
+  call $async-forof/__Cps_h#set:__cps___async_try_err_6_12
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-forof/__Cps_h#set:__cps___async_try_errVal_7_13
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6288,7 +6440,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-forof/__Cps_h#set:__cps_c_12
+  call $async-forof/__Cps_h#set:__cps_c_14
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6296,7 +6448,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-forof/__Cps_h#set:__cps_e_13
+  call $async-forof/__Cps_h#set:__cps_e_15
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6553,7 +6705,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 12
+  i32.const 13
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6843,7 +6995,7 @@
                              i32.store
                              local.get $3
                              i32.const 0
-                             call $async-forof/__Cps_h#set:__cps___async_try_pendFail_4_4
+                             call $async-forof/__Cps_h#set:__cps___async_try_pendFail_5_5
                              local.get $this
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
@@ -6860,7 +7012,7 @@
                              local.get $3
                              i32.store offset=4
                              local.get $3
-                             call $async-forof/__Cps_h#set:__cps_xs_5
+                             call $async-forof/__Cps_h#set:__cps_xs_6
                              local.get $this
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
@@ -6868,7 +7020,7 @@
                              i32.store
                              local.get $3
                              i32.const 528
-                             call $async-forof/__Cps_h#set:__cps_out_6
+                             call $async-forof/__Cps_h#set:__cps_out_7
                              local.get $this
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
@@ -6881,13 +7033,13 @@
                              local.get $3
                              i32.store offset=8
                              local.get $3
-                             call $async-forof/__Cps_h#get:__cps_xs_5
+                             call $async-forof/__Cps_h#get:__cps_xs_6
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
                              local.get $3
                              i32.store offset=4
                              local.get $3
-                             call $async-forof/__Cps_h#set:__cps___async_of_7_7
+                             call $async-forof/__Cps_h#set:__cps___async_of_8_8
                              local.get $this
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
@@ -6895,7 +7047,7 @@
                              i32.store
                              local.get $3
                              i32.const 0
-                             call $async-forof/__Cps_h#set:__cps___async_ofi_8_8
+                             call $async-forof/__Cps_h#set:__cps___async_ofi_9_9
                              local.get $this
                              local.set $3
                              global.get $~lib/memory/__stack_pointer
@@ -6918,7 +7070,7 @@
                             local.get $3
                             i32.store offset=8
                             local.get $3
-                            call $async-forof/__Cps_h#get:__cps_out_6
+                            call $async-forof/__Cps_h#get:__cps_out_7
                             local.set $3
                             global.get $~lib/memory/__stack_pointer
                             local.get $3
@@ -6971,14 +7123,14 @@
                            local.get $3
                            i32.store
                            local.get $3
-                           call $async-forof/__Cps_h#get:__cps___async_ofi_8_8
+                           call $async-forof/__Cps_h#get:__cps___async_ofi_9_9
                            local.get $this
                            local.set $3
                            global.get $~lib/memory/__stack_pointer
                            local.get $3
                            i32.store offset=4
                            local.get $3
-                           call $async-forof/__Cps_h#get:__cps___async_of_7_7
+                           call $async-forof/__Cps_h#get:__cps___async_of_8_8
                            local.set $3
                            global.get $~lib/memory/__stack_pointer
                            local.get $3
@@ -7019,7 +7171,7 @@
                           local.get $3
                           i32.store offset=8
                           local.get $3
-                          call $async-forof/__Cps_h#get:__cps___async_of_7_7
+                          call $async-forof/__Cps_h#get:__cps___async_of_8_8
                           local.set $3
                           global.get $~lib/memory/__stack_pointer
                           local.get $3
@@ -7031,9 +7183,9 @@
                           local.get $3
                           i32.store offset=8
                           local.get $3
-                          call $async-forof/__Cps_h#get:__cps___async_ofi_8_8
+                          call $async-forof/__Cps_h#get:__cps___async_ofi_9_9
                           call $~lib/array/Array<i32>#__get
-                          call $async-forof/__Cps_h#set:__cps_x_9
+                          call $async-forof/__Cps_h#set:__cps_x_10
                           local.get $this
                           local.set $3
                           global.get $~lib/memory/__stack_pointer
@@ -7041,7 +7193,7 @@
                           i32.store
                           local.get $3
                           i32.const 0
-                          call $async-forof/__Cps_h#set:__cps___async_try_flag_6_10
+                          call $async-forof/__Cps_h#set:__cps___async_try_flag_8_11
                           local.get $this
                           local.set $3
                           global.get $~lib/memory/__stack_pointer
@@ -7049,7 +7201,7 @@
                           i32.store
                           local.get $3
                           i32.const 528
-                          call $async-forof/__Cps_h#set:__cps___async_try_err_5_11
+                          call $async-forof/__Cps_h#set:__cps___async_try_err_6_12
                           local.get $this
                           local.set $3
                           global.get $~lib/memory/__stack_pointer
@@ -7072,10 +7224,10 @@
                          local.get $3
                          i32.store offset=4
                          local.get $3
-                         call $async-forof/__Cps_h#get:__cps___async_ofi_8_8
+                         call $async-forof/__Cps_h#get:__cps___async_ofi_9_9
                          i32.const 1
                          i32.add
-                         call $async-forof/__Cps_h#set:__cps___async_ofi_8_8
+                         call $async-forof/__Cps_h#set:__cps___async_ofi_9_9
                          local.get $this
                          local.set $3
                          global.get $~lib/memory/__stack_pointer
@@ -7092,7 +7244,7 @@
                         local.get $3
                         i32.store
                         local.get $3
-                        call $async-forof/__Cps_h#get:__cps___async_try_flag_6_10
+                        call $async-forof/__Cps_h#get:__cps___async_try_flag_8_11
                         if
                          local.get $this
                          local.set $3
@@ -7132,7 +7284,7 @@
                       local.get $3
                       i32.store
                       local.get $3
-                      call $async-forof/__Cps_h#get:__cps_x_9
+                      call $async-forof/__Cps_h#get:__cps_x_10
                       call $async-forof/getChunk
                       drop
                       local.get $this
@@ -7170,14 +7322,14 @@
                      local.get $3
                      i32.store offset=4
                      local.get $3
-                     call $async-forof/__Cps_h#set:__cps_c_12
+                     call $async-forof/__Cps_h#set:__cps_c_14
                      local.get $this
                      local.set $3
                      global.get $~lib/memory/__stack_pointer
                      local.get $3
                      i32.store
                      local.get $3
-                     call $async-forof/__Cps_h#get:__cps___async_try_flag_6_10
+                     call $async-forof/__Cps_h#get:__cps___async_try_flag_8_11
                      if (result i32)
                       i32.const 1
                      else
@@ -7220,7 +7372,7 @@
                       local.get $3
                       i32.store
                       local.get $3
-                      call $async-forof/__Cps_h#get:__cps___async_try_pendFail_4_4
+                      call $async-forof/__Cps_h#get:__cps___async_try_pendFail_5_5
                      end
                      if
                       local.get $this
@@ -7255,7 +7407,7 @@
                     local.get $3
                     i32.store offset=16
                     local.get $3
-                    call $async-forof/__Cps_h#get:__cps_out_6
+                    call $async-forof/__Cps_h#get:__cps_out_7
                     local.set $3
                     global.get $~lib/memory/__stack_pointer
                     local.get $3
@@ -7267,7 +7419,7 @@
                     local.get $3
                     i32.store offset=16
                     local.get $3
-                    call $async-forof/__Cps_h#get:__cps_c_12
+                    call $async-forof/__Cps_h#get:__cps_c_14
                     local.set $3
                     global.get $~lib/memory/__stack_pointer
                     local.get $3
@@ -7279,14 +7431,14 @@
                     local.get $3
                     i32.store offset=4
                     local.get $3
-                    call $async-forof/__Cps_h#set:__cps_out_6
+                    call $async-forof/__Cps_h#set:__cps_out_7
                     local.get $this
                     local.set $3
                     global.get $~lib/memory/__stack_pointer
                     local.get $3
                     i32.store
                     local.get $3
-                    call $async-forof/__Cps_h#get:__cps___async_try_flag_6_10
+                    call $async-forof/__Cps_h#get:__cps___async_try_flag_8_11
                     if (result i32)
                      i32.const 1
                     else
@@ -7329,7 +7481,7 @@
                      local.get $3
                      i32.store
                      local.get $3
-                     call $async-forof/__Cps_h#get:__cps___async_try_pendFail_4_4
+                     call $async-forof/__Cps_h#get:__cps___async_try_pendFail_5_5
                     end
                     if
                      local.get $this
@@ -7388,7 +7540,7 @@
                 local.get $3
                 i32.store
                 local.get $3
-                call $async-forof/__Cps_h#get:__cps___async_try_flag_6_10
+                call $async-forof/__Cps_h#get:__cps___async_try_flag_8_11
                 if
                  local.get $this
                  local.set $3
@@ -7417,7 +7569,7 @@
                i32.store
                local.get $3
                i32.const 0
-               call $async-forof/__Cps_h#set:__cps___async_try_flag_6_10
+               call $async-forof/__Cps_h#set:__cps___async_try_flag_8_11
                local.get $this
                local.set $3
                global.get $~lib/memory/__stack_pointer
@@ -7430,13 +7582,13 @@
                local.get $3
                i32.store offset=8
                local.get $3
-               call $async-forof/__Cps_h#get:__cps___async_try_err_5_11
+               call $async-forof/__Cps_h#get:__cps___async_try_err_6_12
                local.set $3
                global.get $~lib/memory/__stack_pointer
                local.get $3
                i32.store offset=4
                local.get $3
-               call $async-forof/__Cps_h#set:__cps_e_13
+               call $async-forof/__Cps_h#set:__cps_e_15
                local.get $this
                local.set $3
                global.get $~lib/memory/__stack_pointer
@@ -7449,7 +7601,7 @@
                local.get $3
                i32.store offset=12
                local.get $3
-               call $async-forof/__Cps_h#get:__cps_out_6
+               call $async-forof/__Cps_h#get:__cps_out_7
                local.set $3
                global.get $~lib/memory/__stack_pointer
                local.get $3
@@ -7462,7 +7614,7 @@
                local.get $3
                i32.store offset=4
                local.get $3
-               call $async-forof/__Cps_h#set:__cps_out_6
+               call $async-forof/__Cps_h#set:__cps_out_7
                local.get $this
                local.set $3
                global.get $~lib/memory/__stack_pointer
@@ -7485,7 +7637,26 @@
               local.get $3
               i32.store offset=8
               local.get $3
-              call $async-forof/__Cps_h#get:__cps___async_try_err_5_11
+              call $async-forof/__Cps_h#get:__cps___async_try_errVal_7_13
+              local.set $3
+              global.get $~lib/memory/__stack_pointer
+              local.get $3
+              i32.store offset=4
+              local.get $3
+              call $async-forof/__Cps_h#set:__errorValue
+              local.get $this
+              local.set $3
+              global.get $~lib/memory/__stack_pointer
+              local.get $3
+              i32.store
+              local.get $3
+              local.get $this
+              local.set $3
+              global.get $~lib/memory/__stack_pointer
+              local.get $3
+              i32.store offset=8
+              local.get $3
+              call $async-forof/__Cps_h#get:__cps___async_try_err_6_12
               local.set $3
               global.get $~lib/memory/__stack_pointer
               local.get $3
@@ -7538,7 +7709,7 @@
              local.get $3
              i32.store
              local.get $3
-             call $async-forof/__Cps_h#get:__cps___async_try_pendFail_4_4
+             call $async-forof/__Cps_h#get:__cps___async_try_pendFail_5_5
              if
               local.get $this
               local.set $3
@@ -7567,7 +7738,26 @@
             i32.store
             local.get $3
             i32.const 0
-            call $async-forof/__Cps_h#set:__cps___async_try_pendFail_4_4
+            call $async-forof/__Cps_h#set:__cps___async_try_pendFail_5_5
+            local.get $this
+            local.set $3
+            global.get $~lib/memory/__stack_pointer
+            local.get $3
+            i32.store
+            local.get $3
+            local.get $this
+            local.set $3
+            global.get $~lib/memory/__stack_pointer
+            local.get $3
+            i32.store offset=8
+            local.get $3
+            call $async-forof/__Cps_h#get:__cps___async_try_pendVal_4_4
+            local.set $3
+            global.get $~lib/memory/__stack_pointer
+            local.get $3
+            i32.store offset=4
+            local.get $3
+            call $async-forof/__Cps_h#set:__errorValue
             local.get $this
             local.set $3
             global.get $~lib/memory/__stack_pointer
@@ -8345,6 +8535,31 @@
   local.get $1
   return
  )
+ (func $async-forof/__async_async_forof_f_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-forof/__Cps_f#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-forof/__async_async_forof_f_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8736,6 +8951,31 @@
   local.get $1
   return
  )
+ (func $async-forof/__async_async_forof_g_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-forof/__Cps_g#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-forof/__async_async_forof_g_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9033,7 +9273,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-forof/__Cps_h#set:__cps___async_try_flag_6_10
+  call $async-forof/__Cps_h#set:__cps___async_try_flag_8_11
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -9046,7 +9286,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-forof/__Cps_h#set:__cps___async_try_err_5_11
+  call $async-forof/__Cps_h#set:__cps___async_try_err_6_12
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -9104,6 +9344,31 @@
   i32.store
   local.get $1
   call $async-forof/__Cps_h#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-forof/__async_async_forof_h_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-forof/__Cps_h#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -9598,6 +9863,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-forof/__async_async_forof_f_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-forof/__async_async_forof_f_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-forof/__async_async_forof_f_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9710,6 +9994,25 @@
   i32.store
   local.get $0
   call $async-forof/__async_async_forof_g_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-forof/__async_async_forof_g_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-forof/__async_async_forof_g_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -9832,6 +10135,25 @@
   i32.store
   local.get $0
   call $async-forof/__async_async_forof_h_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-forof/__async_async_forof_h_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-forof/__async_async_forof_h_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

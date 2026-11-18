@@ -33,9 +33,9 @@
  (global $async-await-switch/__async_roots_h (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 1104))
- (global $~lib/memory/__data_end i32 (i32.const 1156))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33924))
- (global $~lib/memory/__heap_base i32 (i32.const 33924))
+ (global $~lib/memory/__data_end i32 (i32.const 1160))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33928))
+ (global $~lib/memory/__heap_base i32 (i32.const 33928))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -61,7 +61,7 @@
  (data $21 (i32.const 892) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $22 (i32.const 924) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $23 (i32.const 972) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $24 (i32.const 1104) "\0c\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $24 (i32.const 1104) "\r\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "f" (func $async-await-switch/f))
@@ -86,18 +86,21 @@
  (export "__async_async_await_switch_f_reject_2" (func $export:async-await-switch/__async_async_await_switch_f_reject_2))
  (export "__async_async_await_switch_f_result" (func $export:async-await-switch/__async_async_await_switch_f_result))
  (export "__async_async_await_switch_f_error" (func $export:async-await-switch/__async_async_await_switch_f_error))
+ (export "__async_async_await_switch_f_errorValue" (func $export:async-await-switch/__async_async_await_switch_f_errorValue))
  (export "__async_async_await_switch_f_status" (func $export:async-await-switch/__async_async_await_switch_f_status))
  (export "__async_async_await_switch_g_reclaim" (func $export:async-await-switch/__async_async_await_switch_g_reclaim))
  (export "__async_async_await_switch_g_resume_0" (func $export:async-await-switch/__async_async_await_switch_g_resume_0))
  (export "__async_async_await_switch_g_reject_0" (func $export:async-await-switch/__async_async_await_switch_g_reject_0))
  (export "__async_async_await_switch_g_result" (func $export:async-await-switch/__async_async_await_switch_g_result))
  (export "__async_async_await_switch_g_error" (func $export:async-await-switch/__async_async_await_switch_g_error))
+ (export "__async_async_await_switch_g_errorValue" (func $export:async-await-switch/__async_async_await_switch_g_errorValue))
  (export "__async_async_await_switch_g_status" (func $export:async-await-switch/__async_async_await_switch_g_status))
  (export "__async_async_await_switch_h_reclaim" (func $export:async-await-switch/__async_async_await_switch_h_reclaim))
  (export "__async_async_await_switch_h_resume_0" (func $export:async-await-switch/__async_async_await_switch_h_resume_0))
  (export "__async_async_await_switch_h_reject_0" (func $export:async-await-switch/__async_async_await_switch_h_reject_0))
  (export "__async_async_await_switch_h_result" (func $export:async-await-switch/__async_async_await_switch_h_result))
  (export "__async_async_await_switch_h_error" (func $export:async-await-switch/__async_async_await_switch_h_error))
+ (export "__async_async_await_switch_h_errorValue" (func $export:async-await-switch/__async_async_await_switch_h_errorValue))
  (export "__async_async_await_switch_h_status" (func $export:async-await-switch/__async_async_await_switch_h_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2497,10 +2500,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-await-switch/__Cps_f#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-await-switch/__Cps_f#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2509,7 +2521,7 @@
  (func $async-await-switch/__Cps_f#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__pend1
   i32.const 0
@@ -2518,7 +2530,7 @@
  (func $async-await-switch/__Cps_f#set:__pend2 (param $this i32) (param $__pend2 i32)
   local.get $this
   local.get $__pend2
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__pend2
   i32.const 0
@@ -2527,12 +2539,12 @@
  (func $async-await-switch/__Cps_f#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-await-switch/__Cps_f#set:__cps_out_1 (param $this i32) (param $__cps_out_1 i32)
   local.get $this
   local.get $__cps_out_1
-  i32.store offset=28
+  i32.store offset=32
   local.get $this
   local.get $__cps_out_1
   i32.const 0
@@ -2541,12 +2553,12 @@
  (func $async-await-switch/__Cps_f#set:__cps___async_sw_2_2 (param $this i32) (param $__cps___async_sw_2_2 i32)
   local.get $this
   local.get $__cps___async_sw_2_2
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $async-await-switch/__Cps_f#set:__cps_c_3 (param $this i32) (param $__cps_c_3 i32)
   local.get $this
   local.get $__cps_c_3
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__cps_c_3
   i32.const 0
@@ -2624,15 +2636,15 @@
  )
  (func $async-await-switch/__Cps_f#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-await-switch/__Cps_f#get:__cps___async_sw_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $async-await-switch/__Cps_f#get:__cps_out_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2652,19 +2664,19 @@
  )
  (func $async-await-switch/__Cps_f#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-await-switch/__Cps_f#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-await-switch/__Cps_f#get:__pend2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-await-switch/__Cps_f#get:__cps_c_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2702,10 +2714,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-await-switch/__Cps_g#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-await-switch/__Cps_g#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2714,7 +2735,7 @@
  (func $async-await-switch/__Cps_g#set:__cps_s_0 (param $this i32) (param $__cps_s_0 i32)
   local.get $this
   local.get $__cps_s_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_s_0
   i32.const 0
@@ -2723,7 +2744,7 @@
  (func $async-await-switch/__Cps_g#set:__cps___async_sw_1_1 (param $this i32) (param $__cps___async_sw_1_1 i32)
   local.get $this
   local.get $__cps___async_sw_1_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_sw_1_1
   i32.const 0
@@ -2743,11 +2764,11 @@
  )
  (func $async-await-switch/__Cps_g#get:__cps_s_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-await-switch/__Cps_g#get:__cps___async_sw_1_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/util/string/compareImpl (param $str1 i32) (param $index1 i32) (param $str2 i32) (param $index2 i32) (param $len i32) (result i32)
   (local $ptr1 i32)
@@ -2855,7 +2876,7 @@
  )
  (func $async-await-switch/__Cps_g#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-await-switch/__Cps_h#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2880,10 +2901,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-await-switch/__Cps_h#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-await-switch/__Cps_h#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2892,7 +2922,7 @@
  (func $async-await-switch/__Cps_h#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
   local.get $this
   local.get $__cps_out_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_out_0
   i32.const 0
@@ -2901,17 +2931,17 @@
  (func $async-await-switch/__Cps_h#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
   local.get $this
   local.get $__cps_i_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-await-switch/__Cps_h#set:__cps___async_sw_2_2 (param $this i32) (param $__cps___async_sw_2_2 i32)
   local.get $this
   local.get $__cps___async_sw_2_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-await-switch/__Cps_h#set:__cps_c_3 (param $this i32) (param $__cps_c_3 i32)
   local.get $this
   local.get $__cps_c_3
-  i32.store offset=28
+  i32.store offset=32
   local.get $this
   local.get $__cps_c_3
   i32.const 0
@@ -2931,23 +2961,23 @@
  )
  (func $async-await-switch/__Cps_h#get:__cps_out_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-await-switch/__Cps_h#get:__cps_i_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-await-switch/__Cps_h#get:__cps___async_sw_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-await-switch/__Cps_h#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-await-switch/__Cps_h#get:__cps_c_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-await-switch/chunkString (param $i i32) (result i32)
   local.get $i
@@ -3027,6 +3057,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-await-switch/__Cps_f#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-await-switch/__Cps_g#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3035,6 +3069,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-await-switch/__Cps_g#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-await-switch/__Cps_h#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3042,6 +3080,10 @@
  (func $async-await-switch/__Cps_h#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-await-switch/__Cps_h#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3117,11 +3159,33 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=28
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=36
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3162,6 +3226,10 @@
   i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-await-switch/__Cps_g>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3197,7 +3265,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=28
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3233,34 +3305,40 @@
       block $~lib/array/Array<async-await-switch/__Cps_g>
        block $async-await-switch/__Cps_g
         block $~lib/array/Array<async-await-switch/__Cps_f>
-         block $async-await-switch/__Cps_f
-          block $~lib/promise/Promise<~lib/string/String>
-           block $~lib/arraybuffer/ArrayBufferView
-            block $~lib/string/String
-             block $~lib/arraybuffer/ArrayBuffer
-              block $~lib/object/Object
-               local.get $0
-               i32.const 8
-               i32.sub
-               i32.load
-               br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-await-switch/__Cps_f $~lib/array/Array<async-await-switch/__Cps_f> $async-await-switch/__Cps_g $~lib/array/Array<async-await-switch/__Cps_g> $async-await-switch/__Cps_h $~lib/array/Array<async-await-switch/__Cps_h> $~lib/array/Array<i32> $invalid
+         block $~lib/error/Error
+          block $async-await-switch/__Cps_f
+           block $~lib/promise/Promise<~lib/string/String>
+            block $~lib/arraybuffer/ArrayBufferView
+             block $~lib/string/String
+              block $~lib/arraybuffer/ArrayBuffer
+               block $~lib/object/Object
+                local.get $0
+                i32.const 8
+                i32.sub
+                i32.load
+                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-await-switch/__Cps_f $~lib/error/Error $~lib/array/Array<async-await-switch/__Cps_f> $async-await-switch/__Cps_g $~lib/array/Array<async-await-switch/__Cps_g> $async-await-switch/__Cps_h $~lib/array/Array<async-await-switch/__Cps_h> $~lib/array/Array<i32> $invalid
+               end
+               return
               end
               return
              end
              return
             end
+            local.get $0
+            local.get $1
+            call $~lib/arraybuffer/ArrayBufferView~visit
             return
            end
-           local.get $0
-           local.get $1
-           call $~lib/arraybuffer/ArrayBufferView~visit
            return
           end
+          local.get $0
+          local.get $1
+          call $async-await-switch/__Cps_f~visit
           return
          end
          local.get $0
          local.get $1
-         call $async-await-switch/__Cps_f~visit
+         call $~lib/error/Error~visit
          return
         end
         local.get $0
@@ -3333,7 +3411,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3471,7 +3549,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3609,7 +3687,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3739,7 +3817,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
+   i32.const 44
    i32.const 5
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -3779,6 +3857,14 @@
   local.get $1
   i32.const 528
   call $async-await-switch/__Cps_f#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-switch/__Cps_f#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4210,7 +4296,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4974,8 +5060,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 7
+   i32.const 28
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5014,6 +5100,14 @@
   local.get $1
   i32.const 528
   call $async-await-switch/__Cps_g#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-switch/__Cps_g#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5390,7 +5484,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5957,8 +6051,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 9
+   i32.const 36
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5997,6 +6091,14 @@
   local.get $1
   i32.const 528
   call $async-await-switch/__Cps_h#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-await-switch/__Cps_h#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6293,7 +6395,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 10
+  i32.const 11
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7568,6 +7670,31 @@
   local.get $1
   return
  )
+ (func $async-await-switch/__async_async_await_switch_f_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-switch/__Cps_f#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-await-switch/__async_async_await_switch_f_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -7964,6 +8091,31 @@
   local.get $1
   return
  )
+ (func $async-await-switch/__async_async_await_switch_g_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-switch/__Cps_g#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-await-switch/__async_async_await_switch_g_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8352,6 +8504,31 @@
   i32.store
   local.get $1
   call $async-await-switch/__Cps_h#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-await-switch/__async_async_await_switch_h_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-await-switch/__Cps_h#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -8957,6 +9134,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-await-switch/__async_async_await_switch_f_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-switch/__async_async_await_switch_f_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-await-switch/__async_async_await_switch_f_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9079,6 +9275,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-await-switch/__async_async_await_switch_g_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-switch/__async_async_await_switch_g_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-await-switch/__async_async_await_switch_g_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9194,6 +9409,25 @@
   i32.store
   local.get $0
   call $async-await-switch/__async_async_await_switch_h_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-await-switch/__async_async_await_switch_h_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-await-switch/__async_async_await_switch_h_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

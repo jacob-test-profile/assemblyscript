@@ -39,9 +39,9 @@
  (global $async-namespace/__async_roots_viaHidden (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 2880))
- (global $~lib/memory/__data_end i32 (i32.const 2964))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35732))
- (global $~lib/memory/__heap_base i32 (i32.const 35732))
+ (global $~lib/memory/__data_end i32 (i32.const 2968))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35736))
+ (global $~lib/memory/__heap_base i32 (i32.const 35736))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -72,7 +72,7 @@
  (data $26 (i32.const 2780) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00t\00w\00o\00-\00\00\00\00\00")
  (data $27 (i32.const 2812) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00v\00i\00a\00-\00\00\00\00\00")
  (data $28 (i32.const 2844) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\n\00\00\00d\00e\00e\00p\00-\00\00\00")
- (data $29 (i32.const 2880) "\14\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $29 (i32.const 2880) "\15\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "chunkString" (func $async-namespace/chunkString))
@@ -97,12 +97,14 @@
  (export "__async_async_namespace_NS_take_reject_0" (func $export:async-namespace/__async_async_namespace_NS_take_reject_0))
  (export "__async_async_namespace_NS_take_result" (func $export:async-namespace/__async_async_namespace_NS_take_result))
  (export "__async_async_namespace_NS_take_error" (func $export:async-namespace/__async_async_namespace_NS_take_error))
+ (export "__async_async_namespace_NS_take_errorValue" (func $export:async-namespace/__async_async_namespace_NS_take_errorValue))
  (export "__async_async_namespace_NS_take_status" (func $export:async-namespace/__async_async_namespace_NS_take_status))
  (export "__async_async_namespace_NS_takeTwo_reclaim" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_reclaim))
  (export "__async_async_namespace_NS_takeTwo_resume_0" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_resume_0))
  (export "__async_async_namespace_NS_takeTwo_reject_0" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_reject_0))
  (export "__async_async_namespace_NS_takeTwo_result" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_result))
  (export "__async_async_namespace_NS_takeTwo_error" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_error))
+ (export "__async_async_namespace_NS_takeTwo_errorValue" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_errorValue))
  (export "__async_async_namespace_NS_takeTwo_status" (func $export:async-namespace/__async_async_namespace_NS_takeTwo_status))
  (export "__async_async_namespace_NS_viaOther_reclaim" (func $export:async-namespace/__async_async_namespace_NS_viaOther_reclaim))
  (export "__async_async_namespace_NS_viaOther_pending_0" (func $export:async-namespace/__async_async_namespace_NS_viaOther_pending_0))
@@ -110,12 +112,14 @@
  (export "__async_async_namespace_NS_viaOther_reject_0" (func $export:async-namespace/__async_async_namespace_NS_viaOther_reject_0))
  (export "__async_async_namespace_NS_viaOther_result" (func $export:async-namespace/__async_async_namespace_NS_viaOther_result))
  (export "__async_async_namespace_NS_viaOther_error" (func $export:async-namespace/__async_async_namespace_NS_viaOther_error))
+ (export "__async_async_namespace_NS_viaOther_errorValue" (func $export:async-namespace/__async_async_namespace_NS_viaOther_errorValue))
  (export "__async_async_namespace_NS_viaOther_status" (func $export:async-namespace/__async_async_namespace_NS_viaOther_status))
  (export "__async_async_namespace_Outer_Inner_deep_reclaim" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_reclaim))
  (export "__async_async_namespace_Outer_Inner_deep_resume_0" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_resume_0))
  (export "__async_async_namespace_Outer_Inner_deep_reject_0" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_reject_0))
  (export "__async_async_namespace_Outer_Inner_deep_result" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_result))
  (export "__async_async_namespace_Outer_Inner_deep_error" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_error))
+ (export "__async_async_namespace_Outer_Inner_deep_errorValue" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_errorValue))
  (export "__async_async_namespace_Outer_Inner_deep_status" (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_status))
  (export "__async_async_namespace_topViaNs_reclaim" (func $export:async-namespace/__async_async_namespace_topViaNs_reclaim))
  (export "__async_async_namespace_topViaNs_pending_0" (func $export:async-namespace/__async_async_namespace_topViaNs_pending_0))
@@ -123,12 +127,14 @@
  (export "__async_async_namespace_topViaNs_reject_0" (func $export:async-namespace/__async_async_namespace_topViaNs_reject_0))
  (export "__async_async_namespace_topViaNs_result" (func $export:async-namespace/__async_async_namespace_topViaNs_result))
  (export "__async_async_namespace_topViaNs_error" (func $export:async-namespace/__async_async_namespace_topViaNs_error))
+ (export "__async_async_namespace_topViaNs_errorValue" (func $export:async-namespace/__async_async_namespace_topViaNs_errorValue))
  (export "__async_async_namespace_topViaNs_status" (func $export:async-namespace/__async_async_namespace_topViaNs_status))
  (export "__async_async_namespace_Hidden_secret_reclaim" (func $export:async-namespace/__async_async_namespace_Hidden_secret_reclaim))
  (export "__async_async_namespace_Hidden_secret_resume_0" (func $export:async-namespace/__async_async_namespace_Hidden_secret_resume_0))
  (export "__async_async_namespace_Hidden_secret_reject_0" (func $export:async-namespace/__async_async_namespace_Hidden_secret_reject_0))
  (export "__async_async_namespace_Hidden_secret_result" (func $export:async-namespace/__async_async_namespace_Hidden_secret_result))
  (export "__async_async_namespace_Hidden_secret_error" (func $export:async-namespace/__async_async_namespace_Hidden_secret_error))
+ (export "__async_async_namespace_Hidden_secret_errorValue" (func $export:async-namespace/__async_async_namespace_Hidden_secret_errorValue))
  (export "__async_async_namespace_Hidden_secret_status" (func $export:async-namespace/__async_async_namespace_Hidden_secret_status))
  (export "__async_async_namespace_viaHidden_reclaim" (func $export:async-namespace/__async_async_namespace_viaHidden_reclaim))
  (export "__async_async_namespace_viaHidden_pending_0" (func $export:async-namespace/__async_async_namespace_viaHidden_pending_0))
@@ -136,6 +142,7 @@
  (export "__async_async_namespace_viaHidden_reject_0" (func $export:async-namespace/__async_async_namespace_viaHidden_reject_0))
  (export "__async_async_namespace_viaHidden_result" (func $export:async-namespace/__async_async_namespace_viaHidden_result))
  (export "__async_async_namespace_viaHidden_error" (func $export:async-namespace/__async_async_namespace_viaHidden_error))
+ (export "__async_async_namespace_viaHidden_errorValue" (func $export:async-namespace/__async_async_namespace_viaHidden_errorValue))
  (export "__async_async_namespace_viaHidden_status" (func $export:async-namespace/__async_async_namespace_viaHidden_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -3076,10 +3083,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-namespace/__Cps_topViaNs#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__Cps_topViaNs#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3088,7 +3104,7 @@
  (func $async-namespace/__Cps_topViaNs#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3097,7 +3113,7 @@
  (func $async-namespace/__Cps_topViaNs#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3192,10 +3208,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-namespace/__Cps_NS_take#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__Cps_NS_take#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3204,7 +3229,7 @@
  (func $async-namespace/__Cps_NS_take#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3224,11 +3249,11 @@
  )
  (func $async-namespace/__Cps_NS_take#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_NS_take#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -3248,11 +3273,11 @@
  )
  (func $async-namespace/__Cps_topViaNs#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_topViaNs#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__Cps_viaHidden#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3277,10 +3302,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-namespace/__Cps_viaHidden#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__Cps_viaHidden#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3289,7 +3323,7 @@
  (func $async-namespace/__Cps_viaHidden#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3298,7 +3332,7 @@
  (func $async-namespace/__Cps_viaHidden#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-namespace/__Cps_viaHidden>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3335,10 +3369,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-namespace/__Cps_Hidden_secret#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__Cps_Hidden_secret#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3347,7 +3390,7 @@
  (func $async-namespace/__Cps_Hidden_secret#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3367,19 +3410,19 @@
  )
  (func $async-namespace/__Cps_Hidden_secret#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_Hidden_secret#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__Cps_viaHidden#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_viaHidden#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__async_async_namespace_mint (result i32)
   i32.const 0
@@ -3429,6 +3472,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_NS_take#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-namespace/__async_async_namespace_NS_take_entry (result i32)
   call $async-namespace/NS.take
   return
@@ -3453,7 +3500,7 @@
  (func $async-namespace/__Cps_NS_takeTwo#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3461,16 +3508,16 @@
  )
  (func $async-namespace/__Cps_NS_takeTwo#get:__cps_i_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__Cps_NS_takeTwo#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_NS_takeTwo#set:__cps_c_1 (param $this i32) (param $__cps_c_1 i32)
   local.get $this
   local.get $__cps_c_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_c_1
   i32.const 0
@@ -3478,7 +3525,7 @@
  )
  (func $async-namespace/__Cps_NS_takeTwo#get:__cps_c_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-namespace/__Cps_NS_takeTwo#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -3506,10 +3553,23 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_NS_takeTwo#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-namespace/__Cps_NS_takeTwo#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__Cps_NS_takeTwo#set:__cps_i_0 (param $this i32) (param $__cps_i_0 i32)
   local.get $this
   local.get $__cps_i_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-namespace/__async_async_namespace_NS_takeTwo_entry (param $i i32) (result i32)
   local.get $i
@@ -3535,12 +3595,12 @@
  )
  (func $async-namespace/__Cps_NS_viaOther#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-namespace/__Cps_NS_viaOther#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3549,16 +3609,16 @@
  (func $async-namespace/__Cps_NS_viaOther#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-namespace/__Cps_NS_viaOther#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_NS_viaOther#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3566,7 +3626,7 @@
  )
  (func $async-namespace/__Cps_NS_viaOther#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__Cps_NS_viaOther#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -3594,6 +3654,19 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_NS_viaOther#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-namespace/__Cps_NS_viaOther#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__async_async_namespace_NS_viaOther_entry (result i32)
   call $async-namespace/NS.viaOther
   return
@@ -3618,7 +3691,7 @@
  (func $async-namespace/__Cps_Outer_Inner_deep#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3626,12 +3699,12 @@
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3639,7 +3712,7 @@
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-namespace/__Cps_Outer_Inner_deep#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -3667,13 +3740,26 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_Outer_Inner_deep#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $async-namespace/__Cps_Outer_Inner_deep#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-namespace/__async_async_namespace_Outer_Inner_deep_entry (result i32)
   call $async-namespace/Outer.Inner.deep
   return
  )
  (func $async-namespace/__Cps_topViaNs#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-namespace/__Cps_topViaNs#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3683,6 +3769,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_topViaNs#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-namespace/__Cps_Hidden_secret#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3691,9 +3781,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-namespace/__Cps_Hidden_secret#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-namespace/__Cps_viaHidden#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-namespace/__Cps_viaHidden#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3702,6 +3796,10 @@
  (func $async-namespace/__Cps_viaHidden#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-namespace/__Cps_viaHidden#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3806,6 +3904,28 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-namespace/__Cps_NS_take>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3837,7 +3957,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3874,6 +3998,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-namespace/__Cps_NS_viaOther>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3906,6 +4034,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3942,6 +4074,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-namespace/__Cps_topViaNs>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3976,6 +4112,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-namespace/__Cps_Hidden_secret>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4008,6 +4148,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4051,34 +4195,40 @@
               block $~lib/array/Array<async-namespace/__Cps_NS_takeTwo>
                block $async-namespace/__Cps_NS_takeTwo
                 block $~lib/array/Array<async-namespace/__Cps_NS_take>
-                 block $async-namespace/__Cps_NS_take
-                  block $~lib/promise/Promise<~lib/string/String>
-                   block $~lib/arraybuffer/ArrayBufferView
-                    block $~lib/string/String
-                     block $~lib/arraybuffer/ArrayBuffer
-                      block $~lib/object/Object
-                       local.get $0
-                       i32.const 8
-                       i32.sub
-                       i32.load
-                       br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-namespace/__Cps_NS_take $~lib/array/Array<async-namespace/__Cps_NS_take> $async-namespace/__Cps_NS_takeTwo $~lib/array/Array<async-namespace/__Cps_NS_takeTwo> $async-namespace/__Cps_NS_viaOther $~lib/array/Array<async-namespace/__Cps_NS_viaOther> $async-namespace/__Cps_Outer_Inner_deep $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep> $async-namespace/__Cps_topViaNs $~lib/array/Array<async-namespace/__Cps_topViaNs> $async-namespace/__Cps_Hidden_secret $~lib/array/Array<async-namespace/__Cps_Hidden_secret> $async-namespace/__Cps_viaHidden $~lib/array/Array<async-namespace/__Cps_viaHidden> $~lib/array/Array<i32> $invalid
+                 block $~lib/error/Error
+                  block $async-namespace/__Cps_NS_take
+                   block $~lib/promise/Promise<~lib/string/String>
+                    block $~lib/arraybuffer/ArrayBufferView
+                     block $~lib/string/String
+                      block $~lib/arraybuffer/ArrayBuffer
+                       block $~lib/object/Object
+                        local.get $0
+                        i32.const 8
+                        i32.sub
+                        i32.load
+                        br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-namespace/__Cps_NS_take $~lib/error/Error $~lib/array/Array<async-namespace/__Cps_NS_take> $async-namespace/__Cps_NS_takeTwo $~lib/array/Array<async-namespace/__Cps_NS_takeTwo> $async-namespace/__Cps_NS_viaOther $~lib/array/Array<async-namespace/__Cps_NS_viaOther> $async-namespace/__Cps_Outer_Inner_deep $~lib/array/Array<async-namespace/__Cps_Outer_Inner_deep> $async-namespace/__Cps_topViaNs $~lib/array/Array<async-namespace/__Cps_topViaNs> $async-namespace/__Cps_Hidden_secret $~lib/array/Array<async-namespace/__Cps_Hidden_secret> $async-namespace/__Cps_viaHidden $~lib/array/Array<async-namespace/__Cps_viaHidden> $~lib/array/Array<i32> $invalid
+                       end
+                       return
                       end
                       return
                      end
                      return
                     end
+                    local.get $0
+                    local.get $1
+                    call $~lib/arraybuffer/ArrayBufferView~visit
                     return
                    end
-                   local.get $0
-                   local.get $1
-                   call $~lib/arraybuffer/ArrayBufferView~visit
                    return
                   end
+                  local.get $0
+                  local.get $1
+                  call $async-namespace/__Cps_NS_take~visit
                   return
                  end
                  local.get $0
                  local.get $1
-                 call $async-namespace/__Cps_NS_take~visit
+                 call $~lib/error/Error~visit
                  return
                 end
                 local.get $0
@@ -4191,7 +4341,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4329,7 +4479,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4467,7 +4617,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4605,7 +4755,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 12
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4743,7 +4893,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 14
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4881,7 +5031,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 16
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5019,7 +5169,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 18
+   i32.const 19
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5284,8 +5434,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 13
+   i32.const 28
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5324,6 +5474,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_topViaNs#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_topViaNs#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5554,7 +5712,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
+   i32.const 24
    i32.const 5
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -5594,6 +5752,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_NS_take#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_NS_take#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5866,7 +6032,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6373,7 +6539,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 14
+  i32.const 15
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6716,8 +6882,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 17
+   i32.const 28
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6756,6 +6922,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_viaHidden#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_viaHidden#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6867,8 +7041,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 15
+   i32.const 24
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6907,6 +7081,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_Hidden_secret#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_Hidden_secret#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7179,7 +7361,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 16
+  i32.const 17
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7686,7 +7868,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 18
+  i32.const 19
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8488,6 +8670,31 @@
   local.get $1
   return
  )
+ (func $async-namespace/__async_async_namespace_NS_take_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_take#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_NS_take_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8841,7 +9048,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9347,6 +9554,31 @@
   local.get $1
   return
  )
+ (func $async-namespace/__async_async_namespace_NS_takeTwo_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_takeTwo#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_NS_takeTwo_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9386,8 +9618,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 7
+   i32.const 28
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9426,6 +9658,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_NS_takeTwo#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_NS_takeTwo#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9909,7 +10149,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 10
+  i32.const 11
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10440,6 +10680,31 @@
   local.get $1
   return
  )
+ (func $async-namespace/__async_async_namespace_NS_viaOther_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_NS_viaOther#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_NS_viaOther_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10479,8 +10744,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 9
+   i32.const 28
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10519,6 +10784,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_NS_viaOther#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_NS_viaOther#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -10994,7 +11267,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 12
+  i32.const 13
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11494,6 +11767,31 @@
   local.get $1
   return
  )
+ (func $async-namespace/__async_async_namespace_Outer_Inner_deep_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_Outer_Inner_deep#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_Outer_Inner_deep_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11533,8 +11831,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 11
+   i32.const 24
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11573,6 +11871,14 @@
   local.get $1
   i32.const 2336
   call $async-namespace/__Cps_Outer_Inner_deep#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-namespace/__Cps_Outer_Inner_deep#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -12108,6 +12414,31 @@
   local.get $1
   return
  )
+ (func $async-namespace/__async_async_namespace_topViaNs_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_topViaNs#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-namespace/__async_async_namespace_topViaNs_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12496,6 +12827,31 @@
   i32.store
   local.get $1
   call $async-namespace/__Cps_Hidden_secret#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-namespace/__async_async_namespace_Hidden_secret_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_Hidden_secret#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -12917,6 +13273,31 @@
   i32.store
   local.get $1
   call $async-namespace/__Cps_viaHidden#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-namespace/__async_async_namespace_viaHidden_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-namespace/__Cps_viaHidden#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -13873,6 +14254,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_NS_take_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_take_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_NS_take_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13988,6 +14388,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_NS_takeTwo_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_NS_takeTwo_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_takeTwo_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14136,6 +14555,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_NS_viaOther_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_NS_viaOther_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_NS_viaOther_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14251,6 +14689,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_Outer_Inner_deep_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_Outer_Inner_deep_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_Outer_Inner_deep_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14399,6 +14856,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-namespace/__async_async_namespace_topViaNs_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_topViaNs_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-namespace/__async_async_namespace_topViaNs_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14514,6 +14990,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_Hidden_secret_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_Hidden_secret_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_Hidden_secret_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14655,6 +15150,25 @@
   i32.store
   local.get $0
   call $async-namespace/__async_async_namespace_viaHidden_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-namespace/__async_async_namespace_viaHidden_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-namespace/__async_async_namespace_viaHidden_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

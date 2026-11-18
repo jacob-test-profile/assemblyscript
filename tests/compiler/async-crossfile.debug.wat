@@ -45,9 +45,9 @@
  (global $async-crossfile/__async_roots_awaitCycle (mut i32) (i32.const 0))
  (global $async-crossfile/__async_roots_awaitCrossMethod (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 2720))
- (global $~lib/memory/__data_end i32 (i32.const 2836))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35604))
- (global $~lib/memory/__heap_base i32 (i32.const 35604))
+ (global $~lib/memory/__data_end i32 (i32.const 2840))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35608))
+ (global $~lib/memory/__heap_base i32 (i32.const 35608))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -74,7 +74,7 @@
  (data $22 (i32.const 2508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $23 (i32.const 2540) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $24 (i32.const 2588) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $25 (i32.const 2720) "\1c\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $25 (i32.const 2720) "\1d\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "mintString" (func $async-crossfile/mintString))
@@ -130,6 +130,7 @@
  (export "__async_async_crossfile_awaitOtherFile_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_reject_0))
  (export "__async_async_crossfile_awaitOtherFile_result" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_result))
  (export "__async_async_crossfile_awaitOtherFile_error" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_error))
+ (export "__async_async_crossfile_awaitOtherFile_errorValue" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_errorValue))
  (export "__async_async_crossfile_awaitOtherFile_status" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_status))
  (export "__async_async_crossfile_awaitOtherFileGuarded_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_reclaim))
  (export "__async_async_crossfile_awaitOtherFileGuarded_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_pending_0))
@@ -137,6 +138,7 @@
  (export "__async_async_crossfile_awaitOtherFileGuarded_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_reject_0))
  (export "__async_async_crossfile_awaitOtherFileGuarded_result" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_result))
  (export "__async_async_crossfile_awaitOtherFileGuarded_error" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_error))
+ (export "__async_async_crossfile_awaitOtherFileGuarded_errorValue" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_errorValue))
  (export "__async_async_crossfile_awaitOtherFileGuarded_status" (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_status))
  (export "__async_async_crossfile_awaitChain_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitChain_reclaim))
  (export "__async_async_crossfile_awaitChain_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitChain_pending_0))
@@ -144,6 +146,7 @@
  (export "__async_async_crossfile_awaitChain_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitChain_reject_0))
  (export "__async_async_crossfile_awaitChain_result" (func $export:async-crossfile/__async_async_crossfile_awaitChain_result))
  (export "__async_async_crossfile_awaitChain_error" (func $export:async-crossfile/__async_async_crossfile_awaitChain_error))
+ (export "__async_async_crossfile_awaitChain_errorValue" (func $export:async-crossfile/__async_async_crossfile_awaitChain_errorValue))
  (export "__async_async_crossfile_awaitChain_status" (func $export:async-crossfile/__async_async_crossfile_awaitChain_status))
  (export "__async_async_crossfile_awaitCycle_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_reclaim))
  (export "__async_async_crossfile_awaitCycle_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_pending_0))
@@ -151,6 +154,7 @@
  (export "__async_async_crossfile_awaitCycle_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_reject_0))
  (export "__async_async_crossfile_awaitCycle_result" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_result))
  (export "__async_async_crossfile_awaitCycle_error" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_error))
+ (export "__async_async_crossfile_awaitCycle_errorValue" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_errorValue))
  (export "__async_async_crossfile_awaitCycle_status" (func $export:async-crossfile/__async_async_crossfile_awaitCycle_status))
  (export "__async_async_crossfile_awaitCrossMethod_reclaim" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_reclaim))
  (export "__async_async_crossfile_awaitCrossMethod_pending_0" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_pending_0))
@@ -158,6 +162,7 @@
  (export "__async_async_crossfile_awaitCrossMethod_reject_0" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_reject_0))
  (export "__async_async_crossfile_awaitCrossMethod_result" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_result))
  (export "__async_async_crossfile_awaitCrossMethod_error" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_error))
+ (export "__async_async_crossfile_awaitCrossMethod_errorValue" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_errorValue))
  (export "__async_async_crossfile_awaitCrossMethod_status" (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2481,7 +2486,7 @@
  (func $_async-crossfile-helper/__Cps_helper#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2498,12 +2503,12 @@
  )
  (func $_async-crossfile-helper/__Cps_helper#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $_async-crossfile-helper/__Cps_helper#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -2511,7 +2516,7 @@
  )
  (func $_async-crossfile-helper/__Cps_helper#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $_async-crossfile-helper/__Cps_helper#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -2595,12 +2600,12 @@
  )
  (func $_async-crossfile-chain/__Cps_chain#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $_async-crossfile-chain/__Cps_chain#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2614,6 +2619,15 @@
   local.get $this
   local.get $state
   i32.store
+ )
+ (func $_async-crossfile-helper/__Cps_helper#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
  )
  (func $~lib/arraybuffer/ArrayBufferView#get:byteLength (param $this i32) (result i32)
   local.get $this
@@ -2676,16 +2690,16 @@
  (func $_async-crossfile-chain/__Cps_chain#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $_async-crossfile-chain/__Cps_chain#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $_async-crossfile-chain/__Cps_chain#set:__cps_c_1 (param $this i32) (param $__cps_c_1 i32)
   local.get $this
   local.get $__cps_c_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_c_1
   i32.const 0
@@ -2693,11 +2707,11 @@
  )
  (func $_async-crossfile-chain/__Cps_chain#get:__cps_c_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $_async-crossfile-chain/__Cps_chain#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/util/number/decimalCount32 (param $value i32) (result i32)
   local.get $value
@@ -3226,7 +3240,7 @@
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:state (param $this i32) (result i32)
   local.get $this
@@ -3239,7 +3253,7 @@
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -3256,12 +3270,12 @@
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__cps_a_1 (param $this i32) (param $__cps_a_1 i32)
   local.get $this
   local.get $__cps_a_1
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3282,35 +3296,44 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__cps_b_1 (param $this i32) (param $__cps_b_1 i32)
   local.get $this
   local.get $__cps_b_1
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__cps_a_2 (param $this i32) (param $__cps_a_2 i32)
   local.get $this
   local.get $__cps_a_2
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#set:__handle1 (param $this i32) (param $__handle1 i32)
   local.get $this
   local.get $__handle1
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $~lib/array/Array<_async-crossfile-cycle-b/__Cps_cycleB>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3326,11 +3349,11 @@
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__error (param $this i32) (param $__error i32)
   local.get $this
@@ -3341,53 +3364,62 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__cps_b_2 (param $this i32) (param $__cps_b_2 i32)
   local.get $this
   local.get $__cps_b_2
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#set:__handle1 (param $this i32) (param $__handle1 i32)
   local.get $this
   local.get $__handle1
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__cps_b_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__cps_a_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__cps_a_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__cps_b_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__handle1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $_async-crossfile-cycle-a/__Cps_cycleA#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3430,7 +3462,7 @@
  (func $_async-crossfile-methods/__Cps_W2_helper#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#get:state (param $this i32) (result i32)
   local.get $this
@@ -3443,20 +3475,20 @@
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#set:__result (param $this i32) (param $__result i32)
   local.get $this
@@ -3490,7 +3522,7 @@
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__handle1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3676,10 +3708,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-crossfile/__Cps_awaitOtherFile#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-crossfile/__Cps_awaitOtherFile#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3688,7 +3729,7 @@
  (func $async-crossfile/__Cps_awaitOtherFile#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3697,7 +3738,7 @@
  (func $async-crossfile/__Cps_awaitOtherFile#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3713,11 +3754,11 @@
  )
  (func $async-crossfile/__Cps_awaitOtherFile#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-crossfile/__Cps_awaitOtherFile#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3742,10 +3783,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3754,77 +3804,95 @@
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_ret_0_0 (param $this i32) (param $__cps___async_try_ret_0_0 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_0
-  i32.store8 offset=16
+  i32.store8 offset=20
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_brk_1_1 (param $this i32) (param $__cps___async_try_brk_1_1 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_1
-  i32.store8 offset=17
+  i32.store8 offset=21
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_cnt_2_2 (param $this i32) (param $__cps___async_try_cnt_2_2 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_2
-  i32.store8 offset=18
+  i32.store8 offset=22
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendErr_3_3 (param $this i32) (param $__cps___async_try_pendErr_3_3 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_4_4 (param $this i32) (param $__cps___async_try_pendFail_4_4 i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendVal_4_4 (param $this i32) (param $__cps___async_try_pendVal_4_4 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_4
-  i32.store8 offset=24
- )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_5_5 (param $this i32) (param $__cps___async_try_retVal_5_5 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.store offset=28
   local.get $this
-  local.get $__cps___async_try_retVal_5_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_7_6 (param $this i32) (param $__cps___async_try_flag_7_6 i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_5_5 (param $this i32) (param $__cps___async_try_pendFail_5_5 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_6
+  local.get $__cps___async_try_pendFail_5_5
   i32.store8 offset=32
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_6_7 (param $this i32) (param $__cps___async_try_err_6_7 i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_6_6 (param $this i32) (param $__cps___async_try_retVal_6_6 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_7
+  local.get $__cps___async_try_retVal_6_6
   i32.store offset=36
   local.get $this
-  local.get $__cps___async_try_err_6_7
+  local.get $__cps___async_try_retVal_6_6
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_8 (param $this i32) (param $__cps_c_8 i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_9_7 (param $this i32) (param $__cps___async_try_flag_9_7 i32)
   local.get $this
-  local.get $__cps_c_8
-  i32.store offset=40
-  local.get $this
-  local.get $__cps_c_8
-  i32.const 0
-  call $~lib/rt/itcms/__link
+  local.get $__cps___async_try_flag_9_7
+  i32.store8 offset=40
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_9 (param $this i32) (param $__cps_e_9 i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_7_8 (param $this i32) (param $__cps___async_try_err_7_8 i32)
   local.get $this
-  local.get $__cps_e_9
+  local.get $__cps___async_try_err_7_8
   i32.store offset=44
   local.get $this
-  local.get $__cps_e_9
+  local.get $__cps___async_try_err_7_8
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_errVal_8_9 (param $this i32) (param $__cps___async_try_errVal_8_9 i32)
+  local.get $this
+  local.get $__cps___async_try_errVal_8_9
+  i32.store offset=48
+  local.get $this
+  local.get $__cps___async_try_errVal_8_9
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_10 (param $this i32) (param $__cps_c_10 i32)
+  local.get $this
+  local.get $__cps_c_10
+  i32.store offset=52
+  local.get $this
+  local.get $__cps_c_10
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_11 (param $this i32) (param $__cps_e_11 i32)
+  local.get $this
+  local.get $__cps_e_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps_e_11
   i32.const 0
   call $~lib/rt/itcms/__link
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=48
+  i32.store offset=60
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3838,45 +3906,53 @@
   local.get $this
   i32.load
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_7_6 (param $this i32) (result i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_9_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=32
+  i32.load8_u offset=40
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_ret_0_0 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=16
+  i32.load8_u offset=20
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_brk_1_1 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=17
+  i32.load8_u offset=21
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_cnt_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=18
+  i32.load8_u offset=22
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_4_4 (param $this i32) (result i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_5_5 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=24
+  i32.load8_u offset=32
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps_c_8 (param $this i32) (result i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps_c_10 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=40
+  i32.load offset=52
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_6_7 (param $this i32) (result i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_7_8 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=44
+ )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_errVal_8_9 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=48
+ )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendVal_4_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendErr_3_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
- (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_retVal_5_5 (param $this i32) (result i32)
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_retVal_6_6 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=36
  )
  (func $async-crossfile/__Cps_awaitChain#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3901,10 +3977,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-crossfile/__Cps_awaitChain#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-crossfile/__Cps_awaitChain#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3913,7 +3998,7 @@
  (func $async-crossfile/__Cps_awaitChain#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3922,7 +4007,7 @@
  (func $async-crossfile/__Cps_awaitChain#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitChain>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3936,18 +4021,27 @@
   local.get $this
   i32.load
  )
+ (func $_async-crossfile-chain/__Cps_chain#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $_async-crossfile-chain/__Cps_chain#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-crossfile/__Cps_awaitChain#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-crossfile/__Cps_awaitChain#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-crossfile/__Cps_awaitCycle#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3968,20 +4062,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-crossfile/__Cps_awaitCycle#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-crossfile/__Cps_awaitCycle#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-crossfile/__Cps_awaitCycle#set:__cps_v_0 (param $this i32) (param $__cps_v_0 i32)
   local.get $this
   local.get $__cps_v_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-crossfile/__Cps_awaitCycle#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitCycle>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3997,11 +4100,11 @@
  )
  (func $async-crossfile/__Cps_awaitCycle#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-crossfile/__Cps_awaitCycle#get:__cps_v_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -4022,15 +4125,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-crossfile/__Cps_awaitCrossMethod#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-crossfile/__Cps_awaitCrossMethod#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#set:__cps_w_0 (param $this i32) (param $__cps_w_0 i32)
   local.get $this
   local.get $__cps_w_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_w_0
   i32.const 0
@@ -4039,12 +4151,12 @@
  (func $async-crossfile/__Cps_awaitCrossMethod#set:__cps_v_1 (param $this i32) (param $__cps_v_1 i32)
   local.get $this
   local.get $__cps_v_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -4060,17 +4172,26 @@
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__cps_w_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
+ )
+ (func $_async-crossfile-methods/__Cps_W2_helper#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $_async-crossfile-methods/__Cps_W2_helper#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -4078,11 +4199,11 @@
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__cps_v_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-crossfile/__async_async_crossfile_mint (result i32)
   i32.const 0
@@ -4126,7 +4247,7 @@
  )
  (func $async-crossfile/__Cps_awaitOtherFile#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-crossfile/__Cps_awaitOtherFile#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4136,9 +4257,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-crossfile/__Cps_awaitOtherFile#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=48
+  i32.load offset=60
  )
  (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4148,9 +4273,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-crossfile/__Cps_awaitOtherFileGuarded#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-crossfile/__Cps_awaitChain#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-crossfile/__Cps_awaitChain#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4160,9 +4289,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-crossfile/__Cps_awaitChain#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-crossfile/__Cps_awaitCycle#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-crossfile/__Cps_awaitCycle#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4172,9 +4305,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-crossfile/__Cps_awaitCycle#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4183,6 +4320,10 @@
  (func $async-crossfile/__Cps_awaitCrossMethod#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-crossfile/__Cps_awaitCrossMethod#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -4287,6 +4428,24 @@
  )
  (func $~lib/object/Object~visit (param $0 i32) (param $1 i32)
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $_async-crossfile-helper/__Cps_helper~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4306,6 +4465,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4351,7 +4514,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4376,6 +4543,10 @@
   i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $_async-crossfile-cycle-b/__Cps_cycleB~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
@@ -4384,6 +4555,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4421,7 +4596,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4458,6 +4637,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4489,7 +4672,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -4501,11 +4688,19 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=40
+  i32.load offset=44
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=48
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4542,6 +4737,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-crossfile/__Cps_awaitChain>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4562,6 +4761,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4587,7 +4790,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4628,28 +4835,34 @@
                        block $_async-crossfile-helper/__Cps_helper
                         block $_async-crossfile-methods/W2
                          block $~lib/promise/Promise<i32>
-                          block $~lib/promise/Promise<~lib/string/String>
-                           block $~lib/arraybuffer/ArrayBufferView
-                            block $~lib/string/String
-                             block $~lib/arraybuffer/ArrayBuffer
-                              block $~lib/object/Object
-                               local.get $0
-                               i32.const 8
-                               i32.sub
-                               i32.load
-                               br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/promise/Promise<i32> $_async-crossfile-methods/W2 $_async-crossfile-helper/__Cps_helper $~lib/array/Array<_async-crossfile-helper/__Cps_helper> $~lib/array/Array<i32> $_async-crossfile-chain/__Cps_chain $~lib/array/Array<_async-crossfile-chain/__Cps_chain> $_async-crossfile-cycle-a/__Cps_cycleA $_async-crossfile-cycle-b/__Cps_cycleB $~lib/array/Array<_async-crossfile-cycle-b/__Cps_cycleB> $~lib/array/Array<_async-crossfile-cycle-a/__Cps_cycleA> $_async-crossfile-methods/__Cps_W2_helper $~lib/array/Array<_async-crossfile-methods/__Cps_W2_helper> $async-crossfile/__Cps_awaitOtherFile $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile> $async-crossfile/__Cps_awaitOtherFileGuarded $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded> $async-crossfile/__Cps_awaitChain $~lib/array/Array<async-crossfile/__Cps_awaitChain> $async-crossfile/__Cps_awaitCycle $~lib/array/Array<async-crossfile/__Cps_awaitCycle> $async-crossfile/__Cps_awaitCrossMethod $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod> $invalid
+                          block $~lib/error/Error
+                           block $~lib/promise/Promise<~lib/string/String>
+                            block $~lib/arraybuffer/ArrayBufferView
+                             block $~lib/string/String
+                              block $~lib/arraybuffer/ArrayBuffer
+                               block $~lib/object/Object
+                                local.get $0
+                                i32.const 8
+                                i32.sub
+                                i32.load
+                                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/error/Error $~lib/promise/Promise<i32> $_async-crossfile-methods/W2 $_async-crossfile-helper/__Cps_helper $~lib/array/Array<_async-crossfile-helper/__Cps_helper> $~lib/array/Array<i32> $_async-crossfile-chain/__Cps_chain $~lib/array/Array<_async-crossfile-chain/__Cps_chain> $_async-crossfile-cycle-a/__Cps_cycleA $_async-crossfile-cycle-b/__Cps_cycleB $~lib/array/Array<_async-crossfile-cycle-b/__Cps_cycleB> $~lib/array/Array<_async-crossfile-cycle-a/__Cps_cycleA> $_async-crossfile-methods/__Cps_W2_helper $~lib/array/Array<_async-crossfile-methods/__Cps_W2_helper> $async-crossfile/__Cps_awaitOtherFile $~lib/array/Array<async-crossfile/__Cps_awaitOtherFile> $async-crossfile/__Cps_awaitOtherFileGuarded $~lib/array/Array<async-crossfile/__Cps_awaitOtherFileGuarded> $async-crossfile/__Cps_awaitChain $~lib/array/Array<async-crossfile/__Cps_awaitChain> $async-crossfile/__Cps_awaitCycle $~lib/array/Array<async-crossfile/__Cps_awaitCycle> $async-crossfile/__Cps_awaitCrossMethod $~lib/array/Array<async-crossfile/__Cps_awaitCrossMethod> $invalid
+                               end
+                               return
                               end
                               return
                              end
                              return
                             end
+                            local.get $0
+                            local.get $1
+                            call $~lib/arraybuffer/ArrayBufferView~visit
                             return
                            end
-                           local.get $0
-                           local.get $1
-                           call $~lib/arraybuffer/ArrayBufferView~visit
                            return
                           end
+                          local.get $0
+                          local.get $1
+                          call $~lib/error/Error~visit
                           return
                          end
                          return
@@ -4805,7 +5018,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5104,7 +5317,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5572,7 +5785,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5727,8 +5940,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 7
+   i32.const 24
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5767,6 +5980,14 @@
   local.get $1
   i32.const 528
   call $_async-crossfile-helper/__Cps_helper#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $_async-crossfile-helper/__Cps_helper#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6315,7 +6536,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6806,7 +7027,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 14
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6944,7 +7165,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 15
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7243,7 +7464,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 16
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7330,8 +7551,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 36
-   i32.const 13
+   i32.const 40
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7370,6 +7591,14 @@
   local.get $1
   i32.const 528
   call $_async-crossfile-cycle-b/__Cps_cycleB#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $_async-crossfile-cycle-b/__Cps_cycleB#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7674,7 +7903,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 14
+  i32.const 15
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7761,8 +7990,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 36
-   i32.const 12
+   i32.const 40
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7801,6 +8030,14 @@
   local.get $1
   i32.const 528
   call $_async-crossfile-cycle-a/__Cps_cycleA#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $_async-crossfile-cycle-a/__Cps_cycleA#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9052,7 +9289,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 17
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9351,7 +9588,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 18
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10109,7 +10346,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 19
+   i32.const 20
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10247,7 +10484,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 21
+   i32.const 22
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10385,7 +10622,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 23
+   i32.const 24
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10523,7 +10760,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 25
+   i32.const 26
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10661,7 +10898,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 27
+   i32.const 28
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10819,8 +11056,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 18
+   i32.const 28
+   i32.const 19
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10859,6 +11096,14 @@
   local.get $1
   i32.const 528
   call $async-crossfile/__Cps_awaitOtherFile#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitOtherFile#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11139,7 +11384,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 19
+  i32.const 20
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11475,8 +11720,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 52
-   i32.const 20
+   i32.const 64
+   i32.const 21
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11515,6 +11760,14 @@
   local.get $1
   i32.const 528
   call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11562,15 +11815,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_4_4
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_5_5
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendVal_4_4
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11578,7 +11823,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_7_6
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_5_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11586,7 +11831,15 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_6_7
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_6_6
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_9_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11594,7 +11847,15 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_8
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_7_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_errVal_8_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11602,7 +11863,15 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_9
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_10
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_11
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11867,7 +12136,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 21
+  i32.const 22
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12118,7 +12387,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_4_4
+                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_5_5
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -12126,7 +12395,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_7_6
+                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_9_7
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -12134,7 +12403,7 @@
                      i32.store
                      local.get $2
                      i32.const 528
-                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_6_7
+                     call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_7_8
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -12151,7 +12420,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_7_6
+                    call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_9_7
                     if
                      local.get $this
                      local.set $2
@@ -12228,14 +12497,14 @@
                  local.get $2
                  i32.store offset=4
                  local.get $2
-                 call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_8
+                 call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_c_10
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_7_6
+                 call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_9_7
                  if (result i32)
                   i32.const 1
                  else
@@ -12278,7 +12547,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_4_4
+                  call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_5_5
                  end
                  if
                   local.get $this
@@ -12337,13 +12606,13 @@
                 local.get $2
                 i32.store offset=8
                 local.get $2
-                call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps_c_8
+                call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps_c_10
                 local.set $2
                 global.get $~lib/memory/__stack_pointer
                 local.get $2
                 i32.store offset=4
                 local.get $2
-                call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_5_5
+                call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_6_6
                 local.get $this
                 local.set $2
                 global.get $~lib/memory/__stack_pointer
@@ -12358,7 +12627,7 @@
                 local.get $2
                 i32.store
                 local.get $2
-                call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_7_6
+                call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_9_7
                 if (result i32)
                  i32.const 1
                 else
@@ -12401,7 +12670,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_4_4
+                 call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_5_5
                 end
                 if
                  local.get $this
@@ -12460,7 +12729,7 @@
             local.get $2
             i32.store
             local.get $2
-            call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_7_6
+            call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_flag_9_7
             if
              local.get $this
              local.set $2
@@ -12489,7 +12758,7 @@
            i32.store
            local.get $2
            i32.const 0
-           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_7_6
+           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_9_7
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -12502,13 +12771,13 @@
            local.get $2
            i32.store offset=8
            local.get $2
-           call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_6_7
+           call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_7_8
            local.set $2
            global.get $~lib/memory/__stack_pointer
            local.get $2
            i32.store offset=4
            local.get $2
-           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_9
+           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps_e_11
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -12540,7 +12809,7 @@
            i32.store
            local.get $2
            i32.const 2432
-           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_5_5
+           call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_retVal_6_6
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -12571,7 +12840,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_6_7
+          call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_errVal_8_9
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_err_7_8
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -12624,7 +12912,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_4_4
+         call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendFail_5_5
          if
           local.get $this
           local.set $2
@@ -12653,7 +12941,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_4_4
+        call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_pendFail_5_5
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_pendVal_4_4
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -12761,7 +13068,7 @@
       local.get $2
       i32.store offset=8
       local.get $2
-      call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_retVal_5_5
+      call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__cps___async_try_retVal_6_6
       local.set $2
       global.get $~lib/memory/__stack_pointer
       local.get $2
@@ -12899,8 +13206,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 22
+   i32.const 28
+   i32.const 23
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -12939,6 +13246,14 @@
   local.get $1
   i32.const 528
   call $async-crossfile/__Cps_awaitChain#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitChain#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13050,8 +13365,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 10
+   i32.const 32
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13090,6 +13405,14 @@
   local.get $1
   i32.const 528
   call $_async-crossfile-chain/__Cps_chain#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $_async-crossfile-chain/__Cps_chain#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13436,7 +13759,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 23
+  i32.const 24
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -13773,8 +14096,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 24
+   i32.const 28
+   i32.const 25
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13813,6 +14136,14 @@
   local.get $1
   i32.const 528
   call $async-crossfile/__Cps_awaitCycle#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitCycle#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -14093,7 +14424,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 25
+  i32.const 26
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -14420,8 +14751,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 26
+   i32.const 32
+   i32.const 27
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14460,6 +14791,14 @@
   local.get $1
   i32.const 528
   call $async-crossfile/__Cps_awaitCrossMethod#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-crossfile/__Cps_awaitCrossMethod#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -14580,7 +14919,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 0
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14617,8 +14956,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 16
+   i32.const 32
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14657,6 +14996,14 @@
   local.get $1
   i32.const 528
   call $_async-crossfile-methods/__Cps_W2_helper#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $_async-crossfile-methods/__Cps_W2_helper#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -15016,7 +15363,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 27
+  i32.const 28
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -15853,6 +16200,31 @@
   local.get $1
   return
  )
+ (func $async-crossfile/__async_async_crossfile_awaitOtherFile_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-crossfile/__Cps_awaitOtherFile#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-crossfile/__async_async_crossfile_awaitOtherFile_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16175,7 +16547,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_7_6
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_flag_9_7
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -16188,7 +16560,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_6_7
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#set:__cps___async_try_err_7_8
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -16246,6 +16618,31 @@
   i32.store
   local.get $1
   call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-crossfile/__Cps_awaitOtherFileGuarded#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -16675,6 +17072,31 @@
   local.get $1
   return
  )
+ (func $async-crossfile/__async_async_crossfile_awaitChain_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-crossfile/__Cps_awaitChain#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-crossfile/__async_async_crossfile_awaitChain_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17091,6 +17513,31 @@
   local.get $1
   return
  )
+ (func $async-crossfile/__async_async_crossfile_awaitCycle_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-crossfile/__Cps_awaitCycle#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-crossfile/__async_async_crossfile_awaitCycle_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17499,6 +17946,31 @@
   i32.store
   local.get $1
   call $async-crossfile/__Cps_awaitCrossMethod#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-crossfile/__async_async_crossfile_awaitCrossMethod_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-crossfile/__Cps_awaitCrossMethod#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19333,6 +19805,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-crossfile/__async_async_crossfile_awaitOtherFile_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-crossfile/__async_async_crossfile_awaitOtherFile_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19467,6 +19958,25 @@
   i32.store
   local.get $0
   call $async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-crossfile/__async_async_crossfile_awaitOtherFileGuarded_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19615,6 +20125,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-crossfile/__async_async_crossfile_awaitChain_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-crossfile/__async_async_crossfile_awaitChain_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-crossfile/__async_async_crossfile_awaitChain_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19753,6 +20282,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-crossfile/__async_async_crossfile_awaitCycle_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-crossfile/__async_async_crossfile_awaitCycle_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-crossfile/__async_async_crossfile_awaitCycle_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19884,6 +20432,25 @@
   i32.store
   local.get $0
   call $async-crossfile/__async_async_crossfile_awaitCrossMethod_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-crossfile/__async_async_crossfile_awaitCrossMethod_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-crossfile/__async_async_crossfile_awaitCrossMethod_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

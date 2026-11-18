@@ -32,9 +32,9 @@
  (global $async-method/__async_state_async_method_Counter_viaArrow (mut i32) (i32.const 0))
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 848))
- (global $~lib/memory/__data_end i32 (i32.const 900))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33668))
- (global $~lib/memory/__heap_base i32 (i32.const 33668))
+ (global $~lib/memory/__data_end i32 (i32.const 904))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33672))
+ (global $~lib/memory/__heap_base i32 (i32.const 33672))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -52,7 +52,7 @@
  (data $13 (i32.const 636) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $14 (i32.const 668) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $15 (i32.const 716) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $16 (i32.const 848) "\0c\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $16 (i32.const 848) "\r\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 2 2 funcref)
  (elem $0 (i32.const 1) $async-method/__adapt_Counter_viaArrow_0)
  (export "startAdd" (func $async-method/startAdd))
@@ -68,6 +68,7 @@
  (export "__async_async_method_Counter_add_reject_0" (func $export:async-method/__async_async_method_Counter_add_reject_0))
  (export "__async_async_method_Counter_add_result" (func $export:async-method/__async_async_method_Counter_add_result))
  (export "__async_async_method_Counter_add_error" (func $export:async-method/__async_async_method_Counter_add_error))
+ (export "__async_async_method_Counter_add_errorValue" (func $export:async-method/__async_async_method_Counter_add_errorValue))
  (export "__async_async_method_Counter_add_status" (func $export:async-method/__async_async_method_Counter_add_status))
  (export "__async_async_method_Counter_add_entry" (func $export:async-method/__async_async_method_Counter_add_entry))
  (export "__async_async_method_Counter_viaArrow_reclaim" (func $export:async-method/__async_async_method_Counter_viaArrow_reclaim))
@@ -75,6 +76,7 @@
  (export "__async_async_method_Counter_viaArrow_reject_0" (func $export:async-method/__async_async_method_Counter_viaArrow_reject_0))
  (export "__async_async_method_Counter_viaArrow_result" (func $export:async-method/__async_async_method_Counter_viaArrow_result))
  (export "__async_async_method_Counter_viaArrow_error" (func $export:async-method/__async_async_method_Counter_viaArrow_error))
+ (export "__async_async_method_Counter_viaArrow_errorValue" (func $export:async-method/__async_async_method_Counter_viaArrow_errorValue))
  (export "__async_async_method_Counter_viaArrow_status" (func $export:async-method/__async_async_method_Counter_viaArrow_status))
  (export "__async_async_method_Counter_viaArrow_entry" (func $export:async-method/__async_async_method_Counter_viaArrow_entry))
  (start $~start)
@@ -2448,20 +2450,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method/__Cps_Counter_add#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method/__Cps_Counter_add#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method/__Cps_Counter_add#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method/__Cps_Counter_add#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2470,7 +2481,7 @@
  (func $async-method/__Cps_Counter_add#set:__cps_m_2 (param $this i32) (param $__cps_m_2 i32)
   local.get $this
   local.get $__cps_m_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-method/__Cps_Counter_add>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2544,7 +2555,7 @@
  )
  (func $async-method/__Cps_Counter_add#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-method/Counter#get:count (param $this i32) (result i32)
   local.get $this
@@ -2552,15 +2563,15 @@
  )
  (func $async-method/__Cps_Counter_add#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-method/__Cps_Counter_add#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method/__Cps_Counter_add#get:__cps_m_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2597,20 +2608,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method/__Cps_Counter_viaArrow#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method/__Cps_Counter_viaArrow#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method/__Cps_Counter_viaArrow#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method/__Cps_Counter_viaArrow#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2619,7 +2639,7 @@
  (func $async-method/__Cps_Counter_viaArrow#set:__cps_bump_2 (param $this i32) (param $__cps_bump_2 i32)
   local.get $this
   local.get $__cps_bump_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_bump_2
   i32.const 0
@@ -2628,7 +2648,7 @@
  (func $async-method/__Cps_Counter_viaArrow#set:__cps_m_3 (param $this i32) (param $__cps_m_3 i32)
   local.get $this
   local.get $__cps_m_3
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $~lib/array/Array<async-method/__Cps_Counter_viaArrow>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2644,19 +2664,19 @@
  )
  (func $async-method/__Cps_Counter_viaArrow#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-method/__Cps_Counter_viaArrow#get:__cps_bump_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-method/__Cps_Counter_viaArrow#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method/__Cps_Counter_viaArrow#get:__cps_m_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-method/__async_async_method_mint (result i32)
   i32.const 0
@@ -2719,6 +2739,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-method/__Cps_Counter_add#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-method/__async_async_method_Counter_new (result i32)
   i32.const 0
   call $async-method/Counter#constructor
@@ -2731,6 +2755,10 @@
  (func $async-method/__Cps_Counter_viaArrow#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-method/__Cps_Counter_viaArrow#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -2795,7 +2823,29 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2821,11 +2871,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2859,43 +2913,49 @@
     block $~lib/array/Array<async-method/__Cps_Counter_viaArrow>
      block $async-method/__Cps_Counter_viaArrow
       block $~lib/array/Array<async-method/__Cps_Counter_add>
-       block $async-method/__Cps_Counter_add
-        block $~lib/function/Function<%28i32%29=>i32>
-         block $~lib/promise/Promise<i32>
-          block $async-method/Counter
-           block $~lib/arraybuffer/ArrayBufferView
-            block $~lib/string/String
-             block $~lib/arraybuffer/ArrayBuffer
-              block $~lib/object/Object
-               local.get $0
-               i32.const 8
-               i32.sub
-               i32.load
-               br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-method/Counter $~lib/promise/Promise<i32> $~lib/function/Function<%28i32%29=>i32> $async-method/__Cps_Counter_add $~lib/array/Array<async-method/__Cps_Counter_add> $async-method/__Cps_Counter_viaArrow $~lib/array/Array<async-method/__Cps_Counter_viaArrow> $~lib/array/Array<i32> $invalid
+       block $~lib/error/Error
+        block $async-method/__Cps_Counter_add
+         block $~lib/function/Function<%28i32%29=>i32>
+          block $~lib/promise/Promise<i32>
+           block $async-method/Counter
+            block $~lib/arraybuffer/ArrayBufferView
+             block $~lib/string/String
+              block $~lib/arraybuffer/ArrayBuffer
+               block $~lib/object/Object
+                local.get $0
+                i32.const 8
+                i32.sub
+                i32.load
+                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-method/Counter $~lib/promise/Promise<i32> $~lib/function/Function<%28i32%29=>i32> $async-method/__Cps_Counter_add $~lib/error/Error $~lib/array/Array<async-method/__Cps_Counter_add> $async-method/__Cps_Counter_viaArrow $~lib/array/Array<async-method/__Cps_Counter_viaArrow> $~lib/array/Array<i32> $invalid
+               end
+               return
               end
               return
              end
              return
             end
+            local.get $0
+            local.get $1
+            call $~lib/arraybuffer/ArrayBufferView~visit
             return
            end
-           local.get $0
-           local.get $1
-           call $~lib/arraybuffer/ArrayBufferView~visit
            return
           end
           return
          end
+         local.get $0
+         local.get $1
+         call $~lib/function/Function<%28i32%29=>i32>~visit
          return
         end
         local.get $0
         local.get $1
-        call $~lib/function/Function<%28i32%29=>i32>~visit
+        call $async-method/__Cps_Counter_add~visit
         return
        end
        local.get $0
        local.get $1
-       call $async-method/__Cps_Counter_add~visit
+       call $~lib/error/Error~visit
        return
       end
       local.get $0
@@ -2958,7 +3018,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3096,7 +3156,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3272,7 +3332,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
+   i32.const 32
    i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -3312,6 +3372,14 @@
   local.get $1
   i32.const 528
   call $async-method/__Cps_Counter_add#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method/__Cps_Counter_add#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3719,7 +3787,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4166,8 +4234,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 9
+   i32.const 36
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4206,6 +4274,14 @@
   local.get $1
   i32.const 528
   call $async-method/__Cps_Counter_viaArrow#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method/__Cps_Counter_viaArrow#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4590,7 +4666,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 10
+  i32.const 11
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5475,6 +5551,31 @@
   local.get $1
   return
  )
+ (func $async-method/__async_async_method_Counter_add_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method/__Cps_Counter_add#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-method/__async_async_method_Counter_add_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5884,6 +5985,31 @@
   i32.store
   local.get $1
   call $async-method/__Cps_Counter_viaArrow#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-method/__async_async_method_Counter_viaArrow_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method/__Cps_Counter_viaArrow#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -6355,6 +6481,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-method/__async_async_method_Counter_add_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method/__async_async_method_Counter_add_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-method/__async_async_method_Counter_add_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -6487,6 +6632,25 @@
   i32.store
   local.get $0
   call $async-method/__async_async_method_Counter_viaArrow_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-method/__async_async_method_Counter_viaArrow_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method/__async_async_method_Counter_viaArrow_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
