@@ -46,7 +46,8 @@ import {
   findExportName,
   collectSuspendingImports,
   findImportName,
-  qualNameOf
+  qualNameOf,
+  namespacePathOf
 } from "./asyncCoordinatorMeta";
 
 /** Builds metadata for one transformed async function, or `null` (with a
@@ -363,10 +364,15 @@ function buildInnerMeta(
   let file = owningFile(outer);
   if (!file) return null;
   for (let prototype of program.transformedAsyncFunctions) {
-    if (qualNameOf(prototype) != innerQual) continue;
     let innerFile = owningFile(prototype);
     if (!innerFile || innerFile != file) continue;
-    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
+    // Protocol members register under the owning file for methods (whose
+    // parent is the bound class) and for namespaced functions (whose
+    // parent is the namespace); only a top-level function looks them up
+    // under its own parent, the file itself.
+    let lookupParent: Element = prototype.getBoundClassOrInterface() || namespacePathOf(prototype).length > 0
+      ? innerFile
+      : prototype.parent;
     return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
   }
   return null;
@@ -424,6 +430,24 @@ export function buildAsyncCoordinator(program: Program): string | null {
     if (bound && bound.kind == ElementKind.Class) {
       let meta = buildMethodMeta(program, prototype, notes);
       if (meta) methodEntries.push({ prototype, meta, classPrototype: bound.prototype });
+    } else if (namespacePathOf(prototype).length > 0) {
+      // A namespaced function is not a wasm export, so it is driven
+      // through its generated top-level entry alias. The entry exists
+      // only when the function is exported through its namespace chain;
+      // without it the function stays inner-only and is skipped here.
+      let qual = qualNameOf(prototype);
+      let file = owningFile(prototype);
+      let meta = file ? buildFunctionMeta(program, prototype, notes, true, qual, file) : null;
+      if (meta) {
+        let entryName = "__async_" + meta.fileBase + "_" + qual + "_entry";
+        if (file!.getMember(entryName)) {
+          meta.exportName = null;
+          meta.entryExport = entryName;
+          meta.path = namespacePathOf(prototype);
+          meta.name = prototype.name;
+          entries.push({ prototype, meta });
+        }
+      }
     } else {
       let meta = buildFunctionMeta(program, prototype, notes, false, prototype.name, prototype.parent);
       if (meta) entries.push({ prototype, meta });

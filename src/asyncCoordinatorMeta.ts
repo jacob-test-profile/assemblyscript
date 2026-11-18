@@ -64,9 +64,13 @@ export interface SiteMeta {
   innerExportName: string | null;
 }
 
-/** Metadata for one exported transformed async function. */
+/** Metadata for one exported transformed async function. A namespaced
+ *  function has `exportName: null` and is driven through `entryExport`
+ *  instead; `path`/`name` place it at `api.NS.take` in the generated JS
+ *  (nested objects mirroring the namespace path). */
 export interface FunctionMeta {
-  /** Wasm export name, or `null` for a non-exported inner function. */
+  /** Wasm export name, or `null` for a non-exported inner function and
+   *  for a namespaced function (driven through `entryExport`). */
   exportName: string | null;
   fileBase: string;
   params: ValueDesc[];
@@ -76,6 +80,12 @@ export interface FunctionMeta {
   resultExport: string;
   errorExport: string;
   sites: SiteMeta[];
+  /** `__async_<file>_<qual>_entry`, for namespaced functions and methods. */
+  entryExport?: string;
+  /** Namespace path segments, for namespaced functions. */
+  path?: string[];
+  /** Simple function name, for namespaced functions. */
+  name?: string;
 }
 
 /** Metadata for one transformed async method on an exported class. Like
@@ -205,12 +215,28 @@ export function describeParams(types: Type[], owner: string): { params: ValueDes
   return { params: out, reason: null };
 }
 
+/** Namespace path of an element, outermost first: `["Outer", "Inner"]`
+ *  for a member of `Outer.Inner`, `[]` for a top-level element. */
+export function namespacePathOf(element: Element): string[] {
+  let path = new Array<string>();
+  let current: Element | null = element.parent;
+  while (current && current.kind == ElementKind.Namespace) {
+    path.unshift(current.name);
+    current = current.parent;
+  }
+  return path;
+}
+
 /** Qualified name used for all generated names: `Class_method` for a bound
  *  method prototype (the transform binds methods to the resolved class, so
- *  the parent chain carries the class), the plain name otherwise. */
+ *  the parent chain carries the class), `NS_take` for a function in a
+ *  namespace (the path disambiguates same-named functions in different
+ *  namespaces), the plain name otherwise. */
 export function qualNameOf(prototype: FunctionPrototype): string {
   let bound = prototype.getBoundClassOrInterface();
   if (bound) return bound.prototype.name + "_" + prototype.name;
+  let path = namespacePathOf(prototype);
+  if (path.length > 0) return path.join("_") + "_" + prototype.name;
   return prototype.name;
 }
 
