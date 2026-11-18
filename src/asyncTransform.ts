@@ -3303,7 +3303,7 @@ class AsyncFunctionTransform {
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
-      let described = describeParams(ctor.signature.parameterTypes, className);
+      let described = describeParams(this.program, ctor.signature.parameterTypes, className);
       if (described.reason) {
         warnSkipped(this.program, this.prototype, described.reason, []);
         return null;

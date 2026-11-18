@@ -26,7 +26,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -841,6 +841,186 @@ const api = await instantiateAsync(bytes, {
     check((await p) === 12, "pinned instance must still drive after churn + __collect");
     c.dispose();
     console.log("PASS pinned instance survives churn + __collect");
+  }
+}
+
+// Array and plain-class values across the boundary (close-gaps Group
+// 5b): await values, parameters, results, join members, stored awaits,
+// nullable results, and async methods, driven through the generated
+// coordinator only.
+{
+  const wasmBytes = readFileSync(compile("values.ts"));
+  const valuesCoord = join(dir, "values.async.js");
+  check(existsSync(valuesCoord), "values.async.js must be emitted for the values fixture");
+  const { instantiateAsync: instantiateValues } = await import(pathToFileURL(valuesCoord).href);
+  const vNumDeferreds = [];
+  const vArrDeferreds = [];
+  const valuesApi = await instantiateValues(wasmBytes, {
+    env: {
+      getNumbers() {
+        const d = deferred();
+        vArrDeferreds.push(d);
+        return d.promise;
+      },
+      getNumber() {
+        const d = deferred();
+        vNumDeferreds.push(d);
+        return d.promise;
+      },
+      getStrings: async () => ["a", "bb", "ccc"],
+      getPoint: async () => ({ x: 3, y: 4 }),
+      getPoints: async () => [{ x: 1, y: 2 }, { x: 10, y: 20 }],
+      getMatrix: async () => [[1, 2], [3, 4, 5]],
+      getBytes: async () => [1, 2, 3],
+      getFloats: async () => [1.5, 2.5],
+      getStatic: async () => [7, 8]
+    }
+  });
+  const eq = (got, want, msg) => check(JSON.stringify(got) === JSON.stringify(want), msg + ", got " + JSON.stringify(got));
+
+  {
+    const p = valuesApi.sumArr();
+    await tick();
+    vArrDeferreds[0].resolve([10, 20, 30]);
+    check((await p) === 60, "sumArr must resolve 60");
+    console.log("PASS awaited Array<i32> value");
+  }
+
+  {
+    const p = valuesApi.getArr();
+    await tick();
+    vNumDeferreds[0].resolve(5);
+    eq(await p, [5, 6], "getArr must resolve [5,6]");
+    console.log("PASS Array<i32> result");
+  }
+
+  {
+    const p = valuesApi.sumParam([1, 2, 3]);
+    await tick();
+    vNumDeferreds[1].resolve(5);
+    check((await p) === 11, "sumParam([1,2,3]) must resolve 11");
+    console.log("PASS Array<i32> parameter");
+  }
+
+  check((await valuesApi.concatStrs()) === "a,bb,ccc", "concatStrs must resolve a,bb,ccc");
+  console.log("PASS awaited Array<string> value");
+
+  check((await valuesApi.sumPoint()) === 7, "sumPoint must resolve 7");
+  console.log("PASS awaited plain-class value");
+
+  {
+    const p = valuesApi.makePoint();
+    await tick();
+    vNumDeferreds[2].resolve(5);
+    eq(await p, { x: 5, y: 10 }, "makePoint must resolve {x:5,y:10}");
+    console.log("PASS plain-class result");
+  }
+
+  check((await valuesApi.sumPoints()) === 33, "sumPoints must resolve 33");
+  console.log("PASS awaited Array<Point> value");
+
+  check((await valuesApi.sumMatrix()) === 15, "sumMatrix must resolve 15");
+  console.log("PASS awaited Array<Array<i32>> value");
+
+  {
+    const p = valuesApi.getLabeled();
+    await tick();
+    vNumDeferreds[3].resolve(5);
+    eq(await p, { label: "L5", vals: [5, 6] }, "getLabeled must resolve {label:L5,vals:[5,6]}");
+    console.log("PASS plain-class result with string and array fields");
+  }
+
+  {
+    const p = valuesApi.sumLabeled({ label: "x", vals: [1, 2] });
+    await tick();
+    vNumDeferreds[4].resolve(5);
+    check((await p) === 8, "sumLabeled must resolve 8");
+    console.log("PASS plain-class parameter");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.joinArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 2, "joinArrs must issue 2 members");
+    vArrDeferreds[aBase + 1].resolve([10, 20, 30]);
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [[10, 20, 30], [10, 20, 30]], "joinArrs must resolve both member arrays");
+    console.log("PASS join members of Array<i32> type");
+  }
+
+  eq(await valuesApi.joinPoints(), [{ x: 3, y: 4 }, { x: 3, y: 4 }], "joinPoints must resolve both member objects");
+  console.log("PASS join members of plain-class type");
+
+  {
+    const p = valuesApi.storedArr();
+    await tick();
+    const base = vArrDeferreds.length - 1;
+    vArrDeferreds[base].resolve([10, 20, 30]);
+    check((await p) === 60, "storedArr must resolve 60");
+    console.log("PASS stored Array<i32> await");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.maybeArr(1);
+    await tick();
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [10, 20, 30], "maybeArr(1) must resolve the array");
+  }
+  check((await valuesApi.maybeArr(0)) === null, "maybeArr(0) must resolve null");
+  console.log("PASS nullable Array<i32> result");
+
+  check((await valuesApi.sumBytes()) === 6, "sumBytes must resolve 6");
+  console.log("PASS awaited Array<i8> value (byte-width elements)");
+
+  check((await valuesApi.sumFloats()) === 4, "sumFloats must resolve 4");
+  console.log("PASS awaited Array<f64> value");
+
+  check((await valuesApi.sumStatic()) === 15, "sumStatic must resolve 15");
+  console.log("PASS awaited StaticArray<i32> value");
+
+  {
+    const p = valuesApi.getStaticArr();
+    await tick();
+    vNumDeferreds[5].resolve(5);
+    eq(await p, [5, 6], "getStaticArr must resolve [5,6]");
+    console.log("PASS StaticArray<i32> result");
+  }
+
+  // An array awaited before a second await must survive heap churn +
+  // __collect while it sits in the state object's pending field.
+  {
+    const aBase = vArrDeferreds.length;
+    const nBase = vNumDeferreds.length;
+    const p = valuesApi.twoArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 1, "twoArrs must issue getNumbers once");
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    await tick();
+    check(vNumDeferreds.length === nBase + 1, "twoArrs must issue getNumber after the first await");
+    valuesApi.exports.__collect();
+    valuesApi.exports.allocSpam(2000);
+    valuesApi.exports.__collect();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 65, "twoArrs must resolve 65 with the first array surviving churn + __collect");
+    console.log("PASS Array<i32> await value survives churn + __collect across a second await");
+  }
+
+  // Async methods with array/class values, through the wrapper class.
+  {
+    const box = new valuesApi.Box(100);
+    const nBase = vNumDeferreds.length;
+    let p = box.addAll([1, 2]);
+    await tick();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 108, "Box.addAll([1,2]) must resolve 108");
+    p = box.makePoint();
+    await tick();
+    vNumDeferreds[nBase + 1].resolve(5);
+    eq(await p, { x: 105, y: 0 }, "Box.makePoint must resolve {x:105,y:0}");
+    box.dispose();
+    console.log("PASS async methods with Array<i32> parameter and Point result");
   }
 }
 

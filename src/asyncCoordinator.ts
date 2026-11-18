@@ -90,12 +90,12 @@ function buildFunctionMeta(
     warnSkipped(program, prototype, "it does not return a Promise", notes);
     return null;
   }
-  let result = describeType(unwrapped);
+  let result = describeType(program, unwrapped);
   if (!result) {
     warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
     return null;
   }
-  let params = describeParams(signature.parameterTypes, prototype.name);
+  let params = describeParams(program, signature.parameterTypes, prototype.name);
   if (params.reason) {
     warnSkipped(program, prototype, params.reason, notes);
     return null;
@@ -133,7 +133,7 @@ function buildFunctionMeta(
         warnSkipped(program, prototype, "join site " + n.toString() + " has no value parameter", notes);
         return null;
       }
-      let member = describeType(storeTypes[2]);
+      let member = describeType(program, storeTypes[2]);
       if (!member) {
         warnSkipped(
           program, prototype,
@@ -143,8 +143,7 @@ function buildFunctionMeta(
         return null;
       }
       sites.push({
-        kind: member.kind,
-        nullable: member.nullable,
+        desc: member,
         join: true,
         nested: false,
         resumeExport: null,
@@ -169,7 +168,7 @@ function buildFunctionMeta(
       warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
       return null;
     }
-    let site = describeType(valueTypes[1]);
+    let site = describeType(program, valueTypes[1]);
     if (!site) {
       warnSkipped(
         program, prototype,
@@ -190,8 +189,7 @@ function buildFunctionMeta(
       }
     }
     sites.push({
-      kind: site.kind,
-      nullable: site.nullable,
+      desc: site,
       join: false,
       nested: !!pendingMember,
       resumeExport: resumeName,
@@ -207,8 +205,7 @@ function buildFunctionMeta(
     exportName,
     fileBase,
     params: params.params,
-    resultKind: result.kind,
-    resultNullable: result.nullable,
+    result,
     statusExport: "__async_" + fileBase + "_" + fn + "_status",
     resultExport: "__async_" + fileBase + "_" + fn + "_result",
     errorExport: "__async_" + fileBase + "_" + fn + "_error",
@@ -274,7 +271,7 @@ function buildClassMeta(
       warnSkipped(program, ctor, "its constructor cannot be resolved", notes);
       return null;
     }
-    let params = describeParams(ctorInstance.signature.parameterTypes, name);
+    let params = describeParams(program, ctorInstance.signature.parameterTypes, name);
     if (params.reason) {
       warnSkipped(program, ctor, params.reason, notes);
       return null;
@@ -313,7 +310,7 @@ function buildImportMeta(
     warnSkipped(program, prototype, "suspending import does not return a Promise", notes);
     return null;
   }
-  let result = describeType(unwrapped);
+  let result = describeType(program, unwrapped);
   if (!result) {
     let reason = "unsupported return type '" + unwrapped.toString() + "'";
     warnSkipped(program, prototype, reason, notes);
@@ -321,21 +318,19 @@ function buildImportMeta(
       module: found.module,
       name: found.name,
       params: [],
-      resultKind: "void",
-      resultNullable: false,
+      result: { kind: "void", nullable: false },
       unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
         "': " + reason
     };
   }
-  let params = describeParams(instance.signature.parameterTypes, prototype.name);
+  let params = describeParams(program, instance.signature.parameterTypes, prototype.name);
   if (params.reason) {
     warnSkipped(program, prototype, params.reason, notes);
     return {
       module: found.module,
       name: found.name,
       params: [],
-      resultKind: result.kind,
-      resultNullable: result.nullable,
+      result,
       unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
         "': " + params.reason
     };
@@ -344,8 +339,7 @@ function buildImportMeta(
     module: found.module,
     name: found.name,
     params: params.params,
-    resultKind: result.kind,
-    resultNullable: result.nullable
+    result
   };
 }
 
@@ -469,7 +463,21 @@ export function buildAsyncCoordinator(program: Program): string | null {
     seen.add(key);
     imports.push(meta);
   }
-  let metadata = { functions, classes, inners, imports };
+  // Array layout constants for the runtime's array lowering/lifting,
+  // from the stock bindings generator's `__lowerArray`/`__liftArray`
+  // (`src/bindings/js.ts`): the ArrayBuffer id, the Array<T> header
+  // size, and the buffer/dataStart/byteLength/length field offsets.
+  let arrayView = program.arrayBufferViewInstance;
+  let byteLengthOffset = arrayView.offsetof("byteLength");
+  let layout = {
+    arrayBufferId: program.arrayBufferInstance.id,
+    arraySize: arrayView.nextMemoryOffset + 4,
+    bufferOffset: arrayView.offsetof("buffer"),
+    dataStartOffset: arrayView.offsetof("dataStart"),
+    byteLengthOffset,
+    lengthOffset: byteLengthOffset + 4
+  };
+  let metadata = { functions, classes, inners, imports, layout };
   let hasJoin = false;
   for (let i = 0, k = functions.length; i < k; ++i) {
     let sites = functions[i].sites;
@@ -491,8 +499,7 @@ export function buildAsyncCoordinator(program: Program): string | null {
       module: "env",
       name: "__async_join",
       params: [],
-      resultKind: "i32",
-      resultNullable: false,
+      result: { kind: "i32", nullable: false },
       joinImport: true
     });
   }
@@ -502,8 +509,7 @@ export function buildAsyncCoordinator(program: Program): string | null {
       module: "env",
       name: "__async_wait",
       params: [],
-      resultKind: "i32",
-      resultNullable: false,
+      result: { kind: "i32", nullable: false },
       waitImport: true
     });
   }
