@@ -4,6 +4,6 @@
     "nodenext"
   ],
   "stderr": [
-    "TS1147: 'makeFoo' cannot be used as a value because it was imported using 'import type'."
+    "TS1147: 'makeFoo' cannot be used as a value because it is a type-only import."
   ]
 }

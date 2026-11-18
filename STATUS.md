@@ -71,11 +71,61 @@ Do NOT push to main or to async. Do NOT merge into async — main agent merges.
   test:parser, check. Lesson: never pipe a suite through `tail` when
   checking its exit code — the pipe masks failures (caught an export-plain
   fixture mismatch this way; fixed by generating its fixtures).
-- Q9 exploration: elision probe PROVED asc already elides imports used only
-  as types (Foo used only as a type leaves zero mentions in .wat) — so
-  verbatim work is parsing + AST flag + value-use/export checks, not
-  codegen elision. Stdlib uses enums, namespaces, parameter properties, so
-  erasable enforcement must exempt ~lib/ like checkImportExtension does.
+- Q9a DONE + verified, committed `3e5b38e5`, pushed to track/nodenext-module.
+  Diagnostic TS1145 ("'{0}' is not allowed when 'erasableSyntaxOnly' is
+  enabled."); parser rejects enums, namespaces, parameter properties when
+  module == nodenext and the source is not under ~lib/ (stdlib uses all
+  three). Fixtures erasable-enum/namespace/param-prop (stderr TS1145),
+  erasable-allowed-commonjs (compiles under the default module).
+- Q9b DONE + verified, committed `924bff6c`, pushed to track/nodenext-module.
+  `import type` (leading + inline specifiers) parsed into an `isType` flag
+  on ImportStatement/ImportDeclaration, gated on nodenext; commonjs keeps
+  today's misparse (TS1005). File.typeOnlyImports records type-only
+  bindings at import init (immediate + queued paths); the resolver rejects
+  value uses with TS1147 ("'{0}' cannot be used as a value because it is a
+  type-only import." — reworded in Q9c from "imported using 'import type'",
+  which is wrong for transitive bindings). Value-use paths: identifiers
+  (lookupIdentifierExpression) and `new` (lookupNewExpression — `new Foo()`
+  resolves its callee as a type name, not an identifier, so it needed its
+  own check; `x as Foo` / `instanceof` / `changetype<Foo>` are type
+  positions and are NOT checked). Fixtures: import-type-ok/star/inline
+  (compile; .wat has zero mentions of the type-only class),
+  import-type-value (`new`), import-type-value-call, import-type-commonjs.
+  `new`-plus-`instanceof` probe: `instanceof` was checked and left alone
+  (type position, ReportMode.Swallow).
+- Q9c DONE + verified (uncommitted at this writing). `export type` (leading
+  `export type {…}` / `export type *` + inline `export { type Foo }`),
+  gated on nodenext; commonjs keeps TS2304 "Cannot find name 'type'."
+  AST `isType` on ExportStatement/ExportMember. Program: File.typeExports
+  + typeExportsStar maps, ensureTypeExport/ensureTypeExportStar (also
+  propagate to alias namespaces so `ns.Foo` resolves as a type),
+  lookupExport checks both maps, File.getMember traverses typeExportsStar,
+  QueuedExport/QueuedExportStar carry isType. Kind validation via
+  isTypeExportable (ClassPrototype/Class/InterfacePrototype/Interface/Enum/
+  Namespace/TypeDefinition); values => TS1148 ("'{0}' is a value and cannot
+  be exported as a type.") at both the immediate and queued export paths
+  (incl. the `export { memory }` global fallback).
+  Transitive type-only: a value import from a type re-export is itself
+  type-only — new lookupForeignIsType mirrors lookupForeign (incl. queued
+  exports) and is consulted at import init + in the queued-import loop.
+  Two bugs found by the fixtures and fixed: (1) lookupForeign never
+  followed typeExportsStar, so a type-star re-export could not be imported
+  at all; (2) lookupExportIsType recursed into a type-star target and asked
+  *that* file (which said the name is a value export), losing the
+  "came through a type star" fact — now returns true when found through a
+  type star. Fixtures (11): export-type-from/local/inline/star (compile;
+  .wat exports only the function + memory, no Foo runtime export),
+  export-type-value (foreign value) + export-type-value-local (queued local
+  value) => TS1148, export-type-consumer-ok/value (transitive through
+  `export type {…}` => type use compiles, `new` => TS1147),
+  export-type-star-consumer-ok/value (transitive through `export type *`),
+  export-type-commonjs (TS2304).
+- Known gaps (not fixed, recorded): value use of a type-only name through a
+  namespace alias (`new plain.Foo()` where `plain` is a value namespace
+  import) is not caught — the check keys on the imported binding name,
+  not on members; `export type *` re-exports value members too (consumer
+  can only use them as types, consistent with TS); `export type` of a
+  namespace member / `export type` inside a namespace is untested.
 
 ## Q9 plan
 - Diagnostics: AVOID AS1144 (taken on async by the `//@ external` space
@@ -97,6 +147,6 @@ Do NOT push to main or to async. Do NOT merge into async — main agent merges.
   add type-plain helper).
 
 ## Remains
-- Q9 implementation + tests (erasable rejections, import/export type).
-- `check` + `build` green; test:compiler --parallel + test:parser green;
-  commit + push per chunk to track/nodenext-module.
+- Q9c commit + push to track/nodenext-module.
+- Final acceptance: `check` + `build` green; test:compiler --parallel +
+  test:parser green; then report back to the main agent (main agent merges).

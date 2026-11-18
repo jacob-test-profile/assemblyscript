@@ -392,6 +392,14 @@ export class Parser extends DiagnosticEmitter {
           tn.discard(state);
           statement = this.parseTypeDeclaration(tn, flags, decorators, startPos);
           decorators = null;
+        } else if (
+          (flags & CommonFlags.Export) != 0 &&
+          this.isNodeNext() &&
+          (tn.peek() == Token.OpenBrace || tn.peek() == Token.Asterisk)
+        ) {
+          tn.discard(state);
+          statement = this.parseExport(tn, startPos, (flags & CommonFlags.Declare) != 0, true);
+          decorators = null;
         } else {
           tn.reset(state);
           statement = this.parseStatement(tn, true);
@@ -2870,7 +2878,8 @@ export class Parser extends DiagnosticEmitter {
   parseExport(
     tn: Tokenizer,
     startPos: i32,
-    isDeclare: bool
+    isDeclare: bool,
+    isType: bool = false
   ): ExportStatement | null {
 
     // at 'export': '{' ExportMember (',' ExportMember)* }' ('from' StringLiteral)? ';'?
@@ -2907,7 +2916,7 @@ export class Parser extends DiagnosticEmitter {
           return null;
         }
       }
-      let ret = Node.createExportStatement(members, path, isDeclare, tn.range(startPos, tn.pos));
+      let ret = Node.createExportStatement(members, path, isDeclare, isType, tn.range(startPos, tn.pos));
       if (path) {
         let internalPath = assert(ret.internalPath);
         if (!this.seenlog.has(internalPath)) {
@@ -2923,7 +2932,7 @@ export class Parser extends DiagnosticEmitter {
         if (tn.skip(Token.StringLiteral)) {
           path = Node.createStringLiteralExpression(tn.readString(), tn.range());
           this.checkImportExtension(path);
-          let ret = Node.createExportStatement(null, path, isDeclare, tn.range(startPos, tn.pos));
+          let ret = Node.createExportStatement(null, path, isDeclare, isType, tn.range(startPos, tn.pos));
           let internalPath = assert(ret.internalPath);
           let source = tn.source;
           let exportPaths = source.exportPaths;
@@ -2960,8 +2969,24 @@ export class Parser extends DiagnosticEmitter {
     tn: Tokenizer
   ): ExportMember | null {
 
-    // before: Identifier ('as' Identifier)?
+    // before: ('type')? Identifier ('as' Identifier)?
 
+    let isType = false;
+    if (this.isNodeNext()) {
+      // export { type Foo } — a lone `type` followed by `,` or `}` is a
+      // member named `type`, not a type-only specifier.
+      let state = tn.mark();
+      if (tn.skip(Token.Type)) {
+        if (tn.peek(IdentifierHandling.Prefer) == Token.Identifier) {
+          isType = true;
+          tn.discard(state);
+        } else {
+          tn.reset(state);
+        }
+      } else {
+        tn.discard(state);
+      }
+    }
     if (tn.skipIdentifier(IdentifierHandling.Always)) {
       let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
       let asIdentifier: IdentifierExpression | null = null;
@@ -2980,12 +3005,14 @@ export class Parser extends DiagnosticEmitter {
         return Node.createExportMember(
           identifier,
           asIdentifier,
+          isType,
           Range.join(identifier.range, asIdentifier.range)
         );
       }
       return Node.createExportMember(
         identifier,
         null,
+        isType,
         identifier.range
       );
     } else {
@@ -3012,9 +3039,10 @@ export class Parser extends DiagnosticEmitter {
       Node.createExportMember(
         Node.createIdentifierExpression(name, range),
         Node.createIdentifierExpression("default", tn.range(defaultStart, defaultEnd)),
+        false,
         range
       )
-    ], null, false, tn.range(startPos, tn.pos));
+    ], null, false, false, tn.range(startPos, tn.pos));
     tn.skip(Token.Semicolon);
     return ret;
   }

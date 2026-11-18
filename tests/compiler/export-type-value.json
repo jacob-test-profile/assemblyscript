@@ -1,0 +1,1 @@
+{"asc_flags":["--module","nodenext"],"stderr":["TS1148: 'makeFoo' is a value and cannot be exported as a type."]}

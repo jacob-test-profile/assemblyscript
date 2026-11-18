@@ -1254,7 +1254,7 @@ export class Resolver extends DiagnosticEmitter {
         let typeOnly = typeOnlyImports.get(name);
         if (typeOnly && typeOnly == element) {
           this.error(
-            DiagnosticCode._0_cannot_be_used_as_a_value_because_it_was_imported_using_import_type,
+            DiagnosticCode._0_cannot_be_used_as_a_value_because_it_is_a_type_only_import,
             range, name
           );
           return null;

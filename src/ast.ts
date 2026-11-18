@@ -518,9 +518,10 @@ export abstract class Node {
     members: ExportMember[] | null,
     path: StringLiteralExpression | null,
     isDeclare: bool,
+    isType: bool,
     range: Range
   ): ExportStatement {
-    return new ExportStatement(members, path, isDeclare, range);
+    return new ExportStatement(members, path, isDeclare, isType, range);
   }
 
   static createExportDefaultStatement(
@@ -541,10 +542,11 @@ export abstract class Node {
   static createExportMember(
     localName: IdentifierExpression,
     exportedName: IdentifierExpression | null,
+    isType: bool,
     range: Range
   ): ExportMember {
     if (!exportedName) exportedName = localName;
-    return new ExportMember(localName, exportedName, range);
+    return new ExportMember(localName, exportedName, isType, range);
   }
 
   static createExpressionStatement(
@@ -1964,6 +1966,8 @@ export class ExportMember extends Node {
     public localName: IdentifierExpression,
     /** Exported identifier. */
     public exportedName: IdentifierExpression,
+    /** Whether this is a type-only export. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {
@@ -1980,6 +1984,8 @@ export class ExportStatement extends Statement {
     public path: StringLiteralExpression | null,
     /** Whether this is a declared export. */
     public isDeclare: bool,
+    /** Whether this is a type-only export. */
+    public isType: bool,
     /** Source range. */
     range: Range
   ) {
