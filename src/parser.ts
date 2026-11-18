@@ -1292,6 +1292,12 @@ export class Parser extends DiagnosticEmitter {
       return null;
     }
     let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
+    if (this.isErasableEnforced()) {
+      this.error(
+        DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+        identifier.range, "Enums"
+      );
+    }
     if (tn.next() != Token.OpenBrace) {
       this.error(
         DiagnosticCode._0_expected,
@@ -1599,6 +1605,12 @@ export class Parser extends DiagnosticEmitter {
         } else { // identifier
           tn.reset(state);
         }
+      }
+      if (accessFlags && this.isErasableEnforced()) {
+        this.error(
+          DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+          assert(startRange), "Parameter properties"
+        );
       }
     }
     if (tn.skip(Token.Dot_Dot_Dot)) {
@@ -2757,6 +2769,12 @@ export class Parser extends DiagnosticEmitter {
 
     if (tn.skipIdentifier()) {
       let identifier = Node.createIdentifierExpression(tn.readIdentifier(), tn.range());
+      if (this.isErasableEnforced()) {
+        this.error(
+          DiagnosticCode._0_is_not_allowed_when_erasableSyntaxOnly_is_enabled,
+          identifier.range, "Namespaces"
+        );
+      }
       if (tn.skip(Token.OpenBrace)) {
         let members = new Array<Statement>();
         let declaration = Node.createNamespaceDeclaration(
@@ -2805,6 +2823,16 @@ export class Parser extends DiagnosticEmitter {
       );
     }
     return null;
+  }
+
+  /** Tests if erasableSyntaxOnly enforcement applies to the current source. */
+  isErasableEnforced(): bool {
+    let options = this.options;
+    if (!options || options.module != ModuleKind.NodeNext) return false;
+    let source = this.currentSource;
+    // Library sources live under `~lib/`, including the stdlib's own enums,
+    // namespaces and parameter properties.
+    return !(source && source.normalizedPath.startsWith(LIBRARY_PREFIX));
   }
 
   /** Errors if a relative import path lacks a file extension, when required. */
