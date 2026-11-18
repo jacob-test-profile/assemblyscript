@@ -26,6 +26,9 @@ export default defineConfig([
     // CPS derisk probes: hand-written AS fixtures and Node drivers
     "probe-cps/**",
 
+    // CPS Phase 1 chunk 6: coordinator e2e fixtures and Node driver
+    "tests/async-coordinator/**",
+
     // FIXME: Tagged template literal tests with invalid escapes
     "tests/compiler/templateliteral.ts",
   ]),

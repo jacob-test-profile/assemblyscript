@@ -34,6 +34,12 @@ import {
 } from "./bindings";
 
 import {
+  buildAsyncCoordinator
+} from "./asyncCoordinator";
+
+export { buildAsyncCoordinator };
+
+import {
   Range,
   DiagnosticMessage,
   DiagnosticCategory,
