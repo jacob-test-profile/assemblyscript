@@ -1660,6 +1660,7 @@ class AsyncFunctionTransform {
       isAssignmentOp((<BinaryExpression>expr).operator) &&
       unwrapParens((<BinaryExpression>expr).right).kind == NodeKind.Await
     ) {
+      this.trackStoredRebind(stmt.expression);
       this.transformAwaitAssignment(<BinaryExpression>expr, stmt.range, breakTarget);
       return;
     }
@@ -1756,6 +1757,7 @@ class AsyncFunctionTransform {
     if (node.kind == NodeKind.Binary && isAssignmentOp((<BinaryExpression>node).operator)) {
       let binary = <BinaryExpression>node;
       if (unwrapParens(binary.right).kind == NodeKind.Await) {
+        this.trackStoredRebind(expr);
         this.transformAwaitAssignment(binary, range, breakTarget);
         return !this.failed && !this.punted;
       }

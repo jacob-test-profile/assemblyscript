@@ -14,3 +14,13 @@ export async function g(q: Promise<string>): Promise<string> {
   let c = await p;
   return c;
 }
+
+// Rebinding a stored promise with an awaited value clears the binding:
+// the local now holds the resolved value, not a coordinator token, so a
+// later await of it is loud at compile time instead of at runtime.
+export async function h(): Promise<string> {
+  let p = getChunk(0);
+  p = await getChunk(1);
+  let c = await p;
+  return c;
+}
