@@ -1,0 +1,1067 @@
+/**
+ * @fileoverview Helpers for the CPS state-machine transform of async
+ * functions: synthetic AST construction, resolved-type to type-node
+ * conversion, the identifier rewriter that lifts locals to state fields,
+ * and the validation walks that reject what chunk 1 cannot transform.
+ * @license Apache-2.0
+ */
+
+import {
+  NodeKind,
+  Node,
+  Statement,
+  Expression,
+  TypeNode,
+  NamedTypeNode,
+  TypeName,
+  IdentifierExpression,
+  ThisExpression,
+  PropertyAccessExpression,
+  CallExpression,
+  BinaryExpression,
+  IntegerLiteralExpression,
+  FloatLiteralExpression,
+  StringLiteralExpression,
+  TrueExpression,
+  FalseExpression,
+  NullExpression,
+  NewExpression,
+  AssertionExpression,
+  TernaryExpression,
+  UnaryPrefixExpression,
+  UnaryPostfixExpression,
+  ParenthesizedExpression,
+  CommaExpression,
+  InstanceOfExpression,
+  ElementAccessExpression,
+  ArrayLiteralExpression,
+  ObjectLiteralExpression,
+  TemplateLiteralExpression,
+  BlockStatement,
+  BreakStatement,
+  ContinueStatement,
+  ExpressionStatement,
+  ReturnStatement,
+  SwitchStatement,
+  TryStatement,
+  VariableStatement,
+  VariableDeclaration,
+  IfStatement,
+  WhileStatement,
+  ForStatement,
+  DoStatement,
+  ForOfStatement,
+  ThrowStatement,
+  FunctionExpression,
+  ClassExpression,
+  AwaitExpression,
+  TypeParameterNode,
+  ParameterNode
+} from "./ast";
+
+import {
+  Range
+} from "./diagnostics";
+
+import {
+  Token
+} from "./tokenizer";
+
+import {
+  Type,
+  TypeKind
+} from "./types";
+
+import {
+  CommonNames,
+  CommonFlags
+} from "./common";
+
+/** Spill-pool entry points, generated once per module when needed. */
+export const SPILL_POOL_SIZE = 8;
+export const SPILL_ACQUIRE = "__async_spill_acquire";
+export const SPILL_RELEASE = "__async_spill_release";
+export const SPILL_GET = "__async_spill_get";
+export const SPILL_SET = "__async_spill_set";
+
+/** How a lifted local is stored in the state object. */
+export interface AsyncLocalBinding {
+  /** State field holding the value, if lifted. */
+  field: string;
+  /** Whether the value lives in an externref spill slot instead. */
+  spilled: bool;
+  /** State field holding the spill slot index, if spilled. */
+  slotField: string;
+  /** Range of the declaration name, for diagnostics. */
+  range: Range;
+  /** Whether this name is a plain step-method local shadowing an outer lifted local. */
+  shadowed: bool;
+}
+
+export function shadowBinding(range: Range): AsyncLocalBinding {
+  return {
+    field: "",
+    spilled: false,
+    slotField: "",
+    range,
+    shadowed: true
+  };
+}
+
+/** Scoped map of lifted locals, innermost scope last. */
+export class AsyncScope {
+  private stack: Map<string, AsyncLocalBinding>[] = [ new Map() ];
+
+  push(): void {
+    this.stack.push(new Map());
+  }
+
+  pop(): void {
+    assert(this.stack.length > 1);
+    this.stack.pop();
+  }
+
+  declare(name: string, binding: AsyncLocalBinding): void {
+    this.stack[this.stack.length - 1].set(name, binding);
+  }
+
+  /** Looks up the name in the innermost scope only, if present. */
+  lookupCurrent(name: string): AsyncLocalBinding | null {
+    let scope = this.stack[this.stack.length - 1];
+    let binding = scope.get(name);
+    return binding ? binding : null;
+  }
+
+  lookup(name: string): AsyncLocalBinding | null {
+    for (let i = this.stack.length - 1; i >= 0; --i) {
+      let binding = this.stack[i].get(name);
+      if (binding) return binding;
+    }
+    return null;
+  }
+}
+
+/** Reports a transform failure. The caller aborts the transform. */
+export type AsyncFail = (message: string, range: Range) => void;
+
+// === Synthetic AST construction ================================================================
+
+export function ident(name: string, range: Range): IdentifierExpression {
+  return new IdentifierExpression(name, false, range);
+}
+
+export function thisProp(field: string, range: Range): PropertyAccessExpression {
+  return new PropertyAccessExpression(
+    new ThisExpression(range),
+    ident(field, range),
+    range
+  );
+}
+
+export function intLit(value: i32, range: Range): IntegerLiteralExpression {
+  return new IntegerLiteralExpression(i64_new(value, value < 0 ? -1 : 0), range);
+}
+
+export function strLit(value: string, range: Range): StringLiteralExpression {
+  return new StringLiteralExpression(value, range);
+}
+
+export function callExpr(callee: Expression, args: Expression[], range: Range): CallExpression {
+  return new CallExpression(callee, null, args, range);
+}
+
+export function assignExpr(left: Expression, right: Expression, range: Range): BinaryExpression {
+  return new BinaryExpression(Token.Equals, left, right, range);
+}
+
+export function exprStmt(expr: Expression): ExpressionStatement {
+  return new ExpressionStatement(expr);
+}
+
+export function blockStmt(statements: Statement[], range: Range): BlockStatement {
+  return new BlockStatement(statements, range);
+}
+
+export function namedType(name: string, typeArguments: TypeNode[] | null, isNullable: bool, range: Range): NamedTypeNode {
+  return new NamedTypeNode(
+    new TypeName(ident(name, range), null, range),
+    typeArguments,
+    isNullable,
+    range
+  );
+}
+
+// === Resolved type to type node ==================================================================
+
+const primitiveNames = new Map<TypeKind, string>();
+primitiveNames.set(TypeKind.Bool, "bool");
+primitiveNames.set(TypeKind.I8, "i8");
+primitiveNames.set(TypeKind.I16, "i16");
+primitiveNames.set(TypeKind.I32, "i32");
+primitiveNames.set(TypeKind.I64, "i64");
+primitiveNames.set(TypeKind.Isize, "isize");
+primitiveNames.set(TypeKind.U8, "u8");
+primitiveNames.set(TypeKind.U16, "u16");
+primitiveNames.set(TypeKind.U32, "u32");
+primitiveNames.set(TypeKind.U64, "u64");
+primitiveNames.set(TypeKind.Usize, "usize");
+primitiveNames.set(TypeKind.F32, "f32");
+primitiveNames.set(TypeKind.F64, "f64");
+primitiveNames.set(TypeKind.V128, "v128");
+
+/** Builds a type node denoting the specified resolved type, or `null` if the type has no spelling. */
+export function typeToTypeNode(type: Type, range: Range): TypeNode | null {
+  if (type == Type.string) return namedType("string", null, type.isNullableReference, range);
+  // Class types are usize-based, so the class check must precede the
+  // primitive lookup or every class would spell as `usize`.
+  let classReference = type.getClass();
+  if (classReference) {
+    if (classReference.prototype.name == CommonNames.String) {
+      return namedType("string", null, type.isNullableReference, range);
+    }
+    let typeArguments: TypeNode[] | null = null;
+    let classTypeArguments = classReference.typeArguments;
+    if (classTypeArguments) {
+      typeArguments = new Array<TypeNode>(classTypeArguments.length);
+      for (let i = 0, k = classTypeArguments.length; i < k; ++i) {
+        let argNode = typeToTypeNode(classTypeArguments[i], range);
+        if (!argNode) return null;
+        typeArguments[i] = argNode;
+      }
+    }
+    return namedType(classReference.prototype.name, typeArguments, type.isNullableReference, range);
+  }
+  let primitiveName = primitiveNames.get(type.kind);
+  if (primitiveName) return namedType(primitiveName, null, false, range);
+  if (type.kind == TypeKind.Extern) return namedType("externref", null, type.isNullableReference, range);
+  if (type.kind == TypeKind.Void) return null;
+  return null;
+}
+
+/** Extracts the inner `T` node of a `Promise<T>` type node, or `null`. */
+export function promiseInnerNode(node: TypeNode): TypeNode | null {
+  if (node.kind != NodeKind.NamedType) return null;
+  let named = <NamedTypeNode>node;
+  let name = named.name;
+  if (name.next) return null;
+  if (name.identifier.text != CommonNames.Promise) return null;
+  let typeArguments = named.typeArguments;
+  if (!typeArguments || typeArguments.length != 1) return null;
+  return typeArguments[0];
+}
+
+/** Builds a zero-valued expression of the specified type, or `null` if there is no spelling. */
+export function zeroValue(type: Type, typeNode: TypeNode, range: Range): Expression | null {
+  if (type == Type.string) return strLit("", range);
+  // Class types are usize-based, so the class check must precede the
+  // primitive switch or every class would zero as `0`.
+  let classReference = type.getClass();
+  if (classReference) {
+    if (classReference.prototype.name == CommonNames.String) return strLit("", range);
+    if (classReference.prototype.name == "Array") {
+      let typeArguments = classReference.typeArguments;
+      let elementNode: TypeNode | null = null;
+      if (typeArguments && typeArguments.length == 1) {
+        elementNode = typeToTypeNode(typeArguments[0], range);
+      }
+      if (elementNode) {
+        return new NewExpression(
+          new TypeName(ident("Array", range), null, range),
+          [ elementNode ],
+          [],
+          range
+        );
+      }
+    }
+    return new CallExpression(
+      ident("changetype", range),
+      [ typeNode ],
+      [ intLit(0, range) ],
+      range
+    );
+  }
+  switch (type.kind) {
+    case TypeKind.Bool: return new FalseExpression(range);
+    case TypeKind.I8:
+    case TypeKind.I16:
+    case TypeKind.I32:
+    case TypeKind.I64:
+    case TypeKind.Isize:
+    case TypeKind.U8:
+    case TypeKind.U16:
+    case TypeKind.U32:
+    case TypeKind.U64:
+    case TypeKind.Usize: return intLit(0, range);
+    case TypeKind.F32:
+    case TypeKind.F64: return new FloatLiteralExpression(0.0, range);
+    default: break;
+  }
+  if (type.isNullableReference) return new NullExpression(range);
+  return null;
+}
+
+// === Identifier rewriting ======================================================================
+//
+// Rewrites references to lifted locals to `this.<field>` and references to
+// spilled externref locals to `__async_spill_get(this.<slotField>)`.
+// Nested (non-async) function bodies are opaque: the compiler resolves
+// them in their own scope, and capturing a lifted local fails loudly
+// there, as it does for sync code.
+
+export interface AsyncRewriter {
+  scope: AsyncScope;
+  fail: AsyncFail;
+}
+
+function rewriteIdentifier(node: IdentifierExpression, ctx: AsyncRewriter): Expression | null {
+  let binding = ctx.scope.lookup(node.text);
+  if (!binding || binding.shadowed) return node;
+  if (binding.spilled) {
+    return callExpr(
+      ident(SPILL_GET, node.range),
+      [ thisProp(binding.slotField, node.range) ],
+      node.range
+    );
+  }
+  return thisProp(binding.field, node.range);
+}
+
+export function rewriteExpression(node: Expression, ctx: AsyncRewriter): Expression | null {
+  switch (node.kind) {
+    case NodeKind.Identifier:
+    case NodeKind.True:
+    case NodeKind.False:
+    case NodeKind.Null: {
+      if (node.kind != NodeKind.Identifier) return node;
+      return rewriteIdentifier(<IdentifierExpression>node, ctx);
+    }
+    case NodeKind.This:
+    case NodeKind.Super: {
+      ctx.fail(
+        node.kind == NodeKind.This
+          ? "'this' in async functions is not yet supported"
+          : "'super' in async functions is not yet supported",
+        node.range
+      );
+      return null;
+    }
+    case NodeKind.PropertyAccess: {
+      let access = <PropertyAccessExpression>node;
+      let object = rewriteExpression(access.expression, ctx);
+      if (!object) return null;
+      access.expression = object;
+      return access;
+    }
+    case NodeKind.ElementAccess: {
+      let access = <ElementAccessExpression>node;
+      let object = rewriteExpression(access.expression, ctx);
+      if (!object) return null;
+      let element = rewriteExpression(access.elementExpression, ctx);
+      if (!element) return null;
+      access.expression = object;
+      access.elementExpression = element;
+      return access;
+    }
+    case NodeKind.Call: {
+      let call = <CallExpression>node;
+      let callee = rewriteExpression(call.expression, ctx);
+      if (!callee) return null;
+      call.expression = callee;
+      let args = call.args;
+      for (let i = 0, k = args.length; i < k; ++i) {
+        let arg = rewriteExpression(args[i], ctx);
+        if (!arg) return null;
+        args[i] = arg;
+      }
+      return call;
+    }
+    case NodeKind.New: {
+      let expr = <NewExpression>node;
+      let args = expr.args;
+      for (let i = 0, k = args.length; i < k; ++i) {
+        let arg = rewriteExpression(args[i], ctx);
+        if (!arg) return null;
+        args[i] = arg;
+      }
+      return expr;
+    }
+    case NodeKind.Binary: {
+      let binary = <BinaryExpression>node;
+      if (binary.operator == Token.Equals) {
+        let left = binary.left;
+        if (left.kind == NodeKind.Identifier) {
+          let binding = ctx.scope.lookup((<IdentifierExpression>left).text);
+          if (binding && binding.spilled) {
+            ctx.fail("Cannot assign to a spilled externref local here", left.range);
+            return null;
+          }
+        }
+      }
+      let left = rewriteExpression(binary.left, ctx);
+      if (!left) return null;
+      let right = rewriteExpression(binary.right, ctx);
+      if (!right) return null;
+      binary.left = left;
+      binary.right = right;
+      return binary;
+    }
+    case NodeKind.UnaryPrefix: {
+      let unary = <UnaryPrefixExpression>node;
+      let operand = rewriteExpression(unary.operand, ctx);
+      if (!operand) return null;
+      unary.operand = operand;
+      return unary;
+    }
+    case NodeKind.UnaryPostfix: {
+      let unary = <UnaryPostfixExpression>node;
+      if (unary.operand.kind == NodeKind.Identifier) {
+        let binding = ctx.scope.lookup((<IdentifierExpression>unary.operand).text);
+        if (binding && binding.spilled) {
+          ctx.fail("Cannot assign to a spilled externref local here", unary.operand.range);
+          return null;
+        }
+      }
+      let operand = rewriteExpression(unary.operand, ctx);
+      if (!operand) return null;
+      unary.operand = operand;
+      return unary;
+    }
+    case NodeKind.Ternary: {
+      let ternary = <TernaryExpression>node;
+      let condition = rewriteExpression(ternary.condition, ctx);
+      if (!condition) return null;
+      let ifThen = rewriteExpression(ternary.ifThen, ctx);
+      if (!ifThen) return null;
+      let ifElse = rewriteExpression(ternary.ifElse, ctx);
+      if (!ifElse) return null;
+      ternary.condition = condition;
+      ternary.ifThen = ifThen;
+      ternary.ifElse = ifElse;
+      return ternary;
+    }
+    case NodeKind.Assertion: {
+      let assertion = <AssertionExpression>node;
+      let expr = rewriteExpression(assertion.expression, ctx);
+      if (!expr) return null;
+      assertion.expression = expr;
+      return assertion;
+    }
+    case NodeKind.Parenthesized: {
+      let parenthesized = <ParenthesizedExpression>node;
+      let expr = rewriteExpression(parenthesized.expression, ctx);
+      if (!expr) return null;
+      parenthesized.expression = expr;
+      return parenthesized;
+    }
+    case NodeKind.Comma: {
+      let comma = <CommaExpression>node;
+      let exprs = comma.expressions;
+      for (let i = 0, k = exprs.length; i < k; ++i) {
+        let expr = rewriteExpression(exprs[i], ctx);
+        if (!expr) return null;
+        exprs[i] = expr;
+      }
+      return comma;
+    }
+    case NodeKind.InstanceOf: {
+      let instanceOf = <InstanceOfExpression>node;
+      let expr = rewriteExpression(instanceOf.expression, ctx);
+      if (!expr) return null;
+      instanceOf.expression = expr;
+      return instanceOf;
+    }
+    case NodeKind.Literal: {
+      let literal = node;
+      if (literal instanceof ArrayLiteralExpression) {
+        let elements = literal.elementExpressions;
+        for (let i = 0, k = elements.length; i < k; ++i) {
+          let element = rewriteExpression(elements[i], ctx);
+          if (!element) return null;
+          elements[i] = element;
+        }
+      } else if (literal instanceof ObjectLiteralExpression) {
+        let values = literal.values;
+        for (let i = 0, k = values.length; i < k; ++i) {
+          let value = rewriteExpression(values[i], ctx);
+          if (!value) return null;
+          values[i] = value;
+        }
+      } else if (literal instanceof TemplateLiteralExpression) {
+        if (literal.tag) {
+          let tag = rewriteExpression(literal.tag, ctx);
+          if (!tag) return null;
+          literal.tag = tag;
+        }
+        let exprs = literal.expressions;
+        for (let i = 0, k = exprs.length; i < k; ++i) {
+          let expr = rewriteExpression(exprs[i], ctx);
+          if (!expr) return null;
+          exprs[i] = expr;
+        }
+      }
+      return literal;
+    }
+    case NodeKind.Await: {
+      ctx.fail("Internal error: unexpected 'await' during rewriting", node.range);
+      return null;
+    }
+    case NodeKind.Function:
+    case NodeKind.Class: {
+      return node;
+    }
+    default: {
+      return node;
+    }
+  }
+}
+
+/** Rewrites a passthrough statement (no await inside) in place. */
+export function rewriteStatement(node: Statement, ctx: AsyncRewriter): Statement | null {
+  switch (node.kind) {
+    case NodeKind.Block: {
+      let block = <BlockStatement>node;
+      ctx.scope.push();
+      let statements = block.statements;
+      for (let i = 0, k = statements.length; i < k; ++i) {
+        let rewritten = rewriteStatement(statements[i], ctx);
+        if (!rewritten) {
+          ctx.scope.pop();
+          return null;
+        }
+        statements[i] = rewritten;
+      }
+      ctx.scope.pop();
+      return block;
+    }
+    case NodeKind.Expression: {
+      let stmt = <ExpressionStatement>node;
+      let expr = rewriteExpression(stmt.expression, ctx);
+      if (!expr) return null;
+      stmt.expression = expr;
+      return stmt;
+    }
+    case NodeKind.Return: {
+      let stmt = <ReturnStatement>node;
+      if (stmt.value) {
+        let value = rewriteExpression(stmt.value, ctx);
+        if (!value) return null;
+        stmt.value = value;
+      }
+      return stmt;
+    }
+    case NodeKind.Variable: {
+      let stmt = <VariableStatement>node;
+      let declarations = stmt.declarations;
+      for (let i = 0, k = declarations.length; i < k; ++i) {
+        let declaration = declarations[i];
+        if (declaration.initializer) {
+          let initializer = rewriteExpression(declaration.initializer, ctx);
+          if (!initializer) return null;
+          declaration.initializer = initializer;
+        }
+        ctx.scope.declare(declaration.name.text, shadowBinding(declaration.name.range));
+      }
+      return stmt;
+    }
+    case NodeKind.If: {
+      let stmt = <IfStatement>node;
+      let condition = rewriteExpression(stmt.condition, ctx);
+      if (!condition) return null;
+      stmt.condition = condition;
+      let ifTrue = rewriteStatement(stmt.ifTrue, ctx);
+      if (!ifTrue) return null;
+      stmt.ifTrue = ifTrue;
+      if (stmt.ifElse) {
+        let ifElse = rewriteStatement(stmt.ifElse, ctx);
+        if (!ifElse) return null;
+        stmt.ifElse = ifElse;
+      }
+      return stmt;
+    }
+    case NodeKind.While: {
+      let stmt = <WhileStatement>node;
+      let condition = rewriteExpression(stmt.condition, ctx);
+      if (!condition) return null;
+      stmt.condition = condition;
+      let body = rewriteStatement(stmt.body, ctx);
+      if (!body) return null;
+      stmt.body = body;
+      return stmt;
+    }
+    case NodeKind.For: {
+      let stmt = <ForStatement>node;
+      ctx.scope.push();
+      if (stmt.initializer) {
+        let initializer = rewriteStatement(stmt.initializer, ctx);
+        if (!initializer) {
+          ctx.scope.pop();
+          return null;
+        }
+        stmt.initializer = initializer;
+      }
+      if (stmt.condition) {
+        let condition = rewriteExpression(stmt.condition, ctx);
+        if (!condition) {
+          ctx.scope.pop();
+          return null;
+        }
+        stmt.condition = condition;
+      }
+      if (stmt.incrementor) {
+        let incrementor = rewriteExpression(stmt.incrementor, ctx);
+        if (!incrementor) {
+          ctx.scope.pop();
+          return null;
+        }
+        stmt.incrementor = incrementor;
+      }
+      let body = rewriteStatement(stmt.body, ctx);
+      if (!body) {
+        ctx.scope.pop();
+        return null;
+      }
+      stmt.body = body;
+      ctx.scope.pop();
+      return stmt;
+    }
+    case NodeKind.Do: {
+      let stmt = <DoStatement>node;
+      let body = rewriteStatement(stmt.body, ctx);
+      if (!body) return null;
+      stmt.body = body;
+      let condition = rewriteExpression(stmt.condition, ctx);
+      if (!condition) return null;
+      stmt.condition = condition;
+      return stmt;
+    }
+    case NodeKind.Switch: {
+      let stmt = <SwitchStatement>node;
+      let condition = rewriteExpression(stmt.condition, ctx);
+      if (!condition) return null;
+      stmt.condition = condition;
+      ctx.scope.push();
+      let cases = stmt.cases;
+      for (let i = 0, k = cases.length; i < k; ++i) {
+        let switchCase = cases[i];
+        if (switchCase.label) {
+          let label = rewriteExpression(switchCase.label, ctx);
+          if (!label) {
+            ctx.scope.pop();
+            return null;
+          }
+          switchCase.label = label;
+        }
+        let statements = switchCase.statements;
+        for (let j = 0, l = statements.length; j < l; ++j) {
+          let rewritten = rewriteStatement(statements[j], ctx);
+          if (!rewritten) {
+            ctx.scope.pop();
+            return null;
+          }
+          statements[j] = rewritten;
+        }
+      }
+      ctx.scope.pop();
+      return stmt;
+    }
+    case NodeKind.Try: {
+      let stmt = <TryStatement>node;
+      ctx.scope.push();
+      let bodyStatements = stmt.bodyStatements;
+      for (let i = 0, k = bodyStatements.length; i < k; ++i) {
+        let rewritten = rewriteStatement(bodyStatements[i], ctx);
+        if (!rewritten) {
+          ctx.scope.pop();
+          return null;
+        }
+        bodyStatements[i] = rewritten;
+      }
+      ctx.scope.pop();
+      if (stmt.catchStatements) {
+        ctx.scope.push();
+        if (stmt.catchVariable) {
+          ctx.scope.declare(stmt.catchVariable.text, shadowBinding(stmt.catchVariable.range));
+        }
+        let catchStatements = stmt.catchStatements;
+        for (let i = 0, k = catchStatements.length; i < k; ++i) {
+          let rewritten = rewriteStatement(catchStatements[i], ctx);
+          if (!rewritten) {
+            ctx.scope.pop();
+            return null;
+          }
+          catchStatements[i] = rewritten;
+        }
+        ctx.scope.pop();
+      }
+      if (stmt.finallyStatements) {
+        let finallyStatements = stmt.finallyStatements;
+        for (let i = 0, k = finallyStatements.length; i < k; ++i) {
+          let rewritten = rewriteStatement(finallyStatements[i], ctx);
+          if (!rewritten) return null;
+          finallyStatements[i] = rewritten;
+        }
+      }
+      return stmt;
+    }
+    default: {
+      return node;
+    }
+  }
+}
+
+// === Validation walks ============================================================================
+
+/** Tests whether the subtree contains an `await`, not descending into nested functions. */
+export function containsAwait(node: Node): bool {
+  if (node.kind == NodeKind.Await) return true;
+  if (node instanceof FunctionExpression) return false;
+  if (node instanceof BlockStatement) {
+    let statements = node.statements;
+    for (let i = 0, k = statements.length; i < k; ++i) {
+      if (containsAwait(statements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ExpressionStatement) return containsAwait(node.expression);
+  if (node instanceof VariableStatement) {
+    let declarations = node.declarations;
+    for (let i = 0, k = declarations.length; i < k; ++i) {
+      let initializer = declarations[i].initializer;
+      if (initializer && containsAwait(initializer)) return true;
+    }
+    return false;
+  }
+  if (node instanceof ReturnStatement) {
+    return node.value ? containsAwait(node.value) : false;
+  }
+  if (node instanceof IfStatement) {
+    return containsAwait(node.condition)
+      || containsAwait(node.ifTrue)
+      || (node.ifElse ? containsAwait(node.ifElse) : false);
+  }
+  if (node instanceof WhileStatement) {
+    return containsAwait(node.condition) || containsAwait(node.body);
+  }
+  if (node instanceof DoStatement) {
+    return containsAwait(node.body) || containsAwait(node.condition);
+  }
+  if (node instanceof ForStatement) {
+    return (node.initializer ? containsAwait(node.initializer) : false)
+      || (node.condition ? containsAwait(node.condition) : false)
+      || (node.incrementor ? containsAwait(node.incrementor) : false)
+      || containsAwait(node.body);
+  }
+  if (node instanceof SwitchStatement) {
+    if (containsAwait(node.condition)) return true;
+    let cases = node.cases;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      let switchCase = cases[i];
+      if (switchCase.label && containsAwait(switchCase.label)) return true;
+      let statements = switchCase.statements;
+      for (let j = 0, l = statements.length; j < l; ++j) {
+        if (containsAwait(statements[j])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof TryStatement) {
+    let bodyStatements = node.bodyStatements;
+    for (let i = 0, k = bodyStatements.length; i < k; ++i) {
+      if (containsAwait(bodyStatements[i])) return true;
+    }
+    if (node.catchStatements) {
+      let catchStatements = node.catchStatements;
+      for (let i = 0, k = catchStatements.length; i < k; ++i) {
+        if (containsAwait(catchStatements[i])) return true;
+      }
+    }
+    if (node.finallyStatements) {
+      let finallyStatements = node.finallyStatements;
+      for (let i = 0, k = finallyStatements.length; i < k; ++i) {
+        if (containsAwait(finallyStatements[i])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof Expression) {
+    return containsAwaitExpression(<Expression>node);
+  }
+  return false;
+}
+
+function containsAwaitExpression(node: Expression): bool {
+  if (node.kind == NodeKind.Await) return true;
+  if (node instanceof FunctionExpression) return false;
+  if (node instanceof ClassExpression) return false;
+  if (node instanceof BinaryExpression) {
+    return containsAwaitExpression(node.left) || containsAwaitExpression(node.right);
+  }
+  if (node instanceof CallExpression) {
+    if (containsAwaitExpression(node.expression)) return true;
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsAwaitExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof PropertyAccessExpression) return containsAwaitExpression(node.expression);
+  if (node instanceof ElementAccessExpression) {
+    return containsAwaitExpression(node.expression) || containsAwaitExpression(node.elementExpression);
+  }
+  if (node instanceof UnaryPrefixExpression) return containsAwaitExpression(node.operand);
+  if (node instanceof UnaryPostfixExpression) return containsAwaitExpression(node.operand);
+  if (node instanceof TernaryExpression) {
+    return containsAwaitExpression(node.condition)
+      || containsAwaitExpression(node.ifThen)
+      || containsAwaitExpression(node.ifElse);
+  }
+  if (node instanceof AssertionExpression) return containsAwaitExpression(node.expression);
+  if (node instanceof ParenthesizedExpression) return containsAwaitExpression(node.expression);
+  if (node instanceof CommaExpression) {
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsAwaitExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof InstanceOfExpression) return containsAwaitExpression(node.expression);
+  if (node instanceof NewExpression) {
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsAwaitExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ArrayLiteralExpression) {
+    let elements = node.elementExpressions;
+    for (let i = 0, k = elements.length; i < k; ++i) {
+      if (containsAwaitExpression(elements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ObjectLiteralExpression) {
+    let values = node.values;
+    for (let i = 0, k = values.length; i < k; ++i) {
+      if (containsAwaitExpression(values[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof TemplateLiteralExpression) {
+    if (node.tag && containsAwaitExpression(node.tag)) return true;
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsAwaitExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof AwaitExpression) return true;
+  return false;
+}
+
+/**
+ * Rejects what chunk 1 cannot transform, with a specific diagnostic per
+ * construct. Returns `false` when a failure was reported. Nested
+ * (non-async) function bodies are opaque, except that an async function
+ * expression is rejected outright.
+ */
+export function validateBody(node: Statement, fail: AsyncFail): bool {
+  return validateStatement(node, fail);
+}
+
+function validateStatement(node: Statement, fail: AsyncFail): bool {
+  switch (node.kind) {
+    case NodeKind.Block: {
+      let statements = (<BlockStatement>node).statements;
+      for (let i = 0, k = statements.length; i < k; ++i) {
+        if (!validateStatement(statements[i], fail)) return false;
+      }
+      return true;
+    }
+    case NodeKind.Expression: {
+      return validateExpression((<ExpressionStatement>node).expression, fail);
+    }
+    case NodeKind.Variable: {
+      let declarations = (<VariableStatement>node).declarations;
+      for (let i = 0, k = declarations.length; i < k; ++i) {
+        let initializer = declarations[i].initializer;
+        if (initializer && !validateExpression(initializer, fail)) return false;
+      }
+      return true;
+    }
+    case NodeKind.Return: {
+      let value = (<ReturnStatement>node).value;
+      return !value || validateExpression(value, fail);
+    }
+    case NodeKind.If: {
+      let stmt = <IfStatement>node;
+      return validateExpression(stmt.condition, fail)
+        && validateStatement(stmt.ifTrue, fail)
+        && (!stmt.ifElse || validateStatement(stmt.ifElse, fail));
+    }
+    case NodeKind.While: {
+      let stmt = <WhileStatement>node;
+      return validateExpression(stmt.condition, fail) && validateStatement(stmt.body, fail);
+    }
+    case NodeKind.Do: {
+      let stmt = <DoStatement>node;
+      return validateStatement(stmt.body, fail) && validateExpression(stmt.condition, fail);
+    }
+    case NodeKind.For: {
+      let stmt = <ForStatement>node;
+      return (!stmt.initializer || validateStatement(stmt.initializer, fail))
+        && (!stmt.condition || validateExpression(stmt.condition, fail))
+        && (!stmt.incrementor || validateExpression(stmt.incrementor, fail))
+        && validateStatement(stmt.body, fail);
+    }
+    case NodeKind.ForOf: {
+      fail("'for-of' in async functions is not yet supported", node.range);
+      return false;
+    }
+    case NodeKind.Switch: {
+      if (containsAwait(node)) {
+        fail("Async functions with 'await' in a 'switch' statement are not yet supported", node.range);
+        return false;
+      }
+      let stmt = <SwitchStatement>node;
+      if (!validateExpression(stmt.condition, fail)) return false;
+      let cases = stmt.cases;
+      for (let i = 0, k = cases.length; i < k; ++i) {
+        let switchCase = cases[i];
+        if (switchCase.label && !validateExpression(switchCase.label, fail)) return false;
+        let statements = switchCase.statements;
+        for (let j = 0, l = statements.length; j < l; ++j) {
+          if (!validateStatement(statements[j], fail)) return false;
+        }
+      }
+      return true;
+    }
+    case NodeKind.Try: {
+      if (containsAwait(node)) {
+        fail("Async functions with 'await' in a 'try' statement are not yet supported", node.range);
+        return false;
+      }
+      let stmt = <TryStatement>node;
+      let bodyStatements = stmt.bodyStatements;
+      for (let i = 0, k = bodyStatements.length; i < k; ++i) {
+        if (!validateStatement(bodyStatements[i], fail)) return false;
+      }
+      if (stmt.catchStatements) {
+        let catchStatements = stmt.catchStatements;
+        for (let i = 0, k = catchStatements.length; i < k; ++i) {
+          if (!validateStatement(catchStatements[i], fail)) return false;
+        }
+      }
+      if (stmt.finallyStatements) {
+        let finallyStatements = stmt.finallyStatements;
+        for (let i = 0, k = finallyStatements.length; i < k; ++i) {
+          if (!validateStatement(finallyStatements[i], fail)) return false;
+        }
+      }
+      return true;
+    }
+    case NodeKind.Throw: {
+      fail("'throw' in async functions is not yet supported", node.range);
+      return false;
+    }
+    case NodeKind.Break: {
+      if ((<BreakStatement>node).label) {
+        fail("Labels in async functions are not yet supported", node.range);
+        return false;
+      }
+      return true;
+    }
+    case NodeKind.Continue: {
+      if ((<ContinueStatement>node).label) {
+        fail("Labels in async functions are not yet supported", node.range);
+        return false;
+      }
+      return true;
+    }
+    default: {
+      return true;
+    }
+  }
+}
+
+function validateExpression(node: Expression, fail: AsyncFail): bool {
+  if (node.kind == NodeKind.Await) return true;
+  if (node instanceof FunctionExpression) {
+    let declaration = node.declaration;
+    if (declaration.is(CommonFlags.Async)) {
+      fail("Async function expressions are not yet supported", node.range);
+      return false;
+    }
+    return true;
+  }
+  if (node instanceof ClassExpression) return true;
+  if (node.kind == NodeKind.This) {
+    fail("'this' in async functions is not yet supported", node.range);
+    return false;
+  }
+  if (node.kind == NodeKind.Super) {
+    fail("'super' in async functions is not yet supported", node.range);
+    return false;
+  }
+  if (node instanceof BinaryExpression) {
+    return validateExpression(node.left, fail) && validateExpression(node.right, fail);
+  }
+  if (node instanceof CallExpression) {
+    if (!validateExpression(node.expression, fail)) return false;
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (!validateExpression(args[i], fail)) return false;
+    }
+    return true;
+  }
+  if (node instanceof PropertyAccessExpression) return validateExpression(node.expression, fail);
+  if (node instanceof ElementAccessExpression) {
+    return validateExpression(node.expression, fail) && validateExpression(node.elementExpression, fail);
+  }
+  if (node instanceof UnaryPrefixExpression) return validateExpression(node.operand, fail);
+  if (node instanceof UnaryPostfixExpression) return validateExpression(node.operand, fail);
+  if (node instanceof TernaryExpression) {
+    return validateExpression(node.condition, fail)
+      && validateExpression(node.ifThen, fail)
+      && validateExpression(node.ifElse, fail);
+  }
+  if (node instanceof AssertionExpression) return validateExpression(node.expression, fail);
+  if (node instanceof ParenthesizedExpression) return validateExpression(node.expression, fail);
+  if (node instanceof CommaExpression) {
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (!validateExpression(exprs[i], fail)) return false;
+    }
+    return true;
+  }
+  if (node instanceof InstanceOfExpression) return validateExpression(node.expression, fail);
+  if (node instanceof NewExpression) {
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (!validateExpression(args[i], fail)) return false;
+    }
+    return true;
+  }
+  if (node instanceof ArrayLiteralExpression) {
+    let elements = node.elementExpressions;
+    for (let i = 0, k = elements.length; i < k; ++i) {
+      if (!validateExpression(elements[i], fail)) return false;
+    }
+    return true;
+  }
+  if (node instanceof ObjectLiteralExpression) {
+    let values = node.values;
+    for (let i = 0, k = values.length; i < k; ++i) {
+      if (!validateExpression(values[i], fail)) return false;
+    }
+    return true;
+  }
+  if (node instanceof TemplateLiteralExpression) {
+    if (node.tag && !validateExpression(node.tag, fail)) return false;
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (!validateExpression(exprs[i], fail)) return false;
+    }
+    return true;
+  }
+  return true;
+}
