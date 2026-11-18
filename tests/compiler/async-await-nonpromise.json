@@ -1,0 +1,1 @@
+{"stderr":["TS1149: The operand of an 'await' expression must be a 'Promise'.","AS235: Only variables, functions and enums become WebAssembly module exports."]}

@@ -1013,6 +1013,37 @@ export async function main(argv, options) {
         stderr.write(`Skipped JavaScript binding (no output path)${EOL}`);
       }
     }
+
+    // Write async coordinator (CPS state-machine driver) when the module
+    // contains transformed async functions. Emitted as a separate file
+    // next to the wasm, independent of --bindings.
+    if (typeof assemblyscript.buildAsyncCoordinator === "function") {
+      let begin = stats.begin();
+      let coordinatorSource;
+      try {
+        coordinatorSource = assemblyscript.buildAsyncCoordinator(program);
+      } catch (e) {
+        crash("buildAsyncCoordinator", e);
+      }
+      if (coordinatorSource != null) {
+        stats.emitCount++;
+        stats.emitTime += stats.end(begin);
+        if (basepath) {
+          pending.push(
+            writeFile(basepath + ".async.js", coordinatorSource, baseDir)
+          );
+        } else {
+          stderr.write(`Skipped async coordinator (no output path)${EOL}`);
+        }
+      }
+      // Flush coordinator warnings (e.g. async functions skipped for
+      // unsupported types). Diagnostics are consumed incrementally, so
+      // only diagnostics emitted by the coordinator build are printed.
+      const numErrors = checkDiagnostics(program, stderr, opts.disableWarning, options.reportDiagnostic, stderrColors.enabled);
+      if (numErrors) {
+        return prepareResult(Error(`${numErrors} async coordinator error(s)`));
+      }
+    }
   }
 
   try {

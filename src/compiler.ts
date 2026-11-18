@@ -1615,16 +1615,24 @@ export class Compiler extends DiagnosticEmitter {
     if (instance.is(CommonFlags.Errored)) return false;
     if (instance.is(CommonFlags.Compiled)) return true;
 
-    // Phase 0: async functions are parsed and resolved but not compiled.
-    // Phase 1's transform rewrites them into state machines in afterParse,
-    // so none should reach the compiler. Without this guard a valid async
-    // function would silently compile as a sync function.
+    // Async functions are rewritten into state machines by the CPS transform
+    // in `Program.initialize()`. Transformed functions compile as ordinary
+    // (sync) entry wrappers; functions the transform rejected already have a
+    // specific diagnostic, so failing silently here avoids doubling it.
+    // Anything else async reaching the compiler is still unimplemented.
     if (instance.is(CommonFlags.Async)) {
-      this.error(
-        DiagnosticCode.Not_implemented_0,
-        instance.identifierNode.range, "Async functions"
-      );
-      return false;
+      let prototype = instance.prototype;
+      if (this.program.transformedAsyncFunctions.has(prototype)) {
+        // fall through: compile the generated entry wrapper
+      } else if (this.program.rejectedAsyncFunctions.has(prototype)) {
+        return false;
+      } else {
+        this.error(
+          DiagnosticCode.Not_implemented_0,
+          instance.identifierNode.range, "Async functions"
+        );
+        return false;
+      }
     }
 
     if (!forceStdAlternative) {

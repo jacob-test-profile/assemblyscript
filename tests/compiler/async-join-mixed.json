@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: 'Promise.all' members must all have the same type","AS235: Only variables, functions and enums become WebAssembly module exports."]}

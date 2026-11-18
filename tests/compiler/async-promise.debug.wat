@@ -2412,7 +2412,7 @@
  (func $~lib/promise/Promise.all<i32> (param $values i32) (result i32)
   i32.const 528
   i32.const 592
-  i32.const 9
+  i32.const 10
   i32.const 5
   call $~lib/builtins/abort
   unreachable
@@ -2420,7 +2420,7 @@
  (func $~lib/promise/Promise.race<i32> (param $values i32) (result i32)
   i32.const 528
   i32.const 592
-  i32.const 13
+  i32.const 14
   i32.const 5
   call $~lib/builtins/abort
   unreachable
