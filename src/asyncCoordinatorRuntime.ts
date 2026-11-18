@@ -120,6 +120,12 @@ export function createCoordinator(metadata) {
     }
   }
 
+  function lowerArgs(jsArgs, params) {
+    return jsArgs.map(function (arg, i) {
+      return lower(arg, params[i].kind, params[i].nullable);
+    });
+  }
+
   function lift(value, kind, nullable) {
     if (kind === 'string') {
       if (!value) return null;
@@ -146,7 +152,7 @@ export function createCoordinator(metadata) {
     try {
       while (queue.length > 0) {
         const head = queue[0];
-        if (!attemptEntry(head.fn, head.args, head.resolve, head.reject, false)) return;
+        if (!attemptEntry(head.fn, head.args, head.resolve, head.reject, false, head.receiver)) return;
         queue.shift();
       }
     } finally {
@@ -556,17 +562,22 @@ export function createCoordinator(metadata) {
     });
   }
 
-  function attemptEntry(fn, jsArgs, resolve, reject, queueOnExhausted) {
+  // A method task starts through its generated entry export, which takes
+  // the receiver pointer as its first argument ahead of the declared
+  // params; a plain function starts through its export with no receiver.
+  // A zero handle means the externref spill pool is exhausted: the call
+  // queues behind the running tasks for its file and starts when one
+  // settles, with the receiver carried along.
+  function attemptEntry(fn, jsArgs, resolve, reject, queueOnExhausted, receiver) {
     let task = null;
     let handle = 0;
     try {
-      const wasmArgs = jsArgs.map(function (arg, i) {
-        return lower(arg, fn.params[i].kind, fn.params[i].nullable);
-      });
+      const wasmArgs = lowerArgs(jsArgs, fn.params);
+      if (receiver != null) wasmArgs.unshift(receiver);
       task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
-        handle = wasmExports[fn.exportName].apply(null, wasmArgs);
+        handle = wasmExports[fn.entryExport || fn.exportName].apply(null, wasmArgs);
       } finally {
         activeTask = null;
       }
@@ -579,7 +590,7 @@ export function createCoordinator(metadata) {
       if (queueOnExhausted) {
         let queue = queues.get(fn.fileBase);
         if (!queue) { queue = []; queues.set(fn.fileBase, queue); }
-        queue.push({ fn: fn, args: jsArgs, resolve: resolve, reject: reject });
+        queue.push({ fn: fn, args: jsArgs, resolve: resolve, reject: reject, receiver: receiver });
       }
       return false;
     }
@@ -604,9 +615,9 @@ export function createCoordinator(metadata) {
     return true;
   }
 
-  function callAsync(fn, jsArgs) {
+  function callAsync(fn, jsArgs, receiver) {
     return new Promise(function (resolve, reject) {
-      attemptEntry(fn, jsArgs, resolve, reject, true);
+      attemptEntry(fn, jsArgs, resolve, reject, true, receiver);
     });
   }
 
@@ -691,6 +702,44 @@ export function createCoordinator(metadata) {
     return imports;
   }
 
+  // Builds one JS wrapper class for a metadata class entry. The
+  // constructor allocates the instance through the generated _new export
+  // and pins it, so the GC cannot collect it between tasks; each async
+  // method drives its task with the stored pointer as the receiver.
+  // dispose() releases the pin and is idempotent; a disposed wrapper
+  // refuses further method calls instead of trapping on a dead pointer.
+  // A constructor that traps throws out of new, so no half-constructed
+  // wrapper can escape.
+  function buildClass(cls) {
+    function Wrapper() {
+      if (!pin) throw new Error("async coordinator: class '" + cls.name + "' needs the wasm runtime (compile with --exportRuntime)");
+      let ptr = 0;
+      try {
+        ptr = wasmExports[cls.newExport].apply(null, lowerArgs(Array.prototype.slice.call(arguments), cls.newParams));
+      } catch (e) {
+        throw e instanceof Error ? e : new Error(String(e));
+      }
+      if (!ptr) throw new Error("async coordinator: constructor for '" + cls.name + "' returned a null pointer");
+      this.pointer = ptr;
+      try { pin(ptr); } catch (e) { /* pinning is best-effort; the task handle root covers suspension */ }
+    }
+    cls.methods.forEach(function (method) {
+      Wrapper.prototype[method.name] = function () {
+        if (!this.pointer) throw new Error("async coordinator: '" + cls.name + "' instance has been disposed");
+        return callAsync(method, Array.prototype.slice.call(arguments), this.pointer);
+      };
+    });
+    Wrapper.prototype.dispose = function () {
+      if (!this.pointer) return;
+      const ptr = this.pointer;
+      this.pointer = 0;
+      if (unpin) {
+        try { unpin(ptr); } catch (e) { /* pinning is best-effort */ }
+      }
+    };
+    return Wrapper;
+  }
+
   function attach(instanceArg) {
     instance = instanceArg;
     wasmExports = instance.exports;
@@ -704,6 +753,9 @@ export function createCoordinator(metadata) {
       api[exportName] = function () {
         return callAsync(fn, Array.prototype.slice.call(arguments));
       };
+    });
+    (metadata.classes || []).forEach(function (cls) {
+      api[cls.name] = buildClass(cls);
     });
     return api;
   }
