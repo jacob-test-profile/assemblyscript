@@ -1057,7 +1057,7 @@ class AsyncFunctionTransform {
         let rewrittenInit = this.rewriteChecked(initializer);
         if (!rewrittenInit) return;
         this.emitLocalAssign(name, rewrittenInit, declaration.range);
-        if (this.isSuspendingImportCall(initializer)) {
+        if (this.isSuspendingImportCall(initializer) || this.isTrackedStoredValue(initializer)) {
           let binding = this.scope.lookup(name);
           if (binding) this.storedPromises.add(binding.field);
         }
@@ -1381,6 +1381,19 @@ class AsyncFunctionTransform {
       && (<FunctionPrototype>element).is(CommonFlags.Ambient);
   }
 
+  /** Whether the expression's value is a tracked stored promise: a local
+   *  bound by a suspending-import call (or copied from one), or a
+   *  member/index read, whose token the coordinator resolves at runtime
+   *  (failing loudly on an unknown token). */
+  private isTrackedStoredValue(expr: Expression): bool {
+    let node = unwrapParens(expr);
+    if (node.kind == NodeKind.Identifier) {
+      let binding = this.scope.lookup((<IdentifierExpression>node).text);
+      return !!binding && this.storedPromises.has(binding.field);
+    }
+    return node.kind == NodeKind.ElementAccess || node.kind == NodeKind.PropertyAccess;
+  }
+
   /** Maintains the stored-promise binding set across `p = ...` rebinds:
    *  a rebind to a suspending-import call binds a fresh token, anything
    *  else unbinds. Only plain `=` assignments to a local are tracked;
@@ -1395,7 +1408,7 @@ class AsyncFunctionTransform {
     if (left.kind != NodeKind.Identifier) return;
     let binding = this.scope.lookup((<IdentifierExpression>left).text);
     if (!binding) return;
-    if (this.isSuspendingImportCall(binary.right)) {
+    if (this.isSuspendingImportCall(binary.right) || this.isTrackedStoredValue(binary.right)) {
       this.storedPromises.add(binding.field);
     } else {
       this.storedPromises.delete(binding.field);
@@ -1429,9 +1442,17 @@ class AsyncFunctionTransform {
   private transformStoredAwait(node: AwaitExpression, operand: IdentifierExpression, used: bool): AwaitSite | null {
     let binding = this.scope.lookup(operand.text);
     if (!binding || !this.storedPromises.has(binding.field)) {
-      this.fail("'await' of a stored promise is only supported when the promise was bound by a direct call to a suspending import in this function", node.range);
+      this.fail("'await' of a stored promise is only supported when the promise was bound by a direct call to a suspending import in this function (or copied from such a binding)", node.range);
       return null;
     }
+    return this.buildWaitSite(node, operand, used);
+  }
+
+  /** Builds a `__async_wait` site for an operand evaluating to an issued
+   *  token: a tracked stored promise, or a member/index read whose value
+   *  the coordinator resolves to an issued token at runtime (and fails
+   *  loudly on an unknown token). */
+  private buildWaitSite(node: AwaitExpression, operand: Expression, used: bool): AwaitSite | null {
     let flow = assert(this.flow);
     let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
     if (!operandType) {
@@ -1492,6 +1513,11 @@ class AsyncFunctionTransform {
     let operand = unwrapParens(node.operand);
     if (operand.kind == NodeKind.Identifier) {
       return this.transformStoredAwait(node, <IdentifierExpression>operand, used);
+    }
+    if (operand.kind == NodeKind.ElementAccess || operand.kind == NodeKind.PropertyAccess) {
+      this.checkDirectAsyncCalls(operand);
+      if (this.failed) return null;
+      return this.buildWaitSite(node, operand, used);
     }
     if (operand.kind != NodeKind.Call) {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);

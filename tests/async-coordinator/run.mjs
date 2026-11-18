@@ -337,6 +337,52 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS stored externref promise");
 }
 
+// Stored promises read out of an array / an object field, and copied
+// from a tracked binding, suspend on the issued token.
+{
+  let base = chunkDeferreds.length;
+  let p = api.storedMember();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "storedMember must issue both promises before awaiting");
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p) === "AB", "storedMember must resolve AB");
+  console.log("PASS stored promise read out of an array");
+
+  base = chunkDeferreds.length;
+  p = api.storedField();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedField must issue once");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedField must resolve got-A");
+  console.log("PASS stored promise read out of an object field");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopy();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopy must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopy must resolve got-A");
+  console.log("PASS stored promise copied from a tracked binding");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyRebind();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyRebind must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyRebind must resolve got-A");
+  console.log("PASS stored promise copied by rebind");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyMember();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyMember must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyMember must resolve got-A");
+  console.log("PASS stored promise copied from an array element");
+}
+
 // Nested await: the inner task is driven, its result (not the inner
 // import's raw value) reaches the outer resume.
 {

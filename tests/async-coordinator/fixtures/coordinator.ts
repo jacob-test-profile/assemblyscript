@@ -89,6 +89,51 @@ export async function catchRejectFinally(): Promise<string> {
   return out;
 }
 
+// Stored promises read out of an array or an object field, and copied
+// from a tracked binding, all suspend on the issued token.
+export async function storedMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(2);
+  arr[0] = getChunk(0);
+  arr[1] = getChunk(1);
+  let a = await arr[0];
+  let b = await arr[1];
+  return a + b;
+}
+
+class PromiseBox {
+  p: Promise<string> = changetype<Promise<string>>(0);
+}
+
+export async function storedField(): Promise<string> {
+  let box = new PromiseBox();
+  box.p = getChunk(0);
+  let c = await box.p;
+  return "got-" + c;
+}
+
+export async function storedCopy(): Promise<string> {
+  let p = getChunk(0);
+  let q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyRebind(): Promise<string> {
+  let p = getChunk(0);
+  let q: Promise<string>;
+  q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(1);
+  arr[0] = getChunk(0);
+  let p = arr[0];
+  let c = await p;
+  return "got-" + c;
+}
+
 // A stored promise is issued at bind time and awaited later; the await
 // must not re-issue the import.
 export async function storedAwait(): Promise<string> {
