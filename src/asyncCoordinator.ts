@@ -282,6 +282,17 @@ export function buildAsyncCoordinator(program: Program): string | null {
       joinImport: true
     });
   }
+  let envImports = program.moduleImports.get("env");
+  if (envImports && envImports.has("__async_wait")) {
+    imports.push({
+      module: "env",
+      name: "__async_wait",
+      params: [],
+      resultKind: "i32",
+      resultNullable: false,
+      waitImport: true
+    });
+  }
   let out = ASYNC_COORDINATOR_JOIN_SOURCE + ASYNC_COORDINATOR_RUNTIME + "\nconst __ASYNC_METADATA__ = " + JSON.stringify(metadata) + ";\n";
   if (notes.length > 0) {
     out += "// Note: the coordinator does not drive every async function in this module:\n";

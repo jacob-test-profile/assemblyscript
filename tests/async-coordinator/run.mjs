@@ -111,6 +111,7 @@ const sentinel = { tag: "handle" };
 const api = await instantiateAsync(bytes, {
   env: {
     getChunk(i) {
+      if (i === 9) return Promise.resolve("FAST");
       chunkCalls.push(i);
       const d = deferred();
       chunkDeferreds.push(d);
@@ -240,6 +241,75 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base + 1].reject(new Error("chunk-1 failed"));
   await assertRejects(p, /chunk-1 failed/, "a rejected await must reject the task promise");
   console.log("PASS rejection propagation");
+}
+
+// Stored promises: bind-then-await, in a loop, rebind, interleaved.
+{
+  let base = chunkDeferreds.length;
+  let p = api.storedAwait();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedAwait must issue exactly once, at bind time");
+  chunkDeferreds[base].resolve("AAA");
+  check((await p) === "got-AAA", "storedAwait must resolve with the awaited value");
+  console.log("PASS stored promise, bind-then-await");
+
+  base = chunkDeferreds.length;
+  p = api.storedLoop();
+  await tick();
+  for (let i = 0; i < 3; i++) {
+    check(chunkDeferreds.length === base + i + 1, "storedLoop must issue one promise per iteration");
+    chunkDeferreds[base + i].resolve("ABC"[i]);
+    await tick();
+  }
+  check((await p) === "ABC", "storedLoop must resolve results in order");
+  console.log("PASS stored promise in a loop, in order");
+
+  base = chunkDeferreds.length;
+  p = api.storedRebind();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "storedRebind must issue twice");
+  chunkDeferreds[base].resolve("OLD");
+  chunkDeferreds[base + 1].resolve("NEW");
+  check((await p) === "got-NEW", "storedRebind must resolve with the rebound promise");
+  console.log("PASS stored promise rebind to a fresh call");
+
+  base = chunkDeferreds.length;
+  p = api.storedInterleave();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "storedInterleave must issue both promises before awaiting");
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p) === "AB", "storedInterleave must resolve both stored values");
+  console.log("PASS stored promises interleaved, issue-all then await");
+
+  check((await api.storedFast()) === "got-FAST", "a promise resolved before the await must still deliver its value");
+  console.log("PASS stored promise already resolved before await");
+}
+
+// Double consumption of a stored promise fails loudly.
+{
+  const base = chunkDeferreds.length;
+  const p = api.doubleAwait();
+  await tick();
+  chunkDeferreds[base].resolve("A");
+  await assertRejects(p, /already-consumed/, "a second await of the same stored promise must fail loudly");
+  console.log("PASS stored promise double consumption fails loudly");
+}
+
+// Stored externref promise: token at bind time, value through the spill slot.
+{
+  const hBase = handleDeferreds.length;
+  const uBase = useDeferreds.length;
+  const p = api.storedHandle();
+  await tick();
+  check(handleDeferreds.length === hBase + 1, "storedHandle must issue getHandle once, at bind time");
+  handleDeferreds[hBase].resolve(sentinel);
+  await tick();
+  check(seenHandles[uBase] === sentinel, "storedHandle must keep externref identity across the stored await");
+  useDeferreds[uBase].resolve(42);
+  check((await p) === 42, "storedHandle must resolve 42");
+  console.log("PASS stored externref promise");
 }
 
 // A rejection that lands in a catch must drive the catch, not fail the task.

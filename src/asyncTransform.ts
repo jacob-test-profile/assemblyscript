@@ -175,6 +175,9 @@ import {
 const CONT_TERMINAL = -1;
 /** Break/continue target meaning "no enclosing loop". */
 const NO_TARGET = -1;
+/** Name of the suspending wait import for stored-promise await (declared
+ *  in std/assembly/promise.ts). */
+const WAIT_IMPORT_NAME = "__async_wait";
 /** Base offset for segment ids in the `state` field. Suspended states are
  *  `site + 1` (1..sites), so segment states live at `CPS_SEGMENT_BASE + id`
  *  and can never collide with a suspended state. */
@@ -519,6 +522,11 @@ class AsyncFunctionTransform {
   private hasAdapters: bool;
   /** Module global holding the currently-stepping state object. */
   private stateGlobalName: string;
+  /** State fields holding stored-promise tokens: a local is tracked here
+   *  when its binding (declaration initializer or `=` rebind) is a direct
+   *  call to a suspending import. Keyed by field, so a shadowing local
+   *  with the same name does not inherit the binding. */
+  private storedPromises = new Set<string>();
 
   constructor(
     private program: Program,
@@ -1032,6 +1040,10 @@ class AsyncFunctionTransform {
         let rewrittenInit = this.rewriteChecked(initializer);
         if (!rewrittenInit) return;
         this.emitLocalAssign(name, rewrittenInit, declaration.range);
+        if (this.isSuspendingImportCall(initializer)) {
+          let binding = this.scope.lookup(name);
+          if (binding) this.storedPromises.add(binding.field);
+        }
       }
     }
   }
@@ -1094,6 +1106,7 @@ class AsyncFunctionTransform {
     }
     this.checkDirectAsyncCalls(stmt.expression);
     if (this.failed) return;
+    this.trackStoredRebind(stmt.expression);
     let rewritten = this.rewriteChecked(stmt.expression);
     if (!rewritten) return;
     this.emit(exprStmt(rewritten));
@@ -1331,9 +1344,119 @@ class AsyncFunctionTransform {
 
   // === Await ====================================================================================
 
+  /** Whether the expression is a direct call to a suspending import. */
+  private isSuspendingImportCall(expr: Expression): bool {
+    let call = unwrapParens(expr);
+    if (call.kind != NodeKind.Call) return false;
+    let callee = (<CallExpression>call).expression;
+    if (callee.kind != NodeKind.Identifier) return false;
+    let element = assert(this.flow).lookup((<IdentifierExpression>callee).text);
+    return !!element
+      && element.kind == ElementKind.FunctionPrototype
+      && (<FunctionPrototype>element).is(CommonFlags.Ambient);
+  }
+
+  /** Maintains the stored-promise binding set across `p = ...` rebinds:
+   *  a rebind to a suspending-import call binds a fresh token, anything
+   *  else unbinds. Only plain `=` assignments to a local are tracked;
+   *  rebinds anywhere else leave the old binding in place, and the
+   *  coordinator fails loudly at runtime on a token it does not know. */
+  private trackStoredRebind(expr: Expression): void {
+    let node = unwrapParens(expr);
+    if (node.kind != NodeKind.Binary) return;
+    let binary = <BinaryExpression>node;
+    if (binary.operator != Token.Equals) return;
+    let left = unwrapParens(binary.left);
+    if (left.kind != NodeKind.Identifier) return;
+    let binding = this.scope.lookup((<IdentifierExpression>left).text);
+    if (!binding) return;
+    if (this.isSuspendingImportCall(binary.right)) {
+      this.storedPromises.add(binding.field);
+    } else {
+      this.storedPromises.delete(binding.field);
+    }
+  }
+
+  /** Awaits a stored promise: the operation was already issued when the
+   *  promise was bound, so the site suspends on its token through
+   *  `__async_wait` instead of issuing a new call. The token is the
+   *  bound local's field value, reinterpreted as an i32; the rest of the
+   *  site (resume value, reject retarget, externref spill slot) is
+   *  exactly a direct-await site. */
+  private transformStoredAwait(node: AwaitExpression, operand: IdentifierExpression, used: bool): AwaitSite | null {
+    let binding = this.scope.lookup(operand.text);
+    if (!binding || !this.storedPromises.has(binding.field)) {
+      this.fail("'await' of a stored promise is only supported when the promise was bound by a direct call to a suspending import in this function", node.range);
+      return null;
+    }
+    let flow = assert(this.flow);
+    let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
+    if (!operandType) {
+      this.punted = true;
+      return null;
+    }
+    let unwrapped = this.resolver.unwrapPromiseType(operandType);
+    if (!unwrapped) {
+      this.program.error(
+        DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
+        operand.range
+      );
+      this.failed = true;
+      return null;
+    }
+    let typeNode = typeToTypeNode(unwrapped, node.range);
+    if (!typeNode) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+      return null;
+    }
+    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+      return null;
+    }
+    let rewrittenOperand = rewriteExpression(operand, this.rewriter());
+    if (!rewrittenOperand) {
+      this.failed = true;
+      return null;
+    }
+    let waitCall = callExpr(
+      ident(WAIT_IMPORT_NAME, node.range),
+      [
+        new CallExpression(
+          ident("changetype", node.range),
+          [ namedType("i32", null, false, node.range) ],
+          [ rewrittenOperand ],
+          node.range
+        )
+      ],
+      node.range
+    );
+    let site = new AwaitSite(
+      this.sites.length, unwrapped, typeNode, used,
+      waitCall, "", node.range
+    );
+    this.sites.push(site);
+    let rejectTarget = rejectTargetFor(this.file, node.range);
+    if (rejectTarget) {
+      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
+      let errBinding = this.scope.lookup(rejectTarget.errorVar);
+      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
+        site.rejectFlagField = flagBinding.field;
+        site.rejectErrField = errBinding.field;
+      }
+    }
+    if (unwrapped.kind == TypeKind.Extern) {
+      site.slotField = `__slot_pend${site.id}`;
+      this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
+    }
+    return site;
+  }
+
   /** Validates an await operand and records the site. Returns `null` on failure. */
   private transformAwait(node: AwaitExpression, used: bool): AwaitSite | null {
     let operand = unwrapParens(node.operand);
+    if (operand.kind == NodeKind.Identifier) {
+      return this.transformStoredAwait(node, <IdentifierExpression>operand, used);
+    }
     if (operand.kind != NodeKind.Call) {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
       return null;

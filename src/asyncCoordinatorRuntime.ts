@@ -426,6 +426,12 @@ export function createCoordinator(metadata) {
     const pendingToken = task.pendingToken;
     task.pending = null;
     task.pendingToken = null;
+    if (task.pendingWaitMissing) {
+      const token = task.pendingWaitMissing;
+      task.pendingWaitMissing = null;
+      settleError(task, new Error("async coordinator: await of a stored promise with an unknown or already-consumed token " + token));
+      return;
+    }
     if (siteMeta.join) {
       runJoin(task, siteMeta);
       return;
@@ -470,7 +476,7 @@ export function createCoordinator(metadata) {
       const wasmArgs = jsArgs.map(function (arg, i) {
         return lower(arg, fn.params[i].kind, fn.params[i].nullable);
       });
-      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, settled: false, resolve: resolve, reject: reject };
+      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
         handle = wasmExports[fn.exportName].apply(null, wasmArgs);
@@ -537,6 +543,23 @@ export function createCoordinator(metadata) {
         mod[imp.name] = function (reqsPtr, policy) {
           const task = activeTask;
           if (task) task.pendingJoin = { reqs: readI32Array(reqsPtr), policy: policy };
+          return 0;
+        };
+        return;
+      }
+      if (imp.waitImport) {
+        mod[imp.name] = function (token) {
+          const task = activeTask;
+          if (task) {
+            const promise = joinMembers.get(token);
+            if (promise) {
+              joinMembers.delete(token);
+              task.pending = promise;
+            } else {
+              task.pendingWaitMissing = token;
+            }
+            task.pendingToken = 0;
+          }
           return 0;
         };
         return;

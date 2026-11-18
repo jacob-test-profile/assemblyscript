@@ -86,6 +86,66 @@ export async function catchRejectFinally(): Promise<string> {
   return out;
 }
 
+// A stored promise is issued at bind time and awaited later; the await
+// must not re-issue the import.
+export async function storedAwait(): Promise<string> {
+  let p = getChunk(0);
+  let c = await p;
+  return "got-" + c;
+}
+
+export async function storedLoop(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 3; i++) {
+    let p = getChunk(i);
+    let c = await p;
+    out = out + c;
+  }
+  return out;
+}
+
+// Rebinding to a fresh import call binds a fresh token; the orphaned
+// first issue is ignored.
+export async function storedRebind(): Promise<string> {
+  let p = getChunk(0);
+  p = getChunk(1);
+  let c = await p;
+  return "got-" + c;
+}
+
+// Two stored promises issued before either is awaited.
+export async function storedInterleave(): Promise<string> {
+  let p = getChunk(0);
+  let q = getChunk(1);
+  let a = await p;
+  let b = await q;
+  return a + b;
+}
+
+// Already resolved before the await: the wait still delivers the value.
+export async function storedFast(): Promise<string> {
+  let p = getChunk(9);
+  let c = await p;
+  return "got-" + c;
+}
+
+// A second await of the same stored promise fails loudly.
+export async function doubleAwait(): Promise<string> {
+  let p = getChunk(0);
+  let a = await p;
+  let b = await p;
+  return a + b;
+}
+
+// A stored externref promise: the token is issued at bind time, the
+// externref value crosses the await through the spill slot.
+export async function storedHandle(): Promise<i32> {
+  let h = getHandle();
+  let v = await h;
+  let n = await useHandle(v);
+  return n;
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
 }

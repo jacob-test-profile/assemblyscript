@@ -45,3 +45,13 @@ export class PromiseSettledResult<T> {
 // through the per-site join exports.
 @external("env", "__async_join")
 export declare function __async_join(reqs: Array<i32>, policy: i32): i32;
+
+// Phase 1, chunk 7: the suspending wait import for stored-promise await
+// (`let p = getChunk(0); await p;`). The import call already issued the
+// operation and returned its token; this suspends the task on that token
+// (already issued, never re-issued). Returns 0 (suspended); the
+// coordinator delivers the stored promise's outcome through the site's
+// resume/reject exports, and fails the task loudly when the token is
+// unknown or already consumed.
+@external("env", "__async_wait")
+export declare function __async_wait(req: i32): i32;

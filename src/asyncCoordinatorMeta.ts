@@ -83,6 +83,10 @@ export interface ImportMeta {
   /** Set for the fixed __async_join import (chunk 5): the coordinator
    *  provides the wrapper itself, no user binding is needed. */
   joinImport?: boolean;
+  /** Set for the fixed __async_wait import (chunk 7, stored-promise
+   *  await): the coordinator provides the wrapper itself, no user
+   *  binding is needed. */
+  waitImport?: boolean;
 }
 
 /** Warns that a transformed function or import is not driven, and records
