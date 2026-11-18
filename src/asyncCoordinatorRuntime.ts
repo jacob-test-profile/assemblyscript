@@ -192,13 +192,19 @@ export function createCoordinator(metadata) {
 
   function failTask(task, site, error) {
     const message = error instanceof Error ? error.message : String(error);
+    let rc;
     try {
-      wasmExports[task.fn.sites[site].rejectExport](task.handle, newString(message));
+      activeTask = task;
+      try {
+        rc = wasmExports[task.fn.sites[site].rejectExport](task.handle, newString(message));
+      } finally {
+        activeTask = null;
+      }
     } catch (e) {
       settleError(task, error);
       return;
     }
-    settleError(task, error);
+    afterStep(task, rc);
   }
 
   function afterStep(task, rc) {
@@ -208,10 +214,19 @@ export function createCoordinator(metadata) {
   }
 
   function failJoin(task, site, message) {
+    let rc;
     try {
-      wasmExports[site.rejectExport](task.handle, newString(message));
-    } catch (e) { /* the task is failed either way */ }
-    settleError(task, new Error(message));
+      activeTask = task;
+      try {
+        rc = wasmExports[site.rejectExport](task.handle, newString(message));
+      } finally {
+        activeTask = null;
+      }
+    } catch (e) {
+      settleError(task, new Error(message));
+      return;
+    }
+    afterStep(task, rc);
   }
 
   function finishJoin(task, site) {

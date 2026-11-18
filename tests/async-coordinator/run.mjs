@@ -242,6 +242,40 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS rejection propagation");
 }
 
+// A rejection that lands in a catch must drive the catch, not fail the task.
+{
+  const base = chunkDeferreds.length;
+  const p = api.catchReject();
+  await tick();
+  chunkDeferreds[base].reject(new Error("caught-boom"));
+  const caught = await p;
+  check(caught === "caught:caught-boom", "a rejected await inside try/catch must resolve with the caught value, got " + caught);
+  console.log("PASS rejection resumes into catch");
+}
+
+// The catch may await again: the resumed step must re-suspend and drive.
+{
+  const base = chunkDeferreds.length;
+  const p = api.catchThenAwait();
+  await tick();
+  chunkDeferreds[base].reject(new Error("first-boom"));
+  await tick();
+  check(chunkDeferreds.length === base + 2, "catchThenAwait must issue the second await after the catch, got " + chunkDeferreds.length);
+  chunkDeferreds[base + 1].resolve("D");
+  check((await p) === "caught:first-boom+D", "catchThenAwait must resolve with the caught value plus the second await");
+  console.log("PASS rejection resumes into catch, then awaits again");
+}
+
+// Finally runs exactly once across a caught rejection.
+{
+  const base = chunkDeferreds.length;
+  const p = api.catchRejectFinally();
+  await tick();
+  chunkDeferreds[base].reject(new Error("fin-boom"));
+  check((await p) === "caught:fin-boom!finally", "finally must run exactly once across a caught rejection");
+  console.log("PASS finally exactly once across a caught rejection");
+}
+
 // Void task resolves undefined.
 {
   const base = chunkDeferreds.length;

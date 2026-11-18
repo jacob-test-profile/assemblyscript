@@ -49,6 +49,43 @@ export async function failingConcat(): Promise<string> {
   return a + b;
 }
 
+// A rejection of the awaited import lands in the enclosing catch and the
+// task resolves with the caught value instead of failing.
+export async function catchReject(): Promise<string> {
+  try {
+    let c = await getChunk(0);
+    return "ok-" + c;
+  } catch (e) {
+    return "caught:" + e;
+  }
+}
+
+// The catch body may await again: the resumed step re-suspends and the
+// coordinator drives the second await.
+export async function catchThenAwait(): Promise<string> {
+  try {
+    let c = await getChunk(0);
+    return "ok-" + c;
+  } catch (e) {
+    let d = await getChunk(1);
+    return "caught:" + e + "+" + d;
+  }
+}
+
+// Finally runs exactly once across a caught rejection.
+export async function catchRejectFinally(): Promise<string> {
+  let out = "";
+  try {
+    let c = await getChunk(0);
+    return "ok-" + c;
+  } catch (e) {
+    out = "caught:" + e;
+  } finally {
+    out = out + "!finally";
+  }
+  return out;
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
 }
