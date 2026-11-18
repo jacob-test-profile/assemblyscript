@@ -32,6 +32,26 @@ export class Worker {
       log("finally");
     }
   }
+
+  async helper(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
+  }
+
+  // Method awaiting a method inside its own try/catch: the inner failure
+  // must reach this catch, and the finally must run exactly once.
+  async guardedNested(n: i32): Promise<i32> {
+    try {
+      let h = await this.helper(n);
+      this.count += h;
+      return this.count;
+    } catch (e) {
+      log("catch:" + e);
+      return -1;
+    } finally {
+      log("finally");
+    }
+  }
 }
 
 // Entry points for the test driver: starting a method returns its task handle.
@@ -43,6 +63,11 @@ export function startGuarded(): i32 {
 export function startGuardedFinally(): i32 {
   let w = new Worker();
   return changetype<i32>(w.guardedFinally(0));
+}
+
+export function startGuardedNested(): i32 {
+  let w = new Worker();
+  return changetype<i32>(w.guardedNested(5));
 }
 
 // Mints the rejection message the glue passes to the reject export.
