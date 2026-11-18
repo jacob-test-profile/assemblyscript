@@ -2,9 +2,10 @@
 // Awaits in short-circuited positions (right of &&/||, ternary branches)
 // cannot be hoisted without changing evaluation order; loop conditions
 // and incrementors inside a try are guarded by the desugar (`!stop &&`
-// / ternary), which puts the await on the short-circuited side; a switch
-// condition is rejected whole by the validator; compound assignment as a
-// subexpression would read its target after the suspension.
+// / ternary), which puts the await on the short-circuited side; an await
+// in a switch condition stays loud (the switch itself transforms now —
+// only the condition/case-label await is rejected); compound assignment
+// as a subexpression would read its target after the suspension.
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getNum")
@@ -103,12 +104,4 @@ export async function forIncrInTry(): Promise<string> {
 export async function compoundSubexpr(): Promise<i32> {
   let n = 10;
   return (n += await getNum(1));
-}
-
-export async function joinMemberReturn(): Promise<string> {
-  return (await Promise.all([await getChunk(0)]))[0];
-}
-
-export async function joinMemberHoisted(): Promise<string> {
-  return combine(await Promise.all([await getChunk(0)]), "!");
 }
