@@ -73,7 +73,7 @@
     "asinit": "./bin/asinit.js"
   },
   "scripts": {
-    "postinstall": "node scripts/install-eslint-typescript.js",
+    "postinstall": "node scripts/postinstall.js",
     "check": "npm run check:config && npm run check:import && npm run lint",
     "check:config": "tsc --noEmit -p src --diagnostics --listFiles",
     "check:import": "tsc --noEmit --skipLibCheck --target ESNEXT --module nodenext --moduleResolution nodenext --experimentalDecorators tests/import/index",
