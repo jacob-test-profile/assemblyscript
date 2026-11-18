@@ -6,3 +6,5 @@ export declare function two(): void;
 export declare function three(): void;
 @external("foo", "var")
 export const var_: i32;
+export declare function nospace(): void;
+export declare function slashespace(): void;
