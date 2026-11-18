@@ -402,10 +402,11 @@ const api = await instantiateAsync(bytes, {
   base = joinMembers.length;
   p = joinApi.joinThenAwait();
   await tick();
-  check(joinMembers.length === base + 3, "joinThenAwait must issue 3 members (2 join + 1 await)");
+  check(joinMembers.length === base + 2, "joinThenAwait must issue 2 join members first, got " + (joinMembers.length - base));
   joinMembers[base].resolve(1);
   joinMembers[base + 1].resolve(2);
   await tick();
+  check(joinMembers.length === base + 3, "joinThenAwait must issue the post-join await after the join, got " + (joinMembers.length - base));
   joinMembers[base + 2].resolve(3);
   check((await p) === "1|2:3", "join followed by await must return both results in order");
   console.log("PASS await site after join site");

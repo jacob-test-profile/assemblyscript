@@ -218,7 +218,12 @@ export function createCoordinator(metadata) {
     if (task.settled) return;
     let rc;
     try {
-      rc = wasmExports[site.doneExport](task.handle);
+      activeTask = task;
+      try {
+        rc = wasmExports[site.doneExport](task.handle);
+      } finally {
+        activeTask = null;
+      }
     } catch (e) {
       settleError(task, e);
       return;
