@@ -4853,7 +4853,8 @@ export class Compiler extends DiagnosticEmitter {
       right,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      left
     );
   }
 
@@ -5851,7 +5852,8 @@ export class Compiler extends DiagnosticEmitter {
       valueExpression,
       thisExpression,
       elementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      expression
     );
   }
 
@@ -5870,7 +5872,12 @@ export class Compiler extends DiagnosticEmitter {
     /** Index expression reference if an indexed set. */
     indexExpression: Expression | null,
     /** Whether to tee the value. */
-    tee: bool
+    tee: bool,
+    /** Target AST node, for the setter call's report node. A `super`
+     *  target must skip the override stub, like a `super` method call or
+     *  getter read does (makeCallDirect checks
+     *  reportNode.isAccessOnSuper). */
+    reportNode: Node
   ): ExpressionRef {
     let module = this.module;
     let flow = this.currentFlow;
@@ -5948,26 +5955,26 @@ export class Compiler extends DiagnosticEmitter {
             thisType,
             Constraints.ConvImplicit | Constraints.IsThis
           );
-          if (!tee) return this.makeCallDirect(setterInstance, [ thisExpr, valueExpr ], valueExpression);
+          if (!tee) return this.makeCallDirect(setterInstance, [ thisExpr, valueExpr ], reportNode);
           let tempLocal = flow.getTempLocal(valueType);
           let valueTypeRef = valueType.toRef();
           let ret = module.block(null, [
             this.makeCallDirect(setterInstance, [
               thisExpr,
               module.local_tee(tempLocal.index, valueExpr, valueType.isManaged, valueTypeRef)
-            ], valueExpression),
+            ], reportNode),
             module.local_get(tempLocal.index, valueTypeRef),
           ], valueTypeRef);
           this.currentType = valueType;
           return ret;
         } else {
-          if (!tee) return this.makeCallDirect(setterInstance, [ valueExpr ], valueExpression);
+          if (!tee) return this.makeCallDirect(setterInstance, [ valueExpr ], reportNode);
           let tempLocal = flow.getTempLocal(valueType);
           let valueTypeRef = valueType.toRef();
           let ret = module.block(null, [
             this.makeCallDirect(setterInstance, [
               module.local_tee(tempLocal.index, valueExpr, valueType.isManaged, valueTypeRef),
-            ], valueExpression),
+            ], reportNode),
             module.local_get(tempLocal.index, valueTypeRef),
           ], valueTypeRef);
           this.currentType = valueType;
@@ -9571,7 +9578,8 @@ export class Compiler extends DiagnosticEmitter {
         expression.operand,
         resolver.currentThisExpression,
         resolver.currentElementExpression,
-        false
+        false,
+        expression.operand
       );
     }
 
@@ -9583,7 +9591,8 @@ export class Compiler extends DiagnosticEmitter {
       expression.operand,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      false
+      false,
+      expression.operand
     );
 
     this.currentType = tempLocal.type;
@@ -9975,7 +9984,8 @@ export class Compiler extends DiagnosticEmitter {
       expression.operand,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      expression.operand
     );
   }
 

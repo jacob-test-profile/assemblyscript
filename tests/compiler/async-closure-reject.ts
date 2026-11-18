@@ -1,18 +1,6 @@
 //@ external("env", "getNumber")
 declare function getNumber(): Promise<i32>;
 
-export class Base {
-  n: i32 = 1;
-}
-
-export class Child extends Base {
-  // `super` cannot be lifted: it is rejected loudly.
-  async badSuper(): Promise<i32> {
-    let m = await getNumber();
-    return super.n + m;
-  }
-}
-
 // An async arrow capturing an outer local is rejected loudly.
 export async function badCapture(): Promise<i32> {
   let x = 1;

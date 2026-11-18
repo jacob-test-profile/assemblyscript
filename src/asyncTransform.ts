@@ -126,7 +126,9 @@ import {
 } from "./asyncTryDesugar";
 
 import {
-  liftThisInAsyncBody
+  liftThisInAsyncBody,
+  prepareSuperHelpers,
+  SuperPrepass
 } from "./asyncThisLift";
 
 import {
@@ -331,6 +333,20 @@ export function transformAsyncFunctions(program: Program): void {
   let pools = new Set<string>();
   let classNews = new Set<ClassPrototype>();
   let files = Map_values(program.filesByName);
+  // The `super` pre-pass registers helper methods on class prototypes,
+  // which must happen before any worklist `resolveClass` finishes a
+  // class instance, so it runs over all files up front.
+  let superPrototypes = new Array<FunctionPrototype>();
+  for (let i = 0, k = files.length; i < k; ++i) {
+    let file = files[i];
+    if (file.source.sourceKind == SourceKind.LibraryEntry) continue;
+    let functions = new Array<FunctionPrototype>();
+    let methods = new Array<FunctionPrototype>();
+    collectAsyncFunctions(file, functions, methods);
+    for (let j = 0, l = functions.length; j < l; ++j) superPrototypes.push(functions[j]);
+    for (let j = 0, l = methods.length; j < l; ++j) superPrototypes.push(methods[j]);
+  }
+  let superHelpers = prepareSuperHelpers(program, superPrototypes);
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
     if (file.source.sourceKind == SourceKind.LibraryEntry) continue;
@@ -415,7 +431,16 @@ export function transformAsyncFunctions(program: Program): void {
         fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
         continue;
       }
-      if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
+      // A method the `super` pre-pass rejected already carries its
+      // diagnostic; mark the bound prototype rejected so the compiler
+      // guard skips it silently.
+      if (superHelpers.failed.has(prototype)) {
+        program.rejectedAsyncFunctions.add(transformPrototype);
+        continue;
+      }
+      let superPrepass: SuperPrepass | null = null;
+      if (item.receiverClass) superPrepass = superHelpers.helpers.get(item.receiverClass) || null;
+      if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted, superPrepass)) continue;
       let ctx: LiftContext = {
         program,
         file,
