@@ -169,7 +169,9 @@ class QueuedImport {
     /** Path to the other file. */
     public foreignPath: string,
     /** Alternative path to the other file. */
-    public foreignPathAlt: string
+    public foreignPathAlt: string,
+    /** Whether the import is type-only. */
+    public isType: bool = false
   ) {}
 }
 
@@ -1193,6 +1195,7 @@ export class Program extends DiagnosticEmitter {
               element,
               localIdentifier // isImport
             );
+            if (queuedImport.isType) queuedImport.localFile.noteTypeOnlyImport(localIdentifier.text);
             queuedImports.splice(i, 1);
             madeProgress = true;
           } else {
@@ -1201,15 +1204,17 @@ export class Program extends DiagnosticEmitter {
         } else { // i.e. import * as bar from "./bar"
           let localFile = queuedImport.localFile;
           let localName = localIdentifier.text;
+          let aliasNamespace = foreignFile.asAliasNamespace(
+            localName,
+            localFile,
+            localIdentifier
+          );
           localFile.add(
             localName,
-            foreignFile.asAliasNamespace(
-              localName,
-              localFile,
-              localIdentifier
-            ),
+            aliasNamespace,
             localIdentifier // isImport
           );
+          if (queuedImport.isType) localFile.noteTypeOnlyImport(localName);
           queuedImports.splice(i, 1);
           madeProgress = true;
         }
@@ -2547,7 +2552,8 @@ export class Program extends DiagnosticEmitter {
           parent,
           statement.internalPath,
           queuedImports,
-          queuedExports
+          queuedExports,
+          statement.isType || declarations[i].isType
         );
       }
     } else {
@@ -2558,7 +2564,8 @@ export class Program extends DiagnosticEmitter {
           namespaceName,
           null, // indicates import *
           statement.internalPath,
-          statement.internalPath + INDEX_SUFFIX
+          statement.internalPath + INDEX_SUFFIX,
+          statement.isType
         ));
       } else {
         // import "./foo"
@@ -2577,7 +2584,9 @@ export class Program extends DiagnosticEmitter {
     /** So far queued `import`s. */
     queuedImports: QueuedImport[],
     /** So far queued `export`s. */
-    queuedExports: Map<File,Map<string,QueuedExport>>
+    queuedExports: Map<File,Map<string,QueuedExport>>,
+    /** Whether the import is type-only. */
+    isType: bool
   ): void {
     let foreignPathAlt = foreignPath.endsWith(INDEX_SUFFIX) // strip or add index depending on what's already present
       ? foreignPath.substring(0, foreignPath.length - INDEX_SUFFIX.length)
@@ -2589,6 +2598,7 @@ export class Program extends DiagnosticEmitter {
       let element = this.lookupForeign(declaration.foreignName.text, foreignFile, queuedExports);
       if (element) {
         parent.add(declaration.name.text, element, declaration.name /* isImport */);
+        if (isType) parent.noteTypeOnlyImport(declaration.name.text);
         return;
       }
     }
@@ -2599,7 +2609,8 @@ export class Program extends DiagnosticEmitter {
       declaration.name,
       declaration.foreignName,
       foreignPath,
-      foreignPathAlt
+      foreignPathAlt,
+      isType
     ));
   }
 
@@ -3268,6 +3279,8 @@ export class File extends Element {
   exports: Map<string,DeclaredElement> | null = null;
   /** File re-exports. */
   exportsStar: File[] | null = null;
+  /** Local names bound by a type-only import, mapping to the imported element. */
+  typeOnlyImports: Map<string,DeclaredElement> | null = null;
   /** Top-level start function of this file. */
   startFunction!: Function;
   /** Array of `import * as X` alias namespaces of this file. */
@@ -3347,6 +3360,15 @@ export class File extends Element {
       let ns = this.aliasNamespaces[i];
       ns.add(name, element);
     }
+  }
+
+  /** Records that a local name is bound by a type-only import. */
+  noteTypeOnlyImport(name: string): void {
+    let element = this.getMember(name);
+    if (!element) return;
+    let typeOnlyImports = this.typeOnlyImports;
+    if (!typeOnlyImports) this.typeOnlyImports = typeOnlyImports = new Map();
+    typeOnlyImports.set(name, element);
   }
 
   /** Ensures that another file is a re-export of this file. */
