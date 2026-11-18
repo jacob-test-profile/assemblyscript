@@ -9,7 +9,60 @@ Base: fork `jacob-test-profile/assemblyscript`, origin is Jacob's fork only. No 
 - Coordinator lives in generated JS.
 - Externref across await is a first-class suspended value via proper spilling (table/global slots — externref cannot live in linear memory), NOT a permanent exclusion. Loud error only as a temporary guard if the spill is not ready; Phase 1 design must prove the spill or say exactly why not.
 
+## Phase 0 (frontend) — DONE 2026-11-18 (commits a9f6806c + tests pending)
+
+- Base for Phase 0 is `async` @ 39f98d0d (Change 1 space form c44a3642 +
+  Change 2 TS 7 migration b0a3657c merged). Rebased twice; probes re-verified
+  after each rebase (`ALL PROBES PASS`).
+- `CommonFlags.Async` reuses the dead `Quoted` bit (1<<30). `NodeKind.Await`
+  appended after `Comment`; `AwaitExpression extends UnaryExpression`.
+- Diagnostics: 1145 async must return `Promise<T>`; 1147 async in ambient
+  context; 1148 await only in async fn; 1149 await operand must be a
+  `Promise`; 1150 async on accessor/constructor; 1151 async on a property.
+  (1144 was taken by the Change 1 space-form update.)
+- Parser: top-level `async function`, methods (`abstract async` order; a
+  member named `async` still works), function-expression and parenthesized /
+  single-param async arrows, `await` at UnaryPrefix precedence. Async
+  context tracked with save/restore around every body parse. Tokenizer
+  subtlety that bit once: in `parseExpressionStart` the current token IS
+  `async`, so the lookahead must `peek()`, not `next()` then `peek()`;
+  `readIdentifier()` must run before `peek()` (pos sits at an identifier's
+  start until it is read).
+- Resolver: async fns must return `Promise<T>` (1145); `await` unwraps
+  `Promise<T>` to `T`, flattening nested promises (public
+  `unwrapPromiseType`, name-based on `Promise`).
+- Compiler: async fns rejected loudly (AS100 guard in `compileFunction`)
+  so a valid async fn never compiles as sync; `await` resolves first
+  (swallowing diagnostics) so an operand error stays specific. Exporting
+  an async fn also emits the AS235 warning (the fn never becomes Compiled,
+  so the exporter warns) — expected Phase 0 fallout, pinned in fixtures.
+- Stdlib: field-less `Promise<T>` with `all`/`race` stubs
+  (`std/assembly/promise.ts`, auto-globbed into the build) + `index.d.ts`.
+- Deviations from the pre-Phase-0 plan, both deliberate:
+  - 1149 is IMPLEMENTED but NOT reachable through the CLI in Phase 0:
+    the parser rejects await outside async fns (1148, parse aborts) and
+    the compiler guard rejects async fns before their bodies resolve, so
+    no fixture can pin 1149. The resolver code stands for Phase 1's
+    transform to call when it processes await operands.
+  - No `compileReturnStatement` unwrap: it is unreachable behind the
+    `compileFunction` guard in Phase 0, so it would be dead code. Phase 1's
+    transform owns the rewritten body's return semantics and decides then.
+- Tests: 4 parser fixtures (async-function, async-arrow, async-method,
+  await-expression incl. 2x 1148) + 7 compiler fixtures (1145, 1148, 1147,
+  1150, 1151, AS100 guard, passing `Promise.all`/`Promise.race` with
+  generated .wat + glue for the `env.getNumber` import).
+- Checks: build green, check (tsc + eslint) green, test:parser SUCCESS,
+  test:compiler --parallel SUCCESS (257 run, 7 pre-existing feature-gated
+  skips, 157s), transform/cli/asconfig/browser all exit 0.
+
 ## Cross-track notes (not mine to implement)
+- `//@ external("env", "someFunc")` (space after @, REQUIRED) LANDED in
+  `async` as c44a3642 (track/external-space 93700a4a): no-space
+  `//@external` is now an ordinary comment, misplaced directives are
+  loud (new diagnostic AS1144). Phase 0 tests use `//@ external(...)`.
+- Change 2 TS 7 migration merged into `async` as b0a3657c (HEAD 39f98d0d).
+  Track rebased onto 39f98d0d (derisk 4e732d8d, Phase 0 impl a9f6806c).
+- `std/assembly-async.json` (decision 7) does not exist on this base yet — Change 2 follow-up, not this track.
 - `//@ external("env", "someFunc")` (space after @, REQUIRED) LANDED in
   `async` as c44a3642 (track/external-space 93700a4a): no-space
   `//@external` is now an ordinary comment, misplaced directives are

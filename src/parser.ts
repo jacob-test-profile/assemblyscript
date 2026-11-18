@@ -4386,34 +4386,31 @@ export class Parser extends DiagnosticEmitter {
         return this.maybeParseCallExpression(tn, expr);
       }
       case Token.Async: {
-        let state = tn.mark();
-        tn.next();
+        // At entry the current token is `async`; peek at the token after it.
+        let asyncStart = tn.tokenPos;
+        let asyncEnd = tn.pos;
+        let next = tn.peek(IdentifierHandling.Prefer);
         if (tn.peekOnNewLine()) {
-          tn.reset(state);
           this.error(
             DiagnosticCode.Expression_expected,
-            tn.range()
+            tn.range(asyncStart, asyncEnd)
           );
           return null;
         }
-        let next = tn.peek();
-        if (next == Token.Function) {
+        if (next == Token.Function || next == Token.OpenParen) {
           tn.next();
           let expr = this.parseFunctionExpression(tn, CommonFlags.Async);
           if (!expr) return null;
           return this.maybeParseCallExpression(tn, expr);
         }
-        if (next == Token.OpenParen) {
-          let expr = this.parseFunctionExpression(tn, CommonFlags.Async);
-          if (!expr) return null;
-          return this.maybeParseCallExpression(tn, expr);
-        }
         if (next == Token.Identifier) {
+          tn.next(IdentifierHandling.Prefer);
+          let identifierText = tn.readIdentifier();
+          let identifier = Node.createIdentifierExpression(
+            identifierText,
+            tn.range(tn.tokenPos, tn.pos)
+          );
           if (tn.peek() == Token.Equals_GreaterThan && !tn.peekOnNewLine()) {
-            let identifier = Node.createIdentifierExpression(
-              tn.readIdentifier(),
-              tn.range(tn.tokenPos, tn.pos)
-            );
             return this.parseFunctionExpressionCommon(
               tn,
               Node.createEmptyIdentifierExpression(tn.range(startPos)),
@@ -4432,17 +4429,15 @@ export class Parser extends DiagnosticEmitter {
               startPos
             );
           }
-          tn.reset(state);
           this.error(
             DiagnosticCode.Expression_expected,
-            tn.range()
+            tn.range(asyncStart, asyncEnd)
           );
           return null;
         }
-        tn.reset(state);
         this.error(
           DiagnosticCode.Expression_expected,
-          tn.range()
+          tn.range(asyncStart, asyncEnd)
         );
         return null;
       }
