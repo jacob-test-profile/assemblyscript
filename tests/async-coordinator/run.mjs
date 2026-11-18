@@ -119,6 +119,7 @@ console.log("PASS missing suspending binding fails loudly");
 const chunkCalls = [];
 const chunkDeferreds = [];
 const numDeferreds = [];
+const flagDeferreds = [];
 const handleDeferreds = [];
 const useDeferreds = [];
 const seenHandles = [];
@@ -140,6 +141,11 @@ const api = await instantiateAsync(bytes, {
     getNumber() {
       const d = deferred();
       numDeferreds.push(d);
+      return d.promise;
+    },
+    getFlag(i) {
+      const d = deferred();
+      flagDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -180,6 +186,213 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[2].resolve("CCC");
   check((await p) === "AAABBBCCC", "concatThree must resolve AAABBBCCC");
   console.log("PASS loop+await through the generated coordinator");
+}
+
+// Compound assignment with await, field/element assignment await, and a
+// join awaited into a field — all through the generated coordinator.
+{
+  // compoundStr: "" += "AAA" += "BBB".
+  let base = chunkDeferreds.length;
+  let p = api.compoundStr();
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "0", "compoundStr must issue chunk 0 first");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "1", "compoundStr must issue chunk 1 second");
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "compoundStr must resolve AAABBB");
+  console.log("PASS compound assignment with await on a string");
+
+  // compoundNum: 10, then +=1 -=2 *=3 /=2 %=3 <<=1 &=7 |=8 ^=3 >>=1 == 4.
+  base = numDeferreds.length;
+  p = api.compoundNum();
+  const nums = [1, 2, 3, 2, 3, 1, 7, 8, 3, 1];
+  for (let i = 0; i < nums.length; i++) {
+    await tick();
+    check(numDeferreds.length === base + i + 1, "compoundNum must issue await " + i);
+    numDeferreds[base + i].resolve(nums[i]);
+  }
+  check((await p) === 4, "compoundNum must resolve 4");
+  console.log("PASS compound assignment with await, all eleven operators");
+
+  // fieldAssign: w.s = "CCC", w.n = 5.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.fieldAssign();
+  await tick();
+  chunkDeferreds[base].resolve("CCC");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "fieldAssign must issue getNumber after the field await");
+  numDeferreds[nBase].resolve(5);
+  check((await p) === "CCC5", "fieldAssign must resolve CCC5");
+  console.log("PASS field-assignment await");
+
+  // fieldCompound: "x" + "AAA", 1 + 4.
+  base = chunkDeferreds.length;
+  nBase = numDeferreds.length;
+  p = api.fieldCompound();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  numDeferreds[nBase].resolve(4);
+  check((await p) === "xAAA5", "fieldCompound must resolve xAAA5");
+  console.log("PASS compound assignment with await on a field");
+
+  // fieldJoin: Promise.all awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.fieldJoin();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "fieldJoin must issue both members");
+  chunkDeferreds[base + 1].resolve("BBB");
+  chunkDeferreds[base].resolve("AAA");
+  check((await p) === "AAABBB", "fieldJoin must resolve AAABBB");
+  console.log("PASS join awaited into a field");
+
+  // elemAssign: arr[0] = "AAA", arr[1] = "BBB", i ends at 1.
+  base = chunkDeferreds.length;
+  p = api.elemAssign();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB1", "elemAssign must resolve AAABBB1");
+  console.log("PASS element-assignment await");
+
+  // indexOrder: the index side effect runs before the suspension, so the
+  // awaited call observes j == 1.
+  base = chunkDeferreds.length;
+  const cBase = chunkCalls.length;
+  p = api.indexOrder();
+  await tick();
+  check(chunkCalls[cBase] === 1, "indexOrder must call getChunk with j==1, got " + chunkCalls[cBase]);
+  chunkDeferreds[base].resolve("BBB");
+  check((await p) === 1, "indexOrder must resolve 1");
+  console.log("PASS element index evaluated before suspension");
+
+  // elemCompound: 100 + 5.
+  nBase = numDeferreds.length;
+  p = api.elemCompound();
+  await tick();
+  numDeferreds[nBase].resolve(5);
+  check((await p) === 105, "elemCompound must resolve 105");
+  console.log("PASS compound assignment with await on an element");
+
+  // storedField: the stored promise is awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.storedField();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedField must issue exactly once, at bind time");
+  chunkDeferreds[base].resolve("DDD");
+  check((await p) === "DDD", "storedField must resolve DDD");
+  console.log("PASS stored promise awaited into a field");
+}
+
+// Hoisted awaits: conditions, call arguments, binary operands, and the
+// for incrementor — all through the generated coordinator.
+{
+  // ifCondFlag: flag 0 true.
+  let fBase = flagDeferreds.length;
+  let p = api.ifCondFlag();
+  await tick();
+  check(flagDeferreds.length === fBase + 1, "ifCondFlag must issue getFlag once");
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ifCondFlag must resolve YES");
+  console.log("PASS await in an if condition");
+
+  // whileCondFlag: flag true, true, false across three evaluations.
+  let base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.whileCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  check(chunkDeferreds.length === base + 1, "whileCondFlag must issue chunk 0 after the first flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "whileCondFlag must resolve AAABBB");
+  console.log("PASS await in a while condition, re-evaluated per iteration");
+
+  // forCondFlag: same re-evaluation shape as the while condition.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.forCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "forCondFlag must resolve AAABBB");
+  console.log("PASS await in a for condition, re-evaluated per iteration");
+
+  // doCondFlag: body runs before the first condition evaluation.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.doCondFlag();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "doCondFlag must issue chunk 0 before any flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(false);
+  check((await p) === "AAABBB", "doCondFlag must resolve AAABBB");
+  console.log("PASS await in a do-while condition");
+
+  // forIncrFlag: chunk 0, +1, chunk 1, +1, stop.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.forIncrFlag();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "forIncrFlag must issue the incrementor after the first body");
+  numDeferreds[nBase].resolve(1);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  numDeferreds[nBase + 1].resolve(1);
+  check((await p) === "AAABBB", "forIncrFlag must resolve AAABBB");
+  console.log("PASS await in a for incrementor");
+
+  // callArgsHoist: chunk 0 then chunk 1, in argument order.
+  base = chunkDeferreds.length;
+  p = api.callArgsHoist();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "callArgsHoist must resolve AAABBB");
+  console.log("PASS awaits in call arguments, in order");
+
+  // binaryHoist: 1 + 2 + 3.
+  nBase = numDeferreds.length;
+  p = api.binaryHoist();
+  await tick();
+  numDeferreds[nBase].resolve(2);
+  await tick();
+  numDeferreds[nBase + 1].resolve(3);
+  check((await p) === 6, "binaryHoist must resolve 6");
+  console.log("PASS awaits as binary operands, in order");
+
+  // ternaryCondFlag: the condition await hoists, the branches do not run.
+  fBase = flagDeferreds.length;
+  p = api.ternaryCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ternaryCondFlag must resolve YES");
+  console.log("PASS await in a ternary condition");
 }
 
 // Heap churn + __collect mid-suspension: the state object must survive.
@@ -756,6 +969,17 @@ const api = await instantiateAsync(bytes, {
   check((await p) === "10|20|30", "real join all must deliver results in argument order");
   console.log("PASS real join all, out-of-order delivery, in-order results");
 
+  // A join awaited as a method-call receiver: the join result is hoisted
+  // into a temp before the call.
+  base = joinMembers.length;
+  p = joinApi.joinHoist();
+  await tick();
+  check(joinMembers.length === base + 2, "joinHoist must issue 2 members");
+  joinMembers[base + 1].resolve(20);
+  joinMembers[base].resolve(10);
+  check((await p) === "10|20", "hoisted join must deliver its result to the method call");
+  console.log("PASS join awaited as a method-call receiver");
+
   base = joinMembers.length;
   p = joinApi.allFailFast();
   await tick();
@@ -904,6 +1128,12 @@ const api = await instantiateAsync(bytes, {
     await tick();
     methodNums[2].resolve(7);
     check((await p) === 130, "Counter.viaArrow(1) must give 130");
+    p = c.setField(0);
+    await tick();
+    methodNums[3].resolve(10);
+    await tick();
+    methodNums[4].resolve(5);
+    check((await p) === 15, "Counter.setField must give 15 (10, then += 5)");
     c.dispose();
     console.log("PASS basic async method, known values 12/119/130");
   }

@@ -45,6 +45,12 @@ export async function joinThenAwait(): Promise<string> {
   return xs.join("|") + ":" + y.toString();
 }
 
+// A join awaited as a method-call receiver: the join result is hoisted
+// into a temp before the call.
+export async function joinHoist(): Promise<string> {
+  return (await Promise.all([getNumber(), getNumber()])).join("|");
+}
+
 export async function settledNumbers(): Promise<string> {
   let rs = await Promise.allSettled([getNumber(), getNumber(), getNumber()]);
   let out = "";

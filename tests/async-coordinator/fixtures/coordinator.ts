@@ -18,8 +18,15 @@ declare function issueNumber(i: i32): i32;
 //@ external("env", "getNumber")
 declare function getNumber(): Promise<i32>;
 
+//@ external("env", "getFlag")
+declare function getFlag(i: i32): Promise<bool>;
+
 //@ external("env", "joinNumbers")
 declare function joinNumbers(policy: i32): Promise<string>;
+
+export function combine(a: string, b: string): string {
+  return a + b;
+}
 
 export async function concatThree(): Promise<string> {
   let out = "";
@@ -237,6 +244,110 @@ export async function switchAwait(n: i32): Promise<string> {
   return out;
 }
 
+// Compound assignment with await: the read happens before the suspension.
+export async function compoundStr(): Promise<string> {
+  let out = "";
+  out += await getChunk(0);
+  out += await getChunk(1);
+  return out;
+}
+
+export async function compoundNum(): Promise<i32> {
+  let n = 10;
+  n += await getNumber();
+  n -= await getNumber();
+  n *= await getNumber();
+  n /= await getNumber();
+  n %= await getNumber();
+  n <<= await getNumber();
+  n &= await getNumber();
+  n |= await getNumber();
+  n ^= await getNumber();
+  n >>= await getNumber();
+  return n;
+}
+
+class Box {
+  s: string = "";
+  n: i32 = 0;
+  chunks: Array<string> = new Array<string>();
+}
+
+// Field-assignment await and compound assignment to a field.
+export async function fieldAssign(): Promise<string> {
+  let w = new Box();
+  w.s = await getChunk(2);
+  w.n = await getNumber();
+  return w.s + w.n.toString();
+}
+
+export async function fieldCompound(): Promise<string> {
+  let w = new Box();
+  w.s = "x";
+  w.s += await getChunk(0);
+  w.n = 1;
+  w.n += await getNumber();
+  return w.s + w.n.toString();
+}
+
+// A join awaited into a field.
+export async function fieldJoin(): Promise<string> {
+  let w = new Box();
+  w.chunks = await Promise.all([getChunk(0), getChunk(1)]);
+  return w.chunks[0] + w.chunks[1];
+}
+
+// Element-assignment await; the index side effect happens before the suspension.
+export async function elemAssign(): Promise<string> {
+  let arr = new Array<string>(2);
+  let i = 0;
+  arr[i++] = await getChunk(0);
+  arr[i] = await getChunk(1);
+  return arr[0] + arr[1] + i.toString();
+}
+
+// The awaited call's argument observes the index side effect: j is 1 here.
+export async function indexOrder(): Promise<i32> {
+  let arr = new Array<string>(2);
+  let j = 0;
+  arr[j++] = await getChunk(j);
+  return j;
+}
+
+export async function elemCompound(): Promise<i32> {
+  let arr = new Array<i32>(1);
+  arr[0] = 100;
+  arr[0] += await getNumber();
+  return arr[0];
+}
+
+// A stored promise awaited into a field.
+export async function storedField(): Promise<string> {
+  let w = new Box();
+  let p = getChunk(3);
+  w.s = await p;
+  return w.s;
+}
+
+// Await in an if condition.
+export async function ifCondFlag(): Promise<string> {
+  if (await getFlag(0)) {
+    return "YES";
+  }
+  return "NO";
+}
+
+// Await in a while condition: re-evaluated on every iteration.
+export async function whileCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  while (await getFlag(i)) {
+    out += await getChunk(i);
+    i++;
+  }
+  return out;
+}
+
 // A switch inside a loop: continue skips to the next iteration, break
 // leaves the switch only.
 export async function switchInLoop(): Promise<string> {
@@ -247,6 +358,15 @@ export async function switchInLoop(): Promise<string> {
       case 2: { let c = await getChunk(2); out = out + c; break; }
       default: out = out + "x";
     }
+  }
+  return out;
+}
+
+// Await in a for condition: re-evaluated on every iteration.
+export async function forCondFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; await getFlag(i); i++) {
+    out += await getChunk(i);
   }
   return out;
 }
@@ -263,6 +383,26 @@ export async function finallyAwait(mode: i32): Promise<string> {
   } finally {
     let d = await getChunk(1);
     out = out + "/" + d;
+  }
+  return out;
+}
+
+// Await in a do-while condition: evaluated after each body run.
+export async function doCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  do {
+    out += await getChunk(i);
+    i++;
+  } while (await getFlag(i));
+  return out;
+}
+
+// Await in a for incrementor: runs after each body run.
+export async function forIncrFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 2; i += await getNumber()) {
+    out += await getChunk(i);
   }
   return out;
 }
@@ -330,6 +470,21 @@ export async function forOfBreak(): Promise<i32> {
     s += v;
   }
   return s;
+}
+
+// Awaits in call arguments, in order.
+export async function callArgsHoist(): Promise<string> {
+  return combine(await getChunk(0), await getChunk(1));
+}
+
+// Awaits as binary operands, in order.
+export async function binaryHoist(): Promise<i32> {
+  return 1 + await getNumber() + await getNumber();
+}
+
+// Await in a ternary condition.
+export async function ternaryCondFlag(): Promise<string> {
+  return (await getFlag(0)) ? "YES" : "NO";
 }
 
 export async function voidTask(): Promise<void> {

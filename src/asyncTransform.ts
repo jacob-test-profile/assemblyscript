@@ -259,12 +259,43 @@ class StateField {
 /** One externref spill slot reservation. */
 class SpillSlot {
   constructor(
-    /** "param", "local", "pend" or "result". */
+    /** "param", "local", "pend", "result" or "temp". */
     public kind: string,
-    /** Local name, "pend<n>" or "result". */
+    /** Local name, "pend<n>", "result" or "tmp<n>". */
     public name: string,
     /** State field holding the acquired slot index. */
     public slotField: string
+  ) {}
+}
+
+/** One per-site temp: a state field holding a value captured before a
+ *  suspension, or a spill slot when the value is an externref. */
+class AwaitTemp {
+  constructor(
+    /** State field holding the value, if a field temp. */
+    public field: string,
+    /** State field holding the spill slot index, if a slot temp. */
+    public slotField: string,
+    /** Whether the value lives in a spill slot instead of a field. */
+    public spilled: bool
+  ) {}
+}
+
+/** An assignment target prepared before suspension: the receiver, index
+ *  and (for compound assignments) current value are captured into temps,
+ *  so the resume segment only writes through them. */
+class AwaitTarget {
+  constructor(
+    /** Captured current value, for compound assignments; null for `=`. */
+    public readTemp: AwaitTemp | null,
+    /** Spill slot field when the target is a spilled local, else "". */
+    public spilledSlotField: string,
+    /** Builds the resume-side target expression, or null for a spilled local. */
+    public buildTarget: ((range: Range) => Expression) | null,
+    /** Declared type node of a local target, for join validation; null otherwise. */
+    public expectedTypeNode: TypeNode | null,
+    /** Plain binary operator for a compound assignment, `Token.Equals` for `=`. */
+    public binaryOp: Token
   ) {}
 }
 
@@ -634,6 +665,46 @@ function collectAsyncFunctions(
   }
 }
 
+/** Whether the operator is `=` or a compound assignment operator. */
+function isAssignmentOp(op: Token): bool {
+  switch (op) {
+    case Token.Equals:
+    case Token.Plus_Equals:
+    case Token.Minus_Equals:
+    case Token.Asterisk_Equals:
+    case Token.Asterisk_Asterisk_Equals:
+    case Token.Slash_Equals:
+    case Token.Percent_Equals:
+    case Token.LessThan_LessThan_Equals:
+    case Token.GreaterThan_GreaterThan_Equals:
+    case Token.GreaterThan_GreaterThan_GreaterThan_Equals:
+    case Token.Ampersand_Equals:
+    case Token.Bar_Equals:
+    case Token.Caret_Equals:
+      return true;
+    default: return false;
+  }
+}
+
+/** Maps a compound assignment operator to its plain binary operator. */
+function compoundToBinary(op: Token): Token {
+  switch (op) {
+    case Token.Plus_Equals: return Token.Plus;
+    case Token.Minus_Equals: return Token.Minus;
+    case Token.Asterisk_Equals: return Token.Asterisk;
+    case Token.Asterisk_Asterisk_Equals: return Token.Asterisk_Asterisk;
+    case Token.Slash_Equals: return Token.Slash;
+    case Token.Percent_Equals: return Token.Percent;
+    case Token.LessThan_LessThan_Equals: return Token.LessThan_LessThan;
+    case Token.GreaterThan_GreaterThan_Equals: return Token.GreaterThan_GreaterThan;
+    case Token.GreaterThan_GreaterThan_GreaterThan_Equals: return Token.GreaterThan_GreaterThan_GreaterThan;
+    case Token.Ampersand_Equals: return Token.Ampersand;
+    case Token.Bar_Equals: return Token.Bar;
+    case Token.Caret_Equals: return Token.Caret;
+    default: return Token.Equals;
+  }
+}
+
 /** Per-function transform state. */
 class AsyncFunctionTransform {
   private resolver = this.program.resolver;
@@ -654,6 +725,8 @@ class AsyncFunctionTransform {
   private fields = new Array<StateField>();
   private slots = new Array<SpillSlot>();
   private fieldCounter: i32 = 0;
+  /** Counter for fresh hoisted-await temp names. */
+  private hoistCounter: i32 = 0;
   private failed: bool = false;
   private punted: bool = false;
   private stateClassName: string;
@@ -951,6 +1024,150 @@ class AsyncFunctionTransform {
     return thisProp(`__pend${site.id}`, range);
   }
 
+  /** Declares a per-site temp holding a value captured before suspension. */
+  private declareTemp(type: Type, range: Range): AwaitTemp | null {
+    if (type.kind == TypeKind.Extern) {
+      let n = this.fieldCounter++;
+      let slotField = `__slot_tmp_${n}`;
+      this.slots.push(new SpillSlot("temp", `tmp${n}`, slotField));
+      return new AwaitTemp("", slotField, true);
+    }
+    let typeNode = typeToTypeNode(type, range);
+    if (!typeNode) {
+      this.fail(`Async functions cannot lift locals of type '${type.toString()}' yet`, range);
+      return null;
+    }
+    if (!zeroValue(type, typeNode, range)) {
+      this.fail(`Async functions cannot lift locals of type '${type.toString()}' yet`, range);
+      return null;
+    }
+    let fieldName = `__tmp_${this.fieldCounter++}`;
+    this.fields.push(new StateField(fieldName, typeNode, type));
+    return new AwaitTemp(fieldName, "", false);
+  }
+
+  /** The expression reading a per-site temp. */
+  private tempRead(temp: AwaitTemp, range: Range): Expression {
+    if (temp.spilled) {
+      return callExpr(ident(SPILL_GET, range), [ thisProp(temp.slotField, range) ], range);
+    }
+    return thisProp(temp.field, range);
+  }
+
+  /** Emits the write of a value into a per-site temp. */
+  private emitTempWrite(temp: AwaitTemp, value: Expression, range: Range): void {
+    if (temp.spilled) {
+      this.emit(exprStmt(callExpr(
+        ident(SPILL_SET, range),
+        [ thisProp(temp.slotField, range), value ],
+        range
+      )));
+      return;
+    }
+    this.emit(exprStmt(assignExpr(thisProp(temp.field, range), value, range)));
+  }
+
+  /** Resolves the type of an expression against the current flow. */
+  private resolveExprType(expr: Expression, range: Range): Type | null {
+    let type = this.resolver.resolveExpression(expr, assert(this.flow), Type.auto, ReportMode.Swallow);
+    if (!type) this.punted = true;
+    return type;
+  }
+
+  /** Captures an already-rewritten expression into a per-site temp. */
+  private captureTemp(type: Type, value: Expression, range: Range): AwaitTemp | null {
+    let temp = this.declareTemp(type, range);
+    if (!temp) return null;
+    this.emitTempWrite(temp, value, range);
+    return temp;
+  }
+
+  /** Captures an original expression (rewritten, then captured) into a per-site temp. */
+  private captureOriginal(expr: Expression, range: Range): AwaitTemp | null {
+    let type = this.resolveExprType(expr, range);
+    if (!type) return null;
+    let rewritten = rewriteExpression(expr, this.rewriter());
+    if (!rewritten) {
+      this.failed = true;
+      return null;
+    }
+    return this.captureTemp(type, rewritten, range);
+  }
+
+  /** Prepares an assignment target: captures the receiver, index and,
+   *  for compound assignments, current value into per-site temps. */
+  private prepareAwaitTarget(left: Expression, compound: bool, operator: Token, range: Range): AwaitTarget | null {
+    // Resolve the current-value type up front: capturing the receiver or
+    // index rewrites the target in place, so it must not be resolved after.
+    let readType: Type | null = null;
+    if (compound) {
+      readType = this.resolveExprType(left, range);
+      if (!readType) return null;
+    }
+    if (left.kind == NodeKind.Identifier) {
+      let name = (<IdentifierExpression>left).text;
+      let binding = this.scope.lookup(name);
+      let readTemp: AwaitTemp | null = null;
+      if (compound) {
+        readTemp = this.captureOriginal(left, range);
+        if (!readTemp) return null;
+      }
+      let spilledSlotField = binding && binding.spilled ? binding.slotField : "";
+      let field = binding && !binding.spilled ? binding.field : "";
+      let buildTarget = (targetRange: Range): Expression => {
+        if (field != "") return thisProp(field, targetRange);
+        return ident(name, targetRange);
+      };
+      return new AwaitTarget(readTemp, spilledSlotField, buildTarget, this.localTypeNode(name), compound ? compoundToBinary(operator) : Token.Equals);
+    }
+    if (left.kind == NodeKind.PropertyAccess) {
+      let access = <PropertyAccessExpression>left;
+      let receiverTemp = this.captureOriginal(access.expression, range);
+      if (!receiverTemp) return null;
+      let property = access.property.text;
+      let buildTarget = (targetRange: Range): Expression => {
+        return new PropertyAccessExpression(this.tempRead(receiverTemp, targetRange), ident(property, targetRange), targetRange);
+      };
+      let readTemp: AwaitTemp | null = null;
+      if (compound) {
+        readTemp = this.captureTemp(assert(readType), buildTarget(range), range);
+        if (!readTemp) return null;
+      }
+      return new AwaitTarget(readTemp, "", buildTarget, null, compound ? compoundToBinary(operator) : Token.Equals);
+    }
+    let access = <ElementAccessExpression>left;
+    let objectTemp = this.captureOriginal(access.expression, range);
+    if (!objectTemp) return null;
+    let indexTemp = this.captureOriginal(access.elementExpression, range);
+    if (!indexTemp) return null;
+    let buildTarget = (targetRange: Range): Expression => {
+      return new ElementAccessExpression(this.tempRead(objectTemp, targetRange), this.tempRead(indexTemp, targetRange), targetRange);
+    };
+    let readTemp: AwaitTemp | null = null;
+    if (compound) {
+      readTemp = this.captureTemp(assert(readType), buildTarget(range), range);
+      if (!readTemp) return null;
+    }
+    return new AwaitTarget(readTemp, "", buildTarget, null, compound ? compoundToBinary(operator) : Token.Equals);
+  }
+
+  /** Emits the resume-side assignment of an awaited value into its target. */
+  private emitAwaitTargetAssign(target: AwaitTarget, value: Expression, range: Range): void {
+    let rhs = value;
+    if (target.readTemp) {
+      rhs = new BinaryExpression(target.binaryOp, this.tempRead(target.readTemp, range), value, range);
+    }
+    if (target.spilledSlotField != "") {
+      this.emit(exprStmt(callExpr(
+        ident(SPILL_SET, range),
+        [ thisProp(target.spilledSlotField, range), rhs ],
+        range
+      )));
+      return;
+    }
+    this.emit(exprStmt(assignExpr(assert(target.buildTarget)(range), rhs, range)));
+  }
+
   private slotTemp(slotField: string): string {
     for (let i = 0, k = this.slots.length; i < k; ++i) {
       if (this.slots[i].slotField == slotField) return `__s${i}`;
@@ -1130,9 +1347,13 @@ class AsyncFunctionTransform {
     }
   }
 
+  private failAwaitPosition(range: Range): void {
+    this.fail("'await' is only supported as a whole expression statement, variable initializer, assignment or return value", range);
+  }
+
   private checkNoAwait(expr: Expression): bool {
     if (containsAwait(expr)) {
-      this.fail("'await' is only supported as a whole expression statement, variable initializer, assignment or return value", expr.range);
+      this.failAwaitPosition(expr.range);
       return false;
     }
     return true;
@@ -1143,6 +1364,198 @@ class AsyncFunctionTransform {
     let rewritten = rewriteExpression(expr, this.rewriter());
     if (!rewritten) this.failed = true;
     return rewritten;
+  }
+
+  /** Hoists each await in `expr` sitting in a hoistable position into a
+   *  fresh temp local (through the variable-initializer machinery),
+   *  replacing it with the temp identifier, in evaluation order.
+   *  Awaits in short-circuited positions stay loud: the right side of
+   *  `&&`/`||` and the branches of a ternary. Returns the rewritten
+   *  expression, or null on failure. Await-free expressions come back
+   *  unchanged, so existing callers keep their behaviour. */
+  private hoistAwaits(expr: Expression, breakTarget: i32): Expression | null {
+    if (expr.kind == NodeKind.Await) {
+      return this.hoistAwaitExpr(<AwaitExpression>expr, breakTarget);
+    }
+    if (expr instanceof BinaryExpression) {
+      if (expr.operator == Token.Ampersand_Ampersand || expr.operator == Token.Bar_Bar) {
+        let left = this.hoistAwaits(expr.left, breakTarget);
+        if (!left) return null;
+        expr.left = left;
+        if (containsAwait(expr.right)) {
+          this.failAwaitPosition(expr.right.range);
+          return null;
+        }
+        return expr;
+      }
+      if (isAssignmentOp(expr.operator)) {
+        if (containsAwait(expr.left)) {
+          this.failAwaitPosition(expr.left.range);
+          return null;
+        }
+        if (expr.operator != Token.Equals && containsAwait(expr.right)) {
+          this.failAwaitPosition(expr.right.range);
+          return null;
+        }
+        let right = this.hoistAwaits(expr.right, breakTarget);
+        if (!right) return null;
+        expr.right = right;
+        return expr;
+      }
+      let left = this.hoistAwaits(expr.left, breakTarget);
+      if (!left) return null;
+      expr.left = left;
+      let right = this.hoistAwaits(expr.right, breakTarget);
+      if (!right) return null;
+      expr.right = right;
+      return expr;
+    }
+    if (expr instanceof CallExpression) {
+      let callee = this.hoistAwaits(expr.expression, breakTarget);
+      if (!callee) return null;
+      expr.expression = callee;
+      let args = expr.args;
+      for (let i = 0, k = args.length; i < k; ++i) {
+        let arg = this.hoistAwaits(args[i], breakTarget);
+        if (!arg) return null;
+        args[i] = arg;
+      }
+      return expr;
+    }
+    if (expr instanceof NewExpression) {
+      let args = expr.args;
+      for (let i = 0, k = args.length; i < k; ++i) {
+        let arg = this.hoistAwaits(args[i], breakTarget);
+        if (!arg) return null;
+        args[i] = arg;
+      }
+      return expr;
+    }
+    if (expr instanceof PropertyAccessExpression) {
+      let object = this.hoistAwaits(expr.expression, breakTarget);
+      if (!object) return null;
+      expr.expression = object;
+      return expr;
+    }
+    if (expr instanceof ElementAccessExpression) {
+      let object = this.hoistAwaits(expr.expression, breakTarget);
+      if (!object) return null;
+      expr.expression = object;
+      let element = this.hoistAwaits(expr.elementExpression, breakTarget);
+      if (!element) return null;
+      expr.elementExpression = element;
+      return expr;
+    }
+    if (expr instanceof UnaryPrefixExpression || expr instanceof UnaryPostfixExpression) {
+      let operand = this.hoistAwaits(expr.operand, breakTarget);
+      if (!operand) return null;
+      expr.operand = operand;
+      return expr;
+    }
+    if (expr instanceof TernaryExpression) {
+      let condition = this.hoistAwaits(expr.condition, breakTarget);
+      if (!condition) return null;
+      expr.condition = condition;
+      if (containsAwait(expr.ifThen)) {
+        this.failAwaitPosition(expr.ifThen.range);
+        return null;
+      }
+      if (containsAwait(expr.ifElse)) {
+        this.failAwaitPosition(expr.ifElse.range);
+        return null;
+      }
+      return expr;
+    }
+    if (expr instanceof AssertionExpression) {
+      let inner = this.hoistAwaits(expr.expression, breakTarget);
+      if (!inner) return null;
+      expr.expression = inner;
+      return expr;
+    }
+    if (expr instanceof ParenthesizedExpression) {
+      let inner = this.hoistAwaits(expr.expression, breakTarget);
+      if (!inner) return null;
+      expr.expression = inner;
+      return expr;
+    }
+    if (expr instanceof CommaExpression) {
+      let exprs = expr.expressions;
+      for (let i = 0, k = exprs.length; i < k; ++i) {
+        let inner = this.hoistAwaits(exprs[i], breakTarget);
+        if (!inner) return null;
+        exprs[i] = inner;
+      }
+      return expr;
+    }
+    if (expr instanceof InstanceOfExpression) {
+      let inner = this.hoistAwaits(expr.expression, breakTarget);
+      if (!inner) return null;
+      expr.expression = inner;
+      return expr;
+    }
+    if (expr instanceof ArrayLiteralExpression) {
+      let elements = expr.elementExpressions;
+      for (let i = 0, k = elements.length; i < k; ++i) {
+        let element = this.hoistAwaits(elements[i], breakTarget);
+        if (!element) return null;
+        elements[i] = element;
+      }
+      return expr;
+    }
+    if (expr instanceof ObjectLiteralExpression) {
+      let values = expr.values;
+      for (let i = 0, k = values.length; i < k; ++i) {
+        let value = this.hoistAwaits(values[i], breakTarget);
+        if (!value) return null;
+        values[i] = value;
+      }
+      return expr;
+    }
+    if (expr instanceof TemplateLiteralExpression) {
+      if (expr.tag) {
+        let tag = this.hoistAwaits(expr.tag, breakTarget);
+        if (!tag) return null;
+        expr.tag = tag;
+      }
+      let exprs = expr.expressions;
+      for (let i = 0, k = exprs.length; i < k; ++i) {
+        let inner = this.hoistAwaits(exprs[i], breakTarget);
+        if (!inner) return null;
+        exprs[i] = inner;
+      }
+      return expr;
+    }
+    return expr;
+  }
+
+  /** Hoists one await into a fresh temp local: awaits nested in the
+   *  operand are hoisted first (a join await goes whole, so its member
+   *  diagnostics survive), then the await itself becomes a temp
+   *  initializer through the variable machinery. */
+  private hoistAwaitExpr(node: AwaitExpression, breakTarget: i32): Expression | null {
+    if (!this.joinCallOf(node)) {
+      let operand = this.hoistAwaits(node.operand, breakTarget);
+      if (!operand) return null;
+      node.operand = operand;
+    }
+    let name = this.freshHoistName();
+    let declaration = new VariableDeclaration(
+      ident(name, node.range), null, CommonFlags.Let, null, node, node.range
+    );
+    let statement = new VariableStatement(null, [ declaration ], node.range);
+    this.transformVariable(statement, breakTarget);
+    if (this.failed || this.punted) return null;
+    return ident(name, node.range);
+  }
+
+  /** A temp name no binding in scope uses. */
+  private freshHoistName(): string {
+    let name: string;
+    do {
+      name = "__async_hoist_" + this.hoistCounter.toString();
+      this.hoistCounter++;
+    } while (this.scope.lookup(name) != null);
+    return name;
   }
 
   // === Statements ===============================================================================
@@ -1212,7 +1625,9 @@ class AsyncFunctionTransform {
       let outcome = this.declareLocal(name, declaration.type, type, declaration.name.range, declaration, false);
       if (outcome != TransformOutcome.Transformed) return;
       if (initializer) {
-        let rewrittenInit = this.rewriteChecked(initializer);
+        let hoisted = this.hoistAwaits(initializer, breakTarget);
+        if (!hoisted) return;
+        let rewrittenInit = this.rewriteChecked(hoisted);
         if (!rewrittenInit) return;
         this.emitLocalAssign(name, rewrittenInit, declaration.range);
         if (this.isSuspendingImportCall(initializer)) {
@@ -1242,49 +1657,124 @@ class AsyncFunctionTransform {
     }
     if (
       expr.kind == NodeKind.Binary &&
-      (<BinaryExpression>expr).operator == Token.Equals &&
+      isAssignmentOp((<BinaryExpression>expr).operator) &&
       unwrapParens((<BinaryExpression>expr).right).kind == NodeKind.Await
     ) {
-      let binary = <BinaryExpression>expr;
-      let left = unwrapParens(binary.left);
-      if (left.kind != NodeKind.Identifier) {
-        this.fail("'await' can only be assigned to a local variable", left.range);
-        return;
-      }
-      let name = (<IdentifierExpression>left).text;
-      let awaitExpr = <AwaitExpression>unwrapParens(binary.right);
-      let joinCall = this.joinCallOf(awaitExpr);
-      if (joinCall) {
-        let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, this.localTypeNode(name));
-        if (!join) return;
-        let binding = this.scope.lookup(name);
-        let status = this.emitJoin(join, (value: Expression): void => {
-          if (binding) {
-            this.emitLocalAssign(name, value, stmt.range);
-          } else {
-            this.emit(exprStmt(assignExpr(ident(name, left.range), value, stmt.range)));
-          }
-        }, breakTarget);
-        if (status == JoinEmitOutcome.FailedInline) return;
-        return;
-      }
-      let site = this.transformAwait(awaitExpr, true);
-      if (!site) return;
-      this.suspendCurrent(site);
-      let binding = this.scope.lookup(name);
-      if (binding) {
-        this.emitAwaitAssignment(name, site, stmt.range);
-      } else {
-        this.emit(exprStmt(assignExpr(ident(name, left.range), this.pendAccess(site, stmt.range), stmt.range)));
-      }
+      this.transformAwaitAssignment(<BinaryExpression>expr, stmt.range, breakTarget);
+      return;
+    }
+    if (
+      expr.kind == NodeKind.Binary &&
+      isAssignmentOp((<BinaryExpression>expr).operator) &&
+      containsAwait((<BinaryExpression>expr).right)
+    ) {
+      this.checkDirectAsyncCalls(stmt.expression);
+      if (this.failed) return;
+      this.trackStoredRebind(stmt.expression);
+      if (!this.transformAwaitAssignmentExpr(<BinaryExpression>expr, stmt.range, breakTarget)) return;
       return;
     }
     this.checkDirectAsyncCalls(stmt.expression);
     if (this.failed) return;
     this.trackStoredRebind(stmt.expression);
-    let rewritten = this.rewriteChecked(stmt.expression);
+    let hoisted = this.hoistAwaits(stmt.expression, breakTarget);
+    if (!hoisted) return;
+    let rewritten = this.rewriteChecked(hoisted);
     if (!rewritten) return;
     this.emit(exprStmt(rewritten));
+  }
+
+  /** Transforms `L op= await E` for a local, field or element target,
+   *  capturing the target's subexpressions and current value before the
+   *  suspension and writing through the temps on resume. */
+  private transformAwaitAssignment(binary: BinaryExpression, range: Range, breakTarget: i32): void {
+    let operator = binary.operator;
+    let left = unwrapParens(binary.left);
+    let awaitExpr = <AwaitExpression>unwrapParens(binary.right);
+    if (
+      left.kind != NodeKind.Identifier &&
+      left.kind != NodeKind.PropertyAccess &&
+      left.kind != NodeKind.ElementAccess
+    ) {
+      this.fail("'await' can only be assigned to a local variable", left.range);
+      return;
+    }
+    if (!this.checkNoAwait(left)) return;
+    this.checkDirectAsyncCalls(left);
+    if (this.failed) return;
+    let target = this.prepareAwaitTarget(left, operator != Token.Equals, operator, range);
+    if (!target) return;
+    let joinCall = this.joinCallOf(awaitExpr);
+    if (joinCall) {
+      let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, target.expectedTypeNode);
+      if (!join) return;
+      let status = this.emitJoin(join, (value: Expression): void => {
+        this.emitAwaitTargetAssign(target, value, range);
+      }, breakTarget);
+      if (status == JoinEmitOutcome.FailedInline) return;
+      return;
+    }
+    let site = this.transformAwait(awaitExpr, true);
+    if (!site) return;
+    this.suspendCurrent(site);
+    this.emitAwaitTargetAssign(target, this.pendAccess(site, range), range);
+  }
+
+  /** Transforms `L op= <expr containing await>` where the RHS is not a
+   *  whole await: captures the target before suspension, hoists the RHS
+   *  awaits into temps, then writes through the temps. Returns false on
+   *  failure. */
+  private transformAwaitAssignmentExpr(binary: BinaryExpression, range: Range, breakTarget: i32): bool {
+    let operator = binary.operator;
+    let left = unwrapParens(binary.left);
+    if (
+      left.kind != NodeKind.Identifier &&
+      left.kind != NodeKind.PropertyAccess &&
+      left.kind != NodeKind.ElementAccess
+    ) {
+      this.fail("'await' can only be assigned to a local variable", left.range);
+      return false;
+    }
+    if (!this.checkNoAwait(left)) return false;
+    this.checkDirectAsyncCalls(binary);
+    if (this.failed) return false;
+    let target = this.prepareAwaitTarget(left, operator != Token.Equals, operator, range);
+    if (!target) return false;
+    let hoisted = this.hoistAwaits(binary.right, breakTarget, breakTarget);
+    if (!hoisted) return false;
+    let rewritten = this.rewriteChecked(hoisted);
+    if (!rewritten) return false;
+    this.emitAwaitTargetAssign(target, rewritten, range);
+    return true;
+  }
+
+  /** Transforms a `for` incrementor: an assignment with awaits goes
+   *  through the target-capture path, anything else through hoisting.
+   *  Returns false on failure. */
+  private transformIncrementor(expr: Expression, range: Range, breakTarget: i32): bool {
+    let node = unwrapParens(expr);
+    if (node.kind == NodeKind.Binary && isAssignmentOp((<BinaryExpression>node).operator)) {
+      let binary = <BinaryExpression>node;
+      if (unwrapParens(binary.right).kind == NodeKind.Await) {
+        this.transformAwaitAssignment(binary, range, breakTarget);
+        return !this.failed && !this.punted;
+      }
+      if (containsAwait(binary.right)) {
+        this.checkDirectAsyncCalls(expr);
+        if (this.failed) return false;
+        this.trackStoredRebind(expr);
+        return this.transformAwaitAssignmentExpr(binary, range, breakTarget);
+      }
+    }
+    this.checkDirectAsyncCalls(expr);
+    if (this.failed) return false;
+    this.trackStoredRebind(expr);
+    let hoisted = this.hoistAwaits(expr, breakTarget, breakTarget);
+    if (!hoisted) return false;
+    let rewritten = this.rewriteChecked(hoisted);
+    if (!rewritten) return false;
+    this.emit(exprStmt(rewritten));
+    return true;
   }
 
   private transformReturn(stmt: ReturnStatement, breakTarget: i32): void {
@@ -1314,7 +1804,9 @@ class AsyncFunctionTransform {
     if (value) {
       this.checkDirectAsyncCalls(value);
       if (this.failed) return;
-      let rewritten = this.rewriteChecked(value);
+      let hoisted = this.hoistAwaits(value, breakTarget);
+      if (!hoisted) return;
+      let rewritten = this.rewriteChecked(hoisted);
       if (!rewritten) return;
       if (this.returnType.kind != TypeKind.Void) {
         this.emit(exprStmt(assignExpr(this.resultAccess(stmt.range), rewritten, stmt.range)));
@@ -1330,7 +1822,11 @@ class AsyncFunctionTransform {
     continueTarget: i32,
     isLast: bool
   ): void {
-    let condition = this.rewriteChecked(stmt.condition);
+    this.checkDirectAsyncCalls(stmt.condition);
+    if (this.failed) return;
+    let condition = this.hoistAwaits(stmt.condition, breakTarget);
+    if (!condition) return;
+    condition = this.rewriteChecked(condition);
     if (!condition) return;
     let join: i32;
     if (isLast) {
@@ -1377,8 +1873,6 @@ class AsyncFunctionTransform {
     continueTarget: i32,
     isLast: bool
   ): void {
-    let condition = this.rewriteChecked(stmt.condition);
-    if (!condition) return;
     let after: i32;
     if (isLast) {
       after = cont;
@@ -1389,6 +1883,14 @@ class AsyncFunctionTransform {
     let bodyEntry = this.createSegment();
     this.closeCurrent(new SegmentEnd("jump", head));
     this.setCurrent(head);
+    // The condition is hoisted here, in the head segment, so its awaits
+    // re-evaluate on every iteration.
+    this.checkDirectAsyncCalls(stmt.condition);
+    if (this.failed) return;
+    let condition = this.hoistAwaits(stmt.condition, breakTarget);
+    if (!condition) return;
+    condition = this.rewriteChecked(condition);
+    if (!condition) return;
     let dispatch = new IfStatement(
       condition,
       blockStmt([ exprStmt(assignExpr(this.stateAccess(stmt.range), this.segState(bodyEntry, stmt.range), stmt.range)) ], stmt.range),
@@ -1436,24 +1938,28 @@ class AsyncFunctionTransform {
         return;
       }
     }
+    this.closeCurrent(new SegmentEnd("jump", head));
+    this.setCurrent(head);
+    // The condition is hoisted here, in the head segment, so its awaits
+    // re-evaluate on every iteration.
     let condition: Expression | null = null;
     if (stmt.condition) {
-      condition = this.rewriteChecked(stmt.condition);
+      this.checkDirectAsyncCalls(stmt.condition);
+      if (this.failed) {
+        this.popScope();
+        return;
+      }
+      condition = this.hoistAwaits(stmt.condition, breakTarget);
+      if (!condition) {
+        this.popScope();
+        return;
+      }
+      condition = this.rewriteChecked(condition);
       if (!condition) {
         this.popScope();
         return;
       }
     }
-    let incrementor: Expression | null = null;
-    if (stmt.incrementor) {
-      incrementor = this.rewriteChecked(stmt.incrementor);
-      if (!incrementor) {
-        this.popScope();
-        return;
-      }
-    }
-    this.closeCurrent(new SegmentEnd("jump", head));
-    this.setCurrent(head);
     if (condition) {
       let dispatch = new IfStatement(
         condition,
@@ -1468,7 +1974,10 @@ class AsyncFunctionTransform {
     this.closeCurrent(new SegmentEnd("redispatch"));
     if (stmt.incrementor) {
       this.setCurrent(incr);
-      this.emit(exprStmt(incrementor!));
+      if (!this.transformIncrementor(stmt.incrementor, stmt.range, breakTarget)) {
+        this.popScope();
+        return;
+      }
       this.closeCurrent(new SegmentEnd("jump", head));
     }
     this.setCurrent(bodyEntry);
@@ -1487,8 +1996,6 @@ class AsyncFunctionTransform {
     continueTarget: i32,
     isLast: bool
   ): void {
-    let condition = this.rewriteChecked(stmt.condition);
-    if (!condition) return;
     let after: i32;
     if (isLast) {
       after = cont;
@@ -1499,6 +2006,14 @@ class AsyncFunctionTransform {
     let condEntry = this.createSegment();
     this.closeCurrent(new SegmentEnd("jump", bodyEntry));
     this.setCurrent(condEntry);
+    // The condition is hoisted here, in the condition segment, so its
+    // awaits re-evaluate on every iteration.
+    this.checkDirectAsyncCalls(stmt.condition);
+    if (this.failed) return;
+    let condition = this.hoistAwaits(stmt.condition, breakTarget);
+    if (!condition) return;
+    condition = this.rewriteChecked(condition);
+    if (!condition) return;
     let dispatch = new IfStatement(
       condition,
       blockStmt([ exprStmt(assignExpr(this.stateAccess(stmt.range), this.segState(bodyEntry, stmt.range), stmt.range)) ], stmt.range),

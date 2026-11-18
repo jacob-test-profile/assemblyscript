@@ -39,6 +39,14 @@ export class Counter {
     return this.count;
   }
 
+  // `this` field written by the awaited value, and a compound
+  // assignment to a `this` field across the await.
+  async setField(n: i32): Promise<i32> {
+    this.count = await getNumber();
+    this.count += await getNumber();
+    return this.count;
+  }
+
   // Rejects when the awaited import rejects.
   async fail(n: i32): Promise<i32> {
     let m = await getNumber();
