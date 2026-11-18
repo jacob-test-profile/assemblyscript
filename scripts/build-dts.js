@@ -1,10 +1,10 @@
 import fs from "fs";
 import { globSync } from "glob";
 import pathUtil from "path";
-import { API } from "typescript/sync";
-import { ScriptKind, ScriptTarget, SyntaxKind, isTypeNode } from "typescript/ast";
-import { visitNode, visitEachChild } from "typescript/ast/visitor";
-import { createIdentifier, createTypeReferenceNode } from "typescript/ast/factory";
+import { API } from "typescript-7/sync";
+import { ScriptKind, ScriptTarget, SyntaxKind, isTypeNode } from "typescript-7/ast";
+import { visitNode, visitEachChild } from "typescript-7/ast/visitor";
+import { createIdentifier, createTypeReferenceNode } from "typescript-7/ast/factory";
 import { fileURLToPath } from 'url';
 import { debuglog } from "util";
 
