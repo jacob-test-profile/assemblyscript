@@ -31,13 +31,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.1.1",
+    "@typescript/typescript6": "6.0.2",
     "as-float": "^1.0.1",
     "diff": "^9.0.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.7.0",
     "glob": "^13.0.6",
     "globals": "^17.7.0",
-    "typescript": "^6.0.3",
+    "typescript": "7.1.0-beta",
     "typescript-eslint": "^8.65.0"
   },
   "type": "module",
@@ -72,6 +73,7 @@
     "asinit": "./bin/asinit.js"
   },
   "scripts": {
+    "postinstall": "node scripts/postinstall.js",
     "check": "npm run check:config && npm run check:import && npm run lint",
     "check:config": "tsc --noEmit -p src --diagnostics --listFiles",
     "check:import": "tsc --noEmit --skipLibCheck --target ESNEXT --module nodenext --moduleResolution nodenext --experimentalDecorators tests/import/index",
