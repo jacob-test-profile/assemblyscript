@@ -171,6 +171,12 @@ import {
   SPILL_SET
 } from "./asyncRewrite";
 
+import {
+  describeParams,
+  findExportName,
+  warnSkipped
+} from "./asyncCoordinatorMeta";
+
 /** Fallthrough target meaning "the function completes". */
 const CONT_TERMINAL = -1;
 /** Break/continue target meaning "no enclosing loop". */
@@ -323,6 +329,7 @@ interface TransformWorkItem {
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
   let pools = new Set<string>();
+  let classNews = new Set<ClassPrototype>();
   let files = Map_values(program.filesByName);
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
@@ -425,7 +432,7 @@ export function transformAsyncFunctions(program: Program): void {
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod, item.receiverClass, classNews);
       transform.run();
     }
   }
@@ -511,6 +518,11 @@ class AsyncFunctionTransform {
   private genParent: Element;
   /** Whether the prototype is an instance method (receiver via `this`). */
   private isMethod: bool;
+  /** Enclosing class, for methods; `null` for plain functions. */
+  private receiverClass: ClassPrototype | null;
+  /** Classes whose `__async_<file>_<Class>_new` export was already
+   *  emitted by an earlier transformed method of the class. */
+  private classNews: Set<ClassPrototype>;
   /** Lifted closure methods, appended to the state class. */
   private liftedMethods: MethodDeclaration[];
   /** Adapter name to lifted method, for the rewrite hook; `null` when none. */
@@ -533,12 +545,16 @@ class AsyncFunctionTransform {
     lift: EnvLiftResult,
     qualName: string,
     genParent: Element,
-    isMethod: bool
+    isMethod: bool,
+    receiverClass: ClassPrototype | null,
+    classNews: Set<ClassPrototype>
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
     this.genParent = genParent;
     this.isMethod = isMethod;
+    this.receiverClass = receiverClass;
+    this.classNews = classNews;
     this.fnName = qualName;
     this.range = this.declaration.range;
     this.fileBase = sanitizeName(file.source.simplePath);
@@ -1461,8 +1477,7 @@ class AsyncFunctionTransform {
     let call = <CallExpression>operand;
     let callee = call.expression;
     if (callee.kind == NodeKind.PropertyAccess) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
+      return this.transformMemberAwait(node, call, used);
     }
     if (callee.kind != NodeKind.Identifier) {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
@@ -1487,59 +1502,7 @@ class AsyncFunctionTransform {
         this.checkDirectAsyncCalls(args[i]);
         if (this.failed) return null;
       }
-      let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
-      if (!operandType) {
-        this.punted = true;
-        return null;
-      }
-      let unwrapped = this.resolver.unwrapPromiseType(operandType);
-      if (!unwrapped) {
-        this.program.error(
-          DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
-          operand.range
-        );
-        this.failed = true;
-        return null;
-      }
-      let typeNode = typeToTypeNode(unwrapped, node.range);
-      if (!typeNode) {
-        this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-        return null;
-      }
-      if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-        this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-        return null;
-      }
-      let rewrittenCall = rewriteExpression(call, this.rewriter());
-      if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
-        this.failed = true;
-        return null;
-      }
-      let site = new AwaitSite(
-        this.sites.length, unwrapped, typeNode, used,
-        <CallExpression>rewrittenCall, "", node.range
-      );
-      site.isNested = true;
-      site.handleField = `__handle${site.id}`;
-      site.innerQual = calleeName;
-      this.sites.push(site);
-      // A coordinator rejection of this site lands in the enclosing try's
-      // catch when the desugar recorded one: resolve the error locals to
-      // state fields now, while the scope still holds them.
-      let rejectTarget = rejectTargetFor(this.file, node.range);
-      if (rejectTarget) {
-        let flagBinding = this.scope.lookup(rejectTarget.flagVar);
-        let errBinding = this.scope.lookup(rejectTarget.errorVar);
-        if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
-          site.rejectFlagField = flagBinding.field;
-          site.rejectErrField = errBinding.field;
-        }
-      }
-      if (unwrapped.kind == TypeKind.Extern) {
-        site.slotField = `__slot_pend${site.id}`;
-        this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
-      }
-      return site;
+      return this.transformNestedAwait(call, calleeName, node, used);
     }
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
@@ -1601,6 +1564,156 @@ class AsyncFunctionTransform {
       this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
     }
     return site;
+  }
+
+  /** Records a nested await site for a call that starts an inner async
+   *  task and returns its handle: the outer step calls it, the pending
+   *  export exposes the handle, and the coordinator drives the inner
+   *  task, delivering its result through this site's resume export. */
+  private transformNestedAwait(call: CallExpression, innerQual: string, node: AwaitExpression, used: bool): AwaitSite | null {
+    let flow = assert(this.flow);
+    let operandType = this.resolver.resolveExpression(call, flow, Type.auto, ReportMode.Swallow);
+    if (!operandType) {
+      this.punted = true;
+      return null;
+    }
+    let unwrapped = this.resolver.unwrapPromiseType(operandType);
+    if (!unwrapped) {
+      this.program.error(
+        DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
+        call.range
+      );
+      this.failed = true;
+      return null;
+    }
+    let typeNode = typeToTypeNode(unwrapped, node.range);
+    if (!typeNode) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+      return null;
+    }
+    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
+      return null;
+    }
+    let rewrittenCall = rewriteExpression(call, this.rewriter());
+    if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
+      this.failed = true;
+      return null;
+    }
+    let site = new AwaitSite(
+      this.sites.length, unwrapped, typeNode, used,
+      <CallExpression>rewrittenCall, "", node.range
+    );
+    site.isNested = true;
+    site.handleField = `__handle${site.id}`;
+    site.innerQual = innerQual;
+    this.sites.push(site);
+    // A coordinator rejection of this site lands in the enclosing try's
+    // catch when the desugar recorded one: resolve the error locals to
+    // state fields now, while the scope still holds them.
+    let rejectTarget = rejectTargetFor(this.file, node.range);
+    if (rejectTarget) {
+      let flagBinding = this.scope.lookup(rejectTarget.flagVar);
+      let errBinding = this.scope.lookup(rejectTarget.errorVar);
+      if (flagBinding && !flagBinding.shadowed && errBinding && !errBinding.shadowed) {
+        site.rejectFlagField = flagBinding.field;
+        site.rejectErrField = errBinding.field;
+      }
+    }
+    if (unwrapped.kind == TypeKind.Extern) {
+      site.slotField = `__slot_pend${site.id}`;
+      this.slots.push(new SpillSlot("pend", `pend${site.id}`, site.slotField));
+    }
+    return site;
+  }
+
+  /** Awaits a member call on a transformed async method, as a nested site
+   *  through the same machinery as a nested async function: the outer
+   *  step evaluates the receiver and calls the method, and the pending
+   *  export exposes the inner handle. Anything else stays loud. */
+  private transformMemberAwait(node: AwaitExpression, call: CallExpression, used: bool): AwaitSite | null {
+    this.checkDirectAsyncCalls(call);
+    if (this.failed) return null;
+    let access = <PropertyAccessExpression>call.expression;
+    let receiverClass = this.receiverClassOf(unwrapParens(access.expression), node);
+    if (!receiverClass) return null;
+    let method = this.lookupInstanceMethod(receiverClass, access.property.text);
+    if (!method || !method.is(CommonFlags.Async) || method.declaration.kind != NodeKind.MethodDeclaration) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    let declaringClass = <ClassPrototype>method.parent;
+    let typeParameters = declaringClass.typeParameterNodes;
+    if (typeParameters && typeParameters.length > 0) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    if (declaringClass.parent.kind == ElementKind.Namespace) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    if (method.declaration.range.source != this.file.source) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    return this.transformNestedAwait(call, `${declaringClass.name}_${method.name}`, node, used);
+  }
+
+  /** Resolves the receiver expression to its class prototype, or `null`
+   *  after failing loudly (not a class) or punting (unresolvable). A
+   *  lifted local, including the `__async_this` receiver, reads its type
+   *  from the state field; anything else resolves in the flow. */
+  private receiverClassOf(receiver: Expression, node: AwaitExpression): ClassPrototype | null {
+    if (receiver.kind == NodeKind.Identifier) {
+      let name = (<IdentifierExpression>receiver).text;
+      let element = assert(this.flow).lookup(name);
+      if (element && element.kind == ElementKind.ClassPrototype) {
+        // A static call (`await C.method(...)`): the receiver names a
+        // type, not an instance, and static async methods are out of scope.
+        this.fail("'await' of a member call is not yet supported", node.range);
+        return null;
+      }
+      let binding = this.scope.lookup(name);
+      if (binding && !binding.shadowed) {
+        for (let i = 0, k = this.fields.length; i < k; ++i) {
+          if (this.fields[i].name == binding.field) {
+            let cls = this.fields[i].type.getClass();
+            if (!cls) {
+              this.fail("'await' of a member call is not yet supported", node.range);
+              return null;
+            }
+            return cls.prototype;
+          }
+        }
+      }
+    }
+    let flow = assert(this.flow);
+    let type = this.resolver.resolveExpression(receiver, flow, Type.auto, ReportMode.Swallow);
+    if (!type) {
+      this.punted = true;
+      return null;
+    }
+    let cls = type.getClass();
+    if (!cls) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    return cls.prototype;
+  }
+
+  /** Finds an instance method by name, walking the base-class chain, so
+   *  an inherited async method resolves to its declaring class. */
+  private lookupInstanceMethod(cls: ClassPrototype, name: string): FunctionPrototype | null {
+    let prototype: ClassPrototype | null = cls;
+    while (prototype) {
+      let members = prototype.instanceMembers;
+      if (members) {
+        let member = members.get(name);
+        if (member && member.kind == ElementKind.FunctionPrototype) return <FunctionPrototype>member;
+      }
+      prototype = prototype.basePrototype;
+    }
+    return null;
   }
 
   // === Join =====================================================================================
@@ -2338,6 +2451,17 @@ class AsyncFunctionTransform {
   private generate(): bool {
     if (this.hasNameCollision(this.stateClassName)) return false;
     if (this.hasNameCollision(this.rootsName)) return false;
+    let receiverClass = this.isMethod ? this.receiverClass : null;
+    let emitEntry = false;
+    let emitClassNew = false;
+    if (receiverClass && findExportName(this.program, this.file, receiverClass) != null) {
+      if (!this.classNews.has(receiverClass)) {
+        if (this.hasNameCollision(this.classNewName(receiverClass))) return false;
+        emitClassNew = true;
+      }
+      if (this.hasNameCollision(this.methodEntryName())) return false;
+      emitEntry = true;
+    }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       if (this.sites[i].isJoin) {
         if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
@@ -2384,6 +2508,15 @@ class AsyncFunctionTransform {
     declarations.push(this.buildResult());
     declarations.push(this.buildError());
     declarations.push(this.buildStatus());
+    if (emitEntry) {
+      let entry = this.buildMethodEntry(assert(receiverClass));
+      if (entry) declarations.push(entry);
+    }
+    if (emitClassNew) {
+      this.classNews.add(assert(receiverClass));
+      let classNew = this.buildClassNew(assert(receiverClass));
+      if (classNew) declarations.push(classNew);
+    }
     let statements = this.parentStatements();
     for (let i = 0, k = declarations.length; i < k; ++i) {
       statements.push(declarations[i]);
@@ -3085,6 +3218,138 @@ class AsyncFunctionTransform {
     ));
     return new FunctionDeclaration(
       ident(this.statusName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private methodEntryName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_entry`;
+  }
+
+  private classNewName(receiverClass: ClassPrototype): string {
+    return `__async_${this.fileBase}_${receiverClass.name}_new`;
+  }
+
+  private buildMethodEntry(receiverClass: ClassPrototype): FunctionDeclaration | null {
+    let range = this.range;
+    let parameters = this.prototype.functionTypeNode.parameters;
+    let receiverName = "receiver";
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      if (parameters[i].name.text == receiverName) {
+        receiverName = "__receiver";
+        break;
+      }
+    }
+    let entryParams = new Array<ParameterNode>();
+    entryParams.push(new ParameterNode(
+      ParameterKind.Default,
+      ident(receiverName, range),
+      namedType(receiverClass.name, null, false, range),
+      null,
+      range
+    ));
+    let callArgs = new Array<Expression>();
+    let signature = assert(this.instance).signature;
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      let parameter = parameters[i];
+      let typeNode = parameter.type || typeToTypeNode(signature.parameterTypes[i], range);
+      if (!typeNode) {
+        warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has no usable type", []);
+        return null;
+      }
+      entryParams.push(new ParameterNode(
+        ParameterKind.Default,
+        ident(parameter.name.text, range),
+        typeNode,
+        null,
+        range
+      ));
+      callArgs.push(ident(parameter.name.text, range));
+    }
+    let entrySignature = new FunctionTypeNode(
+      entryParams,
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ callExpr(
+          new PropertyAccessExpression(ident(receiverName, range), ident(this.prototype.name, range), range),
+          callArgs,
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.methodEntryName(), range), null, CommonFlags.Export,
+      null, entrySignature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private buildClassNew(receiverClass: ClassPrototype): FunctionDeclaration | null {
+    let range = this.range;
+    let className = receiverClass.name;
+    let parameters = new Array<ParameterNode>();
+    let args = new Array<Expression>();
+    let thisType = assert(this.instance).signature.thisType;
+    let classInstance = thisType ? thisType.getClass() : null;
+    let ctor = classInstance ? classInstance.constructorInstance : null;
+    if (ctor) {
+      let ctorPrototype = ctor.prototype;
+      let described = describeParams(ctor.signature.parameterTypes, className);
+      if (described.reason) {
+        warnSkipped(this.program, this.prototype, described.reason, []);
+        return null;
+      }
+      let ctorParams = ctorPrototype.functionTypeNode.parameters;
+      for (let i = 0, k = ctorParams.length; i < k; ++i) {
+        let parameter = ctorParams[i];
+        let typeNode = parameter.type || typeToTypeNode(ctor.signature.parameterTypes[i], range);
+        if (!typeNode) {
+          warnSkipped(this.program, this.prototype, "constructor of '" + className + "' has a parameter without a usable type", []);
+          return null;
+        }
+        parameters.push(new ParameterNode(
+          ParameterKind.Default,
+          ident(parameter.name.text, range),
+          typeNode,
+          null,
+          range
+        ));
+        args.push(ident(parameter.name.text, range));
+      }
+    }
+    let signature = new FunctionTypeNode(
+      parameters,
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ new NewExpression(
+          new TypeName(ident(className, range), null, range),
+          null,
+          args,
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.classNewName(receiverClass), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }

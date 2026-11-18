@@ -55,6 +55,8 @@
  (export "arrowed" (func $async-arrow/arrowed))
  (export "startWorker" (func $async-arrow/startWorker))
  (export "startHolderFetch" (func $async-arrow/startHolderFetch))
+ (export "__async_async_arrow_Worker_new" (func $async-arrow/__async_async_arrow_Worker_new))
+ (export "__async_async_arrow_Holder_new" (func $async-arrow/__async_async_arrow_Holder_new))
  (export "memory" (memory $0))
  (export "__async_async_arrow_arrowed_pending_0" (func $export:async-arrow/__async_async_arrow_arrowed_pending_0))
  (export "__async_async_arrow_arrowed_resume_0" (func $export:async-arrow/__async_async_arrow_arrowed_resume_0))
@@ -68,12 +70,14 @@
  (export "__async_async_arrow_Worker_run_result" (func $export:async-arrow/__async_async_arrow_arrowed_result))
  (export "__async_async_arrow_Worker_run_error" (func $export:async-arrow/__async_async_arrow_arrowed_error))
  (export "__async_async_arrow_Worker_run_status" (func $export:async-arrow/__async_async_arrow_arrowed_status))
+ (export "__async_async_arrow_Worker_run_entry" (func $export:async-arrow/__async_async_arrow_Worker_run_entry))
  (export "__async_async_arrow_Holder_fetch_pending_0" (func $export:async-arrow/__async_async_arrow_arrowed_pending_0))
  (export "__async_async_arrow_Holder_fetch_resume_0" (func $export:async-arrow/__async_async_arrow_Holder_fetch_resume_0))
  (export "__async_async_arrow_Holder_fetch_reject_0" (func $export:async-arrow/__async_async_arrow_Holder_fetch_reject_0))
  (export "__async_async_arrow_Holder_fetch_result" (func $export:async-arrow/__async_async_arrow_arrowed_result))
  (export "__async_async_arrow_Holder_fetch_error" (func $export:async-arrow/__async_async_arrow_arrowed_error))
  (export "__async_async_arrow_Holder_fetch_status" (func $export:async-arrow/__async_async_arrow_arrowed_status))
+ (export "__async_async_arrow_Holder_fetch_entry" (func $export:async-arrow/__async_async_arrow_Holder_fetch_entry))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_resume_0" (func $export:async-arrow/__async_async_arrow___async_arrow_Holder_getValue_0_resume_0))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_reject_0" (func $export:async-arrow/__async_async_arrow___async_arrow_Holder_getValue_0_reject_0))
  (export "__async_async_arrow___async_arrow_Holder_getValue_0_result" (func $export:async-arrow/__async_async_arrow_arrowed_result))
@@ -722,7 +726,7 @@
     global.get $~lib/memory/__stack_pointer
     local.get $0
     i32.store
-    block $__inlined_func$~lib/rt/itcms/__renew$427
+    block $__inlined_func$~lib/rt/itcms/__renew$431
      i32.const 1073741820
      local.get $2
      i32.const 1
@@ -765,7 +769,7 @@
       i32.store offset=16
       local.get $2
       local.set $3
-      br $__inlined_func$~lib/rt/itcms/__renew$427
+      br $__inlined_func$~lib/rt/itcms/__renew$431
      end
      local.get $5
      local.get $4
@@ -1393,7 +1397,7 @@
    local.get $1
    global.set $~lib/rt/itcms/iter
   end
-  block $__inlined_func$~lib/rt/itcms/Object#unlink$453
+  block $__inlined_func$~lib/rt/itcms/Object#unlink$457
    local.get $0
    i32.load offset=4
    i32.const -4
@@ -1417,7 +1421,7 @@
      call $~lib/builtins/abort
      unreachable
     end
-    br $__inlined_func$~lib/rt/itcms/Object#unlink$453
+    br $__inlined_func$~lib/rt/itcms/Object#unlink$457
    end
    local.get $0
    i32.load offset=8
@@ -3977,7 +3981,7 @@
       local.tee $1
       i32.store offset=4
       local.get $0
-      block $__inlined_func$async-arrow/__async_arrow_Holder_getValue_0$7 (result i32)
+      block $__inlined_func$async-arrow/__async_arrow_Holder_getValue_0$6 (result i32)
        global.get $~lib/memory/__stack_pointer
        i32.const 12
        i32.sub
@@ -4103,7 +4107,7 @@
         i32.add
         global.set $~lib/memory/__stack_pointer
         local.get $3
-        br $__inlined_func$async-arrow/__async_arrow_Holder_getValue_0$7
+        br $__inlined_func$async-arrow/__async_arrow_Holder_getValue_0$6
        end
        br $folding-inner1
       end
@@ -4193,6 +4197,404 @@
   i32.const 1
   call $~lib/builtins/abort
   unreachable
+ )
+ (func $async-arrow/Worker#run (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 32
+   i32.const 11
+   call $~lib/rt/itcms/__new
+   local.tee $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   call $~lib/object/Object#constructor
+   local.tee $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 1552
+   i32.store offset=8
+   local.get $2
+   i32.const 1552
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=12
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=16
+   local.get $2
+   i32.const 0
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=20
+   local.get $2
+   i32.const 0
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=24
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=28
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store offset=8
+   local.get $2
+   local.get $0
+   i32.store offset=16
+   local.get $2
+   local.get $0
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   global.get $async-arrow/__async_roots_Worker_run
+   local.tee $0
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=8
+   local.get $0
+   local.get $2
+   call $~lib/array/Array<async-arrow/__Cps_arrowed>#push
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   call $async-arrow/__Cps_Worker_run#step
+   drop
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $2
+   return
+  end
+  i32.const 34560
+  i32.const 34608
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $async-arrow/Worker#constructor (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1760
+  i32.lt_s
+  if
+   i32.const 34560
+   i32.const 34608
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.const 6
+  call $~lib/rt/itcms/__new
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  call $~lib/object/Object#constructor
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  i32.const 5
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+ )
+ (func $async-arrow/Holder#fetch (param $0 i32) (result i32)
+  (local $1 i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store offset=8
+   global.get $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i64.const 0
+   i64.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 28
+   i32.const 13
+   call $~lib/rt/itcms/__new
+   local.tee $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   call $~lib/object/Object#constructor
+   local.tee $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 1552
+   i32.store offset=8
+   local.get $2
+   i32.const 1552
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=12
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=16
+   local.get $2
+   i32.const 0
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=20
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   i32.const 0
+   i32.store offset=24
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store offset=8
+   local.get $2
+   local.get $0
+   i32.store offset=16
+   local.get $2
+   local.get $0
+   i32.const 0
+   call $~lib/rt/itcms/__link
+   global.get $~lib/memory/__stack_pointer
+   global.get $async-arrow/__async_roots_Holder_fetch
+   local.tee $0
+   i32.store offset=4
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=8
+   local.get $0
+   local.get $2
+   call $~lib/array/Array<async-arrow/__Cps_arrowed>#push
+   global.get $~lib/memory/__stack_pointer
+   local.get $2
+   i32.store offset=4
+   local.get $2
+   call $async-arrow/__Cps_Holder_fetch#step
+   drop
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $2
+   return
+  end
+  i32.const 34560
+  i32.const 34608
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
+ (func $async-arrow/Holder#constructor (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1760
+  i32.lt_s
+  if
+   i32.const 34560
+   i32.const 34608
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.const 8
+  call $~lib/rt/itcms/__new
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  call $~lib/object/Object#constructor
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1648
+  i32.store offset=8
+  local.get $0
+  i32.const 1648
+  i32.store
+  local.get $0
+  i32.const 1648
+  i32.const 0
+  call $~lib/rt/itcms/__link
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
  )
  (func $~start
   call $start:async-arrow
@@ -5774,6 +6176,52 @@
   call $~lib/builtins/abort
   unreachable
  )
+ (func $export:async-arrow/__async_async_arrow_Worker_run_entry (param $0 i32) (result i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  block $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1760
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   call $async-arrow/Worker#run
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  i32.const 34560
+  i32.const 34608
+  i32.const 1
+  i32.const 1
+  call $~lib/builtins/abort
+  unreachable
+ )
  (func $export:async-arrow/__async_async_arrow_Holder_fetch_resume_0 (param $0 i32) (param $1 i32) (result i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -5910,211 +6358,41 @@
   call $~lib/builtins/abort
   unreachable
  )
- (func $async-arrow/startWorker (result i32)
-  (local $0 i32)
-  (local $1 i32)
-  (local $2 i32)
+ (func $export:async-arrow/__async_async_arrow_Holder_fetch_entry (param $0 i32) (result i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 8
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
-  block $folding-inner1
+  block $folding-inner0
    global.get $~lib/memory/__stack_pointer
    i32.const 1760
    i32.lt_s
-   br_if $folding-inner1
+   br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i64.const 0
-   i64.store
+   local.get $0
+   i32.store
    global.get $~lib/memory/__stack_pointer
-   global.get $~lib/memory/__stack_pointer
-   i32.const 8
+   i32.const 4
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
    i32.const 1760
    i32.lt_s
-   br_if $folding-inner1
+   br_if $folding-inner0
    global.get $~lib/memory/__stack_pointer
-   i64.const 0
-   i64.store
+   i32.const 0
+   i32.store
+   global.get $~lib/memory/__stack_pointer
+   local.get $0
+   i32.store
+   local.get $0
+   call $async-arrow/Holder#fetch
    global.get $~lib/memory/__stack_pointer
    i32.const 4
-   i32.const 6
-   call $~lib/rt/itcms/__new
-   local.tee $1
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   call $~lib/object/Object#constructor
-   local.tee $1
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   local.get $1
-   i32.const 5
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   i32.const 8
    i32.add
    global.set $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store
    global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   block $__inlined_func$async-arrow/Worker#run$6 (result i32)
-    global.get $~lib/memory/__stack_pointer
-    i32.const 12
-    i32.sub
-    global.set $~lib/memory/__stack_pointer
-    block $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i32.const 1760
-     i32.lt_s
-     br_if $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i64.const 0
-     i64.store
-     global.get $~lib/memory/__stack_pointer
-     i32.const 0
-     i32.store offset=8
-     global.get $~lib/memory/__stack_pointer
-     global.get $~lib/memory/__stack_pointer
-     i32.const 8
-     i32.sub
-     global.set $~lib/memory/__stack_pointer
-     global.get $~lib/memory/__stack_pointer
-     i32.const 1760
-     i32.lt_s
-     br_if $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i64.const 0
-     i64.store
-     global.get $~lib/memory/__stack_pointer
-     i32.const 32
-     i32.const 11
-     call $~lib/rt/itcms/__new
-     local.tee $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     call $~lib/object/Object#constructor
-     local.tee $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 1552
-     i32.store offset=8
-     local.get $2
-     i32.const 1552
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=12
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=16
-     local.get $2
-     i32.const 0
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=20
-     local.get $2
-     i32.const 0
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=24
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=28
-     global.get $~lib/memory/__stack_pointer
-     i32.const 8
-     i32.add
-     global.set $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $1
-     i32.store offset=8
-     local.get $2
-     local.get $1
-     i32.store offset=16
-     local.get $2
-     local.get $1
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     global.get $async-arrow/__async_roots_Worker_run
-     local.tee $0
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=8
-     local.get $0
-     local.get $2
-     call $~lib/array/Array<async-arrow/__Cps_arrowed>#push
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     call $async-arrow/__Cps_Worker_run#step
-     drop
-     global.get $~lib/memory/__stack_pointer
-     i32.const 12
-     i32.add
-     global.set $~lib/memory/__stack_pointer
-     local.get $2
-     br $__inlined_func$async-arrow/Worker#run$6
-    end
-    br $folding-inner1
-   end
-   global.get $~lib/memory/__stack_pointer
-   i32.const 8
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -6126,221 +6404,73 @@
   call $~lib/builtins/abort
   unreachable
  )
- (func $async-arrow/startHolderFetch (result i32)
+ (func $async-arrow/startWorker (result i32)
   (local $0 i32)
-  (local $1 i32)
-  (local $2 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 8
   i32.sub
   global.set $~lib/memory/__stack_pointer
-  block $folding-inner1
-   global.get $~lib/memory/__stack_pointer
-   i32.const 1760
-   i32.lt_s
-   br_if $folding-inner1
-   global.get $~lib/memory/__stack_pointer
-   i64.const 0
-   i64.store
-   global.get $~lib/memory/__stack_pointer
-   global.get $~lib/memory/__stack_pointer
-   i32.const 12
-   i32.sub
-   global.set $~lib/memory/__stack_pointer
-   global.get $~lib/memory/__stack_pointer
-   i32.const 1760
-   i32.lt_s
-   br_if $folding-inner1
-   global.get $~lib/memory/__stack_pointer
-   i64.const 0
-   i64.store
-   global.get $~lib/memory/__stack_pointer
-   i32.const 0
-   i32.store offset=8
-   global.get $~lib/memory/__stack_pointer
-   i32.const 4
-   i32.const 8
-   call $~lib/rt/itcms/__new
-   local.tee $1
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   call $~lib/object/Object#constructor
-   local.tee $1
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   global.get $~lib/memory/__stack_pointer
-   i32.const 1648
-   i32.store offset=8
-   local.get $1
-   i32.const 1648
-   i32.store
-   local.get $1
-   i32.const 1648
-   i32.const 0
-   call $~lib/rt/itcms/__link
-   global.get $~lib/memory/__stack_pointer
-   i32.const 12
-   i32.add
-   global.set $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store
-   global.get $~lib/memory/__stack_pointer
-   local.get $1
-   i32.store offset=4
-   block $__inlined_func$async-arrow/Holder#fetch$8 (result i32)
-    global.get $~lib/memory/__stack_pointer
-    i32.const 12
-    i32.sub
-    global.set $~lib/memory/__stack_pointer
-    block $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i32.const 1760
-     i32.lt_s
-     br_if $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i64.const 0
-     i64.store
-     global.get $~lib/memory/__stack_pointer
-     i32.const 0
-     i32.store offset=8
-     global.get $~lib/memory/__stack_pointer
-     global.get $~lib/memory/__stack_pointer
-     i32.const 8
-     i32.sub
-     global.set $~lib/memory/__stack_pointer
-     global.get $~lib/memory/__stack_pointer
-     i32.const 1760
-     i32.lt_s
-     br_if $folding-inner00
-     global.get $~lib/memory/__stack_pointer
-     i64.const 0
-     i64.store
-     global.get $~lib/memory/__stack_pointer
-     i32.const 28
-     i32.const 13
-     call $~lib/rt/itcms/__new
-     local.tee $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     call $~lib/object/Object#constructor
-     local.tee $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 1552
-     i32.store offset=8
-     local.get $2
-     i32.const 1552
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=12
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=16
-     local.get $2
-     i32.const 0
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=20
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     i32.const 0
-     i32.store offset=24
-     global.get $~lib/memory/__stack_pointer
-     i32.const 8
-     i32.add
-     global.set $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $1
-     i32.store offset=8
-     local.get $2
-     local.get $1
-     i32.store offset=16
-     local.get $2
-     local.get $1
-     i32.const 0
-     call $~lib/rt/itcms/__link
-     global.get $~lib/memory/__stack_pointer
-     global.get $async-arrow/__async_roots_Holder_fetch
-     local.tee $0
-     i32.store offset=4
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=8
-     local.get $0
-     local.get $2
-     call $~lib/array/Array<async-arrow/__Cps_arrowed>#push
-     global.get $~lib/memory/__stack_pointer
-     local.get $2
-     i32.store offset=4
-     local.get $2
-     call $async-arrow/__Cps_Holder_fetch#step
-     drop
-     global.get $~lib/memory/__stack_pointer
-     i32.const 12
-     i32.add
-     global.set $~lib/memory/__stack_pointer
-     local.get $2
-     br $__inlined_func$async-arrow/Holder#fetch$8
-    end
-    br $folding-inner1
-   end
-   global.get $~lib/memory/__stack_pointer
-   i32.const 8
-   i32.add
-   global.set $~lib/memory/__stack_pointer
-   return
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1760
+  i32.lt_s
+  if
+   i32.const 34560
+   i32.const 34608
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
   end
-  i32.const 34560
-  i32.const 34608
-  i32.const 1
-  i32.const 1
-  call $~lib/builtins/abort
-  unreachable
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  call $async-arrow/Worker#constructor
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $async-arrow/Worker#run
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $async-arrow/startHolderFetch (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1760
+  i32.lt_s
+  if
+   i32.const 34560
+   i32.const 34608
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  call $async-arrow/Holder#constructor
+  local.tee $0
+  i32.store
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $async-arrow/Holder#fetch
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $async-arrow/arrowed (result i32)
   (local $0 i32)
@@ -6471,5 +6601,11 @@
   i32.const 1
   call $~lib/builtins/abort
   unreachable
+ )
+ (func $async-arrow/__async_async_arrow_Worker_new (result i32)
+  call $async-arrow/Worker#constructor
+ )
+ (func $async-arrow/__async_async_arrow_Holder_new (result i32)
+  call $async-arrow/Holder#constructor
  )
 )

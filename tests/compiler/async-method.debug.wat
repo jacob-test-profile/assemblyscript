@@ -4,8 +4,8 @@
  (type $2 (func (param i32 i32) (result i32)))
  (type $3 (func (param i32)))
  (type $4 (func))
- (type $5 (func (param i32 i32 i32) (result i32)))
- (type $6 (func (result i32)))
+ (type $5 (func (result i32)))
+ (type $6 (func (param i32 i32 i32) (result i32)))
  (type $7 (func (param i32 i32 i32)))
  (type $8 (func (param i32 i32 i32 i32)))
  (type $9 (func (param i32 i32 i64) (result i32)))
@@ -53,17 +53,20 @@
  (elem $0 (i32.const 1) $async-method/__adapt_Counter_viaArrow_0)
  (export "startAdd" (func $async-method/startAdd))
  (export "startViaArrow" (func $async-method/startViaArrow))
+ (export "__async_async_method_Counter_new" (func $async-method/__async_async_method_Counter_new))
  (export "memory" (memory $0))
  (export "__async_async_method_Counter_add_resume_0" (func $export:async-method/__async_async_method_Counter_add_resume_0))
  (export "__async_async_method_Counter_add_reject_0" (func $export:async-method/__async_async_method_Counter_add_reject_0))
  (export "__async_async_method_Counter_add_result" (func $export:async-method/__async_async_method_Counter_add_result))
  (export "__async_async_method_Counter_add_error" (func $export:async-method/__async_async_method_Counter_add_error))
  (export "__async_async_method_Counter_add_status" (func $export:async-method/__async_async_method_Counter_add_status))
+ (export "__async_async_method_Counter_add_entry" (func $export:async-method/__async_async_method_Counter_add_entry))
  (export "__async_async_method_Counter_viaArrow_resume_0" (func $export:async-method/__async_async_method_Counter_viaArrow_resume_0))
  (export "__async_async_method_Counter_viaArrow_reject_0" (func $export:async-method/__async_async_method_Counter_viaArrow_reject_0))
  (export "__async_async_method_Counter_viaArrow_result" (func $export:async-method/__async_async_method_Counter_viaArrow_result))
  (export "__async_async_method_Counter_viaArrow_error" (func $export:async-method/__async_async_method_Counter_viaArrow_error))
  (export "__async_async_method_Counter_viaArrow_status" (func $export:async-method/__async_async_method_Counter_viaArrow_status))
+ (export "__async_async_method_Counter_viaArrow_entry" (func $export:async-method/__async_async_method_Counter_viaArrow_entry))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
   local.get $this
@@ -2653,6 +2656,11 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-method/__async_async_method_Counter_new (result i32)
+  i32.const 0
+  call $async-method/Counter#constructor
+  return
+ )
  (func $async-method/__Cps_Counter_viaArrow#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -5107,6 +5115,32 @@
   local.get $1
   return
  )
+ (func $async-method/__async_async_method_Counter_add_entry (param $receiver i32) (param $n i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $n
+  call $async-method/Counter#add
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
  (func $async-method/__async_async_method_Counter_viaArrow_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5279,6 +5313,32 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+  return
+ )
+ (func $async-method/__async_async_method_Counter_viaArrow_entry (param $receiver i32) (param $n i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $n
+  call $async-method/Counter#viaArrow
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
   return
  )
  (func $~lib/function/Function<%28i32%29=>i32>#__visit (param $this i32) (param $cookie i32)
@@ -5652,6 +5712,26 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-method/__async_async_method_Counter_add_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-method/__async_async_method_Counter_add_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
  (func $export:async-method/__async_async_method_Counter_viaArrow_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -5751,5 +5831,25 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $export:async-method/__async_async_method_Counter_viaArrow_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-method/__async_async_method_Counter_viaArrow_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
  )
 )

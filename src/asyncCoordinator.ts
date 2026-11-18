@@ -14,6 +14,8 @@
 import {
   Program,
   FunctionPrototype,
+  ClassPrototype,
+  Element,
   ElementKind
 } from "./program";
 
@@ -32,7 +34,10 @@ import {
 import {
   SiteMeta,
   FunctionMeta,
+  MethodMeta,
+  ClassMeta,
   ImportMeta,
+  ValueDesc,
   warnSkipped,
   sanitizeName,
   describeType,
@@ -40,7 +45,8 @@ import {
   owningFile,
   findExportName,
   collectSuspendingImports,
-  findImportName
+  findImportName,
+  qualNameOf
 } from "./asyncCoordinatorMeta";
 
 /** Builds metadata for one transformed async function, or `null` (with a
@@ -48,12 +54,19 @@ import {
  *  silently unless `forInner` is set: an inner function needs no export
  *  (the coordinator never calls its entry, it only drives the handle the
  *  outer task already started), so its exportName is `null` and the
- *  caller keys it by file + qualified name instead. */
+ *  caller keys it by file + qualified name instead. `fn` is the qualified
+ *  name used for the protocol exports (`Class_method` for methods, the
+ *  plain name otherwise); `lookupParent` is the element the generated
+ *  protocol members are registered under (the owning file for methods,
+ *  whose parent is the bound class — the transform registers them under
+ *  the class's parent file). */
 function buildFunctionMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[],
-  forInner: boolean
+  forInner: boolean,
+  fn: string,
+  lookupParent: Element
 ): FunctionMeta | null {
   let file = owningFile(prototype);
   if (!file) {
@@ -88,14 +101,13 @@ function buildFunctionMeta(
     return null;
   }
   let fileBase = sanitizeName(file.source.simplePath);
-  let fn = prototype.name;
   let sites: SiteMeta[] = [];
   for (let n = 0; ; ++n) {
     let resumeName = "__async_" + fileBase + "_" + fn + "_resume_" + n.toString();
     let doneName = "__async_" + fileBase + "_" + fn + "_join_done_" + n.toString();
-    let resumeMember = prototype.parent.getMember(resumeName);
+    let resumeMember = lookupParent.getMember(resumeName);
     if (resumeMember && resumeMember.kind != ElementKind.FunctionPrototype) resumeMember = null;
-    let doneMember = prototype.parent.getMember(doneName);
+    let doneMember = lookupParent.getMember(doneName);
     if (doneMember && doneMember.kind != ElementKind.FunctionPrototype) doneMember = null;
     if (!resumeMember && !doneMember) break;
     if (resumeMember && doneMember) {
@@ -104,7 +116,7 @@ function buildFunctionMeta(
     }
     if (doneMember) {
       let storeName = "__async_" + fileBase + "_" + fn + "_join_store_" + n.toString();
-      let storeMember = prototype.parent.getMember(storeName);
+      let storeMember = lookupParent.getMember(storeName);
       if (!storeMember || storeMember.kind != ElementKind.FunctionPrototype) {
         warnSkipped(program, prototype, "join site " + n.toString() + " has no join_store export", notes);
         return null;
@@ -167,7 +179,7 @@ function buildFunctionMeta(
       return null;
     }
     let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
-    let pendingMember = prototype.parent.getMember(pendingName);
+    let pendingMember = lookupParent.getMember(pendingName);
     if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
     let innerExportName: string | null = null;
     if (pendingMember) {
@@ -201,6 +213,79 @@ function buildFunctionMeta(
     resultExport: "__async_" + fileBase + "_" + fn + "_result",
     errorExport: "__async_" + fileBase + "_" + fn + "_error",
     sites
+  };
+}
+
+/** Builds metadata for one transformed async method on an exported class,
+ *  or `null` when it cannot be driven. A method on a non-exported class
+ *  is skipped silently (no wrapper class in v1); any other failure warns.
+ *  The resolved signature's parameterTypes are the declared params only —
+ *  the receiver lives in signature.thisType — so they describe as-is and
+ *  the runtime prepends the raw pointer. */
+function buildMethodMeta(
+  program: Program,
+  prototype: FunctionPrototype,
+  notes: string[]
+): MethodMeta | null {
+  let bound = prototype.getBoundClassOrInterface();
+  if (!bound) return null;
+  let file = owningFile(prototype);
+  if (!file) {
+    warnSkipped(program, prototype, "it has no owning file", notes);
+    return null;
+  }
+  if (!findExportName(program, file, bound.prototype)) return null;
+  let qualName = qualNameOf(prototype);
+  let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
+  if (!meta) return null;
+  return {
+    ...meta,
+    exportName: null,
+    name: prototype.name,
+    entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
+  };
+}
+
+/** Builds metadata for one exported class from its drivable async methods,
+ *  or `null` (with a warning) when the constructor cannot be driven: the
+ *  whole class is skipped, since the wrapper cannot be constructed. A
+ *  class with no explicit constructor takes no `new` params. */
+function buildClassMeta(
+  program: Program,
+  classPrototype: ClassPrototype,
+  methods: MethodMeta[],
+  notes: string[]
+): ClassMeta | null {
+  let fileBase = methods[0].fileBase;
+  let name = classPrototype.name;
+  let newParams: ValueDesc[] = [];
+  let ctor = classPrototype.constructorPrototype;
+  if (ctor) {
+    // The constructor prototype is flagged Instance but unbound, so
+    // resolveFunction asserts on it: resolve the class instead and take
+    // the constructor instance the resolver links (resolver.ts).
+    let classInstance = program.resolver.resolveClass(classPrototype, null, new Map(), ReportMode.Swallow);
+    if (!classInstance) {
+      warnSkipped(program, ctor, "its class cannot be resolved", notes);
+      return null;
+    }
+    let ctorInstance = classInstance.constructorInstance;
+    if (!ctorInstance) {
+      warnSkipped(program, ctor, "its constructor cannot be resolved", notes);
+      return null;
+    }
+    let params = describeParams(ctorInstance.signature.parameterTypes, name);
+    if (params.reason) {
+      warnSkipped(program, ctor, params.reason, notes);
+      return null;
+    }
+    newParams = params.params;
+  }
+  return {
+    name,
+    newExport: "__async_" + fileBase + "_" + name + "_new",
+    newParams,
+    methods
   };
 }
 
@@ -266,7 +351,9 @@ function buildImportMeta(
 
 /** Builds metadata for a nested inner function by qualified name, or
  *  `null` when it cannot be found or driven. The inner lives in the
- *  same file as the outer function and needs no export. */
+ *  same file as the outer function and needs no export. A method inner
+ *  has innerQual `Class_method`, so the match uses the qualified name,
+ *  not `prototype.name` (which is just the method name). */
 function buildInnerMeta(
   program: Program,
   outer: FunctionPrototype,
@@ -276,9 +363,11 @@ function buildInnerMeta(
   let file = owningFile(outer);
   if (!file) return null;
   for (let prototype of program.transformedAsyncFunctions) {
-    if (prototype.name != innerQual) continue;
-    if (owningFile(prototype) != file) continue;
-    return buildFunctionMeta(program, prototype, notes, true);
+    if (qualNameOf(prototype) != innerQual) continue;
+    let innerFile = owningFile(prototype);
+    if (!innerFile || innerFile != file) continue;
+    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
+    return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
   }
   return null;
 }
@@ -322,21 +411,52 @@ function resolveNestedInners(
 
 /**
  * Builds the generated JS coordinator for the program, or `null` when it
- * has no exported transformed async function. Call after compilation.
+ * has no exported transformed async function or class method. Call after
+ * compilation.
  */
 export function buildAsyncCoordinator(program: Program): string | null {
   if (program.transformedAsyncFunctions.size == 0) return null;
   let notes: string[] = [];
   let entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
+  let methodEntries: Array<{ prototype: FunctionPrototype, meta: MethodMeta, classPrototype: ClassPrototype }> = [];
   for (let prototype of program.transformedAsyncFunctions) {
-    let meta = buildFunctionMeta(program, prototype, notes, false);
-    if (meta) entries.push({ prototype, meta });
+    let bound = prototype.getBoundClassOrInterface();
+    if (bound && bound.kind == ElementKind.Class) {
+      let meta = buildMethodMeta(program, prototype, notes);
+      if (meta) methodEntries.push({ prototype, meta, classPrototype: bound.prototype });
+    } else {
+      let meta = buildFunctionMeta(program, prototype, notes, false, prototype.name, prototype.parent);
+      if (meta) entries.push({ prototype, meta });
+    }
   }
-  if (entries.length == 0) return null;
-  let inners = resolveNestedInners(program, entries, notes);
+  if (entries.length == 0 && methodEntries.length == 0) return null;
+  let combined: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
+  for (let i = 0, k = entries.length; i < k; ++i) combined.push(entries[i]);
+  for (let i = 0, k = methodEntries.length; i < k; ++i) combined.push(methodEntries[i]);
+  let classOf = new Map<FunctionPrototype, ClassPrototype>();
+  for (let i = 0, k = methodEntries.length; i < k; ++i) {
+    classOf.set(methodEntries[i].prototype, methodEntries[i].classPrototype);
+  }
+  let inners = resolveNestedInners(program, combined, notes);
   let functions: FunctionMeta[] = [];
-  for (let i = 0, k = entries.length; i < k; ++i) functions.push(entries[i].meta);
-  if (functions.length == 0) return null;
+  let keptMethods = new Map<ClassPrototype, MethodMeta[]>();
+  for (let i = 0, k = combined.length; i < k; ++i) {
+    let entry = combined[i];
+    let classPrototype = classOf.get(entry.prototype);
+    if (classPrototype) {
+      let list = keptMethods.get(classPrototype);
+      if (!list) keptMethods.set(classPrototype, list = []);
+      list.push(<MethodMeta>entry.meta);
+    } else {
+      functions.push(entry.meta);
+    }
+  }
+  let classes: ClassMeta[] = [];
+  for (let classPrototype of keptMethods.keys()) {
+    let classMeta = buildClassMeta(program, classPrototype, keptMethods.get(classPrototype)!, notes);
+    if (classMeta) classes.push(classMeta);
+  }
+  if (functions.length == 0 && classes.length == 0) return null;
   let imports: ImportMeta[] = [];
   let seen = new Set<string>();
   let prototypes: FunctionPrototype[] = [];
@@ -349,12 +469,21 @@ export function buildAsyncCoordinator(program: Program): string | null {
     seen.add(key);
     imports.push(meta);
   }
-  let metadata = { functions, inners, imports };
+  let metadata = { functions, classes, inners, imports };
   let hasJoin = false;
   for (let i = 0, k = functions.length; i < k; ++i) {
     let sites = functions[i].sites;
     for (let j = 0, l = sites.length; j < l; ++j) {
       if (sites[j].join) hasJoin = true;
+    }
+  }
+  for (let i = 0, k = classes.length; i < k; ++i) {
+    let methods = classes[i].methods;
+    for (let j = 0, l = methods.length; j < l; ++j) {
+      let sites = methods[j].sites;
+      for (let m = 0, n = sites.length; m < n; ++m) {
+        if (sites[m].join) hasJoin = true;
+      }
     }
   }
   if (hasJoin) {

@@ -78,6 +78,7 @@ import {
   Program,
   File,
   FunctionPrototype,
+  ClassPrototype,
   Element,
   ElementKind
 } from "./program";
@@ -146,9 +147,24 @@ function collectAsyncFunctions(element: Element, out: FunctionPrototype[]): void
     let member = values[i];
     if (member.kind == ElementKind.FunctionPrototype && member.is(CommonFlags.Async)) {
       let prototype = <FunctionPrototype>member;
-      if (prototype.declaration.kind == NodeKind.FunctionDeclaration) out.push(prototype);
+      if (prototype.declaration.kind == NodeKind.FunctionDeclaration
+        || prototype.declaration.kind == NodeKind.MethodDeclaration) out.push(prototype);
     } else if (member.kind == ElementKind.Namespace) {
       collectAsyncFunctions(member, out);
+    } else if (member.kind == ElementKind.ClassPrototype) {
+      // Instance methods only, mirroring the transform's collector.
+      // The desugar adds no `this`, so the later lifts need no accommodation.
+      let prototype = <ClassPrototype>member;
+      let instanceMembers = prototype.instanceMembers;
+      if (instanceMembers) {
+        let instanceValues = Map_values(instanceMembers);
+        for (let j = 0, l = instanceValues.length; j < l; ++j) {
+          let instanceMember = instanceValues[j];
+          if (instanceMember.kind == ElementKind.FunctionPrototype && instanceMember.is(CommonFlags.Async)) {
+            out.push(<FunctionPrototype>instanceMember);
+          }
+        }
+      }
     }
   }
 }

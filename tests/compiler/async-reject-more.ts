@@ -17,12 +17,30 @@ class W {
     let c = await getChunk(0);
     return c;
   }
+
+  sync(n: i32): Promise<string> {
+    return getChunk(n);
+  }
+
+  static async staticM(n: i32): Promise<string> {
+    let c = await getChunk(n);
+    return c;
+  }
 }
 
 class G<T> {
   async fetch(): Promise<string> {
     let c = await getChunk(0);
     return c;
+  }
+}
+
+namespace NS2 {
+  export class H {
+    async m(): Promise<string> {
+      let c = await getChunk(0);
+      return c;
+    }
   }
 }
 
@@ -43,12 +61,6 @@ export async function tryInSwitch(x: i32): Promise<string> {
     default:
       return "d";
   }
-}
-
-export async function awaitMember(): Promise<string> {
-  let w = new W();
-  let c = await w.m();
-  return c;
 }
 
 export async function awaitOtherFile(): Promise<string> {
@@ -112,4 +124,36 @@ export async function fieldAssignAwait(): Promise<void> {
 export async function awaitVoid(): Promise<string> {
   await getVoid();
   return "x";
+}
+
+// Member-call await stays loud when the callee is not a transformed
+// async method: a sync method, a static method, an unresolvable member,
+// a generic-class method, and a namespaced-class method.
+export async function awaitSync(): Promise<string> {
+  let w = new W();
+  let c = await w.sync(0);
+  return c;
+}
+
+export async function awaitStatic(): Promise<string> {
+  let c = await W.staticM(0);
+  return c;
+}
+
+export async function awaitNope(): Promise<string> {
+  let w = new W();
+  let c = await w.nope(0);
+  return c;
+}
+
+export async function awaitGeneric(): Promise<string> {
+  let g = new G<i32>();
+  let c = await g.fetch();
+  return c;
+}
+
+export async function awaitNamespaced(): Promise<string> {
+  let h = new NS2.H();
+  let c = await h.m();
+  return c;
 }

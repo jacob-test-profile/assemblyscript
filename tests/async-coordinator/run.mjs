@@ -26,7 +26,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -70,6 +70,19 @@ async function assertRejects(promise, pattern, msg) {
   check(error instanceof Error, msg + " (did not reject)");
   check(pattern.test(error.message), msg + " (wrong message: " + error.message + ")");
   return error;
+}
+
+// Decodes an AssemblyScript string from wasm memory by its pointer, as
+// the compiler test glue does: sync imports receive the raw pointer, so
+// a string-typed sync import (log) needs this to read what was logged.
+function getStringFromMemory(memory, ptr) {
+  const RUNTIME_HEADER_SIZE = 16;
+  if (!ptr) return "null";
+  const U32 = new Uint32Array(memory.buffer);
+  const U16 = new Uint16Array(memory.buffer);
+  const len16 = U32[(ptr - RUNTIME_HEADER_SIZE + 12) >>> 2] >>> 1;
+  const ptr16 = ptr >>> 1;
+  return String.fromCharCode.apply(String, U16.subarray(ptr16, ptr16 + len16));
 }
 
 compile("sync.ts");
@@ -575,6 +588,260 @@ const api = await instantiateAsync(bytes, {
   const settled = await p;
   check(settled === "ok10;nobad;ok30;", "real join allSettled must report every member, got " + settled);
   console.log("PASS real join allSettled, mixed fulfill/reject");
+}
+
+// Async methods through the generated coordinator: wrapper classes,
+// instance state across await, concurrent instances, method->method
+// (incl. nested), rejection, method awaited from an async top-level fn,
+// guardedNested through the coordinator, externref method tasks through
+// the slot pool, and dispose() behaviour.
+{
+  const wasmBytes = readFileSync(compile("methods.ts"));
+  const methodsCoord = join(dir, "methods.async.js");
+  check(existsSync(methodsCoord), "methods.async.js must be emitted for the methods fixture");
+  const { instantiateAsync: instantiateMethods } = await import(pathToFileURL(methodsCoord).href);
+  const methodNums = [];
+  const methodHandles = [];
+  const methodUses = [];
+  const methodSeenHandles = [];
+  const methodLogs = [];
+  let methodsMemory = null;
+  const sentinel = { tag: "method-handle" };
+  const methodsApi = await instantiateMethods(wasmBytes, {
+    env: {
+      getNumber() {
+        const d = deferred();
+        methodNums.push(d);
+        return d.promise;
+      },
+      getHandle() {
+        const d = deferred();
+        methodHandles.push(d);
+        return d.promise;
+      },
+      useHandle(h) {
+        methodSeenHandles.push(h);
+        const d = deferred();
+        methodUses.push(d);
+        return d.promise;
+      },
+      log(p) {
+        methodLogs.push(getStringFromMemory(methodsMemory, p));
+      }
+    }
+  });
+  methodsMemory = methodsApi.exports.memory;
+  check(typeof methodsApi.Counter === "function", "generated coordinator must expose a Counter wrapper class");
+  check(typeof methodsApi.Worker === "function", "generated coordinator must expose a Worker wrapper class");
+  check(typeof methodsApi.viaObj === "function", "generated coordinator must expose the async top-level fn viaObj");
+  console.log("PASS methods coordinator file emitted with the wrapper classes");
+
+  // Basic method, known values from the integration probe: add(5) with
+  // getNumber()=7 gives 12, then add(100) gives 119, viaArrow(1) gives
+  // 130. Fields mutated before and after the await are both observed.
+  {
+    const c = new methodsApi.Counter();
+    let p = c.add(5);
+    await tick();
+    methodNums[0].resolve(7);
+    check((await p) === 12, "Counter.add(5) with getNumber()=7 must give 12");
+    p = c.add(100);
+    await tick();
+    methodNums[1].resolve(7);
+    check((await p) === 119, "Counter.add(100) on the same instance must give 119");
+    p = c.viaArrow(1);
+    await tick();
+    methodNums[2].resolve(7);
+    check((await p) === 130, "Counter.viaArrow(1) must give 130");
+    c.dispose();
+    console.log("PASS basic async method, known values 12/119/130");
+  }
+
+  // Two instances driven concurrently keep independent counts.
+  {
+    const c = new methodsApi.Counter();
+    const d = new methodsApi.Counter();
+    const base = methodNums.length;
+    const p1 = c.add(1);
+    const p2 = d.add(2);
+    await tick();
+    check(methodNums.length === base + 2, "concurrent method calls must issue two awaits");
+    methodNums[base].resolve(7);
+    methodNums[base + 1].resolve(7);
+    const v1 = await p1;
+    const v2 = await p2;
+    check(v1 === 8, "first concurrent instance must give 8, got " + v1);
+    check(v2 === 9, "second concurrent instance must give 9, got " + v2);
+    c.dispose();
+    d.dispose();
+    console.log("PASS two instances driven concurrently, independent counts");
+  }
+
+  // Method awaiting a method of the same instance.
+  {
+    const w = new methodsApi.Worker();
+    const base = methodNums.length;
+    const p = w.viaThis(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "viaThis(5) with helper 5+7 must give 12");
+    w.dispose();
+    console.log("PASS method awaiting a method of the same instance");
+  }
+
+  // Nested: method -> method -> import.
+  {
+    const w = new methodsApi.Worker();
+    const base = methodNums.length;
+    const p = w.viaNested(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 13, "viaNested(5) must give 12+1");
+    w.dispose();
+    console.log("PASS nested method -> method -> import");
+  }
+
+  // A method whose awaited import rejects rejects its Promise.
+  {
+    const c = new methodsApi.Counter();
+    const base = methodNums.length;
+    const p = c.fail(3);
+    await tick();
+    methodNums[base].reject(new Error("method-boom"));
+    await assertRejects(p, /method-boom/, "a rejecting method await must reject the method promise");
+    c.dispose();
+    console.log("PASS method rejection propagates to the Promise");
+  }
+
+  // Method awaited from an async top-level fn, with and without a catch.
+  {
+    let base = methodNums.length;
+    const p = methodsApi.viaObj(10);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 17, "viaObj(10) with helper 10+7 must give 17");
+    console.log("PASS method awaited from an async top-level fn");
+
+    base = methodNums.length;
+    const p2 = methodsApi.viaObjGuarded(10);
+    await tick();
+    methodNums[base].reject(new Error("inner-boom"));
+    check((await p2) === -1, "an inner method failure must land in the outer catch and return -1");
+    check(methodLogs.join(",") === "catch:inner-boom", "outer catch must log the inner message, got " + methodLogs);
+    methodLogs.length = 0;
+    console.log("PASS inner method failure reaches the outer catch");
+  }
+
+  // guardedNested through the coordinator: method awaiting a method
+  // inside its own try/catch, deliver and reject paths.
+  {
+    const w = new methodsApi.Worker();
+    let base = methodNums.length;
+    const p = w.guardedNested(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "guardedNested deliver must give 12");
+    check(methodLogs.join(",") === "finally", "guardedNested deliver must log only finally, got " + methodLogs);
+    methodLogs.length = 0;
+    console.log("PASS guardedNested deliver through the coordinator");
+
+    base = methodNums.length;
+    const p2 = w.guardedNested(5);
+    await tick();
+    methodNums[base].reject(new Error("coord-boom"));
+    check((await p2) === -1, "guardedNested reject must return -1");
+    check(methodLogs.join(",") === "catch:coord-boom,finally", "guardedNested reject must log catch then finally, got " + methodLogs);
+    methodLogs.length = 0;
+    w.dispose();
+    console.log("PASS guardedNested reject through the coordinator");
+  }
+
+  // Externref-carrying method task through the slot pool: identity
+  // preserved across suspension.
+  {
+    const c = new methodsApi.Counter();
+    const hBase = methodHandles.length;
+    const uBase = methodUses.length;
+    const p = c.handleRoundtrip();
+    await tick();
+    check(methodHandles.length === hBase + 1, "method handleRoundtrip must call getHandle once");
+    methodHandles[hBase].resolve(sentinel);
+    await tick();
+    check(methodSeenHandles[uBase] === sentinel, "externref identity must survive the method await");
+    methodUses[uBase].resolve(42);
+    check((await p) === 42, "method handleRoundtrip must resolve 42");
+    c.dispose();
+    console.log("PASS externref identity across a method await");
+  }
+
+  // Method externref tasks share the slot pool with the same bound: each
+  // holds 2 of the 8 slots, so 4 concurrent tasks fill the pool and the
+  // 5th must queue, then start when one settles.
+  {
+    const hBase = methodHandles.length;
+    const uBase = methodUses.length;
+    const results = [];
+    const tasks = [];
+    const counters = [];
+    for (let i = 0; i < 5; i++) {
+      const cc = new methodsApi.Counter();
+      counters.push(cc);
+      const p = cc.handleRoundtrip();
+      p.then((v) => results.push(v));
+      tasks.push(p);
+    }
+    await tick();
+    check(methodHandles.length === hBase + 4, "only 4 of 5 method externref tasks may start, got " + (methodHandles.length - hBase));
+    for (let i = 0; i < 4; i++) {
+      methodHandles[hBase + i].resolve(sentinel);
+      await tick();
+      check(methodSeenHandles[uBase + i] === sentinel, "queued-pool method task " + i + " must keep externref identity");
+      methodUses[uBase + i].resolve(42);
+      await tick();
+    }
+    check(methodHandles.length === hBase + 5, "the queued 5th method task must start once a slot frees");
+    methodHandles[hBase + 4].resolve(sentinel);
+    await tick();
+    check(methodSeenHandles[uBase + 4] === sentinel, "queued method task must keep externref identity");
+    methodUses[uBase + 4].resolve(42);
+    await Promise.all(tasks);
+    check(results.join(",") === "42,42,42,42,42", "all 5 method pool tasks must resolve 42, got " + results);
+    for (const cc of counters) cc.dispose();
+    console.log("PASS method externref tasks through the spill-pool FIFO queue");
+  }
+
+  // dispose() is idempotent and disposed calls throw synchronously.
+  {
+    const doomed = new methodsApi.Counter();
+    doomed.dispose();
+    doomed.dispose();
+    let threw = null;
+    try {
+      doomed.add(5);
+    } catch (e) {
+      threw = e;
+    }
+    check(threw instanceof Error && /has been disposed/.test(threw.message), "a disposed call must throw synchronously, got " + threw);
+    console.log("PASS dispose is idempotent, disposed calls throw synchronously");
+  }
+
+  // A live wrapper survives heap churn + __collect: the pin keeps the
+  // instance alive between tasks, so a later method call still works.
+  {
+    const c = new methodsApi.Counter();
+    methodsApi.exports.__collect();
+    methodsApi.exports.allocSpam(2000);
+    methodsApi.exports.__collect();
+    methodsApi.exports.allocSpam(2000);
+    methodsApi.exports.__collect();
+    const base = methodNums.length;
+    const p = c.add(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "pinned instance must still drive after churn + __collect");
+    c.dispose();
+    console.log("PASS pinned instance survives churn + __collect");
+  }
 }
 
 console.log("ALL COORDINATOR TESTS PASS");
