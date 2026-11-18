@@ -61,3 +61,15 @@ export async function runPoint(): Promise<i32> {
   let q = await id<Point>(p);
   return q.x;
 }
+
+// A generic suspending import: one wrapper serves all instantiations
+// whose parameter types agree (here every call passes an i32); each
+// instantiation's result is delivered through its own await site.
+//@ external("env", "fetch")
+declare function fetch<T>(x: i32): Promise<T>;
+
+export async function runFetch(): Promise<i32> {
+  let a = await fetch<i32>(1);
+  let b = await fetch<string>(2);
+  return a + (b.length > 0 ? 1 : 0);
+}

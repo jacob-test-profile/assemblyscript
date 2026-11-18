@@ -13,6 +13,7 @@
 
 import {
   Program,
+  Function,
   FunctionPrototype,
   ClassPrototype,
   Element,
@@ -299,16 +300,32 @@ function buildClassMeta(
 /** Builds metadata for one suspending import. An import with an
  *  unsupported type still gets an entry: the runtime installs a stub that
  *  rejects with the reason instead of calling the binding. Returns `null`
- *  (with a warning) only when the import cannot be located at all. */
+ *  (with a warning) only when the import cannot be located at all. A
+ *  generic import has no default instance (resolving with null type
+ *  arguments asserts), so it is built from its resolved instantiations:
+ *  one wrapper serves them all when their parameter types agree — the
+ *  wrapper only lifts arguments, and each instantiation's result is
+ *  delivered through its own await site's resume export. */
 function buildImportMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[]
 ): ImportMeta | null {
-  let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
-  if (!instance) {
-    warnSkipped(program, prototype, "suspending import cannot be resolved", notes);
-    return null;
+  let instances: Function[] | null = null;
+  let instance: Function | null;
+  if (prototype.typeParameterNodes && prototype.typeParameterNodes.length > 0) {
+    instances = genericImportInstances(prototype);
+    if (!instances || instances.length == 0) {
+      warnSkipped(program, prototype, "generic suspending import has no instantiations", notes);
+      return null;
+    }
+    instance = instances[0];
+  } else {
+    instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+    if (!instance) {
+      warnSkipped(program, prototype, "suspending import cannot be resolved", notes);
+      return null;
+    }
   }
   let found = findImportName(program, prototype, instance);
   if (!found) {
@@ -347,6 +364,24 @@ function buildImportMeta(
         "': " + params.reason
     };
   }
+  if (instances) {
+    for (let i = 1, k = instances.length; i < k; ++i) {
+      let other = describeParams(instances[i].signature.parameterTypes, prototype.name);
+      if (other.reason || !sameParams(params.params, other.params)) {
+        let reason = "instantiations disagree on parameter types";
+        warnSkipped(program, prototype, reason, notes);
+        return {
+          module: found.module,
+          name: found.name,
+          params: [],
+          resultKind: result.kind,
+          resultNullable: result.nullable,
+          unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
+            "': " + reason
+        };
+      }
+    }
+  }
   return {
     module: found.module,
     name: found.name,
@@ -354,6 +389,23 @@ function buildImportMeta(
     resultKind: result.kind,
     resultNullable: result.nullable
   };
+}
+
+/** Resolved instantiations of a generic suspending import. */
+function genericImportInstances(prototype: FunctionPrototype): Function[] | null {
+  let instances = prototype.instances;
+  if (!instances) return null;
+  return Map_values(instances);
+}
+
+/** Whether two parameter descriptions lift identically (same kind and
+ *  nullability at every position). */
+function sameParams(a: ValueDesc[], b: ValueDesc[]): bool {
+  if (a.length != b.length) return false;
+  for (let i = 0, k = a.length; i < k; ++i) {
+    if (a[i].kind != b[i].kind || a[i].nullable != b[i].nullable) return false;
+  }
+  return true;
 }
 
 /** Builds metadata for a nested inner function by qualified name, or

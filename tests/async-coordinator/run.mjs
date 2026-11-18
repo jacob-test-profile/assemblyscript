@@ -26,7 +26,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "generics.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -857,6 +857,7 @@ const api = await instantiateAsync(bytes, {
   const { instantiateAsync: instantiateGenerics } = await import(pathToFileURL(genericsCoord).href);
   const genValues = [];
   const genHandles = [];
+  const genFetches = [];
   const sentinel = { tag: "generics-handle" };
   const genApi = await instantiateGenerics(wasmBytes, {
     env: {
@@ -869,6 +870,11 @@ const api = await instantiateAsync(bytes, {
         const d = deferred();
         genHandles.push(d);
         return d.promise;
+      },
+      fetch(x) {
+        const d = deferred();
+        genFetches.push(d);
+        return d.promise;
       }
     }
   });
@@ -878,6 +884,7 @@ const api = await instantiateAsync(bytes, {
   check(typeof genApi.runGeneric === "function", "generated coordinator must expose runGeneric");
   check(typeof genApi.runHandle === "function", "generated coordinator must expose runHandle");
   check(typeof genApi.runBox === "function", "generated coordinator must expose runBox");
+  check(typeof genApi.runFetch === "function", "generated coordinator must expose runFetch");
   check(genApi.Box === undefined, "a generic class must not get a wrapper class yet (Group 4)");
   check(genApi.runPoint === undefined, "a class-typed instantiation must not be coordinator-driven");
   check(!Object.keys(genApi).some((k) => k.endsWith("_Point")), "no id<Point> clone method must be exposed");
@@ -929,6 +936,40 @@ const api = await instantiateAsync(bytes, {
     check((await p) === 42, "runBox must give 42");
     console.log("PASS generic-class method awaited from an async fn, 42");
   }
+
+  // Generic suspending import: one wrapper serves the i32 and string
+  // instantiations (both pass an i32); each result is delivered through
+  // its own await site.
+  {
+    const p = genApi.runFetch();
+    await tick();
+    genFetches[0].resolve(42);
+    await tick();
+    genFetches[1].resolve("hi");
+    check((await p) === 43, "runFetch must give 43");
+    console.log("PASS generic suspending import, one wrapper for agreeing instantiations, 43");
+  }
+}
+
+// A generic suspending import whose instantiations disagree on parameter
+// types stays loud: the coordinator installs a stub that rejects with
+// the reason instead of wrapping it.
+{
+  const wasmBytes = readFileSync(compile("generic-import-disagree.ts"));
+  const disagreeCoord = join(dir, "generic-import-disagree.async.js");
+  check(existsSync(disagreeCoord), "generic-import-disagree.async.js must be emitted");
+  const { instantiateAsync: instantiateDisagree } = await import(pathToFileURL(disagreeCoord).href);
+  const disagreeApi = await instantiateDisagree(wasmBytes, {
+    env: {
+      fetch(x) { return Promise.resolve(1); }
+    }
+  });
+  await assertRejects(
+    disagreeApi.run(),
+    /instantiations disagree on parameter types/,
+    "run() with a disagreeing generic import must reject with the reason"
+  );
+  console.log("PASS disagreeing generic suspending import stays loud with the reason");
 }
 
 console.log("ALL COORDINATOR TESTS PASS");
