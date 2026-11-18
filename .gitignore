@@ -16,3 +16,5 @@ dist/asc.js
 dist/assemblyscript.js
 dist/importmap.json
 dist/web.js
+
+probe-cps/*.wasm
