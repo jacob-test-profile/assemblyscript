@@ -165,18 +165,24 @@ function buildFunctionMeta(
       return null;
     }
     let valueTypes = resumeInstance.signature.parameterTypes;
-    if (valueTypes.length < 2) {
+    // A void site's resume export takes only the state: the awaited
+    // value does not exist, so there is no value parameter to describe.
+    let site: ValueDesc | null;
+    if (valueTypes.length == 1) {
+      site = { kind: "void", nullable: false };
+    } else if (valueTypes.length < 2) {
       warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
       return null;
-    }
-    let site = describeType(valueTypes[1]);
-    if (!site) {
-      warnSkipped(
-        program, prototype,
-        "unsupported awaited type '" + valueTypes[1].toString() + "'",
-        notes
-      );
-      return null;
+    } else {
+      site = describeType(valueTypes[1]);
+      if (!site) {
+        warnSkipped(
+          program, prototype,
+          "unsupported awaited type '" + valueTypes[1].toString() + "'",
+          notes
+        );
+        return null;
+      }
     }
     let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
     let pendingMember = lookupParent.getMember(pendingName);

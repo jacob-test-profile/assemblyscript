@@ -1016,6 +1016,10 @@ class AsyncFunctionTransform {
         }
         let site = this.transformAwait(awaitExpr, true);
         if (!site) return;
+        if (site.type.kind == TypeKind.Void) {
+          this.fail("Cannot store the result of 'await' of type 'void' in a variable; await it as a statement instead", awaitExpr.range);
+          return;
+        }
         let type: Type | null = site.type;
         if (declaration.type) {
           let annotated = this.resolver.resolveType(declaration.type, this.flow, this.parent, null, ReportMode.Swallow);
@@ -1108,6 +1112,10 @@ class AsyncFunctionTransform {
       }
       let site = this.transformAwait(awaitExpr, true);
       if (!site) return;
+      if (site.type.kind == TypeKind.Void) {
+        this.fail("Cannot assign the result of 'await' of type 'void'; await it as a statement instead", awaitExpr.range);
+        return;
+      }
       this.suspendCurrent(site);
       let binding = this.scope.lookup(name);
       if (binding) {
@@ -1144,6 +1152,10 @@ class AsyncFunctionTransform {
       }
       let site = this.transformAwait(awaitExpr, true);
       if (!site) return;
+      if (site.type.kind == TypeKind.Void && this.returnType.kind != TypeKind.Void) {
+        this.fail("Cannot return the result of 'await' of type 'void' from a function returning '" + this.returnType.toString() + "'", awaitExpr.range);
+        return;
+      }
       this.suspendCurrent(site);
       this.emitReturnAssignment(site, stmt.range);
       this.emitTerminal(stmt.range);
@@ -1390,6 +1402,24 @@ class AsyncFunctionTransform {
     }
   }
 
+  /** Resolves the type node of an awaited value, or `null` after failing
+   *  loudly. `void` has no spelling and no zero value, but it is a valid
+   *  awaited type: the site carries no value, so the void node is
+   *  returned directly and the resume export takes no value parameter. */
+  private resolveAwaitType(unwrapped: Type, range: Range): TypeNode | null {
+    if (unwrapped.kind == TypeKind.Void) return namedType("void", null, false, range);
+    let typeNode = typeToTypeNode(unwrapped, range);
+    if (!typeNode) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, range);
+      return null;
+    }
+    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, range)) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, range);
+      return null;
+    }
+    return typeNode;
+  }
+
   /** Awaits a stored promise: the operation was already issued when the
    *  promise was bound, so the site suspends on its token through
    *  `__async_wait` instead of issuing a new call. The token is the
@@ -1417,15 +1447,8 @@ class AsyncFunctionTransform {
       this.failed = true;
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenOperand = rewriteExpression(operand, this.rewriter());
     if (!rewrittenOperand) {
       this.failed = true;
@@ -1528,15 +1551,8 @@ class AsyncFunctionTransform {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenCall = rewriteExpression(call, this.rewriter());
     if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
       this.failed = true;
@@ -1586,15 +1602,8 @@ class AsyncFunctionTransform {
       this.failed = true;
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenCall = rewriteExpression(call, this.rewriter());
     if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
       this.failed = true;
@@ -2773,7 +2782,7 @@ class AsyncFunctionTransform {
     ));
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
-      if (site.isJoin || !site.used || site.type.kind == TypeKind.Extern) continue;
+      if (site.isJoin || !site.used || site.type.kind == TypeKind.Extern || site.type.kind == TypeKind.Void) continue;
       let zero = zeroValue(site.type, site.typeNode, range);
       if (!zero) return null;
       members.push(new FieldDeclaration(
@@ -3008,22 +3017,28 @@ class AsyncFunctionTransform {
       null,
       range
     );
-    let valueParam = new ParameterNode(
-      ParameterKind.Default,
-      ident("value", range),
-      site.typeNode,
-      null,
-      range
-    );
+    // A void site carries no value: the resume export takes only the
+    // state, and the coordinator calls it with no value argument.
+    let params = new Array<ParameterNode>();
+    params.push(stateParam);
+    if (site.type.kind != TypeKind.Void) {
+      params.push(new ParameterNode(
+        ParameterKind.Default,
+        ident("value", range),
+        site.typeNode,
+        null,
+        range
+      ));
+    }
     let signature = new FunctionTypeNode(
-      [ stateParam, valueParam ],
+      params,
       namedType("i32", null, false, range),
       null,
       false,
       range
     );
     let body = new Array<Statement>();
-    if (site.used) {
+    if (site.used && site.type.kind != TypeKind.Void) {
       if (site.type.kind == TypeKind.Extern) {
         body.push(exprStmt(callExpr(
           ident(SPILL_SET, range),

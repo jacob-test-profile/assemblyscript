@@ -97,6 +97,9 @@ export function createCoordinator(metadata) {
   }
 
   function lower(value, kind, nullable) {
+    // A void value is always undefined: the promise resolved with no
+    // value, so there is nothing to check or convert.
+    if (kind === 'void') return undefined;
     if (value == null) {
       if (!nullable) throw new TypeError('async coordinator: null is not a valid ' + kind + ' value');
       return 0;
@@ -115,7 +118,6 @@ export function createCoordinator(metadata) {
       }
       case 'bool': return value ? 1 : 0;
       case 'externref': return value;
-      case 'void': return undefined;
       default: throw new Error('async coordinator: cannot lower a ' + kind + ' value');
     }
   }

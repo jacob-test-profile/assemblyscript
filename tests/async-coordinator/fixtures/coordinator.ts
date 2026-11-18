@@ -206,6 +206,39 @@ export async function voidTask(): Promise<void> {
   await getChunk(0);
 }
 
+//@ external("env", "getVoid")
+declare function getVoid(): Promise<void>;
+
+// Awaiting a Promise<void> completes the suspension with no value: as a
+// statement, as the return of a Promise<void> function, through a catch
+// when the awaited import rejects, and nested through another async fn.
+export async function voidStmt(): Promise<string> {
+  await getVoid();
+  return "after-void";
+}
+
+export async function voidReturn(): Promise<void> {
+  return await getVoid();
+}
+
+export async function voidCatch(): Promise<string> {
+  try {
+    await getVoid();
+    return "ok";
+  } catch (e) {
+    return "caught:" + e;
+  }
+}
+
+export async function innerVoid(): Promise<void> {
+  await getVoid();
+}
+
+export async function outerVoid(): Promise<string> {
+  await innerVoid();
+  return "outer-void-done";
+}
+
 // Allocates garbage so the e2e can churn the heap (plus __collect) while
 // a task is suspended, proving the roots registry keeps it alive.
 export function allocSpam(n: i32): void {

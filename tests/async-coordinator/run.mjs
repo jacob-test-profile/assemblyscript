@@ -118,6 +118,7 @@ const useDeferreds = [];
 const seenHandles = [];
 const issueLog = [];
 const memberDeferreds = [];
+const voidDeferreds = [];
 const registry = createJoinRegistry();
 let issuesAtJoin = -1;
 const sentinel = { tag: "handle" };
@@ -134,6 +135,11 @@ const api = await instantiateAsync(bytes, {
     getNumber() {
       const d = deferred();
       numDeferreds.push(d);
+      return d.promise;
+    },
+    getVoid() {
+      const d = deferred();
+      voidDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -417,6 +423,40 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base].resolve("x");
   check((await p) === undefined, "void task must resolve undefined");
   console.log("PASS void task");
+}
+
+// Awaiting a Promise<void> completes the suspension with no value.
+{
+  let base = voidDeferreds.length;
+  let p = api.voidStmt();
+  await tick();
+  check(voidDeferreds.length === base + 1, "voidStmt must suspend on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "after-void", "voidStmt must resolve after-void");
+  console.log("PASS void await as a statement");
+
+  base = voidDeferreds.length;
+  p = api.voidReturn();
+  await tick();
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === undefined, "voidReturn must resolve undefined");
+  console.log("PASS void await as a return value");
+
+  base = voidDeferreds.length;
+  p = api.voidCatch();
+  await tick();
+  voidDeferreds[base].reject(new Error("void-boom"));
+  const caughtVoid = await p;
+  check(caughtVoid === "caught:void-boom", "a rejected void await must land in the catch, got " + caughtVoid);
+  console.log("PASS void await rejection lands in catch");
+
+  base = voidDeferreds.length;
+  p = api.outerVoid();
+  await tick();
+  check(voidDeferreds.length === base + 1, "outerVoid must suspend the inner void task on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "outer-void-done", "nested void await must resolve outer-void-done");
+  console.log("PASS nested void await");
 }
 
 // Spill-pool FIFO queue: each handleRoundtrip holds 2 of the 8 slots, so

@@ -6,8 +6,6 @@
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getArray")
 declare function getArray(): Promise<Array<Promise<i32>>>;
-//@ external("env", "getVoid")
-declare function getVoid(): Promise<void>;
 import { helper } from "./_async-crossfile-helper";
 
 export function takeFn(f: () => Promise<i32>): void {}
@@ -119,11 +117,6 @@ export async function arrowAssignedInClosure(): Promise<i32> {
 export async function fieldAssignAwait(): Promise<void> {
   let w = new W();
   w.x = await getChunk(0);
-}
-
-export async function awaitVoid(): Promise<string> {
-  await getVoid();
-  return "x";
 }
 
 // Member-call await stays loud when the callee is not a transformed
