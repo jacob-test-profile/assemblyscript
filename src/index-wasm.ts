@@ -23,6 +23,7 @@ import {
 import {
   Compiler,
   Options,
+  ModuleKind,
   UncheckedBehavior,
   defaultFeatures
 } from "./compiler";
@@ -238,6 +239,11 @@ export function setPedantic(options: Options, pedantic: bool): void {
 /** Sets the `requireImportExtensions` option. */
 export function setRequireImportExtensions(options: Options, requireImportExtensions: bool): void {
   options.requireImportExtensions = requireImportExtensions;
+}
+
+/** Sets the `module` option. */
+export function setModule(options: Options, module: ModuleKind): void {
+  options.module = module;
 }
 
 export function setDebugInfo(options: Options, debug: bool): void {

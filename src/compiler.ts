@@ -277,6 +277,8 @@ export class Options {
   pedantic: bool = false;
   /** If true, relative imports must include a file extension. */
   requireImportExtensions: bool = false;
+  /** Module system the program is compiled for. */
+  module: ModuleKind = ModuleKind.CommonJS;
   /** Indicates a very low (<64k) memory limit. */
   lowMemoryLimit: u32 = 0;
   /** If true, exports the runtime helpers. */
@@ -363,6 +365,14 @@ export const enum UncheckedBehavior {
   Never = 1,
   /** Always use unchecked operations if possible. */
   Always = 2
+}
+
+/** Module system the program is compiled for. */
+export const enum ModuleKind {
+  /** Classic resolution: extensionless relative imports allowed. */
+  CommonJS = 0,
+  /** NodeNext resolution: relative imports require a file extension. */
+  NodeNext = 1
 }
 
 /** Various constraints in expression compilation. */

@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "target": "es2025",
+    "module": "nodenext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "preserveConstEnums": true,
+    "noLib": true,
+    "allowJs": false,
+    "typeRoots": [
+      "types"
+    ],
+    "types": [
+      "assembly"
+    ],
+    "paths": {
+      "*": [
+        "./assembly/*"
+      ]
+    }
+  }
+}

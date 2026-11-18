@@ -152,6 +152,8 @@ export interface CompilerOptions {
   pedantic?: boolean;
   /** Requires relative imports to include a file extension, e.g. './foo.ts' instead of './foo'. */
   requireImportExtensions?: boolean;
+  /** Specifies the module system the program is compiled for. */
+  module?: "commonjs" | "nodenext";
   /** Prints measuring information on I/O and compile times. */
   stats?: boolean;
   /** Disables terminal colors. */

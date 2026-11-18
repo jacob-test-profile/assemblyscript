@@ -93,7 +93,7 @@ import {
 
   mangleInternalPath
 } from "./ast";
-import { Options } from "./compiler";
+import { Options, ModuleKind } from "./compiler";
 
 /** Represents a dependee. */
 class Dependee {
@@ -2812,7 +2812,9 @@ export class Parser extends DiagnosticEmitter {
     path: StringLiteralExpression
   ): void {
     let options = this.options;
-    if (!options || !options.requireImportExtensions) return;
+    if (!options) return;
+    // Required either by the explicit flag or by the resolved module system.
+    if (!options.requireImportExtensions && options.module != ModuleKind.NodeNext) return;
     let source = this.currentSource;
     // Library sources live under `~lib/`, including the runtime entry file,
     // which is parsed as a user entry so its setup runs first.
