@@ -185,6 +185,9 @@ function buildFunctionMeta(
       return null;
     }
     let valueTypes = resumeInstance.signature.parameterTypes;
+    let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
+    let pendingMember = lookupParent.getMember(pendingName);
+    if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
     // A void site's resume export takes only the state: the awaited
     // value does not exist, so there is no value parameter to describe.
     let site: ValueDesc | null;
@@ -193,23 +196,21 @@ function buildFunctionMeta(
     } else if (valueTypes.length < 2) {
       warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
       return null;
-    }
-    let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
-    let pendingMember = lookupParent.getMember(pendingName);
-    if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
-    let site = describeType(valueTypes[1]);
-    if (!site) {
-      // A nested site may await a wasm-pointer value (array/class): the
-      // inner result is handed to the resume untouched, never lowered
-      // from JS. Any other site keeps the loud skip.
-      if (pendingMember) site = describePointerType(valueTypes[1]);
+    } else {
+      site = describeType(valueTypes[1]);
       if (!site) {
-        warnSkipped(
-          program, prototype,
-          "unsupported awaited type '" + valueTypes[1].toString() + "'",
-          notes
-        );
-        return null;
+        // A nested site may await a wasm-pointer value (array/class): the
+        // inner result is handed to the resume untouched, never lowered
+        // from JS. Any other site keeps the loud skip.
+        if (pendingMember) site = describePointerType(valueTypes[1]);
+        if (!site) {
+          warnSkipped(
+            program, prototype,
+            "unsupported awaited type '" + valueTypes[1].toString() + "'",
+            notes
+          );
+          return null;
+        }
       }
     }
     let innerExportName: string | null = null;
