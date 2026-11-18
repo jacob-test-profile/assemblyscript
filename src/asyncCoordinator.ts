@@ -349,6 +349,24 @@ function buildImportMeta(
   };
 }
 
+/** Finds a transformed async function by qualified name in the same
+ *  file as the outer function, or `null`. */
+function findTransformedByQual(
+  program: Program,
+  outer: FunctionPrototype,
+  innerQual: string
+): FunctionPrototype | null {
+  let file = owningFile(outer);
+  if (!file) return null;
+  for (let prototype of program.transformedAsyncFunctions) {
+    if (qualNameOf(prototype) != innerQual) continue;
+    let innerFile = owningFile(prototype);
+    if (!innerFile || innerFile != file) continue;
+    return prototype;
+  }
+  return null;
+}
+
 /** Builds metadata for a nested inner function by qualified name, or
  *  `null` when it cannot be found or driven. The inner lives in the
  *  same file as the outer function and needs no export. A method inner
@@ -360,31 +378,29 @@ function buildInnerMeta(
   innerQual: string,
   notes: string[]
 ): FunctionMeta | null {
+  let prototype = findTransformedByQual(program, outer, innerQual);
+  if (!prototype) return null;
   let file = owningFile(outer);
   if (!file) return null;
-  for (let prototype of program.transformedAsyncFunctions) {
-    if (qualNameOf(prototype) != innerQual) continue;
-    let innerFile = owningFile(prototype);
-    if (!innerFile || innerFile != file) continue;
-    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
-    return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
-  }
-  return null;
+  let lookupParent: Element = prototype.getBoundClassOrInterface() ? file : prototype.parent;
+  return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
 }
 
 /** Resolves the metadata for every nested inner function the exported
  *  functions await, keyed by file + qualified name. A function whose
  *  inner cannot be found or driven is dropped (with a warning) —
  *  driving it would deliver the inner import's raw value as the inner
- *  result. A longer chain (A awaits B, B's own inner undrivable) is
- *  not dropped here; it fails loudly at runtime in driveNested when
- *  the inner task suspends at the broken site. */
+ *  result. Chains resolve transitively (an inner's own nested await
+ *  gets its inner in the map too); a deeper inner that cannot be
+ *  driven stays out, so the chain fails loudly at runtime in
+ *  driveNested when it reaches that site. */
 function resolveNestedInners(
   program: Program,
   entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }>,
   notes: string[]
 ): { [key: string]: FunctionMeta } {
   let inners: { [key: string]: FunctionMeta } = {};
+  let queue = new Array<{ prototype: FunctionPrototype, meta: FunctionMeta }>();
   for (let i = entries.length - 1; i >= 0; --i) {
     let entry = entries[i];
     let sites = entry.meta.sites;
@@ -397,6 +413,8 @@ function resolveNestedInners(
       let innerMeta = buildInnerMeta(program, entry.prototype, site.innerExportName, notes);
       if (innerMeta) {
         inners[key] = innerMeta;
+        let innerPrototype = findTransformedByQual(program, entry.prototype, site.innerExportName);
+        if (innerPrototype) queue.push({ prototype: innerPrototype, meta: innerMeta });
         continue;
       }
       warnSkipped(program, entry.prototype, "its nested await of '" + site.innerExportName + "' cannot be driven", notes);
@@ -405,6 +423,20 @@ function resolveNestedInners(
       break;
     }
     if (dropped) continue;
+  }
+  for (let q = 0; q < queue.length; ++q) {
+    let entry = queue[q];
+    for (let j = 0, l = entry.meta.sites.length; j < l; ++j) {
+      let site = entry.meta.sites[j];
+      if (!site.nested || !site.innerExportName) continue;
+      let key = entry.meta.fileBase + "\0" + site.innerExportName;
+      if (inners[key]) continue;
+      let innerMeta = buildInnerMeta(program, entry.prototype, site.innerExportName, notes);
+      if (!innerMeta) continue;
+      inners[key] = innerMeta;
+      let innerPrototype = findTransformedByQual(program, entry.prototype, site.innerExportName);
+      if (innerPrototype) queue.push({ prototype: innerPrototype, meta: innerMeta });
+    }
   }
   return inners;
 }

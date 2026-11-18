@@ -238,6 +238,43 @@ export async function nestedMixedLocal(): Promise<i32> {
   return outer(2) + m;
 }
 
+// An async arrow capturing an outer local, read across a suspension.
+export async function arrowCapture(): Promise<i32> {
+  let x: i32 = 1;
+  let f = async (): Promise<i32> => {
+    let m = await getNumber();
+    return x + m + 1;
+  };
+  return await f();
+}
+
+// An async arrow writing to a captured plain local: the write is shared
+// through the enclosing function's state object.
+export async function arrowCaptureWrite(): Promise<i32> {
+  let x: i32 = 10;
+  let f = async (): Promise<i32> => {
+    let m = await getNumber();
+    x += 5;
+    return x + m;
+  };
+  let v = await f();
+  return v + x;
+}
+
+// An async arrow calling another async arrow from the same function.
+export async function arrowCallsArrow(): Promise<i32> {
+  let x: i32 = 2;
+  let g = async (): Promise<i32> => {
+    let m = await getNumber();
+    return x + m;
+  };
+  let f = async (): Promise<i32> => {
+    let v = await g();
+    return v + 1;
+  };
+  return await f();
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
 }

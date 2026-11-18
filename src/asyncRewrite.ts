@@ -87,6 +87,11 @@ export const SPILL_SET = "__async_spill_set";
  *  this-lift pre-pass (`this` is rewritten to this identifier). */
 export const ASYNC_THIS_NAME = "__async_this";
 
+/** State field of an extracted async arrow holding the enclosing
+ *  function's state object, so the arrow can read captured locals
+ *  across suspension. Initialised by the arrow's entry wrapper. */
+export const ASYNC_OUTER_NAME = "__async_outer";
+
 /** State class name for an async function or method, from its qualified
  *  name (the plain function name, or `<Class>_<method>` for methods). */
 export function cpsStateClassName(qualName: string): string {

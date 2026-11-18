@@ -394,6 +394,25 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS nested closures capture outer-closure names");
 }
 
+// Async arrows capturing outer locals, driven through the generated
+// coordinator: the capture reads the enclosing state object.
+{
+  const base = numDeferreds.length;
+  const p1 = api.arrowCapture();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 12, "arrowCapture must resolve (1+10)+1");
+  const p2 = api.arrowCaptureWrite();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 40, "arrowCaptureWrite must resolve 25 + 15");
+  const p3 = api.arrowCallsArrow();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 13, "arrowCallsArrow must resolve 12 + 1");
+  console.log("PASS async arrows capture outer locals");
+}
+
 // A rejection that lands in a catch must drive the catch, not fail the task.
 {
   const base = chunkDeferreds.length;

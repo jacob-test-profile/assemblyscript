@@ -392,7 +392,7 @@ class FreeVarScanner {
 }
 
 /** Whether the token is a compound assignment operator (`+=`, `-=`, ...). */
-function isCompoundAssign(operator: Token): bool {
+export function isCompoundAssign(operator: Token): bool {
   switch (operator) {
     case Token.Plus_Equals:
     case Token.Minus_Equals:
