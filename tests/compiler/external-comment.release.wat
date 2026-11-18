@@ -1,0 +1,13 @@
+(module
+ (type $0 (func))
+ (import "foo" "var" (global $external-comment/var_ i32))
+ (import "external-comment" "bar" (func $external-comment/two))
+ (import "foo" "baz" (func $external-comment/three))
+ (import "external-comment" "foo" (func $external-comment/foo))
+ (memory $0 0)
+ (export "foo" (func $external-comment/foo))
+ (export "two" (func $external-comment/two))
+ (export "three" (func $external-comment/three))
+ (export "var_" (global $external-comment/var_))
+ (export "memory" (memory $0))
+)

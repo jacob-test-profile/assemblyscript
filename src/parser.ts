@@ -58,6 +58,7 @@ import {
   BlockStatement,
   BreakStatement,
   ClassDeclaration,
+  CommentKind,
   ContinueStatement,
   DeclarationStatement,
   DecoratorNode,
@@ -113,6 +114,10 @@ export class Parser extends DiagnosticEmitter {
   donelog: Set<string> = new Set();
   /** Optional handler to intercept comments while tokenizing. */
   onComment: CommentHandler | null = null;
+  /** Decorators synthesized from `//@external` comments preceding the statement being parsed. */
+  pendingExternalDecorators: DecoratorNode[] | null = null;
+  /** Line of the most recent `//@external` comment, or -1 if there is none pending. */
+  pendingExternalLine: i32 = -1;
   /** Current file being parsed. */
   currentSource: Source | null = null;
   /** Map of dependees being depended upon by a source, by path. */
@@ -185,7 +190,12 @@ export class Parser extends DiagnosticEmitter {
 
     // tokenize and parse
     let tn = new Tokenizer(source, this.diagnostics);
-    tn.onComment = this.onComment;
+    let self = this;
+    let onComment = this.onComment;
+    tn.onComment = (kind, text, range) => {
+      self.handleExternalComment(kind, text, range);
+      if (onComment) onComment(kind, text, range);
+    };
     let statements = source.statements;
     while (!tn.skip(Token.EndOfFile)) {
       let statement = this.parseTopLevelStatement(tn, null);
@@ -202,6 +212,11 @@ export class Parser extends DiagnosticEmitter {
     tn: Tokenizer,
     namespace: NamespaceDeclaration | null = null
   ): Statement | null {
+    // a `//@external` comment seen while parsing a previous statement
+    // does not apply to this one
+    this.pendingExternalDecorators = null;
+    this.pendingExternalLine = -1;
+
     let flags = namespace ? namespace.flags & CommonFlags.Ambient : CommonFlags.None;
     let startPos = -1;
 
@@ -259,6 +274,29 @@ export class Parser extends DiagnosticEmitter {
     // handle declarations
     let first = tn.peek();
     if (startPos < 0) startPos = tn.nextTokenPos;
+
+    // attach a preceding `//@external` comment, if any, as a decorator
+    let pendingExternalLine = this.pendingExternalLine;
+    let pendingExternalDecorators = this.takePendingExternalDecorators();
+    this.pendingExternalLine = -1;
+    if (pendingExternalDecorators) {
+      let source = assert(this.currentSource);
+      if (externalCommentLine(source, startPos) > pendingExternalLine + 1) {
+        for (let i = 0, k = pendingExternalDecorators.length; i < k; ++i) {
+          this.error(
+            DiagnosticCode.A_external_comment_must_immediately_precede_the_declaration_it_applies_to,
+            pendingExternalDecorators[i].range
+          );
+        }
+      } else if (!decorators) {
+        decorators = pendingExternalDecorators;
+      } else {
+        for (let i = 0, k = pendingExternalDecorators.length; i < k; ++i) {
+          decorators.push(pendingExternalDecorators[i]);
+        }
+      }
+    }
+
     switch (first) {
       case Token.Const: {
         tn.next();
@@ -927,6 +965,167 @@ export class Parser extends DiagnosticEmitter {
   }
 
   // statements
+
+  /** Takes the decorators synthesized from preceding `//@external` comments, if any. */
+  private takePendingExternalDecorators(): DecoratorNode[] | null {
+    let decorators = this.pendingExternalDecorators;
+    this.pendingExternalDecorators = null;
+    return decorators;
+  }
+
+  /** Handles a comment seen while tokenizing, synthesizing a decorator for `//@external(...)`. */
+  private handleExternalComment(kind: CommentKind, text: string, range: Range): void {
+    if (kind != CommentKind.Line) return;
+    let decorator = this.parseExternalComment(text, range);
+    if (!decorator) return;
+    // the tokenizer re-tokenizes speculatively (peek/skip restore),
+    // so the same comment is delivered more than once
+    let pending = this.pendingExternalDecorators;
+    if (pending) {
+      for (let i = 0, k = pending.length; i < k; ++i) {
+        let pendingRange = pending[i].range;
+        if (
+          pendingRange.start == decorator.range.start &&
+          pendingRange.end == decorator.range.end
+        ) return;
+      }
+      pending.push(decorator);
+    } else {
+      this.pendingExternalDecorators = [decorator];
+    }
+    this.pendingExternalLine = externalCommentLine(range.source, range.start);
+  }
+
+  /** Parses a `//@external` comment into a decorator, or returns null if the comment is not one. */
+  private parseExternalComment(text: string, range: Range): DecoratorNode | null {
+    let end = text.length;
+    while (end > 0) {
+      let c = text.charCodeAt(end - 1);
+      if (c == CharCode.LineFeed || c == CharCode.CarriageReturn) --end;
+      else break;
+    }
+    let pos = 2; // skip '//'
+    pos = skipExternalCommentWhitespace(text, pos, end);
+    if (!hasExternalCommentPrefix(text, pos)) return null;
+    let atPos = pos;
+    pos += 9; // skip '@external'
+    if (pos < end) {
+      let c = text.charCodeAt(pos);
+      if (c != CharCode.Space && c != CharCode.Tab && c != CharCode.OpenParen) return null;
+    }
+    pos = skipExternalCommentWhitespace(text, pos, end);
+    let args: Expression[] | null = null;
+    if (pos < end) {
+      if (text.charCodeAt(pos) != CharCode.OpenParen) return null;
+      args = this.parseExternalCommentArguments(text, pos, end, range);
+      if (!args) return null;
+    }
+    let decoratorRange = new Range(range.start, range.start + end);
+    decoratorRange.source = range.source;
+    let nameRange = new Range(range.start + atPos, range.start + atPos + 9);
+    nameRange.source = range.source;
+    return Node.createDecorator(
+      Node.createIdentifierExpression("external", nameRange),
+      args,
+      decoratorRange
+    );
+  }
+
+  /** Parses the `(...)` arguments of a `//@external` comment into string literal expressions. */
+  private parseExternalCommentArguments(
+    text: string,
+    pos: i32,
+    end: i32,
+    range: Range
+  ): Expression[] | null {
+    let base = range.start;
+    let args = new Array<Expression>();
+    ++pos; // skip '('
+    pos = skipExternalCommentWhitespace(text, pos, end);
+    if (pos < end && text.charCodeAt(pos) == CharCode.CloseParen) {
+      ++pos;
+    } else {
+      while (true) {
+        pos = skipExternalCommentWhitespace(text, pos, end);
+        if (pos >= end) {
+          this.error(
+            DiagnosticCode.String_literal_expected,
+            externalCommentRange(range, base + pos, base + pos)
+          );
+          return null;
+        }
+        let quote = text.charCodeAt(pos);
+        if (quote != CharCode.DoubleQuote && quote != CharCode.SingleQuote) {
+          this.error(
+            DiagnosticCode.String_literal_expected,
+            externalCommentRange(range, base + pos, base + pos + 1)
+          );
+          return null;
+        }
+        let valueStart = pos + 1;
+        let cur = valueStart;
+        while (cur < end) {
+          let c = text.charCodeAt(cur);
+          if (c == CharCode.Backslash) {
+            cur += 2;
+            continue;
+          }
+          if (c == quote) break;
+          ++cur;
+        }
+        if (cur >= end || text.charCodeAt(cur) != quote) {
+          this.error(
+            DiagnosticCode.String_literal_expected,
+            externalCommentRange(range, base + pos, base + cur)
+          );
+          return null;
+        }
+        args.push(Node.createStringLiteralExpression(
+          decodeExternalCommentString(text.substring(valueStart, cur)),
+          externalCommentRange(range, base + pos, base + cur + 1)
+        ));
+        pos = cur + 1;
+        pos = skipExternalCommentWhitespace(text, pos, end);
+        if (pos >= end) {
+          this.error(
+            DiagnosticCode._0_expected,
+            externalCommentRange(range, base + pos, base + pos), ")"
+          );
+          return null;
+        }
+        let c = text.charCodeAt(pos);
+        if (c == CharCode.Comma) {
+          ++pos;
+          continue;
+        }
+        if (c == CharCode.CloseParen) {
+          ++pos;
+          break;
+        }
+        this.error(
+          DiagnosticCode.Unexpected_token,
+          externalCommentRange(range, base + pos, base + pos + 1)
+        );
+        return null;
+      }
+    }
+    pos = skipExternalCommentWhitespace(text, pos, end);
+    if (pos < end) {
+      // a trailing note is allowed, anything else is not
+      if (
+        text.charCodeAt(pos) != CharCode.Slash ||
+        pos + 1 >= end ||
+        text.charCodeAt(pos + 1) != CharCode.Slash
+      ) {
+        this.error(
+          DiagnosticCode.Unexpected_token,
+          externalCommentRange(range, base + pos, base + end)
+        );
+        return null;
+      }
+    }
+    return args;
+  }
 
   parseDecorator(
     tn: Tokenizer
@@ -4603,6 +4802,69 @@ function determinePrecedence(kind: Token): Precedence {
     case Token.Exclamation: return Precedence.MemberAccess;
   }
   return Precedence.None;
+}
+
+/** Skips spaces and tabs within a `//@external` comment. */
+function skipExternalCommentWhitespace(text: string, pos: i32, end: i32): i32 {
+  while (pos < end) {
+    let c = text.charCodeAt(pos);
+    if (c == CharCode.Space || c == CharCode.Tab) ++pos;
+    else break;
+  }
+  return pos;
+}
+
+/** Tests if the text at the given position starts with `@external`. */
+function hasExternalCommentPrefix(text: string, pos: i32): bool {
+  let prefix = "@external";
+  if (pos + prefix.length > text.length) return false;
+  for (let i = 0; i < prefix.length; ++i) {
+    if (text.charCodeAt(pos + i) != prefix.charCodeAt(i)) return false;
+  }
+  return true;
+}
+
+/** Decodes backslash escapes in a `//@external` string argument. */
+function decodeExternalCommentString(raw: string): string {
+  let backslash = raw.indexOf("\\");
+  if (backslash < 0) return raw;
+  let out = raw.substring(0, backslash);
+  let pos = backslash;
+  let end = raw.length;
+  while (pos < end) {
+    let next = pos + 1 < end ? raw.charAt(pos + 1) : "";
+    if (next == "n") out += "\n";
+    else if (next == "r") out += "\r";
+    else if (next == "t") out += "\t";
+    else if (next == "0") out += "\0";
+    else out += next;
+    pos += 2;
+    let nextBackslash = raw.indexOf("\\", pos);
+    if (nextBackslash < 0) {
+      out += raw.substring(pos);
+      break;
+    }
+    out += raw.substring(pos, nextBackslash);
+    pos = nextBackslash;
+  }
+  return out;
+}
+
+/** Creates a range within a `//@external` comment, for error reporting. */
+function externalCommentRange(range: Range, start: i32, end: i32): Range {
+  let subRange = new Range(start, end);
+  subRange.source = range.source;
+  return subRange;
+}
+
+/** Returns the zero-based line number of the given offset in the given source. */
+function externalCommentLine(source: Source, offset: i32): i32 {
+  let text = source.text;
+  let line = 0;
+  for (let i = 0; i < offset; ++i) {
+    if (text.charCodeAt(i) == CharCode.LineFeed) ++line;
+  }
+  return line;
 }
 
 /** Checks if the type alias of the given name and type is circular. */
