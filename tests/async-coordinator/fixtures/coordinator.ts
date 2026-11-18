@@ -202,6 +202,91 @@ export async function closureCounter(): Promise<i32> {
   return a * 10 + b;
 }
 
+// Compound assignment with await: the read happens before the suspension.
+export async function compoundStr(): Promise<string> {
+  let out = "";
+  out += await getChunk(0);
+  out += await getChunk(1);
+  return out;
+}
+
+export async function compoundNum(): Promise<i32> {
+  let n = 10;
+  n += await getNumber();
+  n -= await getNumber();
+  n *= await getNumber();
+  n /= await getNumber();
+  n %= await getNumber();
+  n <<= await getNumber();
+  n &= await getNumber();
+  n |= await getNumber();
+  n ^= await getNumber();
+  n >>= await getNumber();
+  return n;
+}
+
+class Box {
+  s: string = "";
+  n: i32 = 0;
+  chunks: Array<string> = new Array<string>();
+}
+
+// Field-assignment await and compound assignment to a field.
+export async function fieldAssign(): Promise<string> {
+  let w = new Box();
+  w.s = await getChunk(2);
+  w.n = await getNumber();
+  return w.s + w.n.toString();
+}
+
+export async function fieldCompound(): Promise<string> {
+  let w = new Box();
+  w.s = "x";
+  w.s += await getChunk(0);
+  w.n = 1;
+  w.n += await getNumber();
+  return w.s + w.n.toString();
+}
+
+// A join awaited into a field.
+export async function fieldJoin(): Promise<string> {
+  let w = new Box();
+  w.chunks = await Promise.all([getChunk(0), getChunk(1)]);
+  return w.chunks[0] + w.chunks[1];
+}
+
+// Element-assignment await; the index side effect happens before the suspension.
+export async function elemAssign(): Promise<string> {
+  let arr = new Array<string>(2);
+  let i = 0;
+  arr[i++] = await getChunk(0);
+  arr[i] = await getChunk(1);
+  return arr[0] + arr[1] + i.toString();
+}
+
+// The awaited call's argument observes the index side effect: j is 1 here.
+export async function indexOrder(): Promise<i32> {
+  let arr = new Array<string>(2);
+  let j = 0;
+  arr[j++] = await getChunk(j);
+  return j;
+}
+
+export async function elemCompound(): Promise<i32> {
+  let arr = new Array<i32>(1);
+  arr[0] = 100;
+  arr[0] += await getNumber();
+  return arr[0];
+}
+
+// A stored promise awaited into a field.
+export async function storedField(): Promise<string> {
+  let w = new Box();
+  let p = getChunk(3);
+  w.s = await p;
+  return w.s;
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
 }

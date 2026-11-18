@@ -176,6 +176,105 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS loop+await through the generated coordinator");
 }
 
+// Compound assignment with await, field/element assignment await, and a
+// join awaited into a field — all through the generated coordinator.
+{
+  // compoundStr: "" += "AAA" += "BBB".
+  let base = chunkDeferreds.length;
+  let p = api.compoundStr();
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "0", "compoundStr must issue chunk 0 first");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "1", "compoundStr must issue chunk 1 second");
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "compoundStr must resolve AAABBB");
+  console.log("PASS compound assignment with await on a string");
+
+  // compoundNum: 10, then +=1 -=2 *=3 /=2 %=3 <<=1 &=7 |=8 ^=3 >>=1 == 4.
+  base = numDeferreds.length;
+  p = api.compoundNum();
+  const nums = [1, 2, 3, 2, 3, 1, 7, 8, 3, 1];
+  for (let i = 0; i < nums.length; i++) {
+    await tick();
+    check(numDeferreds.length === base + i + 1, "compoundNum must issue await " + i);
+    numDeferreds[base + i].resolve(nums[i]);
+  }
+  check((await p) === 4, "compoundNum must resolve 4");
+  console.log("PASS compound assignment with await, all eleven operators");
+
+  // fieldAssign: w.s = "CCC", w.n = 5.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.fieldAssign();
+  await tick();
+  chunkDeferreds[base].resolve("CCC");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "fieldAssign must issue getNumber after the field await");
+  numDeferreds[nBase].resolve(5);
+  check((await p) === "CCC5", "fieldAssign must resolve CCC5");
+  console.log("PASS field-assignment await");
+
+  // fieldCompound: "x" + "AAA", 1 + 4.
+  base = chunkDeferreds.length;
+  nBase = numDeferreds.length;
+  p = api.fieldCompound();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  numDeferreds[nBase].resolve(4);
+  check((await p) === "xAAA5", "fieldCompound must resolve xAAA5");
+  console.log("PASS compound assignment with await on a field");
+
+  // fieldJoin: Promise.all awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.fieldJoin();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "fieldJoin must issue both members");
+  chunkDeferreds[base + 1].resolve("BBB");
+  chunkDeferreds[base].resolve("AAA");
+  check((await p) === "AAABBB", "fieldJoin must resolve AAABBB");
+  console.log("PASS join awaited into a field");
+
+  // elemAssign: arr[0] = "AAA", arr[1] = "BBB", i ends at 1.
+  base = chunkDeferreds.length;
+  p = api.elemAssign();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB1", "elemAssign must resolve AAABBB1");
+  console.log("PASS element-assignment await");
+
+  // indexOrder: the index side effect runs before the suspension, so the
+  // awaited call observes j == 1.
+  base = chunkDeferreds.length;
+  const cBase = chunkCalls.length;
+  p = api.indexOrder();
+  await tick();
+  check(chunkCalls[cBase] === 1, "indexOrder must call getChunk with j==1, got " + chunkCalls[cBase]);
+  chunkDeferreds[base].resolve("BBB");
+  check((await p) === 1, "indexOrder must resolve 1");
+  console.log("PASS element index evaluated before suspension");
+
+  // elemCompound: 100 + 5.
+  nBase = numDeferreds.length;
+  p = api.elemCompound();
+  await tick();
+  numDeferreds[nBase].resolve(5);
+  check((await p) === 105, "elemCompound must resolve 105");
+  console.log("PASS compound assignment with await on an element");
+
+  // storedField: the stored promise is awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.storedField();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedField must issue exactly once, at bind time");
+  chunkDeferreds[base].resolve("DDD");
+  check((await p) === "DDD", "storedField must resolve DDD");
+  console.log("PASS stored promise awaited into a field");
+}
+
 // Heap churn + __collect mid-suspension: the state object must survive.
 {
   const before = chunkDeferreds.length;
@@ -653,6 +752,12 @@ const api = await instantiateAsync(bytes, {
     await tick();
     methodNums[2].resolve(7);
     check((await p) === 130, "Counter.viaArrow(1) must give 130");
+    p = c.setField(0);
+    await tick();
+    methodNums[3].resolve(10);
+    await tick();
+    methodNums[4].resolve(5);
+    check((await p) === 15, "Counter.setField must give 15 (10, then += 5)");
     c.dispose();
     console.log("PASS basic async method, known values 12/119/130");
   }

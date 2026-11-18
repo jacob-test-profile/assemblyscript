@@ -1,7 +1,7 @@
 // Diagnostic fixture: one function per loud rejection that had no
 // pinned fixture (throw-await, try-in-switch, member-call await,
 // cross-file await, join member/argument await, arrow misuse,
-// field-assignment await, generic-class methods).
+// generic-class methods).
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getArray")
@@ -114,11 +114,6 @@ export async function arrowAssignedInClosure(): Promise<i32> {
     return x;
   };
   return f(1);
-}
-
-export async function fieldAssignAwait(): Promise<void> {
-  let w = new W();
-  w.x = await getChunk(0);
 }
 
 export async function awaitVoid(): Promise<string> {
