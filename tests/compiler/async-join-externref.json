@@ -1,0 +1,1 @@
+{"features":["reference-types"],"stderr":["AS100: Not implemented: 'Promise.all' members of type 'externref' are not yet supported","AS235: Only variables, functions and enums become WebAssembly module exports."]}

@@ -22,7 +22,6 @@ import {
   IntegerLiteralExpression,
   FloatLiteralExpression,
   StringLiteralExpression,
-  TrueExpression,
   FalseExpression,
   NullExpression,
   NewExpression,
@@ -45,18 +44,13 @@ import {
   SwitchStatement,
   TryStatement,
   VariableStatement,
-  VariableDeclaration,
   IfStatement,
   WhileStatement,
   ForStatement,
   DoStatement,
-  ForOfStatement,
-  ThrowStatement,
   FunctionExpression,
   ClassExpression,
   AwaitExpression,
-  TypeParameterNode,
-  ParameterNode
 } from "./ast";
 
 import {
@@ -571,10 +565,10 @@ export function rewriteStatement(node: Statement, ctx: AsyncRewriter): Statement
       let ifTrue = rewriteStatement(stmt.ifTrue, ctx);
       if (!ifTrue) return null;
       stmt.ifTrue = ifTrue;
-      if (stmt.ifElse) {
-        let ifElse = rewriteStatement(stmt.ifElse, ctx);
-        if (!ifElse) return null;
-        stmt.ifElse = ifElse;
+      if (stmt.ifFalse) {
+        let ifFalse = rewriteStatement(stmt.ifFalse, ctx);
+        if (!ifFalse) return null;
+        stmt.ifFalse = ifFalse;
       }
       return stmt;
     }
@@ -737,7 +731,7 @@ export function containsAwait(node: Node): bool {
   if (node instanceof IfStatement) {
     return containsAwait(node.condition)
       || containsAwait(node.ifTrue)
-      || (node.ifElse ? containsAwait(node.ifElse) : false);
+      || (node.ifFalse ? containsAwait(node.ifFalse) : false);
   }
   if (node instanceof WhileStatement) {
     return containsAwait(node.condition) || containsAwait(node.body);
@@ -896,7 +890,7 @@ function validateStatement(node: Statement, fail: AsyncFail): bool {
       let stmt = <IfStatement>node;
       return validateExpression(stmt.condition, fail)
         && validateStatement(stmt.ifTrue, fail)
-        && (!stmt.ifElse || validateStatement(stmt.ifElse, fail));
+        && (!stmt.ifFalse || validateStatement(stmt.ifFalse, fail));
     }
     case NodeKind.While: {
       let stmt = <WhileStatement>node;

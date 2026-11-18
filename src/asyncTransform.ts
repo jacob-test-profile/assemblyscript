@@ -21,7 +21,7 @@ import {
   SwitchCase,
   VariableStatement,
   VariableDeclaration,
-  VariableLikeDeclarationStatement,
+  DeclarationStatement,
   IfStatement,
   WhileStatement,
   ForStatement,
@@ -54,8 +54,10 @@ import {
   AssertionExpression,
   TypeName,
   ArrowKind,
+  FalseExpression,
   TrueExpression,
   NullExpression,
+  NamespaceDeclaration,
   ThisExpression,
   SourceKind
 } from "./ast";
@@ -66,7 +68,6 @@ import {
 } from "./diagnostics";
 
 import {
-  CommonNames,
   CommonFlags
 } from "./common";
 
@@ -87,7 +88,6 @@ import {
   Element,
   ElementKind,
   Namespace,
-  NamespaceDeclaration,
   ClassPrototype
 } from "./program";
 
@@ -98,10 +98,29 @@ import {
 import {
   ReportMode
 } from "./resolver";
+import {
+  JOIN_IMPORT_NAME,
+  AGGREGATE_ERROR_EMPTY,
+  joinPolicyOfCall,
+  joinPolicyCode,
+  joinResultTypeNode,
+  joinValsField,
+  joinStatusField,
+  joinReasonsField,
+  joinIdxField,
+  joinHasValueField,
+  joinReqsField,
+  joinMembersField,
+  joinStoreName,
+  joinErrorName,
+  joinDoneName,
+  buildJoinStore,
+  buildJoinError,
+  buildJoinDone
+} from "./asyncJoin";
 
 import {
   AsyncScope,
-  AsyncLocalBinding,
   AsyncFail,
   ident,
   thisProp,
@@ -158,7 +177,15 @@ class AwaitSite {
     /** Spill slot field, when the awaited value is an externref. */
     public slotField: string,
     /** Source range of the await expression. */
-    public range: Range
+    public range: Range,
+    /** Whether this site is a join (`await Promise.<policy>(...)`). */
+    public isJoin: bool = false,
+    /** Combinator name for a join site, else "". */
+    public joinPolicy: string = "",
+    /** Member type for a join site, else null. */
+    public memberType: Type | null = null,
+    /** Type node denoting the member type for a join site, else null. */
+    public memberTypeNode: TypeNode | null = null,
   ) {}
 }
 
@@ -196,13 +223,42 @@ class Segment {
 class SegmentEnd {
   constructor(
     /** "jump" sets state and re-dispatches, "redispatch" only re-dispatches,
-     *  "suspend" suspends after the call, "terminal" completes. */
+     *  "suspend" suspends after the call, "terminal" completes, "fail"
+     *  fails the task with state -2. */
     public kind: string,
     public next: i32 = NO_TARGET,
     /** Await site id, for "suspend" ends. */
     public site: i32 = -1
   ) {}
 }
+/** Outcome of emitting a join. */
+const enum JoinEmitOutcome {
+  /** The join suspends; the caller continues in the resume segment. */
+  Suspended,
+  /** The result was produced inline; the current segment stays open. */
+  CompletedInline,
+  /** The task was failed inline; the current segment is closed. */
+  FailedInline
+}
+
+/** A validated join awaiting emission. */
+class PreparedJoin {
+  constructor(
+    public site: AwaitSite,
+    public policy: string,
+    /** "literal" or "dynamic". */
+    public memberKind: string,
+    /** Member count for literal joins, -1 for dynamic joins. */
+    public memberCount: i32,
+    /** Literal member expressions, rewritten; empty for dynamic joins. */
+    public members: Expression[],
+    /** Rewritten dynamic member-array expression; null for literal joins. */
+    public membersExpr: Expression | null,
+    public resultType: Type,
+    public resultTypeNode: TypeNode
+  ) {}
+}
+
 
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
@@ -702,6 +758,27 @@ class AsyncFunctionTransform {
       let name = declaration.name.text;
       let initializer = declaration.initializer;
       if (initializer && unwrapParens(initializer).kind == NodeKind.Await) {
+        let joinCall = this.joinCallOf(awaitExpr);
+        if (joinCall) {
+          let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, declaration.type);
+          if (!join) return;
+          let type: Type | null = join.resultType;
+          if (declaration.type) {
+            let annotated = this.resolver.resolveType(declaration.type, this.flow, this.parent, null, ReportMode.Swallow);
+            if (!annotated) {
+              this.punted = true;
+              return;
+            }
+            type = annotated;
+          }
+          let outcome = this.declareLocal(name, declaration.type, type, declaration.name.range, declaration, false);
+          if (outcome != TransformOutcome.Transformed) return;
+          let status = this.emitJoin(join, (value: Expression): void => {
+            this.emitLocalAssign(name, value, declaration.range);
+          });
+          if (status == JoinEmitOutcome.FailedInline) return;
+          continue;
+        }
         let awaitExpr = <AwaitExpression>unwrapParens(initializer);
         let site = this.transformAwait(awaitExpr, true);
         if (!site) return;
@@ -749,7 +826,16 @@ class AsyncFunctionTransform {
   private transformExpressionStatement(stmt: ExpressionStatement): void {
     let expr = unwrapParens(stmt.expression);
     if (expr.kind == NodeKind.Await) {
-      let site = this.transformAwait(<AwaitExpression>expr, false);
+      let awaitExpr = <AwaitExpression>expr;
+      let joinCall = this.joinCallOf(awaitExpr);
+      if (joinCall) {
+        let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), false, awaitExpr.range, null);
+        if (!join) return;
+        let status = this.emitJoin(join, (_value: Expression): void => {});
+        if (status == JoinEmitOutcome.FailedInline) return;
+        return;
+      }
+      let site = this.transformAwait(awaitExpr, false);
       if (!site) return;
       this.suspendCurrent(site);
       return;
@@ -766,7 +852,23 @@ class AsyncFunctionTransform {
         return;
       }
       let name = (<IdentifierExpression>left).text;
-      let site = this.transformAwait(<AwaitExpression>unwrapParens(binary.right), true);
+      let awaitExpr = <AwaitExpression>unwrapParens(binary.right);
+      let joinCall = this.joinCallOf(awaitExpr);
+      if (joinCall) {
+        let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, this.localTypeNode(name));
+        if (!join) return;
+        let binding = this.scope.lookup(name);
+        let status = this.emitJoin(join, (value: Expression): void => {
+          if (binding) {
+            this.emitLocalAssign(name, value, stmt.range);
+          } else {
+            this.emit(exprStmt(assignExpr(ident(name, left.range), value, stmt.range)));
+          }
+        });
+        if (status == JoinEmitOutcome.FailedInline) return;
+        return;
+      }
+      let site = this.transformAwait(awaitExpr, true);
       if (!site) return;
       this.suspendCurrent(site);
       let binding = this.scope.lookup(name);
@@ -787,7 +889,21 @@ class AsyncFunctionTransform {
   private transformReturn(stmt: ReturnStatement): void {
     let value = stmt.value;
     if (value && unwrapParens(value).kind == NodeKind.Await) {
-      let site = this.transformAwait(<AwaitExpression>unwrapParens(value), true);
+      let awaitExpr = <AwaitExpression>unwrapParens(value);
+      let joinCall = this.joinCallOf(awaitExpr);
+      if (joinCall) {
+        let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), true, awaitExpr.range, this.returnTypeNode);
+        if (!join) return;
+        let status = this.emitJoin(join, (result: Expression): void => {
+          if (this.returnType.kind != TypeKind.Void) {
+            this.emit(exprStmt(assignExpr(this.resultAccess(stmt.range), result, stmt.range)));
+          }
+        });
+        if (status == JoinEmitOutcome.FailedInline) return;
+        this.emitTerminal(stmt.range);
+        return;
+      }
+      let site = this.transformAwait(awaitExpr, true);
       if (!site) return;
       this.suspendCurrent(site);
       this.emitReturnAssignment(site, stmt.range);
@@ -823,7 +939,7 @@ class AsyncFunctionTransform {
     }
     let thenEntry = this.createSegment();
     let elseEntry: i32;
-    if (stmt.ifElse) {
+    if (stmt.ifFalse) {
       elseEntry = this.createSegment();
     } else {
       elseEntry = join;
@@ -841,10 +957,10 @@ class AsyncFunctionTransform {
     this.transformList(asStatements(stmt.ifTrue), join, breakTarget, continueTarget);
     this.popScope();
     if (this.failed || this.punted) return;
-    if (stmt.ifElse) {
+    if (stmt.ifFalse) {
       this.setCurrent(elseEntry);
       this.pushScope();
-      this.transformList(asStatements(stmt.ifElse), join, breakTarget, continueTarget);
+      this.transformList(asStatements(stmt.ifFalse), join, breakTarget, continueTarget);
       this.popScope();
       if (this.failed || this.punted) return;
     }
@@ -1012,14 +1128,6 @@ class AsyncFunctionTransform {
     let call = <CallExpression>operand;
     let callee = call.expression;
     if (callee.kind == NodeKind.PropertyAccess) {
-      let access = <PropertyAccessExpression>callee;
-      if (access.expression.kind == NodeKind.Identifier && (<IdentifierExpression>access.expression).text == CommonNames.Promise) {
-        let policy = access.property.text;
-        if (policy == "all" || policy == "race" || policy == "allSettled" || policy == "any") {
-          this.fail(`'await' of 'Promise.${policy}' is not yet supported (join primitive, chunk 5)`, node.range);
-          return null;
-        }
-      }
       this.fail("'await' of a member call is not yet supported", node.range);
       return null;
     }
@@ -1079,6 +1187,513 @@ class AsyncFunctionTransform {
     }
     return site;
   }
+  // === Join =====================================================================================
+
+  /** Returns the join call when the await operand is `await Promise.<policy>(...)`. */
+  private joinCallOf(node: AwaitExpression): CallExpression | null {
+    let operand = unwrapParens(node.operand);
+    if (operand.kind != NodeKind.Call) return null;
+    let call = <CallExpression>operand;
+    return joinPolicyOfCall(call) ? call : null;
+  }
+
+  /** Resolves a type node, punting when it does not resolve. */
+  private resolveNode(node: TypeNode, range: Range): Type | null {
+    let type = this.resolver.resolveType(node, assert(this.flow), this.parent, null, ReportMode.Swallow);
+    if (!type) this.punted = true;
+    return type;
+  }
+
+  /** Returns the result type node of a lifted local, if it has one. */
+  private localTypeNode(name: string): TypeNode | null {
+    let binding = this.scope.lookup(name);
+    if (!binding || binding.spilled) return null;
+    for (let i = 0, k = this.fields.length; i < k; ++i) {
+      if (this.fields[i].name == binding.field) return this.fields[i].typeNode;
+    }
+    return null;
+  }
+
+  /** Validates one join member expression and returns its unwrapped type. */
+  private validateJoinMember(element: Expression, policy: string): Type | null {
+    if (containsAwait(element)) {
+      this.fail("'await' inside a join member is not yet supported", element.range);
+      return null;
+    }
+    if (element.kind == NodeKind.Call) {
+      let call = <CallExpression>element;
+      if (joinPolicyOfCall(call)) {
+        this.fail(`'Promise.${policy}' members cannot be nested joins`, element.range);
+        return null;
+      }
+      if (call.expression.kind != NodeKind.Identifier) {
+        this.fail(`'Promise.${policy}' members must be direct calls to suspending imports or Promise values`, element.range);
+        return null;
+      }
+    } else if (element.kind != NodeKind.Identifier && element.kind != NodeKind.ElementAccess) {
+      this.fail(`'Promise.${policy}' members must be direct calls to suspending imports or Promise values`, element.range);
+      return null;
+    }
+    this.checkDirectAsyncCalls(element);
+    if (this.failed) return null;
+    let flow = assert(this.flow);
+    let type = this.resolver.resolveExpression(element, flow, Type.auto, ReportMode.Swallow);
+    if (!type) {
+      this.punted = true;
+      return null;
+    }
+    let unwrapped = this.resolver.unwrapPromiseType(type);
+    if (!unwrapped) {
+      this.fail(`'Promise.${policy}' members must be promises`, element.range);
+      return null;
+    }
+    if (element.kind == NodeKind.Call) {
+      let calleeName = (<IdentifierExpression>(<CallExpression>element).expression).text;
+      let found = flow.lookup(calleeName);
+      if (!found) {
+        this.punted = true;
+        return null;
+      }
+      if (found.kind != ElementKind.FunctionPrototype || !(<FunctionPrototype>found).is(CommonFlags.Ambient)) {
+        this.fail(`'Promise.${policy}' members must be direct calls to suspending imports or Promise values`, element.range);
+        return null;
+      }
+    }
+    return this.validateJoinMemberType(unwrapped, policy, element.range);
+  }
+
+  /** Validates a join member type against the core's marshalling bar. */
+  private validateJoinMemberType(type: Type, policy: string, range: Range): Type | null {
+    if (type.kind == TypeKind.Void) {
+      this.fail(`'Promise.${policy}' members must not be void`, range);
+      return null;
+    }
+    if (this.resolver.unwrapPromiseType(type)) {
+      this.fail(`'Promise.${policy}' members must not be promises of promises`, range);
+      return null;
+    }
+    if (type.kind == TypeKind.Extern) {
+      this.fail(`'Promise.${policy}' members of type 'externref' are not yet supported`, range);
+      return null;
+    }
+    let node = typeToTypeNode(type, range);
+    if (!node || !zeroValue(type, node, range)) {
+      this.fail(`Async functions cannot await values of type '${type.toString()}' yet`, range);
+      return null;
+    }
+    return type;
+  }
+
+  /** Extracts the member type node from a result type node, or `null`. */
+  private memberTypeNodeFromResult(policy: string, resultNode: TypeNode): TypeNode | null {
+    if (policy == "race" || policy == "any") return resultNode;
+    if (resultNode.kind != NodeKind.NamedType) return null;
+    let named = <NamedTypeNode>resultNode;
+    if (named.name.next) return null;
+    if (named.name.identifier.text != "Array") return null;
+    let typeArguments = named.typeArguments;
+    if (!typeArguments || typeArguments.length != 1) return null;
+    if (policy == "all") return typeArguments[0];
+    let inner = typeArguments[0];
+    if (inner.kind != NodeKind.NamedType) return null;
+    let innerNamed = <NamedTypeNode>inner;
+    if (innerNamed.name.next) return null;
+    if (innerNamed.name.identifier.text != "PromiseSettledResult") return null;
+    let innerArguments = innerNamed.typeArguments;
+    if (!innerArguments || innerArguments.length != 1) return null;
+    return innerArguments[0];
+  }
+
+  /** Validates a join call and records its site and state fields. */
+  private prepareJoin(
+    call: CallExpression,
+    policy: string,
+    used: bool,
+    range: Range,
+    expectedResultNode: TypeNode | null
+  ): PreparedJoin | null {
+    let args = call.args;
+    if (args.length != 1) {
+      this.fail(`'Promise.${policy}' expects exactly one argument`, call.range);
+      return null;
+    }
+    let flow = assert(this.flow);
+    let arg = unwrapParens(args[0]);
+    let memberType: Type | null = null;
+    let memberKind = "";
+    let memberCount = -1;
+    let members = new Array<Expression>();
+    let membersExpr: Expression | null = null;
+    if (arg instanceof ArrayLiteralExpression) {
+      memberKind = "literal";
+      let elements = arg.elementExpressions;
+      memberCount = elements.length;
+      for (let i = 0, k = elements.length; i < k; ++i) {
+        let element = unwrapParens(elements[i]);
+        let member = this.validateJoinMember(element, policy);
+        if (!member) return null;
+        if (!memberType) {
+          memberType = member;
+        } else if (member.toString() != memberType.toString()) {
+          this.fail(`'Promise.${policy}' members must all have the same type`, element.range);
+          return null;
+        }
+        let rewritten = rewriteExpression(element, this.rewriter());
+        if (!rewritten) {
+          this.failed = true;
+          return null;
+        }
+        members.push(rewritten);
+      }
+    } else {
+      memberKind = "dynamic";
+      if (containsAwait(arg)) {
+        this.fail("'await' inside a join argument is not yet supported", arg.range);
+        return null;
+      }
+      this.checkDirectAsyncCalls(arg);
+      if (this.failed) return null;
+      let argType = this.resolver.resolveExpression(arg, flow, Type.auto, ReportMode.Swallow);
+      if (!argType) {
+        this.punted = true;
+        return null;
+      }
+      let argClass = argType.getClass();
+      let typeArguments = argClass ? argClass.typeArguments : null;
+      if (!argClass || argClass.prototype.name != "Array" || !typeArguments || typeArguments.length != 1) {
+        this.fail(`'Promise.${policy}' expects an argument of type 'Array<Promise<T>>'`, arg.range);
+        return null;
+      }
+      let unwrapped = this.resolver.unwrapPromiseType(typeArguments[0]);
+      if (!unwrapped) {
+        this.fail(`'Promise.${policy}' expects an argument of type 'Array<Promise<T>>'`, arg.range);
+        return null;
+      }
+      memberType = this.validateJoinMemberType(unwrapped, policy, arg.range);
+      if (!memberType) return null;
+      let rewritten = rewriteExpression(arg, this.rewriter());
+      if (!rewritten) {
+        this.failed = true;
+        return null;
+      }
+      membersExpr = rewritten;
+    }
+    let memberTypeNode: TypeNode | null = null;
+    let resultTypeNode: TypeNode | null = null;
+    let resultType: Type | null = null;
+    if (memberType) {
+      memberTypeNode = typeToTypeNode(memberType, range);
+      if (memberTypeNode) {
+        resultTypeNode = joinResultTypeNode(policy, memberTypeNode, range);
+        resultType = this.resolveNode(resultTypeNode, range);
+        if (!resultType) return null;
+      }
+    }
+    if (!memberTypeNode) {
+      if (memberType) {
+        this.fail(`'Promise.${policy}' members of type '${memberType.toString()}' are not yet supported`, range);
+        return null;
+      }
+      if (!expectedResultNode) {
+        let callType = this.resolver.resolveExpression(call, flow, Type.auto, ReportMode.Swallow);
+        let resolvedResult = callType ? this.resolver.unwrapPromiseType(callType) : null;
+        if (resolvedResult) {
+          let resolvedNode = typeToTypeNode(resolvedResult, range);
+          if (resolvedNode) expectedResultNode = resolvedNode;
+        }
+      }
+      if (!expectedResultNode) {
+        this.fail(`Cannot infer the member type of 'Promise.${policy}([])'; annotate the awaited result`, call.range);
+        return null;
+      }
+      memberTypeNode = this.memberTypeNodeFromResult(policy, expectedResultNode);
+      if (!memberTypeNode) {
+        this.fail(`Cannot infer the member type of 'Promise.${policy}([])' from the awaited result`, call.range);
+        return null;
+      }
+      memberType = this.resolveNode(memberTypeNode, range);
+      if (!memberType) return null;
+      memberType = this.validateJoinMemberType(memberType, policy, range);
+      if (!memberType) return null;
+      resultTypeNode = expectedResultNode;
+      resultType = this.resolveNode(resultTypeNode, range);
+      if (!resultType) return null;
+    }
+    if (!memberType || !memberTypeNode || !resultType || !resultTypeNode) return null;
+    let siteId = this.sites.length;
+    let site = new AwaitSite(
+      siteId, resultType, resultTypeNode, used, this.joinCallExpr(siteId, policy, range), "", range,
+      true, policy, memberType, memberTypeNode
+    );
+    this.sites.push(site);
+    let arrayNode = (elementNode: TypeNode): TypeNode => namedType("Array", [ elementNode ], false, range);
+    let i32ArrayNode = arrayNode(namedType("i32", null, false, range));
+    let i32ArrayType = this.resolveNode(i32ArrayNode, range);
+    let stringArrayNode = arrayNode(namedType("string", null, false, range));
+    let stringArrayType = this.resolveNode(stringArrayNode, range);
+    let valsNode = arrayNode(memberTypeNode);
+    let valsType = this.resolveNode(valsNode, range);
+    if (!i32ArrayType || !stringArrayType || !valsType) return null;
+    this.fields.push(new StateField(joinValsField(siteId), valsNode, valsType));
+    this.fields.push(new StateField(joinStatusField(siteId), i32ArrayNode, i32ArrayType));
+    this.fields.push(new StateField(joinReasonsField(siteId), stringArrayNode, stringArrayType));
+    this.fields.push(new StateField(joinIdxField(siteId), namedType("i32", null, false, range), Type.i32));
+    this.fields.push(new StateField(joinHasValueField(siteId), namedType("bool", null, false, range), Type.bool));
+    this.fields.push(new StateField(joinReqsField(siteId), i32ArrayNode, i32ArrayType));
+    if (memberKind == "dynamic") {
+      let membersNode = arrayNode(namedType("Promise", [ memberTypeNode ], false, range));
+      let membersType = this.resolveNode(membersNode, range);
+      if (!membersType) return null;
+      this.fields.push(new StateField(joinMembersField(siteId), membersNode, membersType));
+    }
+    return new PreparedJoin(site, policy, memberKind, memberCount, members, membersExpr, resultType, resultTypeNode);
+  }
+
+  /** Builds the join-import call for a site. */
+  private joinCallExpr(siteId: i32, policy: string, range: Range): CallExpression {
+    return callExpr(
+      ident(JOIN_IMPORT_NAME, range),
+      [ thisProp(joinReqsField(siteId), range), intLit(joinPolicyCode(policy), range) ],
+      range
+    );
+  }
+
+  /** Emits the issue + join + continuation for a prepared join. */
+  private emitJoin(join: PreparedJoin, emitResult: (value: Expression) => void): JoinEmitOutcome {
+    let site = join.site;
+    let range = site.range;
+    let policy = join.policy;
+    let memberTypeNode = assert(site.memberTypeNode);
+    let countExpr = (): Expression => {
+      if (join.memberKind == "literal") return intLit(join.memberCount, range);
+      return new PropertyAccessExpression(
+        thisProp(joinMembersField(site.id), range),
+        ident("length", range),
+        range
+      );
+    };
+    if (join.memberKind != "literal") {
+      this.emit(exprStmt(assignExpr(
+        thisProp(joinMembersField(site.id), range),
+        assert(join.membersExpr),
+        range
+      )));
+    }
+    let sizedArray = (elementNode: TypeNode): Expression => {
+      return new NewExpression(
+        new TypeName(ident("Array", range), null, range),
+        [ elementNode ],
+        [ countExpr() ],
+        range
+      );
+    };
+    this.emit(exprStmt(assignExpr(thisProp(joinValsField(site.id), range), sizedArray(memberTypeNode), range)));
+    this.emit(exprStmt(assignExpr(thisProp(joinStatusField(site.id), range), sizedArray(namedType("i32", null, false, range)), range)));
+    this.emit(exprStmt(assignExpr(thisProp(joinReasonsField(site.id), range), sizedArray(namedType("string", null, false, range)), range)));
+    this.emit(exprStmt(assignExpr(
+      thisProp(joinIdxField(site.id), range),
+      new UnaryPrefixExpression(Token.Minus, intLit(1, range), range),
+      range
+    )));
+    this.emit(exprStmt(assignExpr(thisProp(joinHasValueField(site.id), range), new FalseExpression(range), range)));
+    this.emit(exprStmt(assignExpr(
+      thisProp(joinReqsField(site.id), range),
+      new NewExpression(
+        new TypeName(ident("Array", range), null, range),
+        [ namedType("i32", null, false, range) ],
+        [],
+        range
+      ),
+      range
+    )));
+    if (join.memberKind == "literal") {
+      if (join.memberCount == 0) {
+        if (policy == "all" || policy == "allSettled") {
+          emitResult(this.emptyResult(join));
+          return JoinEmitOutcome.CompletedInline;
+        }
+        if (policy == "any") {
+          this.emitFail(strLit(AGGREGATE_ERROR_EMPTY, range), range);
+          return JoinEmitOutcome.FailedInline;
+        }
+        this.suspendCurrent(site);
+        if (site.used) this.emitJoinAssembly(join, emitResult);
+        return JoinEmitOutcome.Suspended;
+      }
+      for (let i = 0, k = join.members.length; i < k; ++i) {
+        this.emit(this.issueStatement(site, join.members[i]));
+      }
+      this.suspendCurrent(site);
+      if (site.used) this.emitJoinAssembly(join, emitResult);
+      return JoinEmitOutcome.Suspended;
+    }
+    let cont = this.createSegment();
+    let empty = this.createSegment();
+    let membersLength = (): Expression => {
+      return new PropertyAccessExpression(
+        thisProp(joinMembersField(site.id), range),
+        ident("length", range),
+        range
+      );
+    };
+    let loopVar = `__join_i_${site.id}`;
+    let issueLoop = new ForStatement(
+      new VariableStatement(
+        null,
+        [ new VariableDeclaration(ident(loopVar, range), null, CommonFlags.Let, namedType("i32", null, false, range), intLit(0, range), range) ],
+        range
+      ),
+      new BinaryExpression(Token.LessThan, ident(loopVar, range), membersLength(), range),
+      new UnaryPostfixExpression(Token.Plus_Plus, ident(loopVar, range), range),
+      blockStmt([ this.issueStatement(site, new ElementAccessExpression(thisProp(joinMembersField(site.id), range), ident(loopVar, range), range)) ], range),
+      range
+    );
+    this.emit(new IfStatement(
+      new BinaryExpression(Token.Equals_Equals, membersLength(), intLit(0, range), range),
+      blockStmt([
+        exprStmt(assignExpr(this.stateAccess(range), this.segState(empty, range), range)),
+        new BreakStatement(null, range)
+      ], range),
+      blockStmt([ issueLoop ], range),
+      range
+    ));
+    this.suspendCurrent(site, cont);
+    if (site.used) this.emitJoinAssembly(join, emitResult);
+    this.setCurrent(empty);
+    if (policy == "all" || policy == "allSettled") {
+      this.closeCurrent(new SegmentEnd("jump", cont));
+    } else if (policy == "any") {
+      this.emitFail(strLit(AGGREGATE_ERROR_EMPTY, range), range);
+    } else {
+      this.emit(exprStmt(this.joinCallExpr(site.id, policy, range)));
+      this.closeCurrent(new SegmentEnd("suspend", cont, site.id));
+    }
+    this.setCurrent(cont);
+    return JoinEmitOutcome.Suspended;
+  }
+
+  /** The empty-array result value for `all` / `allSettled`. */
+  private emptyResult(join: PreparedJoin): Expression {
+    let range = join.site.range;
+    let memberTypeNode = assert(join.site.memberTypeNode);
+    let elementNode = join.policy == "allSettled"
+      ? namedType("PromiseSettledResult", [ memberTypeNode ], false, range)
+      : memberTypeNode;
+    return new NewExpression(
+      new TypeName(ident("Array", range), null, range),
+      [ elementNode ],
+      [ intLit(0, range) ],
+      range
+    );
+  }
+
+  /** Builds the statement recording one member's request id. */
+  private issueStatement(site: AwaitSite, member: Expression): Statement {
+    let range = site.range;
+    return exprStmt(callExpr(
+      new PropertyAccessExpression(thisProp(joinReqsField(site.id), range), ident("push", range), range),
+      [ new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ member ],
+        range
+      ) ],
+      range
+    ));
+  }
+
+  /** Emits the continuation assembling the join result. */
+  private emitJoinAssembly(join: PreparedJoin, emitResult: (value: Expression) => void): void {
+    let site = join.site;
+    let range = site.range;
+    let policy = join.policy;
+    let memberTypeNode = assert(site.memberTypeNode);
+    if (policy == "all") {
+      emitResult(thisProp(joinValsField(site.id), range));
+      return;
+    }
+    if (policy == "race" || policy == "any") {
+      emitResult(new ElementAccessExpression(
+        thisProp(joinValsField(site.id), range),
+        thisProp(joinIdxField(site.id), range),
+        range
+      ));
+      return;
+    }
+    let outVar = `__join_out_${site.id}`;
+    let elementNode = namedType("PromiseSettledResult", [ memberTypeNode ], false, range);
+    this.emit(new VariableStatement(
+      null,
+      [ new VariableDeclaration(
+        ident(outVar, range), null, CommonFlags.Let,
+        namedType("Array", [ elementNode ], false, range),
+        new NewExpression(
+          new TypeName(ident("Array", range), null, range),
+          [ elementNode ],
+          [],
+          range
+        ),
+        range
+      ) ],
+      range
+    ));
+    let kVar = `__join_k_${site.id}`;
+    let atIndex = (field: string): Expression => {
+      return new ElementAccessExpression(thisProp(field, range), ident(kVar, range), range);
+    };
+    // __joinVals/__joinReasons are holey arrays: a slot is written only on
+    // its member's settlement, and reading a hole traps. Guard both reads
+    // so only the settled side is read (status is 1 exactly when fulfilled).
+    let fulfilled = (): Expression => {
+      return new BinaryExpression(Token.Equals_Equals, atIndex(joinStatusField(site.id)), intLit(1, range), range);
+    };
+    let zero = assert(zeroValue(assert(site.memberType), memberTypeNode, range));
+    let loop = new ForStatement(
+      new VariableStatement(
+        null,
+        [ new VariableDeclaration(ident(kVar, range), null, CommonFlags.Let, namedType("i32", null, false, range), intLit(0, range), range) ],
+        range
+      ),
+      new BinaryExpression(
+        Token.LessThan,
+        ident(kVar, range),
+        new PropertyAccessExpression(thisProp(joinValsField(site.id), range), ident("length", range), range),
+        range
+      ),
+      new UnaryPostfixExpression(Token.Plus_Plus, ident(kVar, range), range),
+      blockStmt([
+        exprStmt(callExpr(
+          new PropertyAccessExpression(ident(outVar, range), ident("push", range), range),
+          [ new NewExpression(
+            new TypeName(ident("PromiseSettledResult", range), null, range),
+            [ memberTypeNode ],
+            [
+              new TernaryExpression(
+                new BinaryExpression(Token.Equals_Equals, atIndex(joinStatusField(site.id)), intLit(1, range), range),
+                strLit("fulfilled", range),
+                strLit("rejected", range),
+                range
+              ),
+              new TernaryExpression(fulfilled(), atIndex(joinValsField(site.id)), zero, range),
+              new TernaryExpression(fulfilled(), strLit("", range), atIndex(joinReasonsField(site.id)), range)
+            ],
+            range
+          ) ],
+          range
+        ))
+      ], range),
+      range
+    );
+    this.emit(loop);
+    emitResult(ident(outVar, range));
+  }
+
+  /** Fails the task with the given error, closing the current segment. */
+  private emitFail(error: Expression, range: Range): void {
+    this.emit(exprStmt(assignExpr(thisProp("__error", range), error, range)));
+    this.closeCurrent(new SegmentEnd("fail"));
+  }
+
 
   /** Rejects direct (non-awaited) calls to async functions in an expression. */
   private checkDirectAsyncCalls(expr: Expression): void {
@@ -1189,12 +1804,17 @@ class AsyncFunctionTransform {
   }
 
   /** Closes the current segment with a suspension at the site. */
-  private suspendCurrent(site: AwaitSite): void {
+  private suspendCurrent(site: AwaitSite, next: i32 = -1): void {
     this.emit(exprStmt(site.call));
-    let next = this.segments.length;
-    this.closeCurrent(new SegmentEnd("suspend", next, site.id));
-    this.newSegment();
-    assert(this.cur == next);
+    if (next < 0) {
+      next = this.segments.length;
+      this.closeCurrent(new SegmentEnd("suspend", next, site.id));
+      this.newSegment();
+      assert(this.cur == next);
+    } else {
+      this.closeCurrent(new SegmentEnd("suspend", next, site.id));
+      this.setCurrent(next);
+    }
   }
 
   /** State value addressing a segment in the `state` field. */
@@ -1288,7 +1908,13 @@ class AsyncFunctionTransform {
     if (this.hasNameCollision(this.stateClassName)) return false;
     if (this.hasNameCollision(this.rootsName)) return false;
     for (let i = 0, k = this.sites.length; i < k; ++i) {
-      if (this.hasNameCollision(this.resumeName(i))) return false;
+      if (this.sites[i].isJoin) {
+        if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
+        if (this.hasNameCollision(joinErrorName(this.fileBase, this.fnName, i))) return false;
+        if (this.hasNameCollision(joinDoneName(this.fileBase, this.fnName, i))) return false;
+      } else {
+        if (this.hasNameCollision(this.resumeName(i))) return false;
+      }
       if (this.hasNameCollision(this.rejectName(i))) return false;
     }
     if (this.hasNameCollision(this.resultName())) return false;
@@ -1303,7 +1929,14 @@ class AsyncFunctionTransform {
     declarations.push(stateClass);
     declarations.push(this.buildRootsGlobal());
     for (let i = 0, k = this.sites.length; i < k; ++i) {
-      declarations.push(this.buildResume(i));
+      let site = this.sites[i];
+      if (site.isJoin) {
+        declarations.push(buildJoinStore(this.fileBase, this.fnName, this.stateClassName, i, assert(site.memberTypeNode), this.range));
+        declarations.push(buildJoinError(this.fileBase, this.fnName, this.stateClassName, i, this.range));
+        declarations.push(buildJoinDone(this.fileBase, this.fnName, this.stateClassName, i, this.range));
+      } else {
+        declarations.push(this.buildResume(i));
+      }
       declarations.push(this.buildReject(i));
     }
     declarations.push(this.buildResult());
@@ -1416,7 +2049,6 @@ class AsyncFunctionTransform {
 
   private buildSpillAcquire(): FunctionDeclaration {
     let range = this.range;
-    let free = ident("__async_spill_free", range);
     let signature = new FunctionTypeNode(
       [],
       namedType("i32", null, false, range),
@@ -1544,7 +2176,7 @@ class AsyncFunctionTransform {
 
   private buildStateClass(): ClassDeclaration | null {
     let range = this.range;
-    let members = new Array<Statement>();
+    let members = new Array<DeclarationStatement>();
     members.push(new FieldDeclaration(
       ident("state", range), null, CommonFlags.None,
       namedType("i32", null, false, range),
@@ -1566,7 +2198,7 @@ class AsyncFunctionTransform {
     ));
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
-      if (!site.used || site.type.kind == TypeKind.Extern) continue;
+      if (site.isJoin || !site.used || site.type.kind == TypeKind.Extern) continue;
       let zero = zeroValue(site.type, site.typeNode, range);
       if (!zero) return null;
       members.push(new FieldDeclaration(
@@ -1648,6 +2280,12 @@ class AsyncFunctionTransform {
         for (let j = 0, l = terminalStmts.length; j < l; ++j) {
           statements.push(terminalStmts[j]);
         }
+      } else if (end!.kind == "fail") {
+        let terminalStmts = this.terminalStatements(true, range, -2);
+        for (let j = 0, l = terminalStmts.length; j < l; ++j) {
+          statements.push(terminalStmts[j]);
+        }
+        statements.push(new ReturnStatement(intLit(2, range), range));
         statements.push(new ReturnStatement(intLit(1, range), range));
       }
       cases.push(new SwitchCase(this.segState(segment.id, range), statements, range));

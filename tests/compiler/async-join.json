@@ -1,1 +1,0 @@
-{"stderr":["AS100: Not implemented: 'await' of 'Promise.all' is not yet supported (join primitive, chunk 5)","AS235: Only variables, functions and enums become WebAssembly module exports."]}

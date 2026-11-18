@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: 'Promise.all' expects an argument of type 'Array<Promise<T>>'","AS235: Only variables, functions and enums become WebAssembly module exports."]}

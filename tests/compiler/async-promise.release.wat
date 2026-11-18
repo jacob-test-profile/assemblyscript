@@ -2033,7 +2033,7 @@
   i32.store
   i32.const 1552
   i32.const 1616
-  i32.const 13
+  i32.const 14
   i32.const 5
   call $~lib/builtins/abort
   unreachable
@@ -2075,7 +2075,7 @@
   i32.store
   i32.const 1552
   i32.const 1616
-  i32.const 9
+  i32.const 10
   i32.const 5
   call $~lib/builtins/abort
   unreachable
