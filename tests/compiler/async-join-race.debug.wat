@@ -86,6 +86,7 @@
  (export "__async_async_join_race_raceFirst_join_store_0" (func $export:async-join-race/__async_async_join_race_raceFirst_join_store_0))
  (export "__async_async_join_race_raceFirst_join_error_0" (func $export:async-join-race/__async_async_join_race_raceFirst_join_error_0))
  (export "__async_async_join_race_raceFirst_join_done_0" (func $export:async-join-race/__async_async_join_race_raceFirst_join_done_0))
+ (export "__async_async_join_race_raceFirst_join_mark_0" (func $export:async-join-race/__async_async_join_race_raceFirst_join_mark_0))
  (export "__async_async_join_race_raceFirst_reject_0" (func $export:async-join-race/__async_async_join_race_raceFirst_reject_0))
  (export "__async_async_join_race_raceFirst_result" (func $export:async-join-race/__async_async_join_race_raceFirst_result))
  (export "__async_async_join_race_raceFirst_error" (func $export:async-join-race/__async_async_join_race_raceFirst_error))
@@ -94,6 +95,7 @@
  (export "__async_async_join_race_raceReject_join_store_0" (func $export:async-join-race/__async_async_join_race_raceReject_join_store_0))
  (export "__async_async_join_race_raceReject_join_error_0" (func $export:async-join-race/__async_async_join_race_raceReject_join_error_0))
  (export "__async_async_join_race_raceReject_join_done_0" (func $export:async-join-race/__async_async_join_race_raceReject_join_done_0))
+ (export "__async_async_join_race_raceReject_join_mark_0" (func $export:async-join-race/__async_async_join_race_raceReject_join_mark_0))
  (export "__async_async_join_race_raceReject_reject_0" (func $export:async-join-race/__async_async_join_race_raceReject_reject_0))
  (export "__async_async_join_race_raceReject_result" (func $export:async-join-race/__async_async_join_race_raceReject_result))
  (export "__async_async_join_race_raceReject_error" (func $export:async-join-race/__async_async_join_race_raceReject_error))
@@ -102,6 +104,7 @@
  (export "__async_async_join_race_raceEmpty_join_store_0" (func $export:async-join-race/__async_async_join_race_raceEmpty_join_store_0))
  (export "__async_async_join_race_raceEmpty_join_error_0" (func $export:async-join-race/__async_async_join_race_raceEmpty_join_error_0))
  (export "__async_async_join_race_raceEmpty_join_done_0" (func $export:async-join-race/__async_async_join_race_raceEmpty_join_done_0))
+ (export "__async_async_join_race_raceEmpty_join_mark_0" (func $export:async-join-race/__async_async_join_race_raceEmpty_join_mark_0))
  (export "__async_async_join_race_raceEmpty_reject_0" (func $export:async-join-race/__async_async_join_race_raceEmpty_reject_0))
  (export "__async_async_join_race_raceEmpty_result" (func $export:async-join-race/__async_async_join_race_raceEmpty_result))
  (export "__async_async_join_race_raceEmpty_error" (func $export:async-join-race/__async_async_join_race_raceEmpty_error))
@@ -8012,6 +8015,53 @@
   local.get $1
   return
  )
+ (func $async-join-race/__async_async_join_race_raceFirst_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join-race/__Cps_raceFirst#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join-race/__Cps_raceFirst#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join-race/__Cps_raceFirst#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $async-join-race/__async_async_join_race_raceFirst_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8549,6 +8599,53 @@
   local.get $1
   return
  )
+ (func $async-join-race/__async_async_join_race_raceReject_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join-race/__Cps_raceReject#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join-race/__Cps_raceReject#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join-race/__Cps_raceReject#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $async-join-race/__async_async_join_race_raceReject_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9085,6 +9182,53 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
   return
+ )
+ (func $async-join-race/__async_async_join_race_raceEmpty_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join-race/__Cps_raceEmpty#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join-race/__Cps_raceEmpty#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join-race/__Cps_raceEmpty#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $async-join-race/__async_async_join_race_raceEmpty_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
@@ -9917,6 +10061,23 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-race/__async_async_join_race_raceFirst_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join-race/__async_async_join_race_raceFirst_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-join-race/__async_async_join_race_raceFirst_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10077,6 +10238,23 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-race/__async_async_join_race_raceReject_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join-race/__async_async_join_race_raceReject_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-join-race/__async_async_join_race_raceReject_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10236,6 +10414,23 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $export:async-join-race/__async_async_join_race_raceEmpty_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join-race/__async_async_join_race_raceEmpty_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $export:async-join-race/__async_async_join_race_raceEmpty_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)

@@ -115,6 +115,10 @@ export function joinDoneName(fileBase: string, fnName: string, siteId: i32): str
   return `__async_${fileBase}_${fnName}_join_done_${siteId}`;
 }
 
+export function joinMarkName(fileBase: string, fnName: string, siteId: i32): string {
+  return `__async_${fileBase}_${fnName}_join_mark_${siteId}`;
+}
+
 // === Per-site exports =============================================================================
 
 /** Guards a join delivery against a task that already left the join site. */
@@ -248,6 +252,40 @@ export function buildJoinDone(
   ));
   return new FunctionDeclaration(
     ident(joinDoneName(fileBase, fnName, siteId), range), null, CommonFlags.Export,
+    null, signature, blockStmt(body, range), ArrowKind.None, range
+  );
+}
+
+/** Marks one pre-resolved member (a hoisted member await) as the winning
+ *  member for race/any: its value is already in the join's value array,
+ *  so only the winning index is recorded. Late marks are ignored. */
+export function buildJoinMark(
+  fileBase: string,
+  fnName: string,
+  stateClassName: string,
+  siteId: i32,
+  range: Range
+): FunctionDeclaration {
+  let body = new Array<Statement>();
+  body.push(suspendedGuard("state", siteId, range));
+  body.push(exprStmt(assignExpr(stateField("state", joinIdxField(siteId), range), ident("index", range), range)));
+  body.push(exprStmt(assignExpr(
+    stateField("state", joinHasValueField(siteId), range),
+    new TrueExpression(range),
+    range
+  )));
+  let signature = new FunctionTypeNode(
+    [
+      stateParamNode(stateClassName, range),
+      new ParameterNode(ParameterKind.Default, ident("index", range), namedType("i32", null, false, range), null, range)
+    ],
+    namedType("void", null, false, range),
+    null,
+    false,
+    range
+  );
+  return new FunctionDeclaration(
+    ident(joinMarkName(fileBase, fnName, siteId), range), null, CommonFlags.Export,
     null, signature, blockStmt(body, range), ArrowKind.None, range
   );
 }

@@ -118,9 +118,11 @@ import {
   joinStoreName,
   joinErrorName,
   joinDoneName,
+  joinMarkName,
   buildJoinStore,
   buildJoinError,
-  buildJoinDone
+  buildJoinDone,
+  buildJoinMark
 } from "./asyncJoin";
 
 import {
@@ -178,7 +180,8 @@ import {
   findExportName,
   warnSkipped,
   qualNameOf,
-  namespacePathOf
+  namespacePathOf,
+  owningFile
 } from "./asyncCoordinatorMeta";
 
 /** Fallthrough target meaning "the function completes". */
@@ -235,11 +238,11 @@ class AwaitSite {
      *  the pending return/break/continue flags (see AsyncTryRejectTarget).
      *  Empty for awaits outside a finally. */
     public rejectClearFields: string[] = [],
-    /** Whether this site awaits a nested async function in the same file. */
+    /** Whether this site awaits a nested async function, in this file or another. */
     public isNested: bool = false,
     /** State field holding the inner task's handle, for a nested site. */
     public handleField: string = "",
-    /** Qualified name of the inner async function, for a nested site. */
+    /** File-qualified name of the inner async function (`fileBase#qualName`), for a nested site. */
     public innerQual: string = ""
   ) {}
 }
@@ -311,7 +314,15 @@ class PreparedJoin {
     /** Rewritten dynamic member-array expression; null for literal joins. */
     public membersExpr: Expression | null,
     public resultType: Type,
-    public resultTypeNode: TypeNode
+    public resultTypeNode: TypeNode,
+    /** Await sites hoisted out of literal members, by member index: the
+     *  member awaited before the join issues, and its value is delivered
+     *  into the site's pend field instead of a token. */
+    public hoisted: Map<i32, AwaitSite>,
+    /** Await site hoisted out of a dynamic join argument, or `null`: the
+     *  argument awaited before the join issues, and `membersExpr` reads
+     *  its pend field. */
+    public argSite: AwaitSite | null
   ) {}
 }
 
@@ -364,6 +375,11 @@ export function transformAsyncFunctions(program: Program): void {
     let worklist = new Array<TransformWorkItem>();
     for (let j = 0, l = functions.length; j < l; ++j) {
       let prototype = functions[j];
+      // File members include imported prototypes: only transform
+      // functions declared in this file, or an imported callee is
+      // transformed under the wrong file (its generated names resolve in
+      // the wrong scope) and transformed twice.
+      if (prototype.declaration.range.source != file.source) continue;
       worklist.push({
         prototype,
         isMethod: false,
@@ -378,6 +394,7 @@ export function transformAsyncFunctions(program: Program): void {
     }
     for (let j = 0, l = methods.length; j < l; ++j) {
       let prototype = methods[j];
+      if (prototype.declaration.range.source != file.source) continue;
       let receiverClass = <ClassPrototype>prototype.parent;
       worklist.push({
         prototype,
@@ -453,6 +470,98 @@ export function transformAsyncFunctions(program: Program): void {
       }
       let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, mints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, classNews);
       transform.run();
+    }
+  }
+  reexportCrossFileInners(program);
+}
+
+/** Re-exports the protocol functions of async functions awaited from
+ *  another file: only UserEntry exports become WebAssembly exports, so
+ *  without this the coordinator could not call a cross-file inner's
+ *  resume/reject/status/result/error exports, or the pending export of a
+ *  non-entry outer that awaits a nested function. Only functions that
+ *  participate in cross-file nesting are re-exported: a referenced inner,
+ *  or a function with a nested site (its pending export is needed whenever
+ *  it is itself driven as an inner task). */
+function reexportCrossFileInners(program: Program): void {
+  let files = Map_values(program.filesByName);
+  let entries = new Array<File>();
+  for (let i = 0, k = files.length; i < k; ++i) {
+    if (files[i].source.sourceKind == SourceKind.UserEntry) entries.push(files[i]);
+  }
+  if (entries.length == 0) return;
+  let referenced = new Set<string>();
+  let pending = Map_values(program.asyncNestedPending);
+  for (let i = 0, k = pending.length; i < k; ++i) referenced.add(pending[i]);
+  for (let prototype of program.transformedAsyncFunctions) {
+    let file = owningFile(prototype);
+    if (!file || file.source.sourceKind == SourceKind.UserEntry) continue;
+    let fileBase = sanitizeName(file.source.simplePath);
+    let qual = qualNameOf(prototype);
+    if (!referenced.has(fileBase + "#" + qual) && !hasPendingExport(file, fileBase, qual)) continue;
+    reexportInnerProtocol(program, entries, file, fileBase, qual, prototype);
+  }
+}
+
+/** Whether the file holds a pending export for the function: it awaits a
+ *  nested function, so its pending export is needed whenever it is itself
+ *  driven as an inner task. */
+function hasPendingExport(file: File, fileBase: string, qual: string): bool {
+  let members = file.members;
+  if (!members) return false;
+  let prefix = `__async_${fileBase}_${qual}_pending_`;
+  let names = Map_keys(members);
+  for (let i = 0, k = names.length; i < k; ++i) {
+    if (names[i].startsWith(prefix)) return true;
+  }
+  return false;
+}
+
+/** Re-exports one cross-file participant's protocol functions from every
+ *  entry file: the result/error/status exports and, per site, the resume
+ *  (or join store/error/done) and reject exports, plus the pending exports
+ *  of its nested sites. A name already exported to a different element is
+ *  a user collision with the transform's namespace and fails loudly
+ *  instead of emitting a coordinator that would call the wrong function. */
+function reexportInnerProtocol(
+  program: Program,
+  entries: File[],
+  innerFile: File,
+  fileBase: string,
+  qual: string,
+  prototype: FunctionPrototype
+): void {
+  let prefix = `__async_${fileBase}_${qual}_`;
+  let members = innerFile.members;
+  if (!members) return;
+  let names = Map_keys(members);
+  for (let i = 0, k = names.length; i < k; ++i) {
+    let name = names[i];
+    if (!name.startsWith(prefix)) continue;
+    let rest = name.substring(prefix.length);
+    if (
+      rest != "status" && rest != "result" && rest != "error" &&
+      !rest.startsWith("resume_") && !rest.startsWith("reject_") &&
+      !rest.startsWith("join_done_") && !rest.startsWith("join_store_") &&
+      !rest.startsWith("join_error_") && !rest.startsWith("join_mark_") &&
+      !rest.startsWith("pending_")
+    ) continue;
+    let element = innerFile.getMember(name);
+    if (!element || element.kind != ElementKind.FunctionPrototype) continue;
+    for (let j = 0, l = entries.length; j < l; ++j) {
+      let entry = entries[j];
+      let existing = entry.lookupExport(name);
+      if (existing) {
+        if (existing !== element) {
+          program.error(
+            DiagnosticCode.Not_implemented_0,
+            prototype.identifierNode.range,
+            `Generated name '${name}' collides with an existing export`
+          );
+        }
+        continue;
+      }
+      program.ensureGeneratedModuleExport(entry, name, <FunctionPrototype>element);
     }
   }
 }
@@ -942,15 +1051,15 @@ class AsyncFunctionTransform {
         return;
       }
       case NodeKind.Variable: {
-        this.transformVariable(<VariableStatement>stmt);
+        this.transformVariable(<VariableStatement>stmt, breakTarget);
         return;
       }
       case NodeKind.Expression: {
-        this.transformExpressionStatement(<ExpressionStatement>stmt);
+        this.transformExpressionStatement(<ExpressionStatement>stmt, breakTarget);
         return;
       }
       case NodeKind.Return: {
-        this.transformReturn(<ReturnStatement>stmt);
+        this.transformReturn(<ReturnStatement>stmt, breakTarget);
         return;
       }
       case NodeKind.If: {
@@ -1038,7 +1147,7 @@ class AsyncFunctionTransform {
 
   // === Statements ===============================================================================
 
-  private transformVariable(stmt: VariableStatement): void {
+  private transformVariable(stmt: VariableStatement, breakTarget: i32): void {
     let declarations = stmt.declarations;
     for (let i = 0, k = declarations.length; i < k; ++i) {
       let declaration = declarations[i];
@@ -1063,7 +1172,7 @@ class AsyncFunctionTransform {
           if (outcome != TransformOutcome.Transformed) return;
           let status = this.emitJoin(join, (value: Expression): void => {
             this.emitLocalAssign(name, value, declaration.range);
-          });
+          }, breakTarget);
           if (status == JoinEmitOutcome.FailedInline) return;
           continue;
         }
@@ -1114,7 +1223,7 @@ class AsyncFunctionTransform {
     }
   }
 
-  private transformExpressionStatement(stmt: ExpressionStatement): void {
+  private transformExpressionStatement(stmt: ExpressionStatement, breakTarget: i32): void {
     let expr = unwrapParens(stmt.expression);
     if (expr.kind == NodeKind.Await) {
       let awaitExpr = <AwaitExpression>expr;
@@ -1122,7 +1231,7 @@ class AsyncFunctionTransform {
       if (joinCall) {
         let join = this.prepareJoin(joinCall, assert(joinPolicyOfCall(joinCall)), false, awaitExpr.range, null);
         if (!join) return;
-        let status = this.emitJoin(join, (_value: Expression): void => {});
+        let status = this.emitJoin(join, (_value: Expression): void => {}, breakTarget);
         if (status == JoinEmitOutcome.FailedInline) return;
         return;
       }
@@ -1155,7 +1264,7 @@ class AsyncFunctionTransform {
           } else {
             this.emit(exprStmt(assignExpr(ident(name, left.range), value, stmt.range)));
           }
-        });
+        }, breakTarget);
         if (status == JoinEmitOutcome.FailedInline) return;
         return;
       }
@@ -1178,7 +1287,7 @@ class AsyncFunctionTransform {
     this.emit(exprStmt(rewritten));
   }
 
-  private transformReturn(stmt: ReturnStatement): void {
+  private transformReturn(stmt: ReturnStatement, breakTarget: i32): void {
     let value = stmt.value;
     if (value && unwrapParens(value).kind == NodeKind.Await) {
       let awaitExpr = <AwaitExpression>unwrapParens(value);
@@ -1190,7 +1299,7 @@ class AsyncFunctionTransform {
           if (this.returnType.kind != TypeKind.Void) {
             this.emit(exprStmt(assignExpr(this.resultAccess(stmt.range), result, stmt.range)));
           }
-        });
+        }, breakTarget);
         if (status == JoinEmitOutcome.FailedInline) return;
         this.emitTerminal(stmt.range);
         return;
@@ -1834,17 +1943,18 @@ class AsyncFunctionTransform {
     let element = flow.lookup(calleeName);
     if (element && element.kind == ElementKind.FunctionPrototype && (<FunctionPrototype>element).is(CommonFlags.Async)) {
       let innerPrototype = <FunctionPrototype>element;
-      if (innerPrototype.declaration.range.source != this.file.source) {
-        this.fail("await of an async function in another file is not yet supported", node.range);
-        return null;
-      }
+      // A nested await may call an async function from another file: the
+      // inner function is transformed in its own file pass, and the
+      // coordinator resolves it by (file, qualified name). "#" cannot
+      // appear in a sanitized file base or a qualified name.
+      let innerBase = sanitizeName(innerPrototype.declaration.range.source.simplePath);
       let args = call.args;
       for (let i = 0, k = args.length; i < k; ++i) {
         this.checkDirectAsyncCalls(args[i]);
         if (this.failed) return null;
       }
       this.qualifyNestedCall(call, innerPrototype);
-      return this.transformNestedAwait(call, qualNameOf(innerPrototype), node, used);
+      return this.transformNestedAwait(call, innerBase + "#" + qualNameOf(innerPrototype), node, used);
     }
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
@@ -2033,11 +2143,11 @@ class AsyncFunctionTransform {
       this.fail("'await' of a member call is not yet supported", node.range);
       return null;
     }
-    if (method.declaration.range.source != this.file.source) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
-    }
-    return this.transformNestedAwait(call, `${declaringClass.name}_${method.name}`, node, used);
+    // As for plain functions above, the method may live in another file:
+    // it is transformed in its own file pass, and the coordinator
+    // resolves it by (file, qualified name).
+    let innerBase = sanitizeName(method.declaration.range.source.simplePath);
+    return this.transformNestedAwait(call, innerBase + "#" + `${declaringClass.name}_${method.name}`, node, used);
   }
 
   /** Awaits a static call (`await C.method(...)`) as a nested site: the
@@ -2158,8 +2268,19 @@ class AsyncFunctionTransform {
     return null;
   }
 
-  /** Validates one join member expression and returns its unwrapped type. */
-  private validateJoinMember(element: Expression, policy: string): Type | null {
+  /** Validates one join member expression and returns its unwrapped type.
+   *  An `await` member is hoisted to its own await site before the join
+   *  issues: the await suspends first (as if it stood alone), its value
+   *  lands in the site's pend field, and the issue step records it as an
+   *  already-settled member instead of a token. */
+  private validateJoinMember(element: Expression, policy: string, index: i32, hoisted: Map<i32, AwaitSite>): Type | null {
+    let unwrappedElement = unwrapParens(element);
+    if (unwrappedElement.kind == NodeKind.Await) {
+      let site = this.transformAwait(<AwaitExpression>unwrappedElement, true);
+      if (!site) return null;
+      hoisted.set(index, site);
+      return this.validateJoinMemberType(site.type, policy, element.range);
+    }
     if (containsAwait(element)) {
       this.fail("'await' inside a join member is not yet supported", element.range);
       return null;
@@ -2268,19 +2389,26 @@ class AsyncFunctionTransform {
     let memberCount = -1;
     let members = new Array<Expression>();
     let membersExpr: Expression | null = null;
+    let hoisted = new Map<i32, AwaitSite>();
+    let argSite: AwaitSite | null = null;
     if (arg instanceof ArrayLiteralExpression) {
       memberKind = "literal";
       let elements = arg.elementExpressions;
       memberCount = elements.length;
       for (let i = 0, k = elements.length; i < k; ++i) {
         let element = unwrapParens(elements[i]);
-        let member = this.validateJoinMember(element, policy);
+        let member = this.validateJoinMember(element, policy, i, hoisted);
         if (!member) return null;
         if (!memberType) {
           memberType = member;
         } else if (member.toString() != memberType.toString()) {
           this.fail(`'Promise.${policy}' members must all have the same type`, element.range);
           return null;
+        }
+        let hoistedSite = hoisted.get(i);
+        if (hoistedSite) {
+          members.push(this.pendAccess(hoistedSite, element.range));
+          continue;
         }
         let rewritten = rewriteExpression(element, this.rewriter());
         if (!rewritten) {
@@ -2291,16 +2419,29 @@ class AsyncFunctionTransform {
       }
     } else {
       memberKind = "dynamic";
-      if (containsAwait(arg)) {
-        this.fail("'await' inside a join argument is not yet supported", arg.range);
-        return null;
-      }
-      this.checkDirectAsyncCalls(arg);
-      if (this.failed) return null;
-      let argType = this.resolver.resolveExpression(arg, flow, Type.auto, ReportMode.Swallow);
-      if (!argType) {
-        this.punted = true;
-        return null;
+      let argType: Type | null = null;
+      if (unwrapParens(arg).kind == NodeKind.Await) {
+        // The whole argument awaited: hoist it to its own site, then the
+        // join runs over the delivered array. An await deeper inside the
+        // argument stays loud.
+        let awaitExpr = <AwaitExpression>unwrapParens(arg);
+        let site = this.transformAwait(awaitExpr, true);
+        if (!site) return null;
+        argSite = site;
+        argType = site.type;
+        membersExpr = this.pendAccess(site, arg.range);
+      } else {
+        if (containsAwait(arg)) {
+          this.fail("'await' inside a join argument is not yet supported", arg.range);
+          return null;
+        }
+        this.checkDirectAsyncCalls(arg);
+        if (this.failed) return null;
+        argType = this.resolver.resolveExpression(arg, flow, Type.auto, ReportMode.Swallow);
+        if (!argType) {
+          this.punted = true;
+          return null;
+        }
       }
       let argClass = argType.getClass();
       let typeArguments = argClass ? argClass.typeArguments : null;
@@ -2315,12 +2456,14 @@ class AsyncFunctionTransform {
       }
       memberType = this.validateJoinMemberType(unwrapped, policy, arg.range);
       if (!memberType) return null;
-      let rewritten = rewriteExpression(arg, this.rewriter());
-      if (!rewritten) {
-        this.failed = true;
-        return null;
+      if (!argSite) {
+        let rewritten = rewriteExpression(arg, this.rewriter());
+        if (!rewritten) {
+          this.failed = true;
+          return null;
+        }
+        membersExpr = rewritten;
       }
-      membersExpr = rewritten;
     }
     let memberTypeNode: TypeNode | null = null;
     let resultTypeNode: TypeNode | null = null;
@@ -2390,7 +2533,30 @@ class AsyncFunctionTransform {
       if (!membersType) return null;
       this.fields.push(new StateField(joinMembersField(siteId), membersNode, membersType));
     }
-    return new PreparedJoin(site, policy, memberKind, memberCount, members, membersExpr, resultType, resultTypeNode);
+    return new PreparedJoin(site, policy, memberKind, memberCount, members, membersExpr, resultType, resultTypeNode, hoisted, argSite);
+  }
+
+  /** Emits the desugar's settled check for a hoisted await, right after
+   *  its suspension: when the await was rejected, its flag is set, so
+   *  break out of the enclosing try wrapper (via its break target)
+   *  instead of issuing the join or the next hoisted await. Without
+   *  this, a rejection would only be noticed after the whole join
+   *  statement, and the join's members would be issued even though the
+   *  await already threw. A site with no reject flag (outside any try)
+   *  needs no check. */
+  private emitHoistedRejectCheck(site: AwaitSite, breakTarget: i32): void {
+    if (site.rejectFlagField == "" || breakTarget == NO_TARGET) return;
+    let range = site.range;
+    let joinEntry = this.createSegment();
+    let dispatch = new IfStatement(
+      thisProp(site.rejectFlagField, range),
+      blockStmt([ exprStmt(assignExpr(this.stateAccess(range), this.segState(breakTarget, range), range)) ], range),
+      blockStmt([ exprStmt(assignExpr(this.stateAccess(range), this.segState(joinEntry, range), range)) ], range),
+      range
+    );
+    this.emit(dispatch);
+    this.closeCurrent(new SegmentEnd("redispatch"));
+    this.setCurrent(joinEntry);
   }
 
   /** Builds the join-import call for a site. */
@@ -2402,12 +2568,26 @@ class AsyncFunctionTransform {
     );
   }
 
-  /** Emits the issue + join + continuation for a prepared join. */
-  private emitJoin(join: PreparedJoin, emitResult: (value: Expression) => void): JoinEmitOutcome {
+  /** Emits the issue + join + continuation for a prepared join. Hoisted
+   *  awaits suspend first, in order, before the join issues: a hoisted
+   *  member await delivers its value into its pend field, and a hoisted
+   *  argument await delivers the member array the same way. */
+  private emitJoin(join: PreparedJoin, emitResult: (value: Expression) => void, breakTarget: i32): JoinEmitOutcome {
     let site = join.site;
     let range = site.range;
     let policy = join.policy;
     let memberTypeNode = assert(site.memberTypeNode);
+    if (join.argSite) {
+      this.suspendCurrent(join.argSite);
+      this.emitHoistedRejectCheck(join.argSite, breakTarget);
+    }
+    for (let i = 0, k = join.memberCount; i < k; ++i) {
+      let hoistedSite = join.hoisted.get(i);
+      if (hoistedSite) {
+        this.suspendCurrent(hoistedSite);
+        this.emitHoistedRejectCheck(hoistedSite, breakTarget);
+      }
+    }
     let countExpr = (): Expression => {
       if (join.memberKind == "literal") return intLit(join.memberCount, range);
       return new PropertyAccessExpression(
@@ -2465,7 +2645,12 @@ class AsyncFunctionTransform {
         return JoinEmitOutcome.Suspended;
       }
       for (let i = 0, k = join.members.length; i < k; ++i) {
-        this.emit(this.issueStatement(site, join.members[i]));
+        let hoistedSite = join.hoisted.get(i);
+        if (hoistedSite) {
+          this.emitHoistedIssue(site, hoistedSite, i);
+        } else {
+          this.emit(this.issueStatement(site, join.members[i]));
+        }
       }
       this.suspendCurrent(site);
       if (site.used) this.emitJoinAssembly(join, emitResult);
@@ -2544,6 +2729,29 @@ class AsyncFunctionTransform {
       ) ],
       range
     ));
+  }
+
+  /** Records one hoisted member as already settled: its value (delivered
+   *  into the hoisted site's pend field) is stored in the join's value
+   *  array with status fulfilled, and the sentinel token 0 is pushed so
+   *  the coordinator counts the member without waiting on a promise. */
+  private emitHoistedIssue(site: AwaitSite, memberSite: AwaitSite, index: i32): void {
+    let range = site.range;
+    this.emit(exprStmt(assignExpr(
+      new ElementAccessExpression(thisProp(joinValsField(site.id), range), intLit(index, range), range),
+      this.pendAccess(memberSite, range),
+      range
+    )));
+    this.emit(exprStmt(assignExpr(
+      new ElementAccessExpression(thisProp(joinStatusField(site.id), range), intLit(index, range), range),
+      intLit(1, range),
+      range
+    )));
+    this.emit(exprStmt(callExpr(
+      new PropertyAccessExpression(thisProp(joinReqsField(site.id), range), ident("push", range), range),
+      [ intLit(0, range) ],
+      range
+    )));
   }
 
   /** Emits the continuation assembling the join result. */
@@ -2911,6 +3119,7 @@ class AsyncFunctionTransform {
         if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
         if (this.hasNameCollision(joinErrorName(this.fileBase, this.fnName, i))) return false;
         if (this.hasNameCollision(joinDoneName(this.fileBase, this.fnName, i))) return false;
+        if (this.hasNameCollision(joinMarkName(this.fileBase, this.fnName, i))) return false;
       } else {
         if (this.sites[i].isNested) {
           if (this.hasNameCollision(this.pendingName(i))) return false;
@@ -2945,6 +3154,7 @@ class AsyncFunctionTransform {
         declarations.push(buildJoinStore(this.fileBase, this.fnName, this.stateClassName, i, assert(site.memberTypeNode), this.range));
         declarations.push(buildJoinError(this.fileBase, this.fnName, this.stateClassName, i, this.range));
         declarations.push(buildJoinDone(this.fileBase, this.fnName, this.stateClassName, i, this.range));
+        declarations.push(buildJoinMark(this.fileBase, this.fnName, this.stateClassName, i, this.range));
       } else {
         if (site.isNested) {
           declarations.push(this.buildPending(i));

@@ -138,6 +138,13 @@ export function createCoordinator(metadata) {
       }
       case 'bool': return value ? 1 : 0;
       case 'externref': return value;
+      case 'pointer': {
+        // A wasm-produced heap pointer (nested array/class result),
+        // handed through untouched. Anything else here is a misuse,
+        // not a value: fail loudly rather than pass garbage to wasm.
+        if (typeof value !== 'number') throw new TypeError('async coordinator: expected a wasm pointer, got ' + typeof value);
+        return value;
+      }
       case 'void': return undefined;
       default: throw new Error('async coordinator: cannot lower a ' + kind + ' value');
     }
@@ -375,6 +382,12 @@ export function createCoordinator(metadata) {
   // their tokens and the policy on the task. Store/error calls deliver
   // settlements to the wasm side; join_done resumes once the policy is
   // satisfied, reject_<j> fails fast. Late settlements are dropped.
+  // A member awaited before the join issues carries the sentinel token 0
+  // in the reqs array (real tokens are fresh heap pointers, never 0);
+  // its value is already stored wasm-side, so the member resolves here
+  // to PRE_RESOLVED and is counted without a store/lower. For race/any
+  // a pre-resolved winner is recorded via the join_mark export.
+  const PRE_RESOLVED = {};
   function runJoin(task, site) {
     const join = task.pendingJoin;
     task.pendingJoin = null;
@@ -392,6 +405,10 @@ export function createCoordinator(metadata) {
     }
     const members = new Array(reqs.length);
     for (let i = 0; i < reqs.length; ++i) {
+      if (reqs[i] === 0) {
+        members[i] = Promise.resolve(PRE_RESOLVED);
+        continue;
+      }
       const p = joinMembers.get(reqs[i]);
       if (!p) {
         failJoin(task, site, 'async coordinator: unknown join member ' + reqs[i]);
@@ -406,6 +423,10 @@ export function createCoordinator(metadata) {
       members.forEach(function (p, i) {
         p.then(function (v) {
           if (settled) return;
+          if (v === PRE_RESOLVED) {
+            if (--remaining === 0) { settled = true; finishJoin(task, site); }
+            return;
+          }
           let lowered;
           try {
             lowered = lower(v, site.kind, site.nullable);
@@ -436,6 +457,16 @@ export function createCoordinator(metadata) {
         p.then(function (v) {
           if (settled) return;
           settled = true;
+          if (v === PRE_RESOLVED) {
+            try {
+              wasmExports[site.markExport](task.handle, i);
+            } catch (e) {
+              settleError(task, e);
+              return;
+            }
+            finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
             lowered = lower(v, site.kind, site.nullable);
@@ -462,6 +493,10 @@ export function createCoordinator(metadata) {
       let remaining = members.length;
       members.forEach(function (p, i) {
         p.then(function (v) {
+          if (v === PRE_RESOLVED) {
+            if (--remaining === 0) finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
             lowered = lower(v, site.kind, site.nullable);
@@ -492,6 +527,16 @@ export function createCoordinator(metadata) {
         p.then(function (v) {
           if (settled) return;
           settled = true;
+          if (v === PRE_RESOLVED) {
+            try {
+              wasmExports[site.markExport](task.handle, i);
+            } catch (e) {
+              settleError(task, e);
+              return;
+            }
+            finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
             lowered = lower(v, site.kind, site.nullable);
@@ -542,7 +587,7 @@ export function createCoordinator(metadata) {
     }
     const innerMeta = innerFunctionsByKey.get(task.fn.fileBase + "\0" + siteMeta.innerExportName);
     if (!innerMeta) {
-      settleError(task, new Error("async coordinator: nested async function '" + siteMeta.innerExportName + "' cannot be driven"));
+      settleError(task, new Error("async coordinator: nested async function '" + siteMeta.innerExportName.split('#').pop() + "' cannot be driven"));
       return;
     }
     const innerTask = {

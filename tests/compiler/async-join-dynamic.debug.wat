@@ -77,6 +77,7 @@
  (export "__async_async_join_dynamic_dynamicAll_join_store_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_store_0))
  (export "__async_async_join_dynamic_dynamicAll_join_error_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_error_0))
  (export "__async_async_join_dynamic_dynamicAll_join_done_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_done_0))
+ (export "__async_async_join_dynamic_dynamicAll_join_mark_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0))
  (export "__async_async_join_dynamic_dynamicAll_reject_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_reject_0))
  (export "__async_async_join_dynamic_dynamicAll_result" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_result))
  (export "__async_async_join_dynamic_dynamicAll_error" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_error))
@@ -85,6 +86,7 @@
  (export "__async_async_join_dynamic_dynamicEmpty_join_store_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_store_0))
  (export "__async_async_join_dynamic_dynamicEmpty_join_error_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_error_0))
  (export "__async_async_join_dynamic_dynamicEmpty_join_done_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_done_0))
+ (export "__async_async_join_dynamic_dynamicEmpty_join_mark_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0))
  (export "__async_async_join_dynamic_dynamicEmpty_reject_0" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_reject_0))
  (export "__async_async_join_dynamic_dynamicEmpty_result" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_result))
  (export "__async_async_join_dynamic_dynamicEmpty_error" (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_error))
@@ -8101,6 +8103,53 @@
   local.get $1
   return
  )
+ (func $async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join-dynamic/__Cps_dynamicAll#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join-dynamic/__Cps_dynamicAll#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join-dynamic/__Cps_dynamicAll#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $async-join-dynamic/__async_async_join_dynamic_dynamicAll_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8629,6 +8678,53 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
   return
+ )
+ (func $async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join-dynamic/__Cps_dynamicEmpty#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join-dynamic/__Cps_dynamicEmpty#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join-dynamic/__Cps_dynamicEmpty#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
@@ -9458,6 +9554,23 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join-dynamic/__async_async_join_dynamic_dynamicAll_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicAll_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9614,6 +9727,23 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $export:async-join-dynamic/__async_async_join_dynamic_dynamicEmpty_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)

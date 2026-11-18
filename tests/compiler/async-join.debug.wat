@@ -87,6 +87,7 @@
  (export "__async_async_join_allNumbers_join_store_0" (func $export:async-join/__async_async_join_allNumbers_join_store_0))
  (export "__async_async_join_allNumbers_join_error_0" (func $export:async-join/__async_async_join_allNumbers_join_error_0))
  (export "__async_async_join_allNumbers_join_done_0" (func $export:async-join/__async_async_join_allNumbers_join_done_0))
+ (export "__async_async_join_allNumbers_join_mark_0" (func $export:async-join/__async_async_join_allNumbers_join_mark_0))
  (export "__async_async_join_allNumbers_reject_0" (func $export:async-join/__async_async_join_allNumbers_reject_0))
  (export "__async_async_join_allNumbers_result" (func $export:async-join/__async_async_join_allNumbers_result))
  (export "__async_async_join_allNumbers_error" (func $export:async-join/__async_async_join_allNumbers_error))
@@ -95,6 +96,7 @@
  (export "__async_async_join_allFailFast_join_store_0" (func $export:async-join/__async_async_join_allFailFast_join_store_0))
  (export "__async_async_join_allFailFast_join_error_0" (func $export:async-join/__async_async_join_allFailFast_join_error_0))
  (export "__async_async_join_allFailFast_join_done_0" (func $export:async-join/__async_async_join_allFailFast_join_done_0))
+ (export "__async_async_join_allFailFast_join_mark_0" (func $export:async-join/__async_async_join_allFailFast_join_mark_0))
  (export "__async_async_join_allFailFast_reject_0" (func $export:async-join/__async_async_join_allFailFast_reject_0))
  (export "__async_async_join_allFailFast_result" (func $export:async-join/__async_async_join_allFailFast_result))
  (export "__async_async_join_allFailFast_error" (func $export:async-join/__async_async_join_allFailFast_error))
@@ -103,6 +105,7 @@
  (export "__async_async_join_allEmpty_join_store_0" (func $export:async-join/__async_async_join_allEmpty_join_store_0))
  (export "__async_async_join_allEmpty_join_error_0" (func $export:async-join/__async_async_join_allEmpty_join_error_0))
  (export "__async_async_join_allEmpty_join_done_0" (func $export:async-join/__async_async_join_allEmpty_join_done_0))
+ (export "__async_async_join_allEmpty_join_mark_0" (func $export:async-join/__async_async_join_allEmpty_join_mark_0))
  (export "__async_async_join_allEmpty_reject_0" (func $export:async-join/__async_async_join_allEmpty_reject_0))
  (export "__async_async_join_allEmpty_result" (func $export:async-join/__async_async_join_allEmpty_result))
  (export "__async_async_join_allEmpty_error" (func $export:async-join/__async_async_join_allEmpty_error))
@@ -8395,6 +8398,53 @@
   local.get $1
   return
  )
+ (func $async-join/__async_async_join_allNumbers_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join/__Cps_allNumbers#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join/__Cps_allNumbers#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join/__Cps_allNumbers#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $async-join/__async_async_join_allNumbers_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8924,6 +8974,53 @@
   local.get $1
   return
  )
+ (func $async-join/__async_async_join_allFailFast_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join/__Cps_allFailFast#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join/__Cps_allFailFast#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join/__Cps_allFailFast#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $async-join/__async_async_join_allFailFast_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9452,6 +9549,53 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
   return
+ )
+ (func $async-join/__async_async_join_allEmpty_join_mark_0 (param $state i32) (param $index i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $async-join/__Cps_allEmpty#get:state
+  i32.const 1
+  i32.ne
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   return
+  end
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $index
+  call $async-join/__Cps_allEmpty#set:__joinIdx0
+  local.get $state
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  i32.const 1
+  call $async-join/__Cps_allEmpty#set:__joinHasValue0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $async-join/__async_async_join_allEmpty_reject_0 (param $state i32) (param $message i32) (result i32)
   (local $2 i32)
@@ -10281,6 +10425,23 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join/__async_async_join_allNumbers_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join/__async_async_join_allNumbers_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-join/__async_async_join_allNumbers_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10438,6 +10599,23 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join/__async_async_join_allFailFast_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join/__async_async_join_allFailFast_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $export:async-join/__async_async_join_allFailFast_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10594,6 +10772,23 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $export:async-join/__async_async_join_allEmpty_join_mark_0 (param $0 i32) (param $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-join/__async_async_join_allEmpty_join_mark_0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
  )
  (func $export:async-join/__async_async_join_allEmpty_reject_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
