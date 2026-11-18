@@ -85,6 +85,7 @@ import {
   Program,
   FunctionPrototype,
   Function,
+  Class,
   File,
   Element,
   ElementKind,
@@ -309,8 +310,10 @@ class PreparedJoin {
 /** One async function or method awaiting the pre-passes and the core. */
 interface TransformWorkItem {
   prototype: FunctionPrototype;
-  /** Whether the prototype is an instance method (receiver via `this`). */
+  /** Whether the prototype is a method (instance or static). */
   isMethod: bool;
+  /** Whether the method is static (no receiver; the class is the qualifier). */
+  isStatic: bool;
   /** Enclosing class, for methods and for arrows closing over a receiver. */
   receiverClass: ClassPrototype | null;
   /** Element generated declarations are registered under. */
@@ -355,6 +358,7 @@ export function transformAsyncFunctions(program: Program): void {
       worklist.push({
         prototype,
         isMethod: false,
+        isStatic: false,
         receiverClass: null,
         genParent: file,
         qualName: prototype.name,
@@ -369,6 +373,7 @@ export function transformAsyncFunctions(program: Program): void {
       worklist.push({
         prototype,
         isMethod: true,
+        isStatic: !prototype.is(CommonFlags.Instance),
         receiverClass,
         genParent: receiverClass.parent,
         qualName: `${receiverClass.name}_${prototype.name}`,
@@ -388,7 +393,9 @@ export function transformAsyncFunctions(program: Program): void {
       if (program.rejectedAsyncFunctions.has(prototype)) continue;
       // Instance methods resolve through a prototype bound to the
       // resolved class; bind up front so the pre-passes, the core and
-      // the compiler guard all see the same prototype.
+      // the compiler guard all see the same prototype. Static methods
+      // stay unbound: toBound asserts Instance, and a static has no
+      // receiver to bind.
       let transformPrototype = prototype;
       let fail = (message: string, range: Range): void => {
         program.error(DiagnosticCode.Not_implemented_0, range, message);
@@ -410,12 +417,15 @@ export function transformAsyncFunctions(program: Program): void {
           program.rejectedAsyncFunctions.add(prototype);
           continue;
         }
-        transformPrototype = prototype.toBound(classInstance);
+        if (!item.isStatic) transformPrototype = prototype.toBound(classInstance);
       } else if (prototype.parent.kind == ElementKind.Namespace) {
         fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
         continue;
       }
       if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
+      // Static methods have no receiver: arrows inside them close over
+      // the class name, not an instance, so the lift sees no receiver.
+      let hasReceiver = (item.isMethod && !item.isStatic) || (!item.isMethod && item.receiverClass != null);
       let ctx: LiftContext = {
         program,
         file,
@@ -423,8 +433,8 @@ export function transformAsyncFunctions(program: Program): void {
         qualName: item.qualName,
         stateClassName: cpsStateClassName(item.qualName),
         stateGlobalName: cpsStateGlobalName(fileBase, item.qualName),
-        hasReceiver: item.isMethod || item.receiverClass != null,
-        receiverClass: item.receiverClass,
+        hasReceiver,
+        receiverClass: item.isStatic ? null : item.receiverClass,
         aliases
       };
       let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, fail);
@@ -432,7 +442,7 @@ export function transformAsyncFunctions(program: Program): void {
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod, item.receiverClass, classNews);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, classNews);
       transform.run();
     }
   }
@@ -445,6 +455,7 @@ function arrowWorkItem(arrow: ArrowWorkItem): TransformWorkItem {
   return {
     prototype: arrow.prototype,
     isMethod: false,
+    isStatic: false,
     receiverClass: arrow.receiverClass,
     genParent: arrow.genParent,
     qualName: arrow.prototype.name,
@@ -485,6 +496,22 @@ function collectAsyncFunctions(
           }
         }
       }
+      // Static async methods live in the class's own members, not in
+      // instanceMembers; they transform like methods with no receiver.
+      let staticMembers = prototype.members;
+      if (staticMembers) {
+        let staticValues = Map_values(staticMembers);
+        for (let j = 0, l = staticValues.length; j < l; ++j) {
+          let staticMember = staticValues[j];
+          if (
+            staticMember.kind == ElementKind.FunctionPrototype &&
+            staticMember.is(CommonFlags.Async) &&
+            (<FunctionPrototype>staticMember).declaration.kind == NodeKind.MethodDeclaration
+          ) {
+            methods.push(<FunctionPrototype>staticMember);
+          }
+        }
+      }
     }
   }
 }
@@ -516,8 +543,10 @@ class AsyncFunctionTransform {
   private fileBase: string;
   /** Element generated declarations are registered under. */
   private genParent: Element;
-  /** Whether the prototype is an instance method (receiver via `this`). */
+  /** Whether the prototype is a method (instance or static). */
   private isMethod: bool;
+  /** Whether the method is static (no receiver local, no receiver param). */
+  private isStatic: bool;
   /** Enclosing class, for methods; `null` for plain functions. */
   private receiverClass: ClassPrototype | null;
   /** Classes whose `__async_<file>_<Class>_new` export was already
@@ -546,6 +575,7 @@ class AsyncFunctionTransform {
     qualName: string,
     genParent: Element,
     isMethod: bool,
+    isStatic: bool,
     receiverClass: ClassPrototype | null,
     classNews: Set<ClassPrototype>
   ) {
@@ -553,6 +583,7 @@ class AsyncFunctionTransform {
     this.parent = prototype.parent;
     this.genParent = genParent;
     this.isMethod = isMethod;
+    this.isStatic = isStatic;
     this.receiverClass = receiverClass;
     this.classNews = classNews;
     this.fnName = qualName;
@@ -638,7 +669,7 @@ class AsyncFunctionTransform {
       let outcome = this.declareLocal(parameter.name.text, parameter.type, parameterTypes[i], parameter.name.range, parameter, true);
       if (outcome != TransformOutcome.Transformed) return outcome;
     }
-    if (this.isMethod) {
+    if (this.isMethod && !this.isStatic) {
       let receiverType = signature.thisType;
       if (!receiverType) {
         this.fail("Async methods need a receiver type", this.declaration.name.range);
@@ -1635,7 +1666,14 @@ class AsyncFunctionTransform {
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
     let access = <PropertyAccessExpression>call.expression;
-    let receiverClass = this.receiverClassOf(unwrapParens(access.expression), node);
+    let receiver = unwrapParens(access.expression);
+    if (receiver.kind == NodeKind.Identifier) {
+      let element = assert(this.flow).lookup((<IdentifierExpression>receiver).text);
+      if (element && element.kind == ElementKind.ClassPrototype) {
+        return this.transformStaticAwait(node, call, <ClassPrototype>element, access.property.text, used);
+      }
+    }
+    let receiverClass = this.receiverClassOf(receiver, node);
     if (!receiverClass) return null;
     let method = this.lookupInstanceMethod(receiverClass, access.property.text);
     if (!method || !method.is(CommonFlags.Async) || method.declaration.kind != NodeKind.MethodDeclaration) {
@@ -1659,6 +1697,47 @@ class AsyncFunctionTransform {
     return this.transformNestedAwait(call, `${declaringClass.name}_${method.name}`, node, used);
   }
 
+  /** Awaits a static call (`await C.method(...)`) as a nested site: the
+   *  static is a free function with a class qualifier, so the outer step
+   *  calls it and the coordinator drives the inner task by qualName. */
+  private transformStaticAwait(node: AwaitExpression, call: CallExpression, classPrototype: ClassPrototype, methodName: string, used: bool): AwaitSite | null {
+    let method = this.lookupStaticMethod(classPrototype, methodName);
+    if (!method || !method.is(CommonFlags.Async) || method.declaration.kind != NodeKind.MethodDeclaration) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    let declaringClass = <ClassPrototype>method.parent;
+    let typeParameters = declaringClass.typeParameterNodes;
+    if (typeParameters && typeParameters.length > 0) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    if (declaringClass.parent.kind == ElementKind.Namespace) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    if (method.declaration.range.source != this.file.source) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    return this.transformNestedAwait(call, `${declaringClass.name}_${method.name}`, node, used);
+  }
+
+  /** Finds a static method by name, walking the base-class chain, so an
+   *  inherited static async method resolves to its declaring class. */
+  private lookupStaticMethod(cls: ClassPrototype, name: string): FunctionPrototype | null {
+    let prototype: ClassPrototype | null = cls;
+    while (prototype) {
+      let members = prototype.members;
+      if (members) {
+        let member = members.get(name);
+        if (member && member.kind == ElementKind.FunctionPrototype) return <FunctionPrototype>member;
+      }
+      prototype = prototype.basePrototype;
+    }
+    return null;
+  }
+
   /** Resolves the receiver expression to its class prototype, or `null`
    *  after failing loudly (not a class) or punting (unresolvable). A
    *  lifted local, including the `__async_this` receiver, reads its type
@@ -1666,13 +1745,6 @@ class AsyncFunctionTransform {
   private receiverClassOf(receiver: Expression, node: AwaitExpression): ClassPrototype | null {
     if (receiver.kind == NodeKind.Identifier) {
       let name = (<IdentifierExpression>receiver).text;
-      let element = assert(this.flow).lookup(name);
-      if (element && element.kind == ElementKind.ClassPrototype) {
-        // A static call (`await C.method(...)`): the receiver names a
-        // type, not an instance, and static async methods are out of scope.
-        this.fail("'await' of a member call is not yet supported", node.range);
-        return null;
-      }
       let binding = this.scope.lookup(name);
       if (binding && !binding.shadowed) {
         for (let i = 0, k = this.fields.length; i < k; ++i) {
@@ -2462,6 +2534,15 @@ class AsyncFunctionTransform {
       if (this.hasNameCollision(this.methodEntryName())) return false;
       emitEntry = true;
     }
+    // An instance async method named `dispose` would be shadowed by the
+    // wrapper's sync dispose(): the wrapper cannot carry both, so the
+    // conflict fails loudly with the remedy. A static async `dispose`
+    // lives on the constructor, not the prototype, and a non-exported
+    // class gets no wrapper, so neither collides.
+    if (emitEntry && !this.isStatic && this.prototype.name == "dispose") {
+      this.fail("Async method 'dispose' conflicts with the coordinator's generated dispose() method on the wrapper class; rename the method", this.declaration.name.range);
+      return false;
+    }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       if (this.sites[i].isJoin) {
         if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
@@ -3241,13 +3322,16 @@ class AsyncFunctionTransform {
       }
     }
     let entryParams = new Array<ParameterNode>();
-    entryParams.push(new ParameterNode(
-      ParameterKind.Default,
-      ident(receiverName, range),
-      namedType(receiverClass.name, null, false, range),
-      null,
-      range
-    ));
+    // A static entry takes no receiver: the call qualifies the class.
+    if (!this.isStatic) {
+      entryParams.push(new ParameterNode(
+        ParameterKind.Default,
+        ident(receiverName, range),
+        namedType(receiverClass.name, null, false, range),
+        null,
+        range
+      ));
+    }
     let callArgs = new Array<Expression>();
     let signature = assert(this.instance).signature;
     for (let i = 0, k = parameters.length; i < k; ++i) {
@@ -3279,7 +3363,11 @@ class AsyncFunctionTransform {
         ident("changetype", range),
         [ namedType("i32", null, false, range) ],
         [ callExpr(
-          new PropertyAccessExpression(ident(receiverName, range), ident(this.prototype.name, range), range),
+          new PropertyAccessExpression(
+            this.isStatic ? ident(receiverClass.name, range) : ident(receiverName, range),
+            ident(this.prototype.name, range),
+            range
+          ),
           callArgs,
           range
         ) ],
@@ -3298,8 +3386,7 @@ class AsyncFunctionTransform {
     let className = receiverClass.name;
     let parameters = new Array<ParameterNode>();
     let args = new Array<Expression>();
-    let thisType = assert(this.instance).signature.thisType;
-    let classInstance = thisType ? thisType.getClass() : null;
+    let classInstance = this.resolveNewClass(receiverClass);
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
@@ -3352,6 +3439,18 @@ class AsyncFunctionTransform {
       ident(this.classNewName(receiverClass), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
+  }
+
+  /** Resolves the class for the `_new` export. An instance method reads
+   *  it off its receiver type; a static method has no receiver type, so
+   *  the class resolves directly (it already resolved in the worklist). */
+  private resolveNewClass(receiverClass: ClassPrototype): Class | null {
+    let thisType = assert(this.instance).signature.thisType;
+    if (thisType) {
+      let classInstance = thisType.getClass();
+      if (classInstance) return classInstance;
+    }
+    return this.program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Swallow);
   }
 
   private buildWrapperBody(): BlockStatement {
@@ -3433,7 +3532,7 @@ class AsyncFunctionTransform {
         range
       )));
     }
-    if (this.isMethod) {
+    if (this.isMethod && !this.isStatic) {
       let receiverBinding = this.scope.lookup(ASYNC_THIS_NAME);
       assert(receiverBinding != null);
       body.push(exprStmt(assignExpr(

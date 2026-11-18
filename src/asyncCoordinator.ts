@@ -46,7 +46,9 @@ import {
   findExportName,
   collectSuspendingImports,
   findImportName,
-  qualNameOf
+  qualNameOf,
+  methodClassOf,
+  isStaticMethod
 } from "./asyncCoordinatorMeta";
 
 /** Builds metadata for one transformed async function, or `null` (with a
@@ -218,23 +220,26 @@ function buildFunctionMeta(
 
 /** Builds metadata for one transformed async method on an exported class,
  *  or `null` when it cannot be driven. A method on a non-exported class
- *  is skipped silently (no wrapper class in v1); any other failure warns.
+ *  is skipped silently by design (no wrapper class: the class is not
+ *  nameable from JS, so its methods stay reachable only as nested
+ *  inners); any other failure warns.
  *  The resolved signature's parameterTypes are the declared params only —
  *  the receiver lives in signature.thisType — so they describe as-is and
- *  the runtime prepends the raw pointer. */
+ *  the runtime prepends the raw pointer. A static method has no receiver
+ *  at all: its entry takes only the declared params. */
 function buildMethodMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[]
 ): MethodMeta | null {
-  let bound = prototype.getBoundClassOrInterface();
-  if (!bound) return null;
+  let cls = methodClassOf(prototype);
+  if (!cls) return null;
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);
     return null;
   }
-  if (!findExportName(program, file, bound.prototype)) return null;
+  if (!findExportName(program, file, cls)) return null;
   let qualName = qualNameOf(prototype);
   let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
   if (!meta) return null;
@@ -242,6 +247,7 @@ function buildMethodMeta(
     ...meta,
     exportName: null,
     name: prototype.name,
+    isStatic: isStaticMethod(prototype),
     entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
   };
 }
@@ -366,7 +372,7 @@ function buildInnerMeta(
     if (qualNameOf(prototype) != innerQual) continue;
     let innerFile = owningFile(prototype);
     if (!innerFile || innerFile != file) continue;
-    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
+    let lookupParent: Element = methodClassOf(prototype) ? innerFile : prototype.parent;
     return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
   }
   return null;
@@ -420,10 +426,10 @@ export function buildAsyncCoordinator(program: Program): string | null {
   let entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
   let methodEntries: Array<{ prototype: FunctionPrototype, meta: MethodMeta, classPrototype: ClassPrototype }> = [];
   for (let prototype of program.transformedAsyncFunctions) {
-    let bound = prototype.getBoundClassOrInterface();
-    if (bound && bound.kind == ElementKind.Class) {
+    let cls = methodClassOf(prototype);
+    if (cls) {
       let meta = buildMethodMeta(program, prototype, notes);
-      if (meta) methodEntries.push({ prototype, meta, classPrototype: bound.prototype });
+      if (meta) methodEntries.push({ prototype, meta, classPrototype: cls });
     } else {
       let meta = buildFunctionMeta(program, prototype, notes, false, prototype.name, prototype.parent);
       if (meta) entries.push({ prototype, meta });

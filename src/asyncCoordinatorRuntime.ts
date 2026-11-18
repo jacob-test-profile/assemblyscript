@@ -705,7 +705,9 @@ export function createCoordinator(metadata) {
   // Builds one JS wrapper class for a metadata class entry. The
   // constructor allocates the instance through the generated _new export
   // and pins it, so the GC cannot collect it between tasks; each async
-  // method drives its task with the stored pointer as the receiver.
+  // method drives its task with the stored pointer as the receiver, and
+  // each static async method lives on the constructor and drives
+  // through its entry with the declared params only.
   // dispose() releases the pin and is idempotent; a disposed wrapper
   // refuses further method calls instead of trapping on a dead pointer.
   // A constructor that traps throws out of new, so no half-constructed
@@ -724,10 +726,16 @@ export function createCoordinator(metadata) {
       try { pin(ptr); } catch (e) { /* pinning is best-effort; the task handle root covers suspension */ }
     }
     cls.methods.forEach(function (method) {
-      Wrapper.prototype[method.name] = function () {
-        if (!this.pointer) throw new Error("async coordinator: '" + cls.name + "' instance has been disposed");
-        return callAsync(method, Array.prototype.slice.call(arguments), this.pointer);
-      };
+      if (method.isStatic) {
+        Wrapper[method.name] = function () {
+          return callAsync(method, Array.prototype.slice.call(arguments));
+        };
+      } else {
+        Wrapper.prototype[method.name] = function () {
+          if (!this.pointer) throw new Error("async coordinator: '" + cls.name + "' instance has been disposed");
+          return callAsync(method, Array.prototype.slice.call(arguments), this.pointer);
+        };
+      }
     });
     Wrapper.prototype.dispose = function () {
       if (!this.pointer) return;

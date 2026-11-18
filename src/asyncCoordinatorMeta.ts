@@ -7,6 +7,7 @@
  */
 
 import {
+  NodeKind,
   SourceKind
 } from "./ast";
 
@@ -22,6 +23,7 @@ import {
 import {
   Program,
   FunctionPrototype,
+  ClassPrototype,
   Element,
   ElementKind,
   File
@@ -82,13 +84,17 @@ export interface FunctionMeta {
  *  FunctionMeta, but the method is not a top-level api function
  *  (exportName is `null`) and is driven through its entry export instead.
  *  `params` describes only the declared params: the receiver is a raw
- *  pointer the runtime prepends, never a described value. */
+ *  pointer the runtime prepends, never a described value. A static
+ *  method has no receiver: the runtime puts it on the wrapper
+ *  constructor instead of the prototype. */
 export interface MethodMeta extends FunctionMeta {
   exportName: null;
   /** AS method name, e.g. `add`: the runtime puts the Promise-returning
    *  method on the wrapper prototype under this name. It is not derived
    *  from entryExport — the fileBase in there may contain underscores. */
   name: string;
+  /** Whether the method is static (driven without a receiver). */
+  isStatic: boolean;
   /** `__async_<file>_<Class>_<method>_entry` (chunk A). */
   entryExport: string;
 }
@@ -205,12 +211,33 @@ export function describeParams(types: Type[], owner: string): { params: ValueDes
   return { params: out, reason: null };
 }
 
+/** Whether a method prototype is a static method (a MethodDeclaration
+ *  without the Instance flag; statics live in the class's own members). */
+export function isStaticMethod(prototype: FunctionPrototype): bool {
+  return prototype.declaration.kind == NodeKind.MethodDeclaration
+    && !prototype.is(CommonFlags.Instance);
+}
+
+/** Finds the class prototype a method prototype belongs to: the bound
+ *  class for an instance method, the parent class prototype for a static
+ *  method (statics are never bound: toBound asserts Instance). Returns
+ *  `null` for a plain function. */
+export function methodClassOf(prototype: FunctionPrototype): ClassPrototype | null {
+  let bound = prototype.getBoundClassOrInterface();
+  if (bound) return bound.prototype;
+  if (
+    prototype.declaration.kind == NodeKind.MethodDeclaration &&
+    prototype.parent.kind == ElementKind.ClassPrototype
+  ) return <ClassPrototype>prototype.parent;
+  return null;
+}
+
 /** Qualified name used for all generated names: `Class_method` for a bound
  *  method prototype (the transform binds methods to the resolved class, so
  *  the parent chain carries the class), the plain name otherwise. */
 export function qualNameOf(prototype: FunctionPrototype): string {
-  let bound = prototype.getBoundClassOrInterface();
-  if (bound) return bound.prototype.name + "_" + prototype.name;
+  let cls = methodClassOf(prototype);
+  if (cls) return cls.name + "_" + prototype.name;
   return prototype.name;
 }
 

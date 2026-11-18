@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: Async method 'dispose' conflicts with the coordinator's generated dispose() method on the wrapper class; rename the method","AS235: Only variables, functions and enums become WebAssembly module exports."]}
