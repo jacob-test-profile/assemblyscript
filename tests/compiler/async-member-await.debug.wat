@@ -35,9 +35,9 @@
  (global $async-member-await/__async_roots_W_viaThis (mut i32) (i32.const 0))
  (global $async-member-await/__async_roots_W_viaNested (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 624))
- (global $~lib/memory/__data_end i32 (i32.const 704))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33472))
- (global $~lib/memory/__heap_base i32 (i32.const 33472))
+ (global $~lib/memory/__data_end i32 (i32.const 708))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33476))
+ (global $~lib/memory/__heap_base i32 (i32.const 33476))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -52,7 +52,7 @@
  (data $10 (i32.const 508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0c\00\00\00c\00a\00t\00c\00h\00:\00")
  (data $12 (i32.const 572) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00i\00n\00n\00e\00r\00-\00b\00o\00o\00m\00\00\00\00\00\00\00\00\00")
- (data $13 (i32.const 624) "\13\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $13 (i32.const 624) "\14\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "viaObj" (func $async-member-await/viaObj))
@@ -71,23 +71,27 @@
  (export "__async_async_member_await_viaObj_reject_0" (func $export:async-member-await/__async_async_member_await_viaObj_reject_0))
  (export "__async_async_member_await_viaObj_result" (func $export:async-member-await/__async_async_member_await_viaObj_result))
  (export "__async_async_member_await_viaObj_error" (func $export:async-member-await/__async_async_member_await_viaObj_error))
+ (export "__async_async_member_await_viaObj_errorValue" (func $export:async-member-await/__async_async_member_await_viaObj_errorValue))
  (export "__async_async_member_await_viaObj_status" (func $export:async-member-await/__async_async_member_await_viaObj_status))
  (export "__async_async_member_await_viaNew_pending_0" (func $export:async-member-await/__async_async_member_await_viaNew_pending_0))
  (export "__async_async_member_await_viaNew_resume_0" (func $export:async-member-await/__async_async_member_await_viaNew_resume_0))
  (export "__async_async_member_await_viaNew_reject_0" (func $export:async-member-await/__async_async_member_await_viaNew_reject_0))
  (export "__async_async_member_await_viaNew_result" (func $export:async-member-await/__async_async_member_await_viaNew_result))
  (export "__async_async_member_await_viaNew_error" (func $export:async-member-await/__async_async_member_await_viaNew_error))
+ (export "__async_async_member_await_viaNew_errorValue" (func $export:async-member-await/__async_async_member_await_viaNew_errorValue))
  (export "__async_async_member_await_viaNew_status" (func $export:async-member-await/__async_async_member_await_viaNew_status))
  (export "__async_async_member_await_viaObjGuarded_pending_0" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_pending_0))
  (export "__async_async_member_await_viaObjGuarded_resume_0" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_resume_0))
  (export "__async_async_member_await_viaObjGuarded_reject_0" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_reject_0))
  (export "__async_async_member_await_viaObjGuarded_result" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_result))
  (export "__async_async_member_await_viaObjGuarded_error" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_error))
+ (export "__async_async_member_await_viaObjGuarded_errorValue" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_errorValue))
  (export "__async_async_member_await_viaObjGuarded_status" (func $export:async-member-await/__async_async_member_await_viaObjGuarded_status))
  (export "__async_async_member_await_W_helper_resume_0" (func $export:async-member-await/__async_async_member_await_W_helper_resume_0))
  (export "__async_async_member_await_W_helper_reject_0" (func $export:async-member-await/__async_async_member_await_W_helper_reject_0))
  (export "__async_async_member_await_W_helper_result" (func $export:async-member-await/__async_async_member_await_W_helper_result))
  (export "__async_async_member_await_W_helper_error" (func $export:async-member-await/__async_async_member_await_W_helper_error))
+ (export "__async_async_member_await_W_helper_errorValue" (func $export:async-member-await/__async_async_member_await_W_helper_errorValue))
  (export "__async_async_member_await_W_helper_status" (func $export:async-member-await/__async_async_member_await_W_helper_status))
  (export "__async_async_member_await_W_helper_entry" (func $export:async-member-await/__async_async_member_await_W_helper_entry))
  (export "__async_async_member_await_W_viaThis_pending_0" (func $export:async-member-await/__async_async_member_await_W_viaThis_pending_0))
@@ -95,6 +99,7 @@
  (export "__async_async_member_await_W_viaThis_reject_0" (func $export:async-member-await/__async_async_member_await_W_viaThis_reject_0))
  (export "__async_async_member_await_W_viaThis_result" (func $export:async-member-await/__async_async_member_await_W_viaThis_result))
  (export "__async_async_member_await_W_viaThis_error" (func $export:async-member-await/__async_async_member_await_W_viaThis_error))
+ (export "__async_async_member_await_W_viaThis_errorValue" (func $export:async-member-await/__async_async_member_await_W_viaThis_errorValue))
  (export "__async_async_member_await_W_viaThis_status" (func $export:async-member-await/__async_async_member_await_W_viaThis_status))
  (export "__async_async_member_await_W_viaThis_entry" (func $export:async-member-await/__async_async_member_await_W_viaThis_entry))
  (export "__async_async_member_await_W_viaNested_pending_0" (func $export:async-member-await/__async_async_member_await_W_viaNested_pending_0))
@@ -102,6 +107,7 @@
  (export "__async_async_member_await_W_viaNested_reject_0" (func $export:async-member-await/__async_async_member_await_W_viaNested_reject_0))
  (export "__async_async_member_await_W_viaNested_result" (func $export:async-member-await/__async_async_member_await_W_viaNested_result))
  (export "__async_async_member_await_W_viaNested_error" (func $export:async-member-await/__async_async_member_await_W_viaNested_error))
+ (export "__async_async_member_await_W_viaNested_errorValue" (func $export:async-member-await/__async_async_member_await_W_viaNested_errorValue))
  (export "__async_async_member_await_W_viaNested_status" (func $export:async-member-await/__async_async_member_await_W_viaNested_status))
  (export "__async_async_member_await_W_viaNested_entry" (func $export:async-member-await/__async_async_member_await_W_viaNested_entry))
  (start $~start)
@@ -2582,20 +2588,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_viaObj#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_viaObj#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_viaObj#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_viaObj#set:__cps_w_1 (param $this i32) (param $__cps_w_1 i32)
   local.get $this
   local.get $__cps_w_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_w_1
   i32.const 0
@@ -2604,12 +2619,12 @@
  (func $async-member-await/__Cps_viaObj#set:__cps_h_2 (param $this i32) (param $__cps_h_2 i32)
   local.get $this
   local.get $__cps_h_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-member-await/__Cps_viaObj#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $~lib/array/Array<async-member-await/__Cps_viaObj>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2688,11 +2703,11 @@
  )
  (func $async-member-await/__Cps_viaObj#get:__cps_w_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-member-await/__Cps_viaObj#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-member-await/__Cps_W_helper#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2713,20 +2728,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_W_helper#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_W_helper#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_W_helper#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_W_helper#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2735,7 +2759,7 @@
  (func $async-member-await/__Cps_W_helper#set:__cps_m_2 (param $this i32) (param $__cps_m_2 i32)
   local.get $this
   local.get $__cps_m_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-member-await/__Cps_W_helper>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2751,15 +2775,15 @@
  )
  (func $async-member-await/__Cps_W_helper#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-member-await/__Cps_W_helper#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-member-await/__Cps_W_helper#get:__cps_m_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2779,11 +2803,11 @@
  )
  (func $async-member-await/__Cps_viaObj#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-member-await/__Cps_viaObj#get:__cps_h_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-member-await/__Cps_viaNew#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2804,25 +2828,34 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_viaNew#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_viaNew#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_viaNew#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_viaNew#set:__cps_h_1 (param $this i32) (param $__cps_h_1 i32)
   local.get $this
   local.get $__cps_h_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-member-await/__Cps_viaNew#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-member-await/__Cps_viaNew>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2838,15 +2871,15 @@
  )
  (func $async-member-await/__Cps_viaNew#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-member-await/__Cps_viaNew#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-member-await/__Cps_viaNew#get:__cps_h_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2867,91 +2900,118 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_viaObjGuarded#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_viaObjGuarded#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_ret_0_1 (param $this i32) (param $__cps___async_try_ret_0_1 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_1
-  i32.store8 offset=20
+  i32.store8 offset=24
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_brk_1_2 (param $this i32) (param $__cps___async_try_brk_1_2 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_2
-  i32.store8 offset=21
+  i32.store8 offset=25
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_cnt_2_3 (param $this i32) (param $__cps___async_try_cnt_2_3 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_3
-  i32.store8 offset=22
+  i32.store8 offset=26
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendErr_3_4 (param $this i32) (param $__cps___async_try_pendErr_3_4 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps___async_try_pendErr_3_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_4_5 (param $this i32) (param $__cps___async_try_pendFail_4_5 i32)
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendVal_4_5 (param $this i32) (param $__cps___async_try_pendVal_4_5 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_5
-  i32.store8 offset=28
- )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_5_6 (param $this i32) (param $__cps___async_try_retVal_5_6 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_6
+  local.get $__cps___async_try_pendVal_4_5
   i32.store offset=32
- )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps_w_7 (param $this i32) (param $__cps_w_7 i32)
   local.get $this
-  local.get $__cps_w_7
-  i32.store offset=36
-  local.get $this
-  local.get $__cps_w_7
+  local.get $__cps___async_try_pendVal_4_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_7_8 (param $this i32) (param $__cps___async_try_flag_7_8 i32)
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_5_6 (param $this i32) (param $__cps___async_try_pendFail_5_6 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_8
-  i32.store8 offset=40
+  local.get $__cps___async_try_pendFail_5_6
+  i32.store8 offset=36
  )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_6_9 (param $this i32) (param $__cps___async_try_err_6_9 i32)
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_6_7 (param $this i32) (param $__cps___async_try_retVal_6_7 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_9
+  local.get $__cps___async_try_retVal_6_7
+  i32.store offset=40
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps_w_8 (param $this i32) (param $__cps_w_8 i32)
+  local.get $this
+  local.get $__cps_w_8
   i32.store offset=44
   local.get $this
-  local.get $__cps___async_try_err_6_9
+  local.get $__cps_w_8
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps_h_10 (param $this i32) (param $__cps_h_10 i32)
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_9_9 (param $this i32) (param $__cps___async_try_flag_9_9 i32)
   local.get $this
-  local.get $__cps_h_10
-  i32.store offset=48
+  local.get $__cps___async_try_flag_9_9
+  i32.store8 offset=48
  )
- (func $async-member-await/__Cps_viaObjGuarded#set:__cps_e_11 (param $this i32) (param $__cps_e_11 i32)
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_7_10 (param $this i32) (param $__cps___async_try_err_7_10 i32)
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
   i32.store offset=52
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_errVal_8_11 (param $this i32) (param $__cps___async_try_errVal_8_11 i32)
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps_h_12 (param $this i32) (param $__cps_h_12 i32)
+  local.get $this
+  local.get $__cps_h_12
+  i32.store offset=60
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+  local.get $this
+  local.get $__cps_e_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps_e_13
   i32.const 0
   call $~lib/rt/itcms/__link
  )
  (func $async-member-await/__Cps_viaObjGuarded#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=56
+  i32.store offset=68
  )
  (func $~lib/array/Array<async-member-await/__Cps_viaObjGuarded>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2965,49 +3025,49 @@
   local.get $this
   i32.load
  )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_7_8 (param $this i32) (result i32)
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_9_9 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=40
+  i32.load8_u offset=48
  )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps_w_7 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=36
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps_n_0 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=16
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__pend0 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_ret_0_1 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=20
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_brk_1_2 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=21
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_cnt_2_3 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=22
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_4_5 (param $this i32) (result i32)
-  local.get $this
-  i32.load8_u offset=28
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps_h_10 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=48
- )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_6_9 (param $this i32) (result i32)
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps_w_8 (param $this i32) (result i32)
   local.get $this
   i32.load offset=44
  )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps_e_11 (param $this i32) (result i32)
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps_n_0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__pend0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_ret_0_1 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=24
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_brk_1_2 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=25
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_cnt_2_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=26
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_5_6 (param $this i32) (result i32)
+  local.get $this
+  i32.load8_u offset=36
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps_h_12 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=60
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_7_10 (param $this i32) (result i32)
   local.get $this
   i32.load offset=52
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps_e_13 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=64
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -3022,13 +3082,21 @@
   i32.shr_u
   return
  )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_errVal_8_11 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=56
  )
- (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_retVal_5_6 (param $this i32) (result i32)
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendVal_4_5 (param $this i32) (result i32)
   local.get $this
   i32.load offset=32
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendErr_3_4 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=28
+ )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_retVal_6_7 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=40
  )
  (func $async-member-await/__Cps_W_viaThis#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3049,20 +3117,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_W_viaThis#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_W_viaThis#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_W_viaThis#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_W_viaThis#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -3071,12 +3148,12 @@
  (func $async-member-await/__Cps_W_viaThis#set:__cps_h_2 (param $this i32) (param $__cps_h_2 i32)
   local.get $this
   local.get $__cps_h_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-member-await/__Cps_W_viaThis#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $~lib/array/Array<async-member-await/__Cps_W_viaThis>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3092,15 +3169,15 @@
  )
  (func $async-member-await/__Cps_W_viaThis#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-member-await/__Cps_W_viaThis#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-member-await/__Cps_W_viaThis#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-member-await/W#get:total (param $this i32) (result i32)
   local.get $this
@@ -3108,7 +3185,7 @@
  )
  (func $async-member-await/__Cps_W_viaThis#get:__cps_h_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-member-await/__Cps_W_viaNested#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3129,20 +3206,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-member-await/__Cps_W_viaNested#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-member-await/__Cps_W_viaNested#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-member-await/__Cps_W_viaNested#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-member-await/__Cps_W_viaNested#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -3151,12 +3237,12 @@
  (func $async-member-await/__Cps_W_viaNested#set:__cps_h_2 (param $this i32) (param $__cps_h_2 i32)
   local.get $this
   local.get $__cps_h_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-member-await/__Cps_W_viaNested#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $~lib/array/Array<async-member-await/__Cps_W_viaNested>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3172,19 +3258,19 @@
  )
  (func $async-member-await/__Cps_W_viaNested#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-member-await/__Cps_W_viaNested#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-member-await/__Cps_W_viaNested#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-member-await/__Cps_W_viaNested#get:__cps_h_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-member-await/startViaObj (param $n i32) (result i32)
   local.get $n
@@ -3207,7 +3293,7 @@
  )
  (func $async-member-await/__Cps_viaObj#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-member-await/__Cps_viaObj#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3217,9 +3303,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-member-await/__Cps_viaObj#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-member-await/__Cps_viaNew#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-member-await/__Cps_viaNew#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3229,9 +3319,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-member-await/__Cps_viaNew#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-member-await/__Cps_viaObjGuarded#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=56
+  i32.load offset=68
  )
  (func $async-member-await/__Cps_viaObjGuarded#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3241,6 +3335,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-member-await/__Cps_viaObjGuarded#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-member-await/__Cps_W_helper#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3249,6 +3347,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-member-await/__Cps_W_helper#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-member-await/__async_async_member_await_W_new (result i32)
   i32.const 0
   call $async-member-await/W#constructor
@@ -3256,7 +3358,7 @@
  )
  (func $async-member-await/__Cps_W_viaThis#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-member-await/__Cps_W_viaThis#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3266,9 +3368,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-member-await/__Cps_W_viaThis#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-member-await/__Cps_W_viaNested#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-member-await/__Cps_W_viaNested#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3277,6 +3383,10 @@
  (func $async-member-await/__Cps_W_viaNested#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-member-await/__Cps_W_viaNested#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3344,6 +3454,24 @@
  )
  (func $~lib/object/Object~visit (param $0 i32) (param $1 i32)
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-member-await/__Cps_viaObj~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -3354,7 +3482,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3377,6 +3509,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3402,11 +3538,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=36
+  i32.load offset=28
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=32
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -3415,6 +3555,14 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3440,7 +3588,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3466,7 +3618,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3492,7 +3648,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3535,31 +3695,37 @@
              block $async-member-await/__Cps_viaNew
               block $~lib/array/Array<async-member-await/__Cps_viaObj>
                block $async-member-await/__Cps_viaObj
-                block $async-member-await/W
-                 block $~lib/promise/Promise<i32>
-                  block $~lib/arraybuffer/ArrayBufferView
-                   block $~lib/string/String
-                    block $~lib/arraybuffer/ArrayBuffer
-                     block $~lib/object/Object
-                      local.get $0
-                      i32.const 8
-                      i32.sub
-                      i32.load
-                      br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $async-member-await/W $async-member-await/__Cps_viaObj $~lib/array/Array<async-member-await/__Cps_viaObj> $async-member-await/__Cps_viaNew $~lib/array/Array<async-member-await/__Cps_viaNew> $async-member-await/__Cps_viaObjGuarded $~lib/array/Array<async-member-await/__Cps_viaObjGuarded> $async-member-await/__Cps_W_helper $~lib/array/Array<async-member-await/__Cps_W_helper> $async-member-await/__Cps_W_viaThis $~lib/array/Array<async-member-await/__Cps_W_viaThis> $async-member-await/__Cps_W_viaNested $~lib/array/Array<async-member-await/__Cps_W_viaNested> $~lib/array/Array<i32> $invalid
+                block $~lib/error/Error
+                 block $async-member-await/W
+                  block $~lib/promise/Promise<i32>
+                   block $~lib/arraybuffer/ArrayBufferView
+                    block $~lib/string/String
+                     block $~lib/arraybuffer/ArrayBuffer
+                      block $~lib/object/Object
+                       local.get $0
+                       i32.const 8
+                       i32.sub
+                       i32.load
+                       br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $async-member-await/W $~lib/error/Error $async-member-await/__Cps_viaObj $~lib/array/Array<async-member-await/__Cps_viaObj> $async-member-await/__Cps_viaNew $~lib/array/Array<async-member-await/__Cps_viaNew> $async-member-await/__Cps_viaObjGuarded $~lib/array/Array<async-member-await/__Cps_viaObjGuarded> $async-member-await/__Cps_W_helper $~lib/array/Array<async-member-await/__Cps_W_helper> $async-member-await/__Cps_W_viaThis $~lib/array/Array<async-member-await/__Cps_W_viaThis> $async-member-await/__Cps_W_viaNested $~lib/array/Array<async-member-await/__Cps_W_viaNested> $~lib/array/Array<i32> $invalid
+                      end
+                      return
                      end
                      return
                     end
                     return
                    end
+                   local.get $0
+                   local.get $1
+                   call $~lib/arraybuffer/ArrayBufferView~visit
                    return
                   end
-                  local.get $0
-                  local.get $1
-                  call $~lib/arraybuffer/ArrayBufferView~visit
                   return
                  end
                  return
                 end
+                local.get $0
+                local.get $1
+                call $~lib/error/Error~visit
                 return
                end
                local.get $0
@@ -3667,7 +3833,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 7
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3805,7 +3971,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 9
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3943,7 +4109,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4081,7 +4247,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4219,7 +4385,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 15
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4357,7 +4523,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 17
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4487,8 +4653,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 6
+   i32.const 36
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4527,6 +4693,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_viaObj#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_viaObj#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4819,8 +4993,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 12
+   i32.const 32
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4859,6 +5033,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_W_helper#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_W_helper#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5147,7 +5329,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 14
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5665,7 +5847,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 7
+  i32.const 8
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6032,8 +6214,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 8
+   i32.const 32
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6072,6 +6254,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_viaNew#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_viaNew#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6360,7 +6550,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 9
+  i32.const 10
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6708,8 +6898,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 60
-   i32.const 10
+   i32.const 72
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6748,6 +6938,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_viaObjGuarded#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_viaObjGuarded#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6803,7 +7001,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_4_5
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendVal_4_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6811,7 +7009,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_5_6
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_5_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6819,7 +7017,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps_w_7
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_6_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6827,7 +7025,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_7_8
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps_w_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_9_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6835,7 +7041,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_6_9
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_7_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6843,7 +7049,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps_h_10
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_errVal_8_11
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps_h_12
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6851,7 +7065,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps_e_11
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps_e_13
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7223,7 +7437,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7479,7 +7693,7 @@
                       i32.store
                       local.get $2
                       i32.const 0
-                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_4_5
+                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_5_6
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
@@ -7493,7 +7707,7 @@
                       local.get $2
                       i32.store offset=4
                       local.get $2
-                      call $async-member-await/__Cps_viaObjGuarded#set:__cps_w_7
+                      call $async-member-await/__Cps_viaObjGuarded#set:__cps_w_8
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
@@ -7501,7 +7715,7 @@
                       i32.store
                       local.get $2
                       i32.const 0
-                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_7_8
+                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_9_9
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
@@ -7509,7 +7723,7 @@
                       i32.store
                       local.get $2
                       i32.const 528
-                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_6_9
+                      call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_7_10
                       local.get $this
                       local.set $2
                       global.get $~lib/memory/__stack_pointer
@@ -7526,7 +7740,7 @@
                      local.get $2
                      i32.store
                      local.get $2
-                     call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_7_8
+                     call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_9_9
                      if
                       local.get $this
                       local.set $2
@@ -7572,7 +7786,7 @@
                    local.get $2
                    i32.store offset=8
                    local.get $2
-                   call $async-member-await/__Cps_viaObjGuarded#get:__cps_w_7
+                   call $async-member-await/__Cps_viaObjGuarded#get:__cps_w_8
                    local.set $2
                    global.get $~lib/memory/__stack_pointer
                    local.get $2
@@ -7617,14 +7831,14 @@
                   i32.store offset=4
                   local.get $2
                   call $async-member-await/__Cps_viaObjGuarded#get:__pend0
-                  call $async-member-await/__Cps_viaObjGuarded#set:__cps_h_10
+                  call $async-member-await/__Cps_viaObjGuarded#set:__cps_h_12
                   local.get $this
                   local.set $2
                   global.get $~lib/memory/__stack_pointer
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_7_8
+                  call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_9_9
                   if (result i32)
                    i32.const 1
                   else
@@ -7667,7 +7881,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_4_5
+                   call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_5_6
                   end
                   if
                    local.get $this
@@ -7726,8 +7940,8 @@
                  local.get $2
                  i32.store offset=4
                  local.get $2
-                 call $async-member-await/__Cps_viaObjGuarded#get:__cps_h_10
-                 call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_5_6
+                 call $async-member-await/__Cps_viaObjGuarded#get:__cps_h_12
+                 call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_6_7
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
@@ -7742,7 +7956,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_7_8
+                 call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_9_9
                  if (result i32)
                   i32.const 1
                  else
@@ -7785,7 +7999,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_4_5
+                  call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_5_6
                  end
                  if
                   local.get $this
@@ -7844,7 +8058,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_7_8
+             call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_flag_9_9
              if
               local.get $this
               local.set $2
@@ -7873,7 +8087,7 @@
             i32.store
             local.get $2
             i32.const 0
-            call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_7_8
+            call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_9_9
             local.get $this
             local.set $2
             global.get $~lib/memory/__stack_pointer
@@ -7886,13 +8100,13 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_6_9
+            call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_7_10
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
             i32.store offset=4
             local.get $2
-            call $async-member-await/__Cps_viaObjGuarded#set:__cps_e_11
+            call $async-member-await/__Cps_viaObjGuarded#set:__cps_e_13
             i32.const 560
             local.get $this
             local.set $2
@@ -7900,7 +8114,7 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-member-await/__Cps_viaObjGuarded#get:__cps_e_11
+            call $async-member-await/__Cps_viaObjGuarded#get:__cps_e_13
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
@@ -7951,7 +8165,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_4_5
+             call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_5_6
             end
             i32.eqz
             if
@@ -8006,7 +8220,7 @@
            i32.store
            local.get $2
            i32.const -1
-           call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_5_6
+           call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_retVal_6_7
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -8037,7 +8251,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_6_9
+          call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_errVal_8_11
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-member-await/__Cps_viaObjGuarded#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_err_7_10
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -8090,7 +8323,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_4_5
+         call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendFail_5_6
          if
           local.get $this
           local.set $2
@@ -8119,7 +8352,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_4_5
+        call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_pendFail_5_6
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_pendVal_4_5
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-member-await/__Cps_viaObjGuarded#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -8227,7 +8479,7 @@
       local.get $2
       i32.store offset=4
       local.get $2
-      call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_retVal_5_6
+      call $async-member-await/__Cps_viaObjGuarded#get:__cps___async_try_retVal_6_7
       call $async-member-await/__Cps_viaObjGuarded#set:__result
       local.get $this
       local.set $2
@@ -8368,8 +8620,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 14
+   i32.const 36
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8408,6 +8660,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_W_viaThis#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_W_viaThis#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8704,7 +8964,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 16
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9142,8 +9402,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 16
+   i32.const 36
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9182,6 +9442,14 @@
   local.get $1
   i32.const 528
   call $async-member-await/__Cps_W_viaNested#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-member-await/__Cps_W_viaNested#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9478,7 +9746,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 18
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10038,6 +10306,31 @@
   local.get $1
   return
  )
+ (func $async-member-await/__async_async_member_await_viaObj_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_viaObj#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-member-await/__async_async_member_await_viaObj_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10237,6 +10530,31 @@
   local.get $1
   return
  )
+ (func $async-member-await/__async_async_member_await_viaNew_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_viaNew#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-member-await/__async_async_member_await_viaNew_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10337,7 +10655,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_7_8
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_flag_9_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10350,7 +10668,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_6_9
+  call $async-member-await/__Cps_viaObjGuarded#set:__cps___async_try_err_7_10
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10408,6 +10726,31 @@
   i32.store
   local.get $1
   call $async-member-await/__Cps_viaObjGuarded#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-member-await/__async_async_member_await_viaObjGuarded_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_viaObjGuarded#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -10582,6 +10925,31 @@
   i32.store
   local.get $1
   call $async-member-await/__Cps_W_helper#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-member-await/__async_async_member_await_W_helper_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_W_helper#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -10815,6 +11183,31 @@
   local.get $1
   return
  )
+ (func $async-member-await/__async_async_member_await_W_viaThis_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_W_viaThis#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-member-await/__async_async_member_await_W_viaThis_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11032,6 +11425,31 @@
   i32.store
   local.get $1
   call $async-member-await/__Cps_W_viaNested#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-member-await/__async_async_member_await_W_viaNested_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-member-await/__Cps_W_viaNested#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -11718,6 +12136,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-member-await/__async_async_member_await_viaObj_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_viaObj_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-member-await/__async_async_member_await_viaObj_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11830,6 +12267,25 @@
   i32.store
   local.get $0
   call $async-member-await/__async_async_member_await_viaNew_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-member-await/__async_async_member_await_viaNew_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_viaNew_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -11956,6 +12412,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-member-await/__async_async_member_await_viaObjGuarded_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_viaObjGuarded_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-member-await/__async_async_member_await_viaObjGuarded_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12049,6 +12524,25 @@
   i32.store
   local.get $0
   call $async-member-await/__async_async_member_await_W_helper_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-member-await/__async_async_member_await_W_helper_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_W_helper_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -12195,6 +12689,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-member-await/__async_async_member_await_W_viaThis_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_W_viaThis_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-member-await/__async_async_member_await_W_viaThis_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12327,6 +12840,25 @@
   i32.store
   local.get $0
   call $async-member-await/__async_async_member_await_W_viaNested_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-member-await/__async_async_member_await_W_viaNested_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-member-await/__async_async_member_await_W_viaNested_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

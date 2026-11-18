@@ -94,10 +94,14 @@ import {
   assignExpr,
   exprStmt,
   blockStmt,
+  callExpr,
   namedType,
+  unwrapParens,
   containsAwait,
   promiseInnerNode,
-  typeToTypeNode
+  typeToTypeNode,
+  TRY_THROW_MARKER,
+  TRY_FAIL_MARKER
 } from "./asyncRewrite";
 
 /** Where a coordinator rejection of an await should land: the enclosing
@@ -176,6 +180,7 @@ class TryFrame {
   public finVar: string = "";
   constructor(
     public errVar: string,
+    public errValVar: string,
     public flagVar: string
   ) {}
 }
@@ -212,6 +217,7 @@ class TryDesugar {
   /** Pending error from a throw in a catch/finally with no enclosing try
    *  to propagate to: the enclosing dispatch throws it after finally. */
   private pendErr: string = "";
+  private pendVal: string = "";
   private pendFail: string = "";
   private retTypeNode: TypeNode | null = null;
   private isVoid: bool = false;
@@ -250,6 +256,7 @@ class TryDesugar {
       this.brkFlag = this.fresh("brk");
       this.cntFlag = this.fresh("cnt");
       this.pendErr = this.fresh("pendErr");
+      this.pendVal = this.fresh("pendVal");
       this.pendFail = this.fresh("pendFail");
       if (this.hasReturnInTry && !this.isVoid) this.retVal = this.fresh("retVal");
     }
@@ -261,6 +268,7 @@ class TryDesugar {
       prologue.push(this.letDecl(this.brkFlag, namedType("bool", null, false, this.range), new FalseExpression(this.range)));
       prologue.push(this.letDecl(this.cntFlag, namedType("bool", null, false, this.range), new FalseExpression(this.range)));
       prologue.push(this.letDecl(this.pendErr, namedType("string", null, false, this.range), strLit("", this.range)));
+      prologue.push(this.letDecl(this.pendVal, namedType("Error", null, false, this.range), null));
       prologue.push(this.letDecl(this.pendFail, namedType("bool", null, false, this.range), new FalseExpression(this.range)));
       if (this.retVal != "") {
         prologue.push(this.letDecl(this.retVal, assert(this.retTypeNode), null));
@@ -287,7 +295,7 @@ class TryDesugar {
     return name;
   }
 
-  private letDecl(name: string, typeNode: TypeNode, initializer: Expression | null): VariableStatement {
+  private letDecl(name: string, typeNode: TypeNode | null, initializer: Expression | null): VariableStatement {
     return new VariableStatement(
       null,
       [ new VariableDeclaration(ident(name, this.range), null, CommonFlags.Let, typeNode, initializer, this.range) ],
@@ -553,22 +561,35 @@ class TryDesugar {
       }
       case NodeKind.Throw: {
         let throwStmt = <ThrowStatement>stmt;
-        if (containsAwait(throwStmt.value)) {
-          this.fail("'await' as the value of a 'throw' statement is not yet supported", throwStmt.value.range);
+        let raw = throwStmt.value;
+        if (containsAwait(raw) && unwrapParens(raw).kind != NodeKind.Await) {
+          this.fail("'await' as the value of a 'throw' statement is only supported as the whole value", raw.range);
           return [ stmt ];
         }
-        let value = this.stringifyThrow(throwStmt.value);
+        // Bind the value once, so the transform derives the message and
+        // the value from a single evaluation.
+        let tmp = this.fresh("throwVal");
+        let bind = this.letDecl(tmp, null, raw);
         if (this.tryMarkers.length == 0) {
-          return [ new ThrowStatement(value, stmt.range) ];
+          return [ bind, new ThrowStatement(ident(tmp, stmt.range), stmt.range) ];
         }
-        let out = this.clearTransfers(stmt.range);
+        let out = new Array<Statement>();
+        out.push(bind);
+        let transfers = this.clearTransfers(stmt.range);
+        for (let i = 0, k = transfers.length; i < k; ++i) out.push(transfers[i]);
         if (this.frames.length > 0) {
           let top = this.frames[this.frames.length - 1];
-          out.push(exprStmt(assignExpr(ident(top.errVar, stmt.range), value, stmt.range)));
-          out.push(exprStmt(assignExpr(ident(top.flagVar, stmt.range), new TrueExpression(stmt.range), stmt.range)));
+          out.push(exprStmt(callExpr(
+            ident(TRY_THROW_MARKER, stmt.range),
+            [ ident(tmp, stmt.range), ident(top.errVar, stmt.range), ident(top.errValVar, stmt.range), ident(top.flagVar, stmt.range) ],
+            stmt.range
+          )));
         } else {
-          out.push(exprStmt(assignExpr(ident(this.pendErr, stmt.range), value, stmt.range)));
-          out.push(exprStmt(assignExpr(ident(this.pendFail, stmt.range), new TrueExpression(stmt.range), stmt.range)));
+          out.push(exprStmt(callExpr(
+            ident(TRY_THROW_MARKER, stmt.range),
+            [ ident(tmp, stmt.range), ident(this.pendErr, stmt.range), ident(this.pendVal, stmt.range), ident(this.pendFail, stmt.range) ],
+            stmt.range
+          )));
         }
         return out;
       }
@@ -697,32 +718,20 @@ class TryDesugar {
     );
   }
 
-  /** `throw new Error(msg)` carries `msg`; everything else is thrown as
-   *  written and must be a string (the error slot is a string). */
-  private stringifyThrow(value: Expression): Expression {
-    if (value.kind == NodeKind.New) {
-      let newExpr = <NewExpression>value;
-      let typeName = newExpr.typeName;
-      if (!typeName.next && typeName.identifier.text == "Error") {
-        let args = newExpr.args;
-        if (args.length > 0) return args[0];
-        return strLit("", value.range);
-      }
-    }
-    return value;
-  }
-
   /** Statements propagating an error value to the enclosing try, or
    *  failing the task when there is none. */
-  private propagateError(value: Expression, range: Range): Statement[] {
+  /** Propagates an error (message + thrown value) to the enclosing try's
+   *  slots, or fails the task with both when there is no enclosing try. */
+  private propagateError(value: Expression, thrown: Expression, range: Range): Statement[] {
     if (this.frames.length > 0) {
       let parent = this.frames[this.frames.length - 1];
       return [
         exprStmt(assignExpr(ident(parent.errVar, range), value, range)),
+        exprStmt(assignExpr(ident(parent.errValVar, range), thrown, range)),
         exprStmt(assignExpr(ident(parent.flagVar, range), new TrueExpression(range), range))
       ];
     }
-    return [ new ThrowStatement(value, range) ];
+    return [ exprStmt(callExpr(ident(TRY_FAIL_MARKER, range), [ value, thrown ], range)) ];
   }
 
   private desugarTry(stmt: TryStatement, mode: string): Statement[] {
@@ -731,11 +740,12 @@ class TryDesugar {
       return [ stmt ];
     }
     let range = stmt.range;
-    let frame = new TryFrame(this.fresh("err"), this.fresh("flag"));
+    let frame = new TryFrame(this.fresh("err"), this.fresh("errVal"), this.fresh("flag"));
     if (stmt.finallyStatements) frame.finVar = this.fresh("fin");
     let out = new Array<Statement>();
     out.push(this.letDecl(frame.flagVar, namedType("bool", null, false, range), new FalseExpression(range)));
     out.push(this.letDecl(frame.errVar, namedType("string", null, false, range), strLit("", range)));
+    out.push(this.letDecl(frame.errValVar, namedType("Error", null, false, range), null));
     this.frames.push(frame);
     this.tryMarkers.push(this.targets.length);
     let bodyStmts = this.desugarList(stmt.bodyStatements, "flat");
@@ -805,12 +815,12 @@ class TryDesugar {
     // propagate it after finally, ahead of any pending return/break.
     let pendStmts = new Array<Statement>();
     pendStmts.push(exprStmt(assignExpr(ident(this.pendFail, range), new FalseExpression(range), range)));
-    let pendPropagate = this.propagateError(ident(this.pendErr, range), range);
+    let pendPropagate = this.propagateError(ident(this.pendErr, range), ident(this.pendVal, range), range);
     for (let i = 0, k = pendPropagate.length; i < k; ++i) pendStmts.push(pendPropagate[i]);
     tail = new IfStatement(ident(this.pendFail, range), blockStmt(pendStmts, range), tail, range);
     out.push(new IfStatement(
       ident(frame.flagVar, range),
-      blockStmt(this.propagateError(ident(frame.errVar, range), range), range),
+      blockStmt(this.propagateError(ident(frame.errVar, range), ident(frame.errValVar, range), range), range),
       tail,
       range
     ));

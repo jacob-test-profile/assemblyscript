@@ -84,6 +84,11 @@ export const SPILL_ACQUIRE = "__async_spill_acquire";
 export const SPILL_RELEASE = "__async_spill_release";
 export const SPILL_GET = "__async_spill_get";
 export const SPILL_SET = "__async_spill_set";
+/** Markers the try desugar emits and the transform lowers: the first
+ *  derives a throw's message + value and records them in the frame's
+ *  slots; the second fails the task with already-computed slots. */
+export const TRY_THROW_MARKER = "__async_try_throw";
+export const TRY_FAIL_MARKER = "__async_try_fail";
 
 /** Local holding the receiver of an async method, introduced by the
  *  this-lift pre-pass (`this` is rewritten to this identifier). */

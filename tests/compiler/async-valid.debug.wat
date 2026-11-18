@@ -28,9 +28,9 @@
  (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
  (global $async-valid/__async_roots_f (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 576))
- (global $~lib/memory/__data_end i32 (i32.const 612))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33380))
- (global $~lib/memory/__heap_base i32 (i32.const 33380))
+ (global $~lib/memory/__data_end i32 (i32.const 616))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33384))
+ (global $~lib/memory/__heap_base i32 (i32.const 33384))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -44,13 +44,14 @@
  (data $9 (i32.const 444) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $10 (i32.const 508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\04\00\00\00h\00i\00\00\00\00\00\00\00\00\00")
- (data $12 (i32.const 576) "\08\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $12 (i32.const 576) "\t\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "f" (func $async-valid/f))
  (export "memory" (memory $0))
  (export "__async_async_valid_f_result" (func $export:async-valid/__async_async_valid_f_result))
  (export "__async_async_valid_f_error" (func $export:async-valid/__async_async_valid_f_error))
+ (export "__async_async_valid_f_errorValue" (func $export:async-valid/__async_async_valid_f_errorValue))
  (export "__async_async_valid_f_status" (func $export:async-valid/__async_async_valid_f_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2394,6 +2395,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-valid/__Cps_f#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<async-valid/__Cps_f>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -2488,6 +2498,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-valid/__Cps_f#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
   i32.const 320
@@ -2532,6 +2546,28 @@
   i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-valid/__Cps_f>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -2561,34 +2597,40 @@
   block $invalid
    block $~lib/array/Array<i32>
     block $~lib/array/Array<async-valid/__Cps_f>
-     block $async-valid/__Cps_f
-      block $~lib/promise/Promise<~lib/string/String>
-       block $~lib/arraybuffer/ArrayBufferView
-        block $~lib/string/String
-         block $~lib/arraybuffer/ArrayBuffer
-          block $~lib/object/Object
-           local.get $0
-           i32.const 8
-           i32.sub
-           i32.load
-           br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-valid/__Cps_f $~lib/array/Array<async-valid/__Cps_f> $~lib/array/Array<i32> $invalid
+     block $~lib/error/Error
+      block $async-valid/__Cps_f
+       block $~lib/promise/Promise<~lib/string/String>
+        block $~lib/arraybuffer/ArrayBufferView
+         block $~lib/string/String
+          block $~lib/arraybuffer/ArrayBuffer
+           block $~lib/object/Object
+            local.get $0
+            i32.const 8
+            i32.sub
+            i32.load
+            br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-valid/__Cps_f $~lib/error/Error $~lib/array/Array<async-valid/__Cps_f> $~lib/array/Array<i32> $invalid
+           end
+           return
           end
           return
          end
          return
         end
+        local.get $0
+        local.get $1
+        call $~lib/arraybuffer/ArrayBufferView~visit
         return
        end
-       local.get $0
-       local.get $1
-       call $~lib/arraybuffer/ArrayBufferView~visit
        return
       end
+      local.get $0
+      local.get $1
+      call $async-valid/__Cps_f~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-valid/__Cps_f~visit
+     call $~lib/error/Error~visit
      return
     end
     local.get $0
@@ -2641,7 +2683,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -2771,7 +2813,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 16
    i32.const 5
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -2811,6 +2853,14 @@
   local.get $1
   i32.const 528
   call $async-valid/__Cps_f#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-valid/__Cps_f#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3186,7 +3236,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -3483,6 +3533,31 @@
   local.get $1
   return
  )
+ (func $async-valid/__async_async_valid_f_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-valid/__Cps_f#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-valid/__async_async_valid_f_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -3716,6 +3791,25 @@
   i32.store
   local.get $0
   call $async-valid/__async_async_valid_f_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-valid/__async_async_valid_f_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-valid/__async_async_valid_f_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

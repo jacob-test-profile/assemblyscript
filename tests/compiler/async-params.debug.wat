@@ -43,9 +43,9 @@
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 1056))
- (global $~lib/memory/__data_end i32 (i32.const 1200))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33968))
- (global $~lib/memory/__heap_base i32 (i32.const 33968))
+ (global $~lib/memory/__data_end i32 (i32.const 1204))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33972))
+ (global $~lib/memory/__heap_base i32 (i32.const 33972))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -74,7 +74,7 @@
  (data $24 (i32.const 956) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00S\00\00\00\00\00\00\00\00\00\00\00")
  (data $25 (i32.const 988) "\1c\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\08\00\00\00\02\00\00\00\03\00\00\00\00\00\00\00")
  (data $26 (i32.const 1020) "\1c\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\08\00\00\00\d0\02\00\00\f0\02\00\00\00\00\00\00")
- (data $27 (i32.const 1056) "#\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00\02A\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\01\00\00")
+ (data $27 (i32.const 1056) "$\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00\02A\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\01\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "defInt" (func $async-params/defInt@varargs))
@@ -96,67 +96,79 @@
  (export "__async_async_params_defInt_reject_0" (func $export:async-params/__async_async_params_defInt_reject_0))
  (export "__async_async_params_defInt_result" (func $export:async-params/__async_async_params_defInt_result))
  (export "__async_async_params_defInt_error" (func $export:async-params/__async_async_params_defInt_error))
+ (export "__async_async_params_defInt_errorValue" (func $export:async-params/__async_async_params_defInt_errorValue))
  (export "__async_async_params_defInt_status" (func $export:async-params/__async_async_params_defInt_status))
  (export "__async_async_params_defOther_resume_0" (func $export:async-params/__async_async_params_defOther_resume_0))
  (export "__async_async_params_defOther_reject_0" (func $export:async-params/__async_async_params_defOther_reject_0))
  (export "__async_async_params_defOther_result" (func $export:async-params/__async_async_params_defOther_result))
  (export "__async_async_params_defOther_error" (func $export:async-params/__async_async_params_defOther_error))
+ (export "__async_async_params_defOther_errorValue" (func $export:async-params/__async_async_params_defOther_errorValue))
  (export "__async_async_params_defOther_status" (func $export:async-params/__async_async_params_defOther_status))
  (export "__async_async_params_restNums_resume_0" (func $export:async-params/__async_async_params_restNums_resume_0))
  (export "__async_async_params_restNums_reject_0" (func $export:async-params/__async_async_params_restNums_reject_0))
  (export "__async_async_params_restNums_result" (func $export:async-params/__async_async_params_restNums_result))
  (export "__async_async_params_restNums_error" (func $export:async-params/__async_async_params_restNums_error))
+ (export "__async_async_params_restNums_errorValue" (func $export:async-params/__async_async_params_restNums_errorValue))
  (export "__async_async_params_restNums_status" (func $export:async-params/__async_async_params_restNums_status))
  (export "__async_async_params_restStrings_resume_0" (func $export:async-params/__async_async_params_restStrings_resume_0))
  (export "__async_async_params_restStrings_reject_0" (func $export:async-params/__async_async_params_restStrings_reject_0))
  (export "__async_async_params_restStrings_result" (func $export:async-params/__async_async_params_restStrings_result))
  (export "__async_async_params_restStrings_error" (func $export:async-params/__async_async_params_restStrings_error))
+ (export "__async_async_params_restStrings_errorValue" (func $export:async-params/__async_async_params_restStrings_errorValue))
  (export "__async_async_params_restStrings_status" (func $export:async-params/__async_async_params_restStrings_status))
  (export "__async_async_params_driveRestNums_pending_0" (func $export:async-params/__async_async_params_driveRestNums_pending_0))
  (export "__async_async_params_driveRestNums_resume_0" (func $export:async-params/__async_async_params_driveRestNums_resume_0))
  (export "__async_async_params_driveRestNums_reject_0" (func $export:async-params/__async_async_params_driveRestNums_reject_0))
  (export "__async_async_params_driveRestNums_result" (func $export:async-params/__async_async_params_driveRestNums_result))
  (export "__async_async_params_driveRestNums_error" (func $export:async-params/__async_async_params_driveRestNums_error))
+ (export "__async_async_params_driveRestNums_errorValue" (func $export:async-params/__async_async_params_driveRestNums_errorValue))
  (export "__async_async_params_driveRestNums_status" (func $export:async-params/__async_async_params_driveRestNums_status))
  (export "__async_async_params_driveRestStrings_pending_0" (func $export:async-params/__async_async_params_driveRestStrings_pending_0))
  (export "__async_async_params_driveRestStrings_resume_0" (func $export:async-params/__async_async_params_driveRestStrings_resume_0))
  (export "__async_async_params_driveRestStrings_reject_0" (func $export:async-params/__async_async_params_driveRestStrings_reject_0))
  (export "__async_async_params_driveRestStrings_result" (func $export:async-params/__async_async_params_driveRestStrings_result))
  (export "__async_async_params_driveRestStrings_error" (func $export:async-params/__async_async_params_driveRestStrings_error))
+ (export "__async_async_params_driveRestStrings_errorValue" (func $export:async-params/__async_async_params_driveRestStrings_errorValue))
  (export "__async_async_params_driveRestStrings_status" (func $export:async-params/__async_async_params_driveRestStrings_status))
  (export "__async_async_params_driveAdd_pending_0" (func $export:async-params/__async_async_params_driveAdd_pending_0))
  (export "__async_async_params_driveAdd_resume_0" (func $export:async-params/__async_async_params_driveAdd_resume_0))
  (export "__async_async_params_driveAdd_reject_0" (func $export:async-params/__async_async_params_driveAdd_reject_0))
  (export "__async_async_params_driveAdd_result" (func $export:async-params/__async_async_params_driveAdd_result))
  (export "__async_async_params_driveAdd_error" (func $export:async-params/__async_async_params_driveAdd_error))
+ (export "__async_async_params_driveAdd_errorValue" (func $export:async-params/__async_async_params_driveAdd_errorValue))
  (export "__async_async_params_driveAdd_status" (func $export:async-params/__async_async_params_driveAdd_status))
  (export "__async_async_params_driveAdd5_pending_0" (func $export:async-params/__async_async_params_driveAdd5_pending_0))
  (export "__async_async_params_driveAdd5_resume_0" (func $export:async-params/__async_async_params_driveAdd5_resume_0))
  (export "__async_async_params_driveAdd5_reject_0" (func $export:async-params/__async_async_params_driveAdd5_reject_0))
  (export "__async_async_params_driveAdd5_result" (func $export:async-params/__async_async_params_driveAdd5_result))
  (export "__async_async_params_driveAdd5_error" (func $export:async-params/__async_async_params_driveAdd5_error))
+ (export "__async_async_params_driveAdd5_errorValue" (func $export:async-params/__async_async_params_driveAdd5_errorValue))
  (export "__async_async_params_driveAdd5_status" (func $export:async-params/__async_async_params_driveAdd5_status))
  (export "__async_async_params_driveGreeter_pending_0" (func $export:async-params/__async_async_params_driveGreeter_pending_0))
  (export "__async_async_params_driveGreeter_resume_0" (func $export:async-params/__async_async_params_driveGreeter_resume_0))
  (export "__async_async_params_driveGreeter_reject_0" (func $export:async-params/__async_async_params_driveGreeter_reject_0))
  (export "__async_async_params_driveGreeter_result" (func $export:async-params/__async_async_params_driveGreeter_result))
  (export "__async_async_params_driveGreeter_error" (func $export:async-params/__async_async_params_driveGreeter_error))
+ (export "__async_async_params_driveGreeter_errorValue" (func $export:async-params/__async_async_params_driveGreeter_errorValue))
  (export "__async_async_params_driveGreeter_status" (func $export:async-params/__async_async_params_driveGreeter_status))
  (export "__async_async_params_driveGreeterNamed_pending_0" (func $export:async-params/__async_async_params_driveGreeterNamed_pending_0))
  (export "__async_async_params_driveGreeterNamed_resume_0" (func $export:async-params/__async_async_params_driveGreeterNamed_resume_0))
  (export "__async_async_params_driveGreeterNamed_reject_0" (func $export:async-params/__async_async_params_driveGreeterNamed_reject_0))
  (export "__async_async_params_driveGreeterNamed_result" (func $export:async-params/__async_async_params_driveGreeterNamed_result))
  (export "__async_async_params_driveGreeterNamed_error" (func $export:async-params/__async_async_params_driveGreeterNamed_error))
+ (export "__async_async_params_driveGreeterNamed_errorValue" (func $export:async-params/__async_async_params_driveGreeterNamed_errorValue))
  (export "__async_async_params_driveGreeterNamed_status" (func $export:async-params/__async_async_params_driveGreeterNamed_status))
  (export "__async_async_params_Counter_add_resume_0" (func $export:async-params/__async_async_params_Counter_add_resume_0))
  (export "__async_async_params_Counter_add_reject_0" (func $export:async-params/__async_async_params_Counter_add_reject_0))
  (export "__async_async_params_Counter_add_result" (func $export:async-params/__async_async_params_Counter_add_result))
  (export "__async_async_params_Counter_add_error" (func $export:async-params/__async_async_params_Counter_add_error))
+ (export "__async_async_params_Counter_add_errorValue" (func $export:async-params/__async_async_params_Counter_add_errorValue))
  (export "__async_async_params_Counter_add_status" (func $export:async-params/__async_async_params_Counter_add_status))
  (export "__async_async_params_Greeter_greet_resume_0" (func $export:async-params/__async_async_params_Greeter_greet_resume_0))
  (export "__async_async_params_Greeter_greet_reject_0" (func $export:async-params/__async_async_params_Greeter_greet_reject_0))
  (export "__async_async_params_Greeter_greet_result" (func $export:async-params/__async_async_params_Greeter_greet_result))
  (export "__async_async_params_Greeter_greet_error" (func $export:async-params/__async_async_params_Greeter_greet_error))
+ (export "__async_async_params_Greeter_greet_errorValue" (func $export:async-params/__async_async_params_Greeter_greet_errorValue))
  (export "__async_async_params_Greeter_greet_status" (func $export:async-params/__async_async_params_Greeter_greet_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2804,20 +2816,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_defInt#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_defInt#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_defInt#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
   local.get $this
   local.get $__cps_x_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-params/__Cps_defInt#set:__cps_v_1 (param $this i32) (param $__cps_v_1 i32)
   local.get $this
   local.get $__cps_v_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-params/__Cps_defInt>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2891,15 +2912,15 @@
  )
  (func $async-params/__Cps_defInt#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_defInt#get:__cps_x_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_defInt#get:__cps_v_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2951,25 +2972,34 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_defOther#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_defOther#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_defOther#set:__cps_a_0 (param $this i32) (param $__cps_a_0 i32)
   local.get $this
   local.get $__cps_a_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-params/__Cps_defOther#set:__cps_b_1 (param $this i32) (param $__cps_b_1 i32)
   local.get $this
   local.get $__cps_b_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-params/__Cps_defOther#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-params/__Cps_defOther>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2985,15 +3015,15 @@
  )
  (func $async-params/__Cps_defOther#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_defOther#get:__cps_b_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_defOther#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-params/defOther@varargs (param $a i32) (param $b i32) (result i32)
   block $1of1
@@ -3034,15 +3064,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_restNums#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_restNums#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_restNums#set:__cps_first_0 (param $this i32) (param $__cps_first_0 i32)
   local.get $this
   local.get $__cps_first_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $~lib/array/Array<i32>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
@@ -3071,7 +3110,7 @@
  (func $async-params/__Cps_restNums#set:__cps_rest_1 (param $this i32) (param $__cps_rest_1 i32)
   local.get $this
   local.get $__cps_rest_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_rest_1
   i32.const 0
@@ -3080,17 +3119,17 @@
  (func $async-params/__Cps_restNums#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-params/__Cps_restNums#set:__cps_sum_3 (param $this i32) (param $__cps_sum_3 i32)
   local.get $this
   local.get $__cps_sum_3
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $async-params/__Cps_restNums#set:__cps_i_4 (param $this i32) (param $__cps_i_4 i32)
   local.get $this
   local.get $__cps_i_4
-  i32.store offset=32
+  i32.store offset=36
  )
  (func $~lib/array/Array<async-params/__Cps_restNums>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3106,27 +3145,27 @@
  )
  (func $async-params/__Cps_restNums#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_restNums#get:__cps_first_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_restNums#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-params/__Cps_restNums#get:__cps_sum_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-params/__Cps_restNums#get:__cps_i_4 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $async-params/__Cps_restNums#get:__cps_rest_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3159,10 +3198,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_restStrings#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_restStrings#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3195,7 +3243,7 @@
  (func $async-params/__Cps_restStrings#set:__cps_words_0 (param $this i32) (param $__cps_words_0 i32)
   local.get $this
   local.get $__cps_words_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_words_0
   i32.const 0
@@ -3204,7 +3252,7 @@
  (func $async-params/__Cps_restStrings#set:__cps_v_1 (param $this i32) (param $__cps_v_1 i32)
   local.get $this
   local.get $__cps_v_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_v_1
   i32.const 0
@@ -3224,11 +3272,11 @@
  )
  (func $async-params/__Cps_restStrings#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_restStrings#get:__cps_words_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/array/Array<~lib/string/String>#get:dataStart (param $this i32) (result i32)
   local.get $this
@@ -3253,7 +3301,7 @@
  )
  (func $async-params/__Cps_restStrings#get:__cps_v_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_driveRestNums#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3274,15 +3322,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveRestNums#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveRestNums#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_driveRestNums#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $~lib/array/Array<async-params/__Cps_driveRestNums>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3298,7 +3355,7 @@
  )
  (func $async-params/__Cps_driveRestNums#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_driveRestStrings#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3323,10 +3380,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveRestStrings#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveRestStrings#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3335,7 +3401,7 @@
  (func $async-params/__Cps_driveRestStrings#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $~lib/array/Array<async-params/__Cps_driveRestStrings>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3351,7 +3417,7 @@
  )
  (func $async-params/__Cps_driveRestStrings#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_driveAdd#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3372,15 +3438,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveAdd#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveAdd#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_driveAdd#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3389,7 +3464,7 @@
  (func $async-params/__Cps_driveAdd#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-params/__Cps_driveAdd>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3410,7 +3485,7 @@
  )
  (func $async-params/__Cps_driveAdd#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_Counter_add#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3431,20 +3506,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_Counter_add#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_Counter_add#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_Counter_add#set:__cps_step_0 (param $this i32) (param $__cps_step_0 i32)
   local.get $this
   local.get $__cps_step_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-params/__Cps_Counter_add#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -3453,7 +3537,7 @@
  (func $async-params/__Cps_Counter_add#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-params/__Cps_Counter_add>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3469,11 +3553,11 @@
  )
  (func $async-params/__Cps_Counter_add#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_Counter_add#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/Counter#get:count (param $this i32) (result i32)
   local.get $this
@@ -3481,15 +3565,15 @@
  )
  (func $async-params/__Cps_Counter_add#get:__cps_step_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_Counter_add#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-params/__Cps_driveAdd#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_driveAdd5#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3510,15 +3594,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveAdd5#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveAdd5#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-params/__Cps_driveAdd5#set:__cps_c_0 (param $this i32) (param $__cps_c_0 i32)
   local.get $this
   local.get $__cps_c_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_c_0
   i32.const 0
@@ -3527,7 +3620,7 @@
  (func $async-params/__Cps_driveAdd5#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-params/__Cps_driveAdd5>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3543,11 +3636,11 @@
  )
  (func $async-params/__Cps_driveAdd5#get:__cps_c_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_driveAdd5#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_driveGreeter#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3572,10 +3665,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveGreeter#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveGreeter#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3584,7 +3686,7 @@
  (func $async-params/__Cps_driveGreeter#set:__cps_g_0 (param $this i32) (param $__cps_g_0 i32)
   local.get $this
   local.get $__cps_g_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_g_0
   i32.const 0
@@ -3593,7 +3695,7 @@
  (func $async-params/__Cps_driveGreeter#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-params/__Cps_driveGreeter>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3618,7 +3720,7 @@
  )
  (func $async-params/__Cps_driveGreeter#get:__cps_g_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_Greeter_greet#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3643,10 +3745,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_Greeter_greet#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_Greeter_greet#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3655,7 +3766,7 @@
  (func $async-params/__Cps_Greeter_greet#set:__cps_name_0 (param $this i32) (param $__cps_name_0 i32)
   local.get $this
   local.get $__cps_name_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_name_0
   i32.const 0
@@ -3664,7 +3775,7 @@
  (func $async-params/__Cps_Greeter_greet#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -3673,7 +3784,7 @@
  (func $async-params/__Cps_Greeter_greet#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_v_2
   i32.const 0
@@ -3693,11 +3804,11 @@
  )
  (func $async-params/__Cps_Greeter_greet#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_Greeter_greet#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/Greeter#get:greeting (param $this i32) (result i32)
   local.get $this
@@ -3705,15 +3816,15 @@
  )
  (func $async-params/__Cps_Greeter_greet#get:__cps_name_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_Greeter_greet#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-params/__Cps_driveGreeter#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/__Cps_driveGreeterNamed#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3738,10 +3849,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-params/__Cps_driveGreeterNamed#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-params/__Cps_driveGreeterNamed#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -3750,7 +3870,7 @@
  (func $async-params/__Cps_driveGreeterNamed#set:__cps_g_0 (param $this i32) (param $__cps_g_0 i32)
   local.get $this
   local.get $__cps_g_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_g_0
   i32.const 0
@@ -3759,7 +3879,7 @@
  (func $async-params/__Cps_driveGreeterNamed#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $~lib/array/Array<async-params/__Cps_driveGreeterNamed>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3775,11 +3895,11 @@
  )
  (func $async-params/__Cps_driveGreeterNamed#get:__cps_g_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_driveGreeterNamed#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-params/strS (result i32)
   i32.const 976
@@ -3811,6 +3931,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_defInt#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_defOther#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3818,6 +3942,10 @@
  (func $async-params/__Cps_defOther#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-params/__Cps_defOther#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-params/__Cps_restNums#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3827,6 +3955,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_restNums#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_restStrings#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3835,9 +3967,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_restStrings#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveRestNums#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_driveRestNums#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3847,9 +3983,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveRestNums#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveRestStrings#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-params/__Cps_driveRestStrings#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3859,9 +3999,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveRestStrings#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveAdd#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_driveAdd#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3871,9 +4015,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveAdd#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveAdd5#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_driveAdd5#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3883,9 +4031,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveAdd5#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveGreeter#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_driveGreeter#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3895,9 +4047,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveGreeter#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_driveGreeterNamed#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-params/__Cps_driveGreeterNamed#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3907,6 +4063,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_driveGreeterNamed#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_Counter_add#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3915,6 +4075,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-params/__Cps_Counter_add#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-params/__Cps_Greeter_greet#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3922,6 +4086,10 @@
  (func $async-params/__Cps_Greeter_greet#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-params/__Cps_Greeter_greet#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -4074,6 +4242,28 @@
   i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-params/__Cps_defInt>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4094,6 +4284,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4119,7 +4313,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4160,6 +4358,10 @@
   i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-params/__Cps_restStrings>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4180,6 +4382,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4212,6 +4418,10 @@
   i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=16
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-params/__Cps_driveRestStrings>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4235,7 +4445,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4261,7 +4475,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4298,6 +4516,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-params/__Cps_driveGreeter>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4332,6 +4554,10 @@
   i32.load offset=16
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-params/__Cps_driveGreeterNamed>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -4355,7 +4581,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4398,6 +4628,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4451,58 +4685,64 @@
                         block $~lib/array/Array<async-params/__Cps_defOther>
                          block $async-params/__Cps_defOther
                           block $~lib/array/Array<async-params/__Cps_defInt>
-                           block $async-params/__Cps_defInt
-                            block $async-params/Greeter
-                             block $async-params/Counter
-                              block $~lib/promise/Promise<~lib/string/String>
-                               block $~lib/array/Array<~lib/string/String>
-                                block $~lib/array/Array<i32>
-                                 block $~lib/promise/Promise<i32>
-                                  block $~lib/arraybuffer/ArrayBufferView
-                                   block $~lib/string/String
-                                    block $~lib/arraybuffer/ArrayBuffer
-                                     block $~lib/object/Object
-                                      local.get $0
-                                      i32.const 8
-                                      i32.sub
-                                      i32.load
-                                      br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $~lib/promise/Promise<~lib/string/String> $async-params/Counter $async-params/Greeter $async-params/__Cps_defInt $~lib/array/Array<async-params/__Cps_defInt> $async-params/__Cps_defOther $~lib/array/Array<async-params/__Cps_defOther> $async-params/__Cps_restNums $~lib/array/Array<async-params/__Cps_restNums> $async-params/__Cps_restStrings $~lib/array/Array<async-params/__Cps_restStrings> $async-params/__Cps_driveRestNums $~lib/array/Array<async-params/__Cps_driveRestNums> $async-params/__Cps_driveRestStrings $~lib/array/Array<async-params/__Cps_driveRestStrings> $async-params/__Cps_driveAdd $~lib/array/Array<async-params/__Cps_driveAdd> $async-params/__Cps_driveAdd5 $~lib/array/Array<async-params/__Cps_driveAdd5> $async-params/__Cps_driveGreeter $~lib/array/Array<async-params/__Cps_driveGreeter> $async-params/__Cps_driveGreeterNamed $~lib/array/Array<async-params/__Cps_driveGreeterNamed> $async-params/__Cps_Counter_add $~lib/array/Array<async-params/__Cps_Counter_add> $async-params/__Cps_Greeter_greet $~lib/array/Array<async-params/__Cps_Greeter_greet> $~lib/array/Array<usize> $invalid
+                           block $~lib/error/Error
+                            block $async-params/__Cps_defInt
+                             block $async-params/Greeter
+                              block $async-params/Counter
+                               block $~lib/promise/Promise<~lib/string/String>
+                                block $~lib/array/Array<~lib/string/String>
+                                 block $~lib/array/Array<i32>
+                                  block $~lib/promise/Promise<i32>
+                                   block $~lib/arraybuffer/ArrayBufferView
+                                    block $~lib/string/String
+                                     block $~lib/arraybuffer/ArrayBuffer
+                                      block $~lib/object/Object
+                                       local.get $0
+                                       i32.const 8
+                                       i32.sub
+                                       i32.load
+                                       br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $~lib/promise/Promise<~lib/string/String> $async-params/Counter $async-params/Greeter $async-params/__Cps_defInt $~lib/error/Error $~lib/array/Array<async-params/__Cps_defInt> $async-params/__Cps_defOther $~lib/array/Array<async-params/__Cps_defOther> $async-params/__Cps_restNums $~lib/array/Array<async-params/__Cps_restNums> $async-params/__Cps_restStrings $~lib/array/Array<async-params/__Cps_restStrings> $async-params/__Cps_driveRestNums $~lib/array/Array<async-params/__Cps_driveRestNums> $async-params/__Cps_driveRestStrings $~lib/array/Array<async-params/__Cps_driveRestStrings> $async-params/__Cps_driveAdd $~lib/array/Array<async-params/__Cps_driveAdd> $async-params/__Cps_driveAdd5 $~lib/array/Array<async-params/__Cps_driveAdd5> $async-params/__Cps_driveGreeter $~lib/array/Array<async-params/__Cps_driveGreeter> $async-params/__Cps_driveGreeterNamed $~lib/array/Array<async-params/__Cps_driveGreeterNamed> $async-params/__Cps_Counter_add $~lib/array/Array<async-params/__Cps_Counter_add> $async-params/__Cps_Greeter_greet $~lib/array/Array<async-params/__Cps_Greeter_greet> $~lib/array/Array<usize> $invalid
+                                      end
+                                      return
                                      end
                                      return
                                     end
                                     return
                                    end
+                                   local.get $0
+                                   local.get $1
+                                   call $~lib/arraybuffer/ArrayBufferView~visit
                                    return
                                   end
-                                  local.get $0
-                                  local.get $1
-                                  call $~lib/arraybuffer/ArrayBufferView~visit
                                   return
                                  end
+                                 local.get $0
+                                 local.get $1
+                                 call $~lib/array/Array<i32>~visit
                                  return
                                 end
                                 local.get $0
                                 local.get $1
-                                call $~lib/array/Array<i32>~visit
+                                call $~lib/array/Array<~lib/string/String>~visit
                                 return
                                end
-                               local.get $0
-                               local.get $1
-                               call $~lib/array/Array<~lib/string/String>~visit
                                return
                               end
                               return
                              end
+                             local.get $0
+                             local.get $1
+                             call $async-params/Greeter~visit
                              return
                             end
                             local.get $0
                             local.get $1
-                            call $async-params/Greeter~visit
+                            call $async-params/__Cps_defInt~visit
                             return
                            end
                            local.get $0
                            local.get $1
-                           call $async-params/__Cps_defInt~visit
+                           call $~lib/error/Error~visit
                            return
                           end
                           local.get $0
@@ -4669,7 +4909,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4807,7 +5047,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4945,7 +5185,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 15
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5083,7 +5323,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 17
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5221,7 +5461,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 19
+   i32.const 20
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5359,7 +5599,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 21
+   i32.const 22
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5497,7 +5737,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 23
+   i32.const 24
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5635,7 +5875,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 25
+   i32.const 26
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5773,7 +6013,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 27
+   i32.const 28
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5911,7 +6151,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 29
+   i32.const 30
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6049,7 +6289,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 31
+   i32.const 32
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6187,7 +6427,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 33
+   i32.const 34
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6317,7 +6557,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
+   i32.const 28
    i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -6357,6 +6597,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_defInt#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_defInt#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6756,7 +7004,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7092,8 +7340,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 12
+   i32.const 32
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7132,6 +7380,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_defOther#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_defOther#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7420,7 +7676,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 14
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7905,8 +8161,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 36
-   i32.const 14
+   i32.const 40
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7945,6 +8201,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_restNums#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_restNums#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8256,7 +8520,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 16
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8857,7 +9121,7 @@
    global.get $~lib/memory/__stack_pointer
    i32.const 0
    i32.const 2
-   i32.const 34
+   i32.const 35
    i32.const 560
    call $~lib/rt/__newArray
    local.tee $rest
@@ -9033,8 +9297,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 16
+   i32.const 28
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9073,6 +9337,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_restStrings#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_restStrings#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9754,7 +10026,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 18
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10135,7 +10407,7 @@
    global.get $~lib/memory/__stack_pointer
    i32.const 0
    i32.const 2
-   i32.const 34
+   i32.const 35
    i32.const 592
    call $~lib/rt/__newArray
    local.tee $words
@@ -10169,8 +10441,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 18
+   i32.const 24
+   i32.const 19
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10209,6 +10481,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveRestNums#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveRestNums#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -10481,7 +10761,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 19
+  i32.const 20
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10805,8 +11085,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 20
+   i32.const 24
+   i32.const 21
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10845,6 +11125,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveRestStrings#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveRestStrings#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11117,7 +11405,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 21
+  i32.const 22
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11445,8 +11733,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 22
+   i32.const 28
+   i32.const 23
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11485,6 +11773,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveAdd#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveAdd#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11642,8 +11938,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 30
+   i32.const 32
+   i32.const 31
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11682,6 +11978,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_Counter_add#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_Counter_add#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11970,7 +12274,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 31
+  i32.const 32
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12528,7 +12832,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 23
+  i32.const 24
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12867,8 +13171,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 24
+   i32.const 28
+   i32.const 25
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -12907,6 +13211,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveAdd5#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveAdd5#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13187,7 +13499,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 25
+  i32.const 26
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -13526,8 +13838,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 26
+   i32.const 28
+   i32.const 27
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13566,6 +13878,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveGreeter#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveGreeter#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13729,8 +14049,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
    i32.const 32
+   i32.const 33
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13769,6 +14089,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_Greeter_greet#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_Greeter_greet#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -14057,7 +14385,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 33
+  i32.const 34
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -14636,7 +14964,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 27
+  i32.const 28
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -14981,8 +15309,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
    i32.const 28
+   i32.const 29
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -15021,6 +15349,14 @@
   local.get $1
   i32.const 528
   call $async-params/__Cps_driveGreeterNamed#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-params/__Cps_driveGreeterNamed#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -15301,7 +15637,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 29
+  i32.const 30
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -15781,6 +16117,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_defInt_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_defInt#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_defInt_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -15947,6 +16308,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_defOther#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_defOther_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_defOther#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -16129,6 +16515,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_restNums_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_restNums#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_restNums_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16300,6 +16711,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_restStrings#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_restStrings_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_restStrings#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -16499,6 +16935,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_driveRestNums#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_driveRestNums_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveRestNums#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -16711,6 +17172,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_driveRestStrings_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveRestStrings#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_driveRestStrings_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16910,6 +17396,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_driveAdd_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveAdd#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_driveAdd_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17101,6 +17612,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_driveAdd5#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_driveAdd5_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveAdd5#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -17313,6 +17849,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_driveGreeter_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveGreeter#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_driveGreeter_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17517,6 +18078,31 @@
   local.get $1
   return
  )
+ (func $async-params/__async_async_params_driveGreeterNamed_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_driveGreeterNamed#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-params/__async_async_params_driveGreeterNamed_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17683,6 +18269,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_Counter_add#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_Counter_add_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_Counter_add#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -17862,6 +18473,31 @@
   i32.store
   local.get $1
   call $async-params/__Cps_Greeter_greet#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-params/__async_async_params_Greeter_greet_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-params/__Cps_Greeter_greet#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19058,6 +19694,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_defInt_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_defInt_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_defInt_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19151,6 +19806,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_defOther_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_defOther_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_defOther_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19258,6 +19932,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_restNums_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_restNums_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_restNums_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19354,6 +20047,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_restStrings_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_restStrings_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_restStrings_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19473,6 +20185,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_driveRestNums_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_driveRestNums_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveRestNums_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19602,6 +20333,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_driveRestStrings_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveRestStrings_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_driveRestStrings_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19721,6 +20471,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_driveAdd_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveAdd_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_driveAdd_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19833,6 +20602,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_driveAdd5_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_driveAdd5_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveAdd5_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -19962,6 +20750,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_driveGreeter_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveGreeter_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_driveGreeter_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20084,6 +20891,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-params/__async_async_params_driveGreeterNamed_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_driveGreeterNamed_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-params/__async_async_params_driveGreeterNamed_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20177,6 +21003,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_Counter_add_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_Counter_add_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_Counter_add_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20280,6 +21125,25 @@
   i32.store
   local.get $0
   call $async-params/__async_async_params_Greeter_greet_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-params/__async_async_params_Greeter_greet_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-params/__async_async_params_Greeter_greet_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

@@ -36,9 +36,9 @@
  (global $async-join-any/__async_roots_anyEmpty (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 2784))
- (global $~lib/memory/__data_end i32 (i32.const 2840))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35608))
- (global $~lib/memory/__heap_base i32 (i32.const 35608))
+ (global $~lib/memory/__data_end i32 (i32.const 2844))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35612))
+ (global $~lib/memory/__heap_base i32 (i32.const 35612))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -66,7 +66,7 @@
  (data $23 (i32.const 2636) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0c\00\00\00b\00o\00o\00m\00-\00a\00")
  (data $24 (i32.const 2668) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0c\00\00\00b\00o\00o\00m\00-\00b\00")
  (data $25 (i32.const 2700) "L\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00<\00\00\00A\00g\00g\00r\00e\00g\00a\00t\00e\00E\00r\00r\00o\00r\00:\00 \00b\00o\00o\00m\00-\00a\00;\00 \00b\00o\00o\00m\00-\00b\00")
- (data $26 (i32.const 2784) "\r\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $26 (i32.const 2784) "\0e\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\02\t\00\00\02A\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "mintString" (func $async-join-any/mintString))
@@ -83,6 +83,7 @@
  (export "__async_async_join_any_anySecond_reject_0" (func $export:async-join-any/__async_async_join_any_anySecond_reject_0))
  (export "__async_async_join_any_anySecond_result" (func $export:async-join-any/__async_async_join_any_anySecond_result))
  (export "__async_async_join_any_anySecond_error" (func $export:async-join-any/__async_async_join_any_anySecond_error))
+ (export "__async_async_join_any_anySecond_errorValue" (func $export:async-join-any/__async_async_join_any_anySecond_errorValue))
  (export "__async_async_join_any_anySecond_status" (func $export:async-join-any/__async_async_join_any_anySecond_status))
  (export "__async_async_join_any_anyAllReject_join_store_0" (func $export:async-join-any/__async_async_join_any_anyAllReject_join_store_0))
  (export "__async_async_join_any_anyAllReject_join_error_0" (func $export:async-join-any/__async_async_join_any_anyAllReject_join_error_0))
@@ -90,6 +91,7 @@
  (export "__async_async_join_any_anyAllReject_reject_0" (func $export:async-join-any/__async_async_join_any_anyAllReject_reject_0))
  (export "__async_async_join_any_anyAllReject_result" (func $export:async-join-any/__async_async_join_any_anyAllReject_result))
  (export "__async_async_join_any_anyAllReject_error" (func $export:async-join-any/__async_async_join_any_anyAllReject_error))
+ (export "__async_async_join_any_anyAllReject_errorValue" (func $export:async-join-any/__async_async_join_any_anyAllReject_errorValue))
  (export "__async_async_join_any_anyAllReject_status" (func $export:async-join-any/__async_async_join_any_anyAllReject_status))
  (export "__async_async_join_any_anyEmpty_join_store_0" (func $export:async-join-any/__async_async_join_any_anyEmpty_join_store_0))
  (export "__async_async_join_any_anyEmpty_join_error_0" (func $export:async-join-any/__async_async_join_any_anyEmpty_join_error_0))
@@ -97,6 +99,7 @@
  (export "__async_async_join_any_anyEmpty_reject_0" (func $export:async-join-any/__async_async_join_any_anyEmpty_reject_0))
  (export "__async_async_join_any_anyEmpty_result" (func $export:async-join-any/__async_async_join_any_anyEmpty_result))
  (export "__async_async_join_any_anyEmpty_error" (func $export:async-join-any/__async_async_join_any_anyEmpty_error))
+ (export "__async_async_join_any_anyEmpty_errorValue" (func $export:async-join-any/__async_async_join_any_anyEmpty_errorValue))
  (export "__async_async_join_any_anyEmpty_status" (func $export:async-join-any/__async_async_join_any_anyEmpty_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2925,6 +2928,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-join-any/__Cps_anySecond#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<~lib/string/String>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
   local.get $buffer
@@ -2952,7 +2964,7 @@
  (func $async-join-any/__Cps_anySecond#set:__joinVals0 (param $this i32) (param $__joinVals0 i32)
   local.get $this
   local.get $__joinVals0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__joinVals0
   i32.const 0
@@ -2985,7 +2997,7 @@
  (func $async-join-any/__Cps_anySecond#set:__joinStatus0 (param $this i32) (param $__joinStatus0 i32)
   local.get $this
   local.get $__joinStatus0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__joinStatus0
   i32.const 0
@@ -2994,7 +3006,7 @@
  (func $async-join-any/__Cps_anySecond#set:__joinReasons0 (param $this i32) (param $__joinReasons0 i32)
   local.get $this
   local.get $__joinReasons0
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__joinReasons0
   i32.const 0
@@ -3003,17 +3015,17 @@
  (func $async-join-any/__Cps_anySecond#set:__joinIdx0 (param $this i32) (param $__joinIdx0 i32)
   local.get $this
   local.get $__joinIdx0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-join-any/__Cps_anySecond#set:__joinHasValue0 (param $this i32) (param $__joinHasValue0 i32)
   local.get $this
   local.get $__joinHasValue0
-  i32.store8 offset=28
+  i32.store8 offset=32
  )
  (func $async-join-any/__Cps_anySecond#set:__joinReqs0 (param $this i32) (param $__joinReqs0 i32)
   local.get $this
   local.get $__joinReqs0
-  i32.store offset=32
+  i32.store offset=36
   local.get $this
   local.get $__joinReqs0
   i32.const 0
@@ -3022,7 +3034,7 @@
  (func $async-join-any/__Cps_anySecond#set:__cps_s_0 (param $this i32) (param $__cps_s_0 i32)
   local.get $this
   local.get $__cps_s_0
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__cps_s_0
   i32.const 0
@@ -3100,7 +3112,7 @@
  )
  (func $async-join-any/__Cps_anySecond#get:__joinReqs0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3112,11 +3124,11 @@
  )
  (func $async-join-any/__Cps_anySecond#get:__joinVals0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-join-any/__Cps_anySecond#get:__joinIdx0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/array/Array<~lib/string/String>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3128,7 +3140,7 @@
  )
  (func $async-join-any/__Cps_anySecond#get:__cps_s_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -3169,10 +3181,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-join-any/__Cps_anyAllReject#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-join-any/__Cps_anyAllReject#set:__joinVals0 (param $this i32) (param $__joinVals0 i32)
   local.get $this
   local.get $__joinVals0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__joinVals0
   i32.const 0
@@ -3181,7 +3202,7 @@
  (func $async-join-any/__Cps_anyAllReject#set:__joinStatus0 (param $this i32) (param $__joinStatus0 i32)
   local.get $this
   local.get $__joinStatus0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__joinStatus0
   i32.const 0
@@ -3190,7 +3211,7 @@
  (func $async-join-any/__Cps_anyAllReject#set:__joinReasons0 (param $this i32) (param $__joinReasons0 i32)
   local.get $this
   local.get $__joinReasons0
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__joinReasons0
   i32.const 0
@@ -3199,17 +3220,17 @@
  (func $async-join-any/__Cps_anyAllReject#set:__joinIdx0 (param $this i32) (param $__joinIdx0 i32)
   local.get $this
   local.get $__joinIdx0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-join-any/__Cps_anyAllReject#set:__joinHasValue0 (param $this i32) (param $__joinHasValue0 i32)
   local.get $this
   local.get $__joinHasValue0
-  i32.store8 offset=28
+  i32.store8 offset=32
  )
  (func $async-join-any/__Cps_anyAllReject#set:__joinReqs0 (param $this i32) (param $__joinReqs0 i32)
   local.get $this
   local.get $__joinReqs0
-  i32.store offset=32
+  i32.store offset=36
   local.get $this
   local.get $__joinReqs0
   i32.const 0
@@ -3218,7 +3239,7 @@
  (func $async-join-any/__Cps_anyAllReject#set:__cps_s_0 (param $this i32) (param $__cps_s_0 i32)
   local.get $this
   local.get $__cps_s_0
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__cps_s_0
   i32.const 0
@@ -3238,19 +3259,19 @@
  )
  (func $async-join-any/__Cps_anyAllReject#get:__joinReqs0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=36
  )
  (func $async-join-any/__Cps_anyAllReject#get:__joinVals0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-join-any/__Cps_anyAllReject#get:__joinIdx0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-join-any/__Cps_anyAllReject#get:__cps_s_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $async-join-any/__Cps_anyEmpty#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3275,10 +3296,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-join-any/__Cps_anyEmpty#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-join-any/__Cps_anyEmpty#set:__joinVals0 (param $this i32) (param $__joinVals0 i32)
   local.get $this
   local.get $__joinVals0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__joinVals0
   i32.const 0
@@ -3287,7 +3317,7 @@
  (func $async-join-any/__Cps_anyEmpty#set:__joinStatus0 (param $this i32) (param $__joinStatus0 i32)
   local.get $this
   local.get $__joinStatus0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__joinStatus0
   i32.const 0
@@ -3296,7 +3326,7 @@
  (func $async-join-any/__Cps_anyEmpty#set:__joinReasons0 (param $this i32) (param $__joinReasons0 i32)
   local.get $this
   local.get $__joinReasons0
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__joinReasons0
   i32.const 0
@@ -3305,17 +3335,17 @@
  (func $async-join-any/__Cps_anyEmpty#set:__joinIdx0 (param $this i32) (param $__joinIdx0 i32)
   local.get $this
   local.get $__joinIdx0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-join-any/__Cps_anyEmpty#set:__joinHasValue0 (param $this i32) (param $__joinHasValue0 i32)
   local.get $this
   local.get $__joinHasValue0
-  i32.store8 offset=28
+  i32.store8 offset=32
  )
  (func $async-join-any/__Cps_anyEmpty#set:__joinReqs0 (param $this i32) (param $__joinReqs0 i32)
   local.get $this
   local.get $__joinReqs0
-  i32.store offset=32
+  i32.store offset=36
   local.get $this
   local.get $__joinReqs0
   i32.const 0
@@ -3324,7 +3354,7 @@
  (func $async-join-any/__Cps_anyEmpty#set:__cps_s_0 (param $this i32) (param $__cps_s_0 i32)
   local.get $this
   local.get $__cps_s_0
-  i32.store offset=36
+  i32.store offset=40
   local.get $this
   local.get $__cps_s_0
   i32.const 0
@@ -3344,7 +3374,7 @@
  )
  (func $async-join-any/__Cps_anyEmpty#get:__cps_s_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=40
  )
  (func $async-join-any/chunkString (param $i i32) (result i32)
   local.get $i
@@ -3381,11 +3411,11 @@
  )
  (func $async-join-any/__Cps_anySecond#get:__joinStatus0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-join-any/__Cps_anySecond#get:__joinReasons0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-join-any/__Cps_anySecond#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3395,13 +3425,17 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-join-any/__Cps_anySecond#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-join-any/__Cps_anyAllReject#get:__joinStatus0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-join-any/__Cps_anyAllReject#get:__joinReasons0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-join-any/__Cps_anyAllReject#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3411,17 +3445,21 @@
   local.get $this
   i32.load offset=8
  )
- (func $async-join-any/__Cps_anyEmpty#get:__joinVals0 (param $this i32) (result i32)
+ (func $async-join-any/__Cps_anyAllReject#get:__errorValue (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
  )
- (func $async-join-any/__Cps_anyEmpty#get:__joinStatus0 (param $this i32) (result i32)
+ (func $async-join-any/__Cps_anyEmpty#get:__joinVals0 (param $this i32) (result i32)
   local.get $this
   i32.load offset=16
  )
- (func $async-join-any/__Cps_anyEmpty#get:__joinReasons0 (param $this i32) (result i32)
+ (func $async-join-any/__Cps_anyEmpty#get:__joinStatus0 (param $this i32) (result i32)
   local.get $this
   i32.load offset=20
+ )
+ (func $async-join-any/__Cps_anyEmpty#get:__joinReasons0 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=24
  )
  (func $async-join-any/__Cps_anyEmpty#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3430,6 +3468,10 @@
  (func $async-join-any/__Cps_anyEmpty#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-join-any/__Cps_anyEmpty#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3535,11 +3577,33 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=32
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=36
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3581,11 +3645,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=32
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=36
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3627,11 +3695,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=32
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=36
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=40
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3654,46 +3726,52 @@
      block $~lib/array/Array<async-join-any/__Cps_anyAllReject>
       block $async-join-any/__Cps_anyAllReject
        block $~lib/array/Array<async-join-any/__Cps_anySecond>
-        block $async-join-any/__Cps_anySecond
-         block $~lib/array/Array<~lib/string/String>
-          block $~lib/array/Array<i32>
-           block $~lib/promise/Promise<~lib/string/String>
-            block $~lib/arraybuffer/ArrayBufferView
-             block $~lib/string/String
-              block $~lib/arraybuffer/ArrayBuffer
-               block $~lib/object/Object
-                local.get $0
-                i32.const 8
-                i32.sub
-                i32.load
-                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $async-join-any/__Cps_anySecond $~lib/array/Array<async-join-any/__Cps_anySecond> $async-join-any/__Cps_anyAllReject $~lib/array/Array<async-join-any/__Cps_anyAllReject> $async-join-any/__Cps_anyEmpty $~lib/array/Array<async-join-any/__Cps_anyEmpty> $invalid
+        block $~lib/error/Error
+         block $async-join-any/__Cps_anySecond
+          block $~lib/array/Array<~lib/string/String>
+           block $~lib/array/Array<i32>
+            block $~lib/promise/Promise<~lib/string/String>
+             block $~lib/arraybuffer/ArrayBufferView
+              block $~lib/string/String
+               block $~lib/arraybuffer/ArrayBuffer
+                block $~lib/object/Object
+                 local.get $0
+                 i32.const 8
+                 i32.sub
+                 i32.load
+                 br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/array/Array<i32> $~lib/array/Array<~lib/string/String> $async-join-any/__Cps_anySecond $~lib/error/Error $~lib/array/Array<async-join-any/__Cps_anySecond> $async-join-any/__Cps_anyAllReject $~lib/array/Array<async-join-any/__Cps_anyAllReject> $async-join-any/__Cps_anyEmpty $~lib/array/Array<async-join-any/__Cps_anyEmpty> $invalid
+                end
+                return
                end
                return
               end
               return
              end
+             local.get $0
+             local.get $1
+             call $~lib/arraybuffer/ArrayBufferView~visit
              return
             end
-            local.get $0
-            local.get $1
-            call $~lib/arraybuffer/ArrayBufferView~visit
             return
            end
+           local.get $0
+           local.get $1
+           call $~lib/array/Array<i32>~visit
            return
           end
           local.get $0
           local.get $1
-          call $~lib/array/Array<i32>~visit
+          call $~lib/array/Array<~lib/string/String>~visit
           return
          end
          local.get $0
          local.get $1
-         call $~lib/array/Array<~lib/string/String>~visit
+         call $async-join-any/__Cps_anySecond~visit
          return
         end
         local.get $0
         local.get $1
-        call $async-join-any/__Cps_anySecond~visit
+        call $~lib/error/Error~visit
         return
        end
        local.get $0
@@ -3761,7 +3839,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 8
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3899,7 +3977,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 10
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4037,7 +4115,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 12
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4581,7 +4659,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
+   i32.const 44
    i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -4621,6 +4699,14 @@
   local.get $1
   i32.const 2336
   call $async-join-any/__Cps_anySecond#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-join-any/__Cps_anySecond#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5208,7 +5294,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 8
+  i32.const 9
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5675,8 +5761,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
-   i32.const 9
+   i32.const 44
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5715,6 +5801,14 @@
   local.get $1
   i32.const 2336
   call $async-join-any/__Cps_anyAllReject#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-join-any/__Cps_anyAllReject#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6055,7 +6149,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 10
+  i32.const 11
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6522,8 +6616,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
-   i32.const 11
+   i32.const 44
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6562,6 +6656,14 @@
   local.get $1
   i32.const 2336
   call $async-join-any/__Cps_anyEmpty#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-join-any/__Cps_anyEmpty#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6902,7 +7004,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 12
+  i32.const 13
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7741,6 +7843,31 @@
   local.get $1
   return
  )
+ (func $async-join-any/__async_async_join_any_anySecond_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-any/__Cps_anySecond#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-any/__async_async_join_any_anySecond_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8061,6 +8188,31 @@
   local.get $1
   return
  )
+ (func $async-join-any/__async_async_join_any_anyAllReject_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-any/__Cps_anyAllReject#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-join-any/__async_async_join_any_anyAllReject_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -8373,6 +8525,31 @@
   i32.store
   local.get $1
   call $async-join-any/__Cps_anyEmpty#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-join-any/__async_async_join_any_anyEmpty_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-join-any/__Cps_anyEmpty#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -9097,6 +9274,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-any/__async_async_join_any_anySecond_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-any/__async_async_join_any_anySecond_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-join-any/__async_async_join_any_anySecond_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9238,6 +9434,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-join-any/__async_async_join_any_anyAllReject_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-any/__async_async_join_any_anyAllReject_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-join-any/__async_async_join_any_anyAllReject_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -9372,6 +9587,25 @@
   i32.store
   local.get $0
   call $async-join-any/__async_async_join_any_anyEmpty_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-join-any/__async_async_join_any_anyEmpty_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-join-any/__async_async_join_any_anyEmpty_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

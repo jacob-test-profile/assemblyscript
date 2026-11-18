@@ -89,6 +89,67 @@ export async function catchRejectFinally(): Promise<string> {
   return out;
 }
 
+// An uncaught Error object rejects the task with the Error's message.
+export async function throwErrorUncaught(): Promise<string> {
+  throw new Error("coord-err");
+  return "unreachable";
+}
+
+// An uncaught string rejects the task with the string.
+export async function throwStringUncaught(): Promise<string> {
+  throw "coord-str";
+  return "unreachable";
+}
+
+// An uncaught number rejects the task with its toString.
+export async function throwNumberUncaught(): Promise<string> {
+  throw 42;
+  return "unreachable";
+}
+
+// A caught Error: the catch sees the Error's message.
+export async function throwErrorCaught(): Promise<string> {
+  try {
+    throw new Error("coord-caught");
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// throw await <string>: the awaited string is the thrown value.
+export async function throwAwaitString(): Promise<string> {
+  throw await getChunk(0);
+  return "unreachable";
+}
+
+// throw await <number>: the awaited number is the thrown value.
+export async function throwAwaitNumber(): Promise<string> {
+  throw await getNumber();
+  return "unreachable";
+}
+
+// throw await caught: the awaited string is caught with its message.
+export async function throwAwaitCaught(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// A rejection of the await inside `throw await` reaches the catch, not
+// the throw's (zero) bound value.
+export async function throwAwaitRejected(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
 // Stored promises read out of an array or an object field, and copied
 // from a tracked binding, all suspend on the issued token.
 export async function storedMember(): Promise<string> {

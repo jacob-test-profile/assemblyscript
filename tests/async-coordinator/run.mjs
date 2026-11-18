@@ -522,6 +522,60 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS finally exactly once across a caught rejection");
 }
 
+// Thrown values: the error channel carries the value; the task rejects
+// with the message (Error via .message, string as-is, number via toString).
+{
+  await assertRejects(api.throwErrorUncaught(), /coord-err/, "an uncaught Error must reject with its message");
+  console.log("PASS uncaught Error rejects with its message");
+}
+{
+  await assertRejects(api.throwStringUncaught(), /coord-str/, "an uncaught string must reject with the string");
+  console.log("PASS uncaught string rejects with the string");
+}
+{
+  await assertRejects(api.throwNumberUncaught(), /^42$/, "an uncaught number must reject with its toString");
+  console.log("PASS uncaught number rejects with its toString");
+}
+{
+  check((await api.throwErrorCaught()) === "caught:coord-caught", "a caught Error must resolve with its message");
+  console.log("PASS caught Error resolves with its message");
+}
+
+// throw await: the awaited value becomes the thrown value.
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitString();
+  await tick();
+  chunkDeferreds[base].resolve("thrown-A");
+  await assertRejects(p, /^thrown-A$/, "throw await <string> must reject with the awaited string");
+  console.log("PASS throw await string rejects with the awaited string");
+}
+{
+  const base = numDeferreds.length;
+  const p = api.throwAwaitNumber();
+  await tick();
+  numDeferreds[base].resolve(42);
+  await assertRejects(p, /^42$/, "throw await <number> must reject with the awaited number");
+  console.log("PASS throw await number rejects with the awaited number");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitCaught();
+  await tick();
+  chunkDeferreds[base].resolve("caught-A");
+  check((await p) === "caught:caught-A", "throw await <string> in a try must resolve with the caught message");
+  console.log("PASS throw await string caught with its message");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitRejected();
+  await tick();
+  chunkDeferreds[base].reject(new Error("import-boom"));
+  const caught = await p;
+  check(caught === "caught:import-boom", "a rejected await inside throw await must land in the catch, got " + caught);
+  console.log("PASS rejected await inside throw await lands in catch");
+}
+
 // Void task resolves undefined.
 {
   const base = chunkDeferreds.length;

@@ -29,9 +29,9 @@
  (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
  (global $async-loop/__async_roots_concatThree (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 640))
- (global $~lib/memory/__data_end i32 (i32.const 676))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33444))
- (global $~lib/memory/__heap_base i32 (i32.const 33444))
+ (global $~lib/memory/__data_end i32 (i32.const 680))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33448))
+ (global $~lib/memory/__heap_base i32 (i32.const 33448))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -47,7 +47,7 @@
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00A\00A\00A\00\00\00\00\00\00\00")
  (data $12 (i32.const 572) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00B\00B\00B\00\00\00\00\00\00\00")
  (data $13 (i32.const 604) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\06\00\00\00C\00C\00C\00\00\00\00\00\00\00")
- (data $14 (i32.const 640) "\08\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $14 (i32.const 640) "\t\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "concatThree" (func $async-loop/concatThree))
@@ -57,6 +57,7 @@
  (export "__async_async_loop_concatThree_reject_0" (func $export:async-loop/__async_async_loop_concatThree_reject_0))
  (export "__async_async_loop_concatThree_result" (func $export:async-loop/__async_async_loop_concatThree_result))
  (export "__async_async_loop_concatThree_error" (func $export:async-loop/__async_async_loop_concatThree_error))
+ (export "__async_async_loop_concatThree_errorValue" (func $export:async-loop/__async_async_loop_concatThree_errorValue))
  (export "__async_async_loop_concatThree_status" (func $export:async-loop/__async_async_loop_concatThree_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2400,10 +2401,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-loop/__Cps_concatThree#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-loop/__Cps_concatThree#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2412,7 +2422,7 @@
  (func $async-loop/__Cps_concatThree#set:__cps_out_0 (param $this i32) (param $__cps_out_0 i32)
   local.get $this
   local.get $__cps_out_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_out_0
   i32.const 0
@@ -2421,12 +2431,12 @@
  (func $async-loop/__Cps_concatThree#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
   local.get $this
   local.get $__cps_i_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-loop/__Cps_concatThree#set:__cps_chunk_2 (param $this i32) (param $__cps_chunk_2 i32)
   local.get $this
   local.get $__cps_chunk_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_chunk_2
   i32.const 0
@@ -2504,7 +2514,7 @@
  )
  (func $async-loop/__Cps_concatThree#get:__cps_out_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2524,15 +2534,15 @@
  )
  (func $async-loop/__Cps_concatThree#get:__cps_i_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-loop/__Cps_concatThree#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-loop/__Cps_concatThree#get:__cps_chunk_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2572,6 +2582,10 @@
  (func $async-loop/__Cps_concatThree#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-loop/__Cps_concatThree#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -2626,7 +2640,29 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2658,34 +2694,40 @@
   block $invalid
    block $~lib/array/Array<i32>
     block $~lib/array/Array<async-loop/__Cps_concatThree>
-     block $async-loop/__Cps_concatThree
-      block $~lib/promise/Promise<~lib/string/String>
-       block $~lib/arraybuffer/ArrayBufferView
-        block $~lib/string/String
-         block $~lib/arraybuffer/ArrayBuffer
-          block $~lib/object/Object
-           local.get $0
-           i32.const 8
-           i32.sub
-           i32.load
-           br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-loop/__Cps_concatThree $~lib/array/Array<async-loop/__Cps_concatThree> $~lib/array/Array<i32> $invalid
+     block $~lib/error/Error
+      block $async-loop/__Cps_concatThree
+       block $~lib/promise/Promise<~lib/string/String>
+        block $~lib/arraybuffer/ArrayBufferView
+         block $~lib/string/String
+          block $~lib/arraybuffer/ArrayBuffer
+           block $~lib/object/Object
+            local.get $0
+            i32.const 8
+            i32.sub
+            i32.load
+            br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-loop/__Cps_concatThree $~lib/error/Error $~lib/array/Array<async-loop/__Cps_concatThree> $~lib/array/Array<i32> $invalid
+           end
+           return
           end
           return
          end
          return
         end
+        local.get $0
+        local.get $1
+        call $~lib/arraybuffer/ArrayBufferView~visit
         return
        end
-       local.get $0
-       local.get $1
-       call $~lib/arraybuffer/ArrayBufferView~visit
        return
       end
+      local.get $0
+      local.get $1
+      call $async-loop/__Cps_concatThree~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-loop/__Cps_concatThree~visit
+     call $~lib/error/Error~visit
      return
     end
     local.get $0
@@ -2738,7 +2780,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -2868,7 +2910,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
+   i32.const 32
    i32.const 5
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -2908,6 +2950,14 @@
   local.get $1
   i32.const 528
   call $async-loop/__Cps_concatThree#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-loop/__Cps_concatThree#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3315,7 +3365,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4046,6 +4096,31 @@
   local.get $1
   return
  )
+ (func $async-loop/__async_async_loop_concatThree_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-loop/__Cps_concatThree#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-loop/__async_async_loop_concatThree_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -4325,6 +4400,25 @@
   i32.store
   local.get $0
   call $async-loop/__async_async_loop_concatThree_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-loop/__async_async_loop_concatThree_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-loop/__async_async_loop_concatThree_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

@@ -34,9 +34,9 @@
  (global $async-stored-promise/__async_roots_f (mut i32) (i32.const 0))
  (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 2384))
- (global $~lib/memory/__data_end i32 (i32.const 2420))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35188))
- (global $~lib/memory/__heap_base i32 (i32.const 35188))
+ (global $~lib/memory/__data_end i32 (i32.const 2424))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 35192))
+ (global $~lib/memory/__heap_base i32 (i32.const 35192))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -57,7 +57,7 @@
  (data $16 (i32.const 2220) "\\\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00H\00\00\000\001\002\003\004\005\006\007\008\009\00a\00b\00c\00d\00e\00f\00g\00h\00i\00j\00k\00l\00m\00n\00o\00p\00q\00r\00s\00t\00u\00v\00w\00x\00y\00z\00\00\00\00\00")
  (data $17 (i32.const 2316) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $18 (i32.const 2348) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\08\00\00\00g\00o\00t\00-\00\00\00\00\00")
- (data $19 (i32.const 2384) "\08\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $19 (i32.const 2384) "\t\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "mintString" (func $async-stored-promise/mintString))
@@ -67,6 +67,7 @@
  (export "__async_async_stored_promise_f_reject_0" (func $export:async-stored-promise/__async_async_stored_promise_f_reject_0))
  (export "__async_async_stored_promise_f_result" (func $export:async-stored-promise/__async_async_stored_promise_f_result))
  (export "__async_async_stored_promise_f_error" (func $export:async-stored-promise/__async_async_stored_promise_f_error))
+ (export "__async_async_stored_promise_f_errorValue" (func $export:async-stored-promise/__async_async_stored_promise_f_errorValue))
  (export "__async_async_stored_promise_f_status" (func $export:async-stored-promise/__async_async_stored_promise_f_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2839,10 +2840,19 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-stored-promise/__Cps_f#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-stored-promise/__Cps_f#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
   local.get $this
   local.get $__pend0
   i32.const 0
@@ -2851,7 +2861,7 @@
  (func $async-stored-promise/__Cps_f#set:__cps_p_0 (param $this i32) (param $__cps_p_0 i32)
   local.get $this
   local.get $__cps_p_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_p_0
   i32.const 0
@@ -2860,7 +2870,7 @@
  (func $async-stored-promise/__Cps_f#set:__cps_c_1 (param $this i32) (param $__cps_c_1 i32)
   local.get $this
   local.get $__cps_c_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_c_1
   i32.const 0
@@ -2938,15 +2948,15 @@
  )
  (func $async-stored-promise/__Cps_f#get:__cps_p_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-stored-promise/__Cps_f#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-stored-promise/__Cps_f#get:__cps_c_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2971,6 +2981,10 @@
  (func $async-stored-promise/__Cps_f#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-stored-promise/__Cps_f#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3034,6 +3048,28 @@
   i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
  )
  (func $~lib/array/Array<async-stored-promise/__Cps_f>#get:buffer (param $this i32) (result i32)
   local.get $this
@@ -3063,34 +3099,40 @@
   block $invalid
    block $~lib/array/Array<i32>
     block $~lib/array/Array<async-stored-promise/__Cps_f>
-     block $async-stored-promise/__Cps_f
-      block $~lib/promise/Promise<~lib/string/String>
-       block $~lib/arraybuffer/ArrayBufferView
-        block $~lib/string/String
-         block $~lib/arraybuffer/ArrayBuffer
-          block $~lib/object/Object
-           local.get $0
-           i32.const 8
-           i32.sub
-           i32.load
-           br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-stored-promise/__Cps_f $~lib/array/Array<async-stored-promise/__Cps_f> $~lib/array/Array<i32> $invalid
+     block $~lib/error/Error
+      block $async-stored-promise/__Cps_f
+       block $~lib/promise/Promise<~lib/string/String>
+        block $~lib/arraybuffer/ArrayBufferView
+         block $~lib/string/String
+          block $~lib/arraybuffer/ArrayBuffer
+           block $~lib/object/Object
+            local.get $0
+            i32.const 8
+            i32.sub
+            i32.load
+            br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $async-stored-promise/__Cps_f $~lib/error/Error $~lib/array/Array<async-stored-promise/__Cps_f> $~lib/array/Array<i32> $invalid
+           end
+           return
           end
           return
          end
          return
         end
+        local.get $0
+        local.get $1
+        call $~lib/arraybuffer/ArrayBufferView~visit
         return
        end
-       local.get $0
-       local.get $1
-       call $~lib/arraybuffer/ArrayBufferView~visit
        return
       end
+      local.get $0
+      local.get $1
+      call $async-stored-promise/__Cps_f~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-stored-promise/__Cps_f~visit
+     call $~lib/error/Error~visit
      return
     end
     local.get $0
@@ -3143,7 +3185,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 6
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3408,7 +3450,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
+   i32.const 28
    i32.const 5
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -3448,6 +3490,14 @@
   local.get $1
   i32.const 2336
   call $async-stored-promise/__Cps_f#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-stored-promise/__Cps_f#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3847,7 +3897,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 6
+  i32.const 7
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4345,6 +4395,31 @@
   local.get $1
   return
  )
+ (func $async-stored-promise/__async_async_stored_promise_f_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-stored-promise/__Cps_f#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-stored-promise/__async_async_stored_promise_f_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -4806,6 +4881,25 @@
   i32.store
   local.get $0
   call $async-stored-promise/__async_async_stored_promise_f_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-stored-promise/__async_async_stored_promise_f_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-stored-promise/__async_async_stored_promise_f_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

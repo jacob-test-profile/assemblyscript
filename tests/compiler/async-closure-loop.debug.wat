@@ -31,9 +31,9 @@
  (global $async-closure-loop/__async_state_async_closure_loop_loopClosures (mut i32) (i32.const 0))
  (global $~argumentsLength (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 576))
- (global $~lib/memory/__data_end i32 (i32.const 616))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33384))
- (global $~lib/memory/__heap_base i32 (i32.const 33384))
+ (global $~lib/memory/__data_end i32 (i32.const 620))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33388))
+ (global $~lib/memory/__heap_base i32 (i32.const 33388))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -47,7 +47,7 @@
  (data $9 (i32.const 444) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $10 (i32.const 508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00")
- (data $12 (i32.const 576) "\t\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $12 (i32.const 576) "\n\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 2 2 funcref)
  (elem $0 (i32.const 1) $async-closure-loop/__adapt_loopClosures_0)
  (export "loopClosures" (func $async-closure-loop/loopClosures))
@@ -56,6 +56,7 @@
  (export "__async_async_closure_loop_loopClosures_reject_0" (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_reject_0))
  (export "__async_async_closure_loop_loopClosures_result" (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_result))
  (export "__async_async_closure_loop_loopClosures_error" (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_error))
+ (export "__async_async_closure_loop_loopClosures_errorValue" (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_errorValue))
  (export "__async_async_closure_loop_loopClosures_status" (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2395,25 +2396,34 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-closure-loop/__Cps_loopClosures#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-closure-loop/__Cps_loopClosures#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-closure-loop/__Cps_loopClosures#set:__cps_total_0 (param $this i32) (param $__cps_total_0 i32)
   local.get $this
   local.get $__cps_total_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-closure-loop/__Cps_loopClosures#set:__cps_i_1 (param $this i32) (param $__cps_i_1 i32)
   local.get $this
   local.get $__cps_i_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-closure-loop/__Cps_loopClosures#set:__cps_f_2 (param $this i32) (param $__cps_f_2 i32)
   local.get $this
   local.get $__cps_f_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_f_2
   i32.const 0
@@ -2422,7 +2432,7 @@
  (func $async-closure-loop/__Cps_loopClosures#set:__cps_m_3 (param $this i32) (param $__cps_m_3 i32)
   local.get $this
   local.get $__cps_m_3
-  i32.store offset=28
+  i32.store offset=32
  )
  (func $~lib/array/Array<async-closure-loop/__Cps_loopClosures>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2496,7 +2506,7 @@
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__cps_total_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2516,19 +2526,19 @@
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__cps_i_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__cps_f_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__cps_m_3 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-closure-loop/__Cps_loopClosures#get:__result (param $this i32) (result i32)
   local.get $this
@@ -2537,6 +2547,10 @@
  (func $async-closure-loop/__Cps_loopClosures#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-closure-loop/__Cps_loopClosures#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -2591,7 +2605,29 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2623,40 +2659,46 @@
   block $invalid
    block $~lib/array/Array<i32>
     block $~lib/array/Array<async-closure-loop/__Cps_loopClosures>
-     block $async-closure-loop/__Cps_loopClosures
-      block $~lib/function/Function<%28i32%29=>i32>
-       block $~lib/promise/Promise<i32>
-        block $~lib/arraybuffer/ArrayBufferView
-         block $~lib/string/String
-          block $~lib/arraybuffer/ArrayBuffer
-           block $~lib/object/Object
-            local.get $0
-            i32.const 8
-            i32.sub
-            i32.load
-            br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/function/Function<%28i32%29=>i32> $async-closure-loop/__Cps_loopClosures $~lib/array/Array<async-closure-loop/__Cps_loopClosures> $~lib/array/Array<i32> $invalid
+     block $~lib/error/Error
+      block $async-closure-loop/__Cps_loopClosures
+       block $~lib/function/Function<%28i32%29=>i32>
+        block $~lib/promise/Promise<i32>
+         block $~lib/arraybuffer/ArrayBufferView
+          block $~lib/string/String
+           block $~lib/arraybuffer/ArrayBuffer
+            block $~lib/object/Object
+             local.get $0
+             i32.const 8
+             i32.sub
+             i32.load
+             br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/function/Function<%28i32%29=>i32> $async-closure-loop/__Cps_loopClosures $~lib/error/Error $~lib/array/Array<async-closure-loop/__Cps_loopClosures> $~lib/array/Array<i32> $invalid
+            end
+            return
            end
            return
           end
           return
          end
+         local.get $0
+         local.get $1
+         call $~lib/arraybuffer/ArrayBufferView~visit
          return
         end
-        local.get $0
-        local.get $1
-        call $~lib/arraybuffer/ArrayBufferView~visit
         return
        end
+       local.get $0
+       local.get $1
+       call $~lib/function/Function<%28i32%29=>i32>~visit
        return
       end
       local.get $0
       local.get $1
-      call $~lib/function/Function<%28i32%29=>i32>~visit
+      call $async-closure-loop/__Cps_loopClosures~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-closure-loop/__Cps_loopClosures~visit
+     call $~lib/error/Error~visit
      return
     end
     local.get $0
@@ -2709,7 +2751,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 7
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -2839,7 +2881,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
+   i32.const 36
    i32.const 6
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -2879,6 +2921,14 @@
   local.get $1
   i32.const 528
   call $async-closure-loop/__Cps_loopClosures#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-closure-loop/__Cps_loopClosures#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3294,7 +3344,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 7
+  i32.const 8
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -3978,6 +4028,31 @@
   local.get $1
   return
  )
+ (func $async-closure-loop/__async_async_closure_loop_loopClosures_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-closure-loop/__Cps_loopClosures#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-closure-loop/__async_async_closure_loop_loopClosures_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -4278,6 +4353,25 @@
   i32.store
   local.get $0
   call $async-closure-loop/__async_async_closure_loop_loopClosures_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-closure-loop/__async_async_closure_loop_loopClosures_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-closure-loop/__async_async_closure_loop_loopClosures_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

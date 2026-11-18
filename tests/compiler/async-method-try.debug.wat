@@ -33,9 +33,9 @@
  (global $async-method-try/__async_roots_Worker_helper (mut i32) (i32.const 0))
  (global $async-method-try/__async_roots_Worker_guardedNested (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 672))
- (global $~lib/memory/__data_end i32 (i32.const 736))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33504))
- (global $~lib/memory/__heap_base i32 (i32.const 33504))
+ (global $~lib/memory/__data_end i32 (i32.const 740))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33508))
+ (global $~lib/memory/__heap_base i32 (i32.const 33508))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -51,7 +51,7 @@
  (data $11 (i32.const 540) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0e\00\00\00f\00i\00n\00a\00l\00l\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $12 (i32.const 588) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0c\00\00\00c\00a\00t\00c\00h\00:\00")
  (data $13 (i32.const 620) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00c\00o\00o\00r\00d\00-\00b\00o\00o\00m\00\00\00\00\00\00\00\00\00")
- (data $14 (i32.const 672) "\0f\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $14 (i32.const 672) "\10\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "startGuarded" (func $async-method-try/startGuarded))
@@ -64,18 +64,21 @@
  (export "__async_async_method_try_Worker_guarded_reject_0" (func $export:async-method-try/__async_async_method_try_Worker_guarded_reject_0))
  (export "__async_async_method_try_Worker_guarded_result" (func $export:async-method-try/__async_async_method_try_Worker_guarded_result))
  (export "__async_async_method_try_Worker_guarded_error" (func $export:async-method-try/__async_async_method_try_Worker_guarded_error))
+ (export "__async_async_method_try_Worker_guarded_errorValue" (func $export:async-method-try/__async_async_method_try_Worker_guarded_errorValue))
  (export "__async_async_method_try_Worker_guarded_status" (func $export:async-method-try/__async_async_method_try_Worker_guarded_status))
  (export "__async_async_method_try_Worker_guarded_entry" (func $export:async-method-try/__async_async_method_try_Worker_guarded_entry))
  (export "__async_async_method_try_Worker_guardedFinally_resume_0" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_resume_0))
  (export "__async_async_method_try_Worker_guardedFinally_reject_0" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_reject_0))
  (export "__async_async_method_try_Worker_guardedFinally_result" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_result))
  (export "__async_async_method_try_Worker_guardedFinally_error" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_error))
+ (export "__async_async_method_try_Worker_guardedFinally_errorValue" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_errorValue))
  (export "__async_async_method_try_Worker_guardedFinally_status" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_status))
  (export "__async_async_method_try_Worker_guardedFinally_entry" (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_entry))
  (export "__async_async_method_try_Worker_helper_resume_0" (func $export:async-method-try/__async_async_method_try_Worker_helper_resume_0))
  (export "__async_async_method_try_Worker_helper_reject_0" (func $export:async-method-try/__async_async_method_try_Worker_helper_reject_0))
  (export "__async_async_method_try_Worker_helper_result" (func $export:async-method-try/__async_async_method_try_Worker_helper_result))
  (export "__async_async_method_try_Worker_helper_error" (func $export:async-method-try/__async_async_method_try_Worker_helper_error))
+ (export "__async_async_method_try_Worker_helper_errorValue" (func $export:async-method-try/__async_async_method_try_Worker_helper_errorValue))
  (export "__async_async_method_try_Worker_helper_status" (func $export:async-method-try/__async_async_method_try_Worker_helper_status))
  (export "__async_async_method_try_Worker_helper_entry" (func $export:async-method-try/__async_async_method_try_Worker_helper_entry))
  (export "__async_async_method_try_Worker_guardedNested_pending_0" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_pending_0))
@@ -83,6 +86,7 @@
  (export "__async_async_method_try_Worker_guardedNested_reject_0" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_reject_0))
  (export "__async_async_method_try_Worker_guardedNested_result" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_result))
  (export "__async_async_method_try_Worker_guardedNested_error" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_error))
+ (export "__async_async_method_try_Worker_guardedNested_errorValue" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_errorValue))
  (export "__async_async_method_try_Worker_guardedNested_status" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_status))
  (export "__async_async_method_try_Worker_guardedNested_entry" (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_entry))
  (start $~start)
@@ -2512,20 +2516,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method-try/__Cps_Worker_guarded#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method-try/__Cps_Worker_guarded#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method-try/__Cps_Worker_guarded#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2534,69 +2547,87 @@
  (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_ret_0_2 (param $this i32) (param $__cps___async_try_ret_0_2 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_2
-  i32.store8 offset=24
+  i32.store8 offset=28
  )
  (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_brk_1_3 (param $this i32) (param $__cps___async_try_brk_1_3 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_3
-  i32.store8 offset=25
+  i32.store8 offset=29
  )
  (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_cnt_2_4 (param $this i32) (param $__cps___async_try_cnt_2_4 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_4
-  i32.store8 offset=26
+  i32.store8 offset=30
  )
  (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendErr_3_5 (param $this i32) (param $__cps___async_try_pendErr_3_5 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
-  i32.store offset=28
+  i32.store offset=32
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_4_6 (param $this i32) (param $__cps___async_try_pendFail_4_6 i32)
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendVal_4_6 (param $this i32) (param $__cps___async_try_pendVal_4_6 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_6
-  i32.store8 offset=32
- )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_5_7 (param $this i32) (param $__cps___async_try_retVal_5_7 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_7
+  local.get $__cps___async_try_pendVal_4_6
   i32.store offset=36
- )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_7_8 (param $this i32) (param $__cps___async_try_flag_7_8 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_8
+  local.get $__cps___async_try_pendVal_4_6
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_5_7 (param $this i32) (param $__cps___async_try_pendFail_5_7 i32)
+  local.get $this
+  local.get $__cps___async_try_pendFail_5_7
   i32.store8 offset=40
  )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_6_9 (param $this i32) (param $__cps___async_try_err_6_9 i32)
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_6_8 (param $this i32) (param $__cps___async_try_retVal_6_8 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_9
+  local.get $__cps___async_try_retVal_6_8
   i32.store offset=44
-  local.get $this
-  local.get $__cps___async_try_err_6_9
-  i32.const 0
-  call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps_m_10 (param $this i32) (param $__cps_m_10 i32)
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_9_9 (param $this i32) (param $__cps___async_try_flag_9_9 i32)
   local.get $this
-  local.get $__cps_m_10
-  i32.store offset=48
+  local.get $__cps___async_try_flag_9_9
+  i32.store8 offset=48
  )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps_e_11 (param $this i32) (param $__cps_e_11 i32)
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_7_10 (param $this i32) (param $__cps___async_try_err_7_10 i32)
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
   i32.store offset=52
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_8_12 (param $this i32) (param $__cps___async_try_fin_8_12 i32)
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_errVal_8_11 (param $this i32) (param $__cps___async_try_errVal_8_11 i32)
   local.get $this
-  local.get $__cps___async_try_fin_8_12
-  i32.store8 offset=56
+  local.get $__cps___async_try_errVal_8_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps_m_12 (param $this i32) (param $__cps_m_12 i32)
+  local.get $this
+  local.get $__cps_m_12
+  i32.store offset=60
+ )
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+  local.get $this
+  local.get $__cps_e_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps_e_13
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_10_14 (param $this i32) (param $__cps___async_try_fin_10_14 i32)
+  local.get $this
+  local.get $__cps___async_try_fin_10_14
+  i32.store8 offset=68
  )
  (func $~lib/array/Array<async-method-try/__Cps_Worker_guarded>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2668,49 +2699,49 @@
   local.get $this
   i32.load
  )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=40
+  i32.load8_u offset=48
  )
  (func $async-method-try/__Cps_Worker_guarded#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_ret_0_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=24
+  i32.load8_u offset=28
  )
  (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_brk_1_3 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=25
+  i32.load8_u offset=29
  )
  (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_cnt_2_4 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=26
+  i32.load8_u offset=30
  )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=32
+  i32.load8_u offset=40
  )
  (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-method-try/Worker#get:count (param $this i32) (result i32)
   local.get $this
   i32.load
  )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps_m_10 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps_m_12 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=48
+  i32.load offset=60
  )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_6_9 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=44
- )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps_e_11 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_7_10 (param $this i32) (result i32)
   local.get $this
   i32.load offset=52
+ )
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps_e_13 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=64
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2724,6 +2755,10 @@
   i32.const 1
   i32.shr_u
   return
+ )
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_errVal_8_11 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=56
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2741,13 +2776,17 @@
   local.get $buffer
   return
  )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendErr_3_5 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=28
- )
- (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_retVal_5_7 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendVal_4_6 (param $this i32) (result i32)
   local.get $this
   i32.load offset=36
+ )
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendErr_3_5 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_retVal_6_8 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=44
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2768,20 +2807,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2790,60 +2838,78 @@
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_ret_0_2 (param $this i32) (param $__cps___async_try_ret_0_2 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_2
-  i32.store8 offset=24
+  i32.store8 offset=28
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_brk_1_3 (param $this i32) (param $__cps___async_try_brk_1_3 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_3
-  i32.store8 offset=25
+  i32.store8 offset=29
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_cnt_2_4 (param $this i32) (param $__cps___async_try_cnt_2_4 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_4
-  i32.store8 offset=26
+  i32.store8 offset=30
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendErr_3_5 (param $this i32) (param $__cps___async_try_pendErr_3_5 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
-  i32.store offset=28
+  i32.store offset=32
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_4_6 (param $this i32) (param $__cps___async_try_pendFail_4_6 i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendVal_4_6 (param $this i32) (param $__cps___async_try_pendVal_4_6 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_6
-  i32.store8 offset=32
- )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_5_7 (param $this i32) (param $__cps___async_try_retVal_5_7 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_7
+  local.get $__cps___async_try_pendVal_4_6
   i32.store offset=36
- )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_7_8 (param $this i32) (param $__cps___async_try_flag_7_8 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_8
-  i32.store8 offset=40
- )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_6_9 (param $this i32) (param $__cps___async_try_err_6_9 i32)
-  local.get $this
-  local.get $__cps___async_try_err_6_9
-  i32.store offset=44
-  local.get $this
-  local.get $__cps___async_try_err_6_9
+  local.get $__cps___async_try_pendVal_4_6
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_10 (param $this i32) (param $__cps_m_10 i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_5_7 (param $this i32) (param $__cps___async_try_pendFail_5_7 i32)
   local.get $this
-  local.get $__cps_m_10
-  i32.store offset=48
+  local.get $__cps___async_try_pendFail_5_7
+  i32.store8 offset=40
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_8_11 (param $this i32) (param $__cps___async_try_fin_8_11 i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_6_8 (param $this i32) (param $__cps___async_try_retVal_6_8 i32)
   local.get $this
-  local.get $__cps___async_try_fin_8_11
-  i32.store8 offset=52
+  local.get $__cps___async_try_retVal_6_8
+  i32.store offset=44
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_9_9 (param $this i32) (param $__cps___async_try_flag_9_9 i32)
+  local.get $this
+  local.get $__cps___async_try_flag_9_9
+  i32.store8 offset=48
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_7_10 (param $this i32) (param $__cps___async_try_err_7_10 i32)
+  local.get $this
+  local.get $__cps___async_try_err_7_10
+  i32.store offset=52
+  local.get $this
+  local.get $__cps___async_try_err_7_10
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_errVal_8_11 (param $this i32) (param $__cps___async_try_errVal_8_11 i32)
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_12 (param $this i32) (param $__cps_m_12 i32)
+  local.get $this
+  local.get $__cps_m_12
+  i32.store offset=60
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_10_13 (param $this i32) (param $__cps___async_try_fin_10_13 i32)
+  local.get $this
+  local.get $__cps___async_try_fin_10_13
+  i32.store8 offset=64
  )
  (func $~lib/array/Array<async-method-try/__Cps_Worker_guardedFinally>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2857,49 +2923,57 @@
   local.get $this
   i32.load
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_7_8 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_9_9 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=40
+  i32.load8_u offset=48
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_ret_0_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=24
+  i32.load8_u offset=28
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_brk_1_3 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=25
+  i32.load8_u offset=29
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_cnt_2_4 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=26
+  i32.load8_u offset=30
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_4_6 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_5_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=32
+  i32.load8_u offset=40
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps_m_10 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps_m_12 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=48
+  i32.load offset=60
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_err_6_9 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_errVal_8_11 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=44
+  i32.load offset=56
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_err_7_10 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=52
+ )
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendVal_4_6 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=36
  )
  (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendErr_3_5 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
- (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_retVal_5_7 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_retVal_6_8 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=44
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2920,20 +2994,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -2942,74 +3025,92 @@
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_ret_0_2 (param $this i32) (param $__cps___async_try_ret_0_2 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_2
-  i32.store8 offset=24
+  i32.store8 offset=28
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_brk_1_3 (param $this i32) (param $__cps___async_try_brk_1_3 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_3
-  i32.store8 offset=25
+  i32.store8 offset=29
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_cnt_2_4 (param $this i32) (param $__cps___async_try_cnt_2_4 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_4
-  i32.store8 offset=26
+  i32.store8 offset=30
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendErr_3_5 (param $this i32) (param $__cps___async_try_pendErr_3_5 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
-  i32.store offset=28
+  i32.store offset=32
   local.get $this
   local.get $__cps___async_try_pendErr_3_5
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_4_6 (param $this i32) (param $__cps___async_try_pendFail_4_6 i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendVal_4_6 (param $this i32) (param $__cps___async_try_pendVal_4_6 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_6
-  i32.store8 offset=32
- )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_5_7 (param $this i32) (param $__cps___async_try_retVal_5_7 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_7
+  local.get $__cps___async_try_pendVal_4_6
   i32.store offset=36
- )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_7_8 (param $this i32) (param $__cps___async_try_flag_7_8 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_8
+  local.get $__cps___async_try_pendVal_4_6
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_5_7 (param $this i32) (param $__cps___async_try_pendFail_5_7 i32)
+  local.get $this
+  local.get $__cps___async_try_pendFail_5_7
   i32.store8 offset=40
  )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_6_9 (param $this i32) (param $__cps___async_try_err_6_9 i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_6_8 (param $this i32) (param $__cps___async_try_retVal_6_8 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_9
+  local.get $__cps___async_try_retVal_6_8
   i32.store offset=44
-  local.get $this
-  local.get $__cps___async_try_err_6_9
-  i32.const 0
-  call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_10 (param $this i32) (param $__cps_h_10 i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_9_9 (param $this i32) (param $__cps___async_try_flag_9_9 i32)
   local.get $this
-  local.get $__cps_h_10
-  i32.store offset=48
+  local.get $__cps___async_try_flag_9_9
+  i32.store8 offset=48
  )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_11 (param $this i32) (param $__cps_e_11 i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_7_10 (param $this i32) (param $__cps___async_try_err_7_10 i32)
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
   i32.store offset=52
   local.get $this
-  local.get $__cps_e_11
+  local.get $__cps___async_try_err_7_10
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_8_12 (param $this i32) (param $__cps___async_try_fin_8_12 i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_errVal_8_11 (param $this i32) (param $__cps___async_try_errVal_8_11 i32)
   local.get $this
-  local.get $__cps___async_try_fin_8_12
-  i32.store8 offset=56
+  local.get $__cps___async_try_errVal_8_11
+  i32.store offset=56
+  local.get $this
+  local.get $__cps___async_try_errVal_8_11
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_12 (param $this i32) (param $__cps_h_12 i32)
+  local.get $this
+  local.get $__cps_h_12
+  i32.store offset=60
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_13 (param $this i32) (param $__cps_e_13 i32)
+  local.get $this
+  local.get $__cps_e_13
+  i32.store offset=64
+  local.get $this
+  local.get $__cps_e_13
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_10_14 (param $this i32) (param $__cps___async_try_fin_10_14 i32)
+  local.get $this
+  local.get $__cps___async_try_fin_10_14
+  i32.store8 offset=68
  )
  (func $async-method-try/__Cps_Worker_guardedNested#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=60
+  i32.store offset=72
  )
  (func $~lib/array/Array<async-method-try/__Cps_Worker_guardedNested>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3023,17 +3124,17 @@
   local.get $this
   i32.load
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=40
+  i32.load8_u offset=48
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_this_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-method-try/__Cps_Worker_helper#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3054,20 +3155,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-method-try/__Cps_Worker_helper#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-method-try/__Cps_Worker_helper#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-method-try/__Cps_Worker_helper#set:__cps_n_0 (param $this i32) (param $__cps_n_0 i32)
   local.get $this
   local.get $__cps_n_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-method-try/__Cps_Worker_helper#set:__cps___async_this_1 (param $this i32) (param $__cps___async_this_1 i32)
   local.get $this
   local.get $__cps___async_this_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps___async_this_1
   i32.const 0
@@ -3076,7 +3186,7 @@
  (func $async-method-try/__Cps_Worker_helper#set:__cps_m_2 (param $this i32) (param $__cps_m_2 i32)
   local.get $this
   local.get $__cps_m_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $~lib/array/Array<async-method-try/__Cps_Worker_helper>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3092,55 +3202,63 @@
  )
  (func $async-method-try/__Cps_Worker_helper#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method-try/__Cps_Worker_helper#get:__cps_n_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-method-try/__Cps_Worker_helper#get:__cps_m_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_ret_0_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=24
+  i32.load8_u offset=28
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_brk_1_3 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=25
+  i32.load8_u offset=29
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_cnt_2_4 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=26
+  i32.load8_u offset=30
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=32
+  i32.load8_u offset=40
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps_h_10 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps_h_12 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=48
+  i32.load offset=60
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_6_9 (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=44
- )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps_e_11 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_7_10 (param $this i32) (result i32)
   local.get $this
   i32.load offset=52
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendErr_3_5 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps_e_13 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=64
  )
- (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_retVal_5_7 (param $this i32) (result i32)
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_errVal_8_11 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=56
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendVal_4_6 (param $this i32) (result i32)
   local.get $this
   i32.load offset=36
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendErr_3_5 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_retVal_6_8 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=44
  )
  (func $async-method-try/rejectMessage (result i32)
   i32.const 640
@@ -3153,6 +3271,10 @@
  (func $async-method-try/__Cps_Worker_guarded#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-method-try/__Cps_Worker_guarded#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-method-try/__async_async_method_try_Worker_new (result i32)
   i32.const 0
@@ -3167,6 +3289,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-method-try/__Cps_Worker_guardedFinally#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-method-try/__Cps_Worker_helper#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3175,9 +3301,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-method-try/__Cps_Worker_helper#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=60
+  i32.load offset=72
  )
  (func $async-method-try/__Cps_Worker_guardedNested#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3186,6 +3316,10 @@
  (func $async-method-try/__Cps_Worker_guardedNested#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-method-try/__Cps_Worker_guardedNested#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -3239,6 +3373,24 @@
  )
  (func $~lib/object/Object~visit (param $0 i32) (param $1 i32)
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-method-try/__Cps_Worker_guarded~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -3249,19 +3401,31 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=28
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=36
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3287,15 +3451,27 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=28
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=36
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3321,7 +3497,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3347,19 +3527,31 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=28
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=44
+  i32.load offset=32
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=36
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=52
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=56
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=64
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3398,31 +3590,37 @@
          block $async-method-try/__Cps_Worker_guardedFinally
           block $~lib/array/Array<async-method-try/__Cps_Worker_guarded>
            block $async-method-try/__Cps_Worker_guarded
-            block $~lib/promise/Promise<i32>
-             block $async-method-try/Worker
-              block $~lib/arraybuffer/ArrayBufferView
-               block $~lib/string/String
-                block $~lib/arraybuffer/ArrayBuffer
-                 block $~lib/object/Object
-                  local.get $0
-                  i32.const 8
-                  i32.sub
-                  i32.load
-                  br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-method-try/Worker $~lib/promise/Promise<i32> $async-method-try/__Cps_Worker_guarded $~lib/array/Array<async-method-try/__Cps_Worker_guarded> $async-method-try/__Cps_Worker_guardedFinally $~lib/array/Array<async-method-try/__Cps_Worker_guardedFinally> $async-method-try/__Cps_Worker_helper $~lib/array/Array<async-method-try/__Cps_Worker_helper> $async-method-try/__Cps_Worker_guardedNested $~lib/array/Array<async-method-try/__Cps_Worker_guardedNested> $~lib/array/Array<i32> $invalid
+            block $~lib/error/Error
+             block $~lib/promise/Promise<i32>
+              block $async-method-try/Worker
+               block $~lib/arraybuffer/ArrayBufferView
+                block $~lib/string/String
+                 block $~lib/arraybuffer/ArrayBuffer
+                  block $~lib/object/Object
+                   local.get $0
+                   i32.const 8
+                   i32.sub
+                   i32.load
+                   br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-method-try/Worker $~lib/promise/Promise<i32> $~lib/error/Error $async-method-try/__Cps_Worker_guarded $~lib/array/Array<async-method-try/__Cps_Worker_guarded> $async-method-try/__Cps_Worker_guardedFinally $~lib/array/Array<async-method-try/__Cps_Worker_guardedFinally> $async-method-try/__Cps_Worker_helper $~lib/array/Array<async-method-try/__Cps_Worker_helper> $async-method-try/__Cps_Worker_guardedNested $~lib/array/Array<async-method-try/__Cps_Worker_guardedNested> $~lib/array/Array<i32> $invalid
+                  end
+                  return
                  end
                  return
                 end
                 return
                end
+               local.get $0
+               local.get $1
+               call $~lib/arraybuffer/ArrayBufferView~visit
                return
               end
-              local.get $0
-              local.get $1
-              call $~lib/arraybuffer/ArrayBufferView~visit
               return
              end
              return
             end
+            local.get $0
+            local.get $1
+            call $~lib/error/Error~visit
             return
            end
            local.get $0
@@ -3510,7 +3708,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 7
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3648,7 +3846,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 9
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3786,7 +3984,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3924,7 +4122,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4100,8 +4298,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 57
-   i32.const 6
+   i32.const 69
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4140,6 +4338,14 @@
   local.get $1
   i32.const 528
   call $async-method-try/__Cps_Worker_guarded#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guarded#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4203,7 +4409,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_4_6
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendVal_4_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4211,7 +4417,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_5_7
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_5_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4219,7 +4425,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_6_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_9_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4227,7 +4441,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_7_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4235,7 +4449,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guarded#set:__cps_m_10
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_errVal_8_11
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guarded#set:__cps_m_12
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4243,7 +4465,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-method-try/__Cps_Worker_guarded#set:__cps_e_11
+  call $async-method-try/__Cps_Worker_guarded#set:__cps_e_13
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4251,7 +4473,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_8_12
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_10_14
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4734,7 +4956,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 7
+  i32.const 8
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5000,7 +5222,7 @@
                         i32.store
                         local.get $2
                         i32.const 0
-                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_4_6
+                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_5_7
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -5008,7 +5230,7 @@
                         i32.store
                         local.get $2
                         i32.const 0
-                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_7_8
+                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_9_9
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -5016,7 +5238,7 @@
                         i32.store
                         local.get $2
                         i32.const 528
-                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_6_9
+                        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_7_10
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -5033,7 +5255,7 @@
                        local.get $2
                        i32.store
                        local.get $2
-                       call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8
+                       call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9
                        if
                         local.get $this
                         local.set $2
@@ -5099,14 +5321,14 @@
                     i32.store offset=4
                     local.get $2
                     call $async-method-try/__Cps_Worker_guarded#get:__pend0
-                    call $async-method-try/__Cps_Worker_guarded#set:__cps_m_10
+                    call $async-method-try/__Cps_Worker_guarded#set:__cps_m_12
                     local.get $this
                     local.set $2
                     global.get $~lib/memory/__stack_pointer
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8
+                    call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9
                     if (result i32)
                      i32.const 1
                     else
@@ -5149,7 +5371,7 @@
                      local.get $2
                      i32.store
                      local.get $2
-                     call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6
+                     call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7
                     end
                     if
                      local.get $this
@@ -5203,7 +5425,7 @@
                    local.get $2
                    i32.store offset=4
                    local.get $2
-                   call $async-method-try/__Cps_Worker_guarded#get:__cps_m_10
+                   call $async-method-try/__Cps_Worker_guarded#get:__cps_m_12
                    i32.add
                    call $async-method-try/Worker#set:count
                    local.get $this
@@ -5212,7 +5434,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8
+                   call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9
                    if (result i32)
                     i32.const 1
                    else
@@ -5255,7 +5477,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6
+                    call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7
                    end
                    if
                     local.get $this
@@ -5331,7 +5553,7 @@
                  i32.store offset=4
                  local.get $2
                  call $async-method-try/Worker#get:count
-                 call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_5_7
+                 call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_6_8
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
@@ -5346,7 +5568,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8
+                 call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9
                  if (result i32)
                   i32.const 1
                  else
@@ -5389,7 +5611,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6
+                  call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7
                  end
                  if
                   local.get $this
@@ -5449,7 +5671,7 @@
              i32.store
              local.get $2
              i32.const 0
-             call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_8_12
+             call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_fin_10_14
              i32.const 560
              call $async-method-try/log
              local.get $this
@@ -5458,7 +5680,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_7_8
+             call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_flag_9_9
              if
               local.get $this
               local.set $2
@@ -5487,7 +5709,7 @@
             i32.store
             local.get $2
             i32.const 0
-            call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_7_8
+            call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_9_9
             local.get $this
             local.set $2
             global.get $~lib/memory/__stack_pointer
@@ -5500,13 +5722,13 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_6_9
+            call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_7_10
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
             i32.store offset=4
             local.get $2
-            call $async-method-try/__Cps_Worker_guarded#set:__cps_e_11
+            call $async-method-try/__Cps_Worker_guarded#set:__cps_e_13
             i32.const 608
             local.get $this
             local.set $2
@@ -5514,7 +5736,7 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-method-try/__Cps_Worker_guarded#get:__cps_e_11
+            call $async-method-try/__Cps_Worker_guarded#get:__cps_e_13
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
@@ -5565,7 +5787,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6
+             call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7
             end
             i32.eqz
             if
@@ -5620,7 +5842,7 @@
            i32.store
            local.get $2
            i32.const -1
-           call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_5_7
+           call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_retVal_6_8
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -5651,7 +5873,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_6_9
+          call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_errVal_8_11
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-method-try/__Cps_Worker_guarded#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_err_7_10
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -5704,7 +5945,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_4_6
+         call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendFail_5_7
          if
           local.get $this
           local.set $2
@@ -5733,7 +5974,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_4_6
+        call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_pendFail_5_7
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_pendVal_4_6
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-method-try/__Cps_Worker_guarded#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -5841,7 +6101,7 @@
       local.get $2
       i32.store offset=4
       local.get $2
-      call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_retVal_5_7
+      call $async-method-try/__Cps_Worker_guarded#get:__cps___async_try_retVal_6_8
       call $async-method-try/__Cps_Worker_guarded#set:__result
       local.get $this
       local.set $2
@@ -6027,8 +6287,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 53
-   i32.const 8
+   i32.const 65
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6067,6 +6327,14 @@
   local.get $1
   i32.const 528
   call $async-method-try/__Cps_Worker_guardedFinally#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6130,7 +6398,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_4_6
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendVal_4_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6138,7 +6406,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_5_7
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_5_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6146,7 +6414,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_6_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_9_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6154,7 +6430,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_7_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6162,7 +6438,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_10
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_errVal_8_11
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6170,7 +6446,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_8_11
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_12
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_10_13
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6427,7 +6711,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 9
+  i32.const 10
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6678,7 +6962,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_4_6
+                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_5_7
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -6686,7 +6970,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_7_8
+                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_9_9
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -6694,7 +6978,7 @@
                      i32.store
                      local.get $2
                      i32.const 528
-                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_6_9
+                     call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_7_10
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -6712,7 +6996,7 @@
                     i32.store
                     local.get $2
                     i32.const 0
-                    call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_8_11
+                    call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_fin_10_13
                     i32.const 560
                     call $async-method-try/log
                     local.get $this
@@ -6721,7 +7005,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_7_8
+                    call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_9_9
                     if
                      local.get $this
                      local.set $2
@@ -6787,14 +7071,14 @@
                  i32.store offset=4
                  local.get $2
                  call $async-method-try/__Cps_Worker_guardedFinally#get:__pend0
-                 call $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_10
+                 call $async-method-try/__Cps_Worker_guardedFinally#set:__cps_m_12
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_7_8
+                 call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_9_9
                  if (result i32)
                   i32.const 1
                  else
@@ -6837,7 +7121,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_4_6
+                  call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_5_7
                  end
                  if
                   local.get $this
@@ -6891,7 +7175,7 @@
                 local.get $2
                 i32.store offset=4
                 local.get $2
-                call $async-method-try/__Cps_Worker_guardedFinally#get:__cps_m_10
+                call $async-method-try/__Cps_Worker_guardedFinally#get:__cps_m_12
                 i32.add
                 call $async-method-try/Worker#set:count
                 local.get $this
@@ -6900,7 +7184,7 @@
                 local.get $2
                 i32.store
                 local.get $2
-                call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_7_8
+                call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_9_9
                 if (result i32)
                  i32.const 1
                 else
@@ -6943,7 +7227,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_4_6
+                 call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_5_7
                 end
                 if
                  local.get $this
@@ -7019,7 +7303,7 @@
               i32.store offset=4
               local.get $2
               call $async-method-try/Worker#get:count
-              call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_5_7
+              call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_retVal_6_8
               local.get $this
               local.set $2
               global.get $~lib/memory/__stack_pointer
@@ -7034,7 +7318,7 @@
               local.get $2
               i32.store
               local.get $2
-              call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_7_8
+              call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_flag_9_9
               if (result i32)
                i32.const 1
               else
@@ -7077,7 +7361,7 @@
                local.get $2
                i32.store
                local.get $2
-               call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_4_6
+               call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_5_7
               end
               if
                local.get $this
@@ -7142,7 +7426,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_err_6_9
+          call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_errVal_8_11
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-method-try/__Cps_Worker_guardedFinally#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_err_7_10
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -7195,7 +7498,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_4_6
+         call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendFail_5_7
          if
           local.get $this
           local.set $2
@@ -7224,7 +7527,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_4_6
+        call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_pendFail_5_7
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_pendVal_4_6
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-method-try/__Cps_Worker_guardedFinally#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -7332,7 +7654,7 @@
       local.get $2
       i32.store offset=4
       local.get $2
-      call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_retVal_5_7
+      call $async-method-try/__Cps_Worker_guardedFinally#get:__cps___async_try_retVal_6_8
       call $async-method-try/__Cps_Worker_guardedFinally#set:__result
       local.get $this
       local.set $2
@@ -7518,8 +7840,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 64
-   i32.const 12
+   i32.const 76
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7558,6 +7880,14 @@
   local.get $1
   i32.const 528
   call $async-method-try/__Cps_Worker_guardedNested#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedNested#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7621,7 +7951,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_4_6
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendVal_4_6
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7629,7 +7959,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_5_7
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_5_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7637,7 +7967,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_6_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_9_9
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7645,7 +7983,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_7_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7653,7 +7991,15 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_10
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_errVal_8_11
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_12
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7661,7 +8007,7 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_11
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_13
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7669,7 +8015,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_8_12
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_10_14
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7765,8 +8111,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 10
+   i32.const 32
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7805,6 +8151,14 @@
   local.get $1
   i32.const 528
   call $async-method-try/__Cps_Worker_helper#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-method-try/__Cps_Worker_helper#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8093,7 +8447,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8611,7 +8965,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 14
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8877,7 +9231,7 @@
                         i32.store
                         local.get $2
                         i32.const 0
-                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_4_6
+                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_5_7
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -8885,7 +9239,7 @@
                         i32.store
                         local.get $2
                         i32.const 0
-                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_7_8
+                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_9_9
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -8893,7 +9247,7 @@
                         i32.store
                         local.get $2
                         i32.const 528
-                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_6_9
+                        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_7_10
                         local.get $this
                         local.set $2
                         global.get $~lib/memory/__stack_pointer
@@ -8910,7 +9264,7 @@
                        local.get $2
                        i32.store
                        local.get $2
-                       call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8
+                       call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9
                        if
                         local.get $this
                         local.set $2
@@ -9001,14 +9355,14 @@
                     i32.store offset=4
                     local.get $2
                     call $async-method-try/__Cps_Worker_guardedNested#get:__pend0
-                    call $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_10
+                    call $async-method-try/__Cps_Worker_guardedNested#set:__cps_h_12
                     local.get $this
                     local.set $2
                     global.get $~lib/memory/__stack_pointer
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8
+                    call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9
                     if (result i32)
                      i32.const 1
                     else
@@ -9051,7 +9405,7 @@
                      local.get $2
                      i32.store
                      local.get $2
-                     call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6
+                     call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7
                     end
                     if
                      local.get $this
@@ -9105,7 +9459,7 @@
                    local.get $2
                    i32.store offset=4
                    local.get $2
-                   call $async-method-try/__Cps_Worker_guardedNested#get:__cps_h_10
+                   call $async-method-try/__Cps_Worker_guardedNested#get:__cps_h_12
                    i32.add
                    call $async-method-try/Worker#set:count
                    local.get $this
@@ -9114,7 +9468,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8
+                   call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9
                    if (result i32)
                     i32.const 1
                    else
@@ -9157,7 +9511,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6
+                    call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7
                    end
                    if
                     local.get $this
@@ -9233,7 +9587,7 @@
                  i32.store offset=4
                  local.get $2
                  call $async-method-try/Worker#get:count
-                 call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_5_7
+                 call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_6_8
                  local.get $this
                  local.set $2
                  global.get $~lib/memory/__stack_pointer
@@ -9248,7 +9602,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8
+                 call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9
                  if (result i32)
                   i32.const 1
                  else
@@ -9291,7 +9645,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6
+                  call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7
                  end
                  if
                   local.get $this
@@ -9351,7 +9705,7 @@
              i32.store
              local.get $2
              i32.const 0
-             call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_8_12
+             call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_fin_10_14
              i32.const 560
              call $async-method-try/log
              local.get $this
@@ -9360,7 +9714,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_7_8
+             call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_flag_9_9
              if
               local.get $this
               local.set $2
@@ -9389,7 +9743,7 @@
             i32.store
             local.get $2
             i32.const 0
-            call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_7_8
+            call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_9_9
             local.get $this
             local.set $2
             global.get $~lib/memory/__stack_pointer
@@ -9402,13 +9756,13 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_6_9
+            call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_7_10
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
             i32.store offset=4
             local.get $2
-            call $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_11
+            call $async-method-try/__Cps_Worker_guardedNested#set:__cps_e_13
             i32.const 608
             local.get $this
             local.set $2
@@ -9416,7 +9770,7 @@
             local.get $2
             i32.store offset=8
             local.get $2
-            call $async-method-try/__Cps_Worker_guardedNested#get:__cps_e_11
+            call $async-method-try/__Cps_Worker_guardedNested#get:__cps_e_13
             local.set $2
             global.get $~lib/memory/__stack_pointer
             local.get $2
@@ -9467,7 +9821,7 @@
              local.get $2
              i32.store
              local.get $2
-             call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6
+             call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7
             end
             i32.eqz
             if
@@ -9522,7 +9876,7 @@
            i32.store
            local.get $2
            i32.const -1
-           call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_5_7
+           call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_retVal_6_8
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -9553,7 +9907,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_6_9
+          call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_errVal_8_11
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-method-try/__Cps_Worker_guardedNested#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_err_7_10
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -9606,7 +9979,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_4_6
+         call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendFail_5_7
          if
           local.get $this
           local.set $2
@@ -9635,7 +10008,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_4_6
+        call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_pendFail_5_7
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_pendVal_4_6
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-method-try/__Cps_Worker_guardedNested#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -9743,7 +10135,7 @@
       local.get $2
       i32.store offset=4
       local.get $2
-      call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_retVal_5_7
+      call $async-method-try/__Cps_Worker_guardedNested#get:__cps___async_try_retVal_6_8
       call $async-method-try/__Cps_Worker_guardedNested#set:__result
       local.get $this
       local.set $2
@@ -9965,7 +10357,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_flag_9_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -9978,7 +10370,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guarded#set:__cps___async_try_err_7_10
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10036,6 +10428,31 @@
   i32.store
   local.get $1
   call $async-method-try/__Cps_Worker_guarded#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-method-try/__async_async_method_try_Worker_guarded_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method-try/__Cps_Worker_guarded#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -10145,7 +10562,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_flag_9_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10158,7 +10575,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guardedFinally#set:__cps___async_try_err_7_10
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10216,6 +10633,31 @@
   i32.store
   local.get $1
   call $async-method-try/__Cps_Worker_guardedFinally#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-method-try/__async_async_method_try_Worker_guardedFinally_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method-try/__Cps_Worker_guardedFinally#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -10424,6 +10866,31 @@
   local.get $1
   return
  )
+ (func $async-method-try/__async_async_method_try_Worker_helper_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method-try/__Cps_Worker_helper#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-method-try/__async_async_method_try_Worker_helper_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10550,7 +11017,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_7_8
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_flag_9_9
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10563,7 +11030,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_6_9
+  call $async-method-try/__Cps_Worker_guardedNested#set:__cps___async_try_err_7_10
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -10621,6 +11088,31 @@
   i32.store
   local.get $1
   call $async-method-try/__Cps_Worker_guardedNested#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-method-try/__async_async_method_try_Worker_guardedNested_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-method-try/__Cps_Worker_guardedNested#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -11148,6 +11640,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-method-try/__async_async_method_try_Worker_guarded_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method-try/__async_async_method_try_Worker_guarded_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-method-try/__async_async_method_try_Worker_guarded_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11268,6 +11779,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method-try/__async_async_method_try_Worker_guardedFinally_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-method-try/__async_async_method_try_Worker_guardedFinally_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11381,6 +11911,25 @@
   i32.store
   local.get $0
   call $async-method-try/__async_async_method_try_Worker_helper_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-method-try/__async_async_method_try_Worker_helper_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method-try/__async_async_method_try_Worker_helper_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -11520,6 +12069,25 @@
   i32.store
   local.get $0
   call $async-method-try/__async_async_method_try_Worker_guardedNested_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-method-try/__async_async_method_try_Worker_guardedNested_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-method-try/__async_async_method_try_Worker_guardedNested_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

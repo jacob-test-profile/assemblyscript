@@ -69,12 +69,14 @@ import {
 } from "./diagnostics";
 
 import {
-  CommonFlags
+  CommonFlags,
+  CommonNames
 } from "./common";
 
 import {
   Type,
-  TypeKind
+  TypeKind,
+  TypeFlags
 } from "./types";
 
 import {
@@ -89,6 +91,7 @@ import {
   Element,
   ElementKind,
   Namespace,
+  Class,
   ClassPrototype
 } from "./program";
 
@@ -169,7 +172,9 @@ import {
   SPILL_ACQUIRE,
   SPILL_RELEASE,
   SPILL_GET,
-  SPILL_SET
+  SPILL_SET,
+  TRY_THROW_MARKER,
+  TRY_FAIL_MARKER
 } from "./asyncRewrite";
 
 import {
@@ -946,12 +951,24 @@ class AsyncFunctionTransform {
         return;
       }
       case NodeKind.Throw: {
-        // The try desugar's fail-the-task primitive: set the error slot
-        // and close the task as failed. Reaching here with an await in the
-        // value is a loud error via `rewriteChecked`.
-        let value = this.rewriteChecked((<ThrowStatement>stmt).value);
-        if (!value) return;
-        this.emitFail(value, stmt.range);
+        // The try desugar binds every thrown value to a local first, so
+        // this sees an identifier; derive its message and value with
+        // full type info and fail the task with both.
+        let thrown = (<ThrowStatement>stmt).value;
+        let type = this.resolver.resolveExpression(thrown, assert(this.flow), Type.auto, ReportMode.Swallow);
+        if (!type) {
+          this.punted = true;
+          return;
+        }
+        if (type.kind == TypeKind.Void) {
+          this.fail("Cannot throw a value of type 'void'", stmt.range);
+          return;
+        }
+        let rewritten = this.rewriteChecked(thrown);
+        if (!rewritten) return;
+        let derived = this.throwMessageAndValue(rewritten, type, stmt.range);
+        if (!derived) return;
+        this.emitThrowFail(derived.message, derived.value, stmt.range);
         return;
       }
       case NodeKind.Empty: {
@@ -1072,6 +1089,21 @@ class AsyncFunctionTransform {
 
   private transformExpressionStatement(stmt: ExpressionStatement): void {
     let expr = unwrapParens(stmt.expression);
+    if (expr.kind == NodeKind.Call) {
+      let call = <CallExpression>expr;
+      let callee = call.expression;
+      if (callee.kind == NodeKind.Identifier) {
+        let name = (<IdentifierExpression>callee).text;
+        if (name == TRY_THROW_MARKER) {
+          this.lowerTryThrow(call, stmt.range);
+          return;
+        }
+        if (name == TRY_FAIL_MARKER) {
+          this.lowerTryFail(call, stmt.range);
+          return;
+        }
+      }
+    }
     if (expr.kind == NodeKind.Await) {
       let awaitExpr = <AwaitExpression>expr;
       let joinCall = this.joinCallOf(awaitExpr);
@@ -1136,6 +1168,66 @@ class AsyncFunctionTransform {
     let rewritten = this.rewriteChecked(stmt.expression);
     if (!rewritten) return;
     this.emit(exprStmt(rewritten));
+  }
+
+  /** Lowers the try desugar's throw marker: derives the message and value
+   *  from the bound thrown value and records them in the frame's slots,
+   *  guarded so a coordinator rejection resuming at this segment is not
+   *  clobbered by the (zero) bound value. */
+  private lowerTryThrow(call: CallExpression, range: Range): void {
+    let args = call.args;
+    if (args.length != 4) {
+      this.fail("Invalid '" + TRY_THROW_MARKER + "' marker", range);
+      return;
+    }
+    let thrown = args[0];
+    let type = this.resolver.resolveExpression(thrown, assert(this.flow), Type.auto, ReportMode.Swallow);
+    if (!type) {
+      this.punted = true;
+      return;
+    }
+    if (type.kind == TypeKind.Void) {
+      this.fail("Cannot throw a value of type 'void'", range);
+      return;
+    }
+    let rewritten = this.rewriteChecked(thrown);
+    if (!rewritten) return;
+    let derived = this.throwMessageAndValue(rewritten, type, range);
+    if (!derived) return;
+    let errVar = this.rewriteChecked(args[1]);
+    if (!errVar) return;
+    let errValVar = this.rewriteChecked(args[2]);
+    if (!errValVar) return;
+    let flagCond = this.rewriteChecked(args[3]);
+    if (!flagCond) return;
+    let flagSet = this.rewriteChecked(args[3]);
+    if (!flagSet) return;
+    this.emit(new IfStatement(
+      new UnaryPrefixExpression(Token.Exclamation, flagCond, range),
+      blockStmt([
+        exprStmt(assignExpr(errVar, derived.message, range)),
+        exprStmt(assignExpr(errValVar, derived.value, range)),
+        exprStmt(assignExpr(flagSet, new TrueExpression(range), range))
+      ], range),
+      null,
+      range
+    ));
+  }
+
+  /** Lowers the try desugar's fail marker: the message and value are
+   *  already computed, so they go straight to the error slots and fail
+   *  the task. */
+  private lowerTryFail(call: CallExpression, range: Range): void {
+    let args = call.args;
+    if (args.length != 2) {
+      this.fail("Invalid '" + TRY_FAIL_MARKER + "' marker", range);
+      return;
+    }
+    let message = this.rewriteChecked(args[0]);
+    if (!message) return;
+    let value = this.rewriteChecked(args[1]);
+    if (!value) return;
+    this.emitThrowFail(message, value, range);
   }
 
   private transformReturn(stmt: ReturnStatement): void {
@@ -2263,6 +2355,99 @@ class AsyncFunctionTransform {
     this.closeCurrent(new SegmentEnd("fail"));
   }
 
+  /** Fails the task with a message and a thrown value. */
+  private emitThrowFail(message: Expression, value: Expression, range: Range): void {
+    this.emit(exprStmt(assignExpr(thisProp("__errorValue", range), value, range)));
+    this.emitFail(message, range);
+  }
+
+  /** True when the class is Error or extends it. */
+  private isErrorClass(classReference: Class): bool {
+    let cls: Class | null = classReference;
+    while (cls) {
+      if (cls.prototype.name == "Error") return true;
+      cls = cls.base;
+    }
+    return false;
+  }
+
+  /** `changetype<Error>(value)`: the thrown value as the stored error value. */
+  private changetypeError(value: Expression, range: Range): Expression {
+    return new CallExpression(
+      ident("changetype", range),
+      [ namedType("Error", null, false, range) ],
+      [ value ],
+      range
+    );
+  }
+
+  /** Derives a thrown value's error message and stored value from its
+   *  (already rewritten) expression and resolved type. */
+  private throwMessageAndValue(value: Expression, type: Type, range: Range): { message: Expression, value: Expression } | null {
+    let nullable = (type.flags & TypeFlags.Nullable) != 0;
+    let base = nullable ? type.nonNullableType : type;
+    let message: Expression;
+    let stored: Expression;
+    let classReference = base.getClass();
+    if (classReference) {
+      if (classReference.prototype.name == CommonNames.String) {
+        message = value;
+        stored = this.changetypeError(value, range);
+      } else if (this.isErrorClass(classReference)) {
+        message = new PropertyAccessExpression(value, ident("message", range), range);
+        stored = this.changetypeError(value, range);
+      } else {
+        message = strLit("", range);
+        stored = this.changetypeError(value, range);
+      }
+    } else if (base.kind == TypeKind.Extern) {
+      // An externref cannot be stored in a managed field; the stored
+      // value is the null sentinel, like a null class field.
+      message = strLit("", range);
+      stored = this.changetypeError(intLit(0, range), range);
+    } else {
+      switch (base.kind) {
+        case TypeKind.Bool:
+        case TypeKind.I8:
+        case TypeKind.I16:
+        case TypeKind.I32:
+        case TypeKind.I64:
+        case TypeKind.Isize:
+        case TypeKind.U8:
+        case TypeKind.U16:
+        case TypeKind.U32:
+        case TypeKind.U64:
+        case TypeKind.Usize:
+        case TypeKind.F32:
+        case TypeKind.F64: {
+          message = callExpr(
+            new PropertyAccessExpression(value, ident("toString", range), range),
+            [],
+            range
+          );
+          // No value to store: the null sentinel, like a null class field.
+          stored = this.changetypeError(intLit(0, range), range);
+          break;
+        }
+        default: {
+          this.fail("Cannot throw a value of type '" + type.toString() + "'", range);
+          return null;
+        }
+      }
+    }
+    if (nullable && classReference) {
+      // A null reference has no message; the stored value is already
+      // null-safe (`changetype<Error>(null)` is 0).
+      message = new TernaryExpression(
+        new BinaryExpression(Token.Equals_Equals, value, new NullExpression(range), range),
+        strLit("", range),
+        message,
+        range
+      );
+    }
+    return { message, value: stored };
+  }
+
   /** Rejects direct (non-awaited) calls to async functions in an expression. */
   private checkDirectAsyncCalls(expr: Expression): void {
     if (expr instanceof CallExpression) {
@@ -2547,6 +2732,7 @@ class AsyncFunctionTransform {
     }
     declarations.push(this.buildResult());
     declarations.push(this.buildError());
+    declarations.push(this.buildErrorValue());
     declarations.push(this.buildStatus());
     if (emitEntry) {
       let entry = this.buildMethodEntry(assert(receiverClass));
@@ -2598,6 +2784,10 @@ class AsyncFunctionTransform {
 
   private errorName(): string {
     return `__async_${this.fileBase}_${this.fnName}_error`;
+  }
+
+  private errorValueName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_errorValue`;
   }
 
   private statusName(): string {
@@ -2810,6 +3000,16 @@ class AsyncFunctionTransform {
       ident("__error", range), null, CommonFlags.None,
       namedType("string", null, false, range),
       strLit("", range), -1, range
+    ));
+    members.push(new FieldDeclaration(
+      ident("__errorValue", range), null, CommonFlags.None,
+      namedType("Error", null, false, range),
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("Error", null, false, range) ],
+        [ intLit(0, range) ],
+        range
+      ), -1, range
     ));
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
@@ -3237,6 +3437,33 @@ class AsyncFunctionTransform {
     ));
     return new FunctionDeclaration(
       ident(this.errorName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private buildErrorValue(): FunctionDeclaration {
+    let range = this.range;
+    let stateParam = new ParameterNode(
+      ParameterKind.Default,
+      ident("state", range),
+      namedType(this.stateClassName, null, false, range),
+      null,
+      range
+    );
+    let signature = new FunctionTypeNode(
+      [ stateParam ],
+      namedType("Error", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new PropertyAccessExpression(ident("state", range), ident("__errorValue", range), range),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.errorValueName(), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }

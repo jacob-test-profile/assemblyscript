@@ -1,5 +1,5 @@
 // Diagnostic fixture: one function per loud rejection that had no
-// pinned fixture (throw-await, try-in-switch, member-call await,
+// pinned fixture (try-in-switch, member-call await,
 // cross-file await, join member/argument await, arrow misuse,
 // field-assignment await, generic-class methods).
 //@ external("env", "getChunk")
@@ -40,10 +40,6 @@ namespace NS2 {
       return c;
     }
   }
-}
-
-export async function throwAwait(): Promise<string> {
-  throw await getChunk(0);
 }
 
 export async function tryInSwitch(x: i32): Promise<string> {

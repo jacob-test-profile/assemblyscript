@@ -31,9 +31,9 @@
  (global $async-void-await/__async_roots_voidReturn (mut i32) (i32.const 0))
  (global $async-void-await/__async_roots_voidCatch (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 720))
- (global $~lib/memory/__data_end i32 (i32.const 776))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33544))
- (global $~lib/memory/__heap_base i32 (i32.const 33544))
+ (global $~lib/memory/__data_end i32 (i32.const 780))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33548))
+ (global $~lib/memory/__heap_base i32 (i32.const 33548))
  (memory $0 1)
  (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
  (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
@@ -50,7 +50,7 @@
  (data $12 (i32.const 588) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\04\00\00\00o\00k\00\00\00\00\00\00\00\00\00")
  (data $13 (i32.const 620) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\0e\00\00\00c\00a\00u\00g\00h\00t\00:\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $14 (i32.const 668) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\12\00\00\00v\00o\00i\00d\00-\00b\00o\00o\00m\00\00\00\00\00\00\00\00\00\00\00")
- (data $15 (i32.const 720) "\r\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $15 (i32.const 720) "\0e\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "voidStmt" (func $async-void-await/voidStmt))
@@ -62,16 +62,19 @@
  (export "__async_async_void_await_voidStmt_reject_0" (func $export:async-void-await/__async_async_void_await_voidStmt_reject_0))
  (export "__async_async_void_await_voidStmt_result" (func $export:async-void-await/__async_async_void_await_voidStmt_result))
  (export "__async_async_void_await_voidStmt_error" (func $export:async-void-await/__async_async_void_await_voidStmt_error))
+ (export "__async_async_void_await_voidStmt_errorValue" (func $export:async-void-await/__async_async_void_await_voidStmt_errorValue))
  (export "__async_async_void_await_voidStmt_status" (func $export:async-void-await/__async_async_void_await_voidStmt_status))
  (export "__async_async_void_await_voidReturn_resume_0" (func $export:async-void-await/__async_async_void_await_voidReturn_resume_0))
  (export "__async_async_void_await_voidReturn_reject_0" (func $export:async-void-await/__async_async_void_await_voidReturn_reject_0))
  (export "__async_async_void_await_voidReturn_result" (func $export:async-void-await/__async_async_void_await_voidReturn_result))
  (export "__async_async_void_await_voidReturn_error" (func $export:async-void-await/__async_async_void_await_voidReturn_error))
+ (export "__async_async_void_await_voidReturn_errorValue" (func $export:async-void-await/__async_async_void_await_voidReturn_errorValue))
  (export "__async_async_void_await_voidReturn_status" (func $export:async-void-await/__async_async_void_await_voidReturn_status))
  (export "__async_async_void_await_voidCatch_resume_0" (func $export:async-void-await/__async_async_void_await_voidCatch_resume_0))
  (export "__async_async_void_await_voidCatch_reject_0" (func $export:async-void-await/__async_async_void_await_voidCatch_reject_0))
  (export "__async_async_void_await_voidCatch_result" (func $export:async-void-await/__async_async_void_await_voidCatch_result))
  (export "__async_async_void_await_voidCatch_error" (func $export:async-void-await/__async_async_void_await_voidCatch_error))
+ (export "__async_async_void_await_voidCatch_errorValue" (func $export:async-void-await/__async_async_void_await_voidCatch_errorValue))
  (export "__async_async_void_await_voidCatch_status" (func $export:async-void-await/__async_async_void_await_voidCatch_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -2471,6 +2474,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-void-await/__Cps_voidStmt#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<async-void-await/__Cps_voidStmt>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -2571,6 +2583,15 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-void-await/__Cps_voidReturn#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=8
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $~lib/array/Array<async-void-await/__Cps_voidReturn>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -2606,64 +2627,91 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-void-await/__Cps_voidCatch#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_ret_0_0 (param $this i32) (param $__cps___async_try_ret_0_0 i32)
   local.get $this
   local.get $__cps___async_try_ret_0_0
-  i32.store8 offset=12
+  i32.store8 offset=16
  )
  (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_brk_1_1 (param $this i32) (param $__cps___async_try_brk_1_1 i32)
   local.get $this
   local.get $__cps___async_try_brk_1_1
-  i32.store8 offset=13
+  i32.store8 offset=17
  )
  (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_cnt_2_2 (param $this i32) (param $__cps___async_try_cnt_2_2 i32)
   local.get $this
   local.get $__cps___async_try_cnt_2_2
-  i32.store8 offset=14
+  i32.store8 offset=18
  )
  (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendErr_3_3 (param $this i32) (param $__cps___async_try_pendErr_3_3 i32)
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_try_pendErr_3_3
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_4_4 (param $this i32) (param $__cps___async_try_pendFail_4_4 i32)
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendVal_4_4 (param $this i32) (param $__cps___async_try_pendVal_4_4 i32)
   local.get $this
-  local.get $__cps___async_try_pendFail_4_4
-  i32.store8 offset=20
- )
- (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_5_5 (param $this i32) (param $__cps___async_try_retVal_5_5 i32)
-  local.get $this
-  local.get $__cps___async_try_retVal_5_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.store offset=24
   local.get $this
-  local.get $__cps___async_try_retVal_5_5
+  local.get $__cps___async_try_pendVal_4_4
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_7_6 (param $this i32) (param $__cps___async_try_flag_7_6 i32)
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_5_5 (param $this i32) (param $__cps___async_try_pendFail_5_5 i32)
   local.get $this
-  local.get $__cps___async_try_flag_7_6
+  local.get $__cps___async_try_pendFail_5_5
   i32.store8 offset=28
  )
- (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_6_7 (param $this i32) (param $__cps___async_try_err_6_7 i32)
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_6_6 (param $this i32) (param $__cps___async_try_retVal_6_6 i32)
   local.get $this
-  local.get $__cps___async_try_err_6_7
+  local.get $__cps___async_try_retVal_6_6
   i32.store offset=32
   local.get $this
-  local.get $__cps___async_try_err_6_7
+  local.get $__cps___async_try_retVal_6_6
   i32.const 0
   call $~lib/rt/itcms/__link
  )
- (func $async-void-await/__Cps_voidCatch#set:__cps_e_8 (param $this i32) (param $__cps_e_8 i32)
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_9_7 (param $this i32) (param $__cps___async_try_flag_9_7 i32)
   local.get $this
-  local.get $__cps_e_8
-  i32.store offset=36
+  local.get $__cps___async_try_flag_9_7
+  i32.store8 offset=36
+ )
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_7_8 (param $this i32) (param $__cps___async_try_err_7_8 i32)
   local.get $this
-  local.get $__cps_e_8
+  local.get $__cps___async_try_err_7_8
+  i32.store offset=40
+  local.get $this
+  local.get $__cps___async_try_err_7_8
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-void-await/__Cps_voidCatch#set:__cps___async_try_errVal_8_9 (param $this i32) (param $__cps___async_try_errVal_8_9 i32)
+  local.get $this
+  local.get $__cps___async_try_errVal_8_9
+  i32.store offset=44
+  local.get $this
+  local.get $__cps___async_try_errVal_8_9
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-void-await/__Cps_voidCatch#set:__cps_e_10 (param $this i32) (param $__cps_e_10 i32)
+  local.get $this
+  local.get $__cps_e_10
+  i32.store offset=48
+  local.get $this
+  local.get $__cps_e_10
   i32.const 0
   call $~lib/rt/itcms/__link
  )
@@ -2679,33 +2727,33 @@
   local.get $this
   i32.load
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_7_6 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_9_7 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=28
+  i32.load8_u offset=36
  )
  (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_ret_0_0 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=12
+  i32.load8_u offset=16
  )
  (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_brk_1_1 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=13
+  i32.load8_u offset=17
  )
  (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_cnt_2_2 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=14
+  i32.load8_u offset=18
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_4_4 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_5_5 (param $this i32) (result i32)
   local.get $this
-  i32.load8_u offset=20
+  i32.load8_u offset=28
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_6_7 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_7_8 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=32
+  i32.load offset=40
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps_e_8 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps_e_10 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=36
+  i32.load offset=48
  )
  (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
   local.get $this
@@ -2720,13 +2768,21 @@
   i32.shr_u
   return
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendErr_3_3 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_errVal_8_9 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=44
  )
- (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_retVal_5_5 (param $this i32) (result i32)
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendVal_4_4 (param $this i32) (result i32)
   local.get $this
   i32.load offset=24
+ )
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendErr_3_3 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=20
+ )
+ (func $async-void-await/__Cps_voidCatch#get:__cps___async_try_retVal_6_6 (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=32
  )
  (func $async-void-await/msg (result i32)
   i32.const 688
@@ -2740,12 +2796,20 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-void-await/__Cps_voidStmt#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-void-await/__async_async_void_await_voidReturn_result (param $state i32)
   return
  )
  (func $async-void-await/__Cps_voidReturn#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
+ )
+ (func $async-void-await/__Cps_voidReturn#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
  )
  (func $async-void-await/__Cps_voidCatch#get:__result (param $this i32) (result i32)
   local.get $this
@@ -2754,6 +2818,10 @@
  (func $async-void-await/__Cps_voidCatch#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-void-await/__Cps_voidCatch#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
@@ -2800,6 +2868,24 @@
  )
  (func $~lib/object/Object~visit (param $0 i32) (param $1 i32)
  )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-void-await/__Cps_voidStmt~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -2811,6 +2897,10 @@
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2833,6 +2923,10 @@
   call $~lib/object/Object~visit
   local.get $0
   i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2862,7 +2956,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
@@ -2874,7 +2972,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=36
+  i32.load offset=40
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=44
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=48
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -2911,31 +3017,37 @@
        block $async-void-await/__Cps_voidReturn
         block $~lib/array/Array<async-void-await/__Cps_voidStmt>
          block $async-void-await/__Cps_voidStmt
-          block $~lib/promise/Promise<void>
-           block $~lib/promise/Promise<~lib/string/String>
-            block $~lib/arraybuffer/ArrayBufferView
-             block $~lib/string/String
-              block $~lib/arraybuffer/ArrayBuffer
-               block $~lib/object/Object
-                local.get $0
-                i32.const 8
-                i32.sub
-                i32.load
-                br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/promise/Promise<void> $async-void-await/__Cps_voidStmt $~lib/array/Array<async-void-await/__Cps_voidStmt> $async-void-await/__Cps_voidReturn $~lib/array/Array<async-void-await/__Cps_voidReturn> $async-void-await/__Cps_voidCatch $~lib/array/Array<async-void-await/__Cps_voidCatch> $~lib/array/Array<i32> $invalid
+          block $~lib/error/Error
+           block $~lib/promise/Promise<void>
+            block $~lib/promise/Promise<~lib/string/String>
+             block $~lib/arraybuffer/ArrayBufferView
+              block $~lib/string/String
+               block $~lib/arraybuffer/ArrayBuffer
+                block $~lib/object/Object
+                 local.get $0
+                 i32.const 8
+                 i32.sub
+                 i32.load
+                 br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/promise/Promise<void> $~lib/error/Error $async-void-await/__Cps_voidStmt $~lib/array/Array<async-void-await/__Cps_voidStmt> $async-void-await/__Cps_voidReturn $~lib/array/Array<async-void-await/__Cps_voidReturn> $async-void-await/__Cps_voidCatch $~lib/array/Array<async-void-await/__Cps_voidCatch> $~lib/array/Array<i32> $invalid
+                end
+                return
                end
                return
               end
               return
              end
+             local.get $0
+             local.get $1
+             call $~lib/arraybuffer/ArrayBufferView~visit
              return
             end
-            local.get $0
-            local.get $1
-            call $~lib/arraybuffer/ArrayBufferView~visit
             return
            end
            return
           end
+          local.get $0
+          local.get $1
+          call $~lib/error/Error~visit
           return
          end
          local.get $0
@@ -3013,7 +3125,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 7
+   i32.const 8
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3151,7 +3263,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 9
+   i32.const 10
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3289,7 +3401,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3419,8 +3531,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
-   i32.const 6
+   i32.const 16
+   i32.const 7
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -3459,6 +3571,14 @@
   local.get $1
   i32.const 528
   call $async-void-await/__Cps_voidStmt#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-void-await/__Cps_voidStmt#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -3834,7 +3954,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 7
+  i32.const 8
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4134,8 +4254,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 8
-   i32.const 8
+   i32.const 12
+   i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4166,6 +4286,14 @@
   local.get $1
   i32.const 528
   call $async-void-await/__Cps_voidReturn#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-void-await/__Cps_voidReturn#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4422,7 +4550,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 9
+  i32.const 10
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -4714,8 +4842,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 40
-   i32.const 10
+   i32.const 52
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -4761,6 +4889,14 @@
   i32.store offset=4
   local.get $1
   i32.const 0
+  call $async-void-await/__Cps_voidCatch#set:__errorValue
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
   call $async-void-await/__Cps_voidCatch#set:__cps___async_try_ret_0_0
   local.get $this
   local.set $1
@@ -4793,15 +4929,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_4_4
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_5_5
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendVal_4_4
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4809,7 +4937,7 @@
   i32.store offset=4
   local.get $1
   i32.const 0
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_7_6
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_5_5
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4817,7 +4945,15 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_6_7
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_6_6
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_9_7
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -4825,7 +4961,23 @@
   i32.store offset=4
   local.get $1
   i32.const 528
-  call $async-void-await/__Cps_voidCatch#set:__cps_e_8
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_7_8
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_errVal_8_9
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 528
+  call $async-void-await/__Cps_voidCatch#set:__cps_e_10
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5189,7 +5341,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5440,7 +5592,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_4_4
+                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_5_5
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -5448,7 +5600,7 @@
                      i32.store
                      local.get $2
                      i32.const 0
-                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_7_6
+                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_9_7
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -5456,7 +5608,7 @@
                      i32.store
                      local.get $2
                      i32.const 528
-                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_6_7
+                     call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_7_8
                      local.get $this
                      local.set $2
                      global.get $~lib/memory/__stack_pointer
@@ -5473,7 +5625,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_7_6
+                    call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_9_7
                     if
                      local.get $this
                      local.set $2
@@ -5532,7 +5684,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_7_6
+                 call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_9_7
                  if (result i32)
                   i32.const 1
                  else
@@ -5575,7 +5727,7 @@
                   local.get $2
                   i32.store
                   local.get $2
-                  call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_4_4
+                  call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_5_5
                  end
                  if
                   local.get $this
@@ -5629,7 +5781,7 @@
                 i32.store
                 local.get $2
                 i32.const 608
-                call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_5_5
+                call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_6_6
                 local.get $this
                 local.set $2
                 global.get $~lib/memory/__stack_pointer
@@ -5644,7 +5796,7 @@
                 local.get $2
                 i32.store
                 local.get $2
-                call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_7_6
+                call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_9_7
                 if (result i32)
                  i32.const 1
                 else
@@ -5687,7 +5839,7 @@
                  local.get $2
                  i32.store
                  local.get $2
-                 call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_4_4
+                 call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_5_5
                 end
                 if
                  local.get $this
@@ -5746,7 +5898,7 @@
             local.get $2
             i32.store
             local.get $2
-            call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_7_6
+            call $async-void-await/__Cps_voidCatch#get:__cps___async_try_flag_9_7
             if
              local.get $this
              local.set $2
@@ -5775,7 +5927,7 @@
            i32.store
            local.get $2
            i32.const 0
-           call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_7_6
+           call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_9_7
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -5788,13 +5940,13 @@
            local.get $2
            i32.store offset=8
            local.get $2
-           call $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_6_7
+           call $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_7_8
            local.set $2
            global.get $~lib/memory/__stack_pointer
            local.get $2
            i32.store offset=4
            local.get $2
-           call $async-void-await/__Cps_voidCatch#set:__cps_e_8
+           call $async-void-await/__Cps_voidCatch#set:__cps_e_10
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -5832,7 +5984,7 @@
            local.get $2
            i32.store offset=12
            local.get $2
-           call $async-void-await/__Cps_voidCatch#get:__cps_e_8
+           call $async-void-await/__Cps_voidCatch#get:__cps_e_10
            local.set $2
            global.get $~lib/memory/__stack_pointer
            local.get $2
@@ -5844,7 +5996,7 @@
            local.get $2
            i32.store offset=4
            local.get $2
-           call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_5_5
+           call $async-void-await/__Cps_voidCatch#set:__cps___async_try_retVal_6_6
            local.get $this
            local.set $2
            global.get $~lib/memory/__stack_pointer
@@ -5875,7 +6027,26 @@
           local.get $2
           i32.store offset=8
           local.get $2
-          call $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_6_7
+          call $async-void-await/__Cps_voidCatch#get:__cps___async_try_errVal_8_9
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=4
+          local.get $2
+          call $async-void-await/__Cps_voidCatch#set:__errorValue
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store
+          local.get $2
+          local.get $this
+          local.set $2
+          global.get $~lib/memory/__stack_pointer
+          local.get $2
+          i32.store offset=8
+          local.get $2
+          call $async-void-await/__Cps_voidCatch#get:__cps___async_try_err_7_8
           local.set $2
           global.get $~lib/memory/__stack_pointer
           local.get $2
@@ -5928,7 +6099,7 @@
          local.get $2
          i32.store
          local.get $2
-         call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_4_4
+         call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendFail_5_5
          if
           local.get $this
           local.set $2
@@ -5957,7 +6128,26 @@
         i32.store
         local.get $2
         i32.const 0
-        call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_4_4
+        call $async-void-await/__Cps_voidCatch#set:__cps___async_try_pendFail_5_5
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store
+        local.get $2
+        local.get $this
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=8
+        local.get $2
+        call $async-void-await/__Cps_voidCatch#get:__cps___async_try_pendVal_4_4
+        local.set $2
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        call $async-void-await/__Cps_voidCatch#set:__errorValue
         local.get $this
         local.set $2
         global.get $~lib/memory/__stack_pointer
@@ -6065,7 +6255,7 @@
       local.get $2
       i32.store offset=8
       local.get $2
-      call $async-void-await/__Cps_voidCatch#get:__cps___async_try_retVal_5_5
+      call $async-void-await/__Cps_voidCatch#get:__cps___async_try_retVal_6_6
       local.set $2
       global.get $~lib/memory/__stack_pointer
       local.get $2
@@ -6330,6 +6520,31 @@
   local.get $1
   return
  )
+ (func $async-void-await/__async_async_void_await_voidStmt_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-void-await/__Cps_voidStmt#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-void-await/__async_async_void_await_voidStmt_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -6471,6 +6686,31 @@
   local.get $1
   return
  )
+ (func $async-void-await/__async_async_void_await_voidReturn_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-void-await/__Cps_voidReturn#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-void-await/__async_async_void_await_voidReturn_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -6538,7 +6778,7 @@
   i32.store
   local.get $2
   i32.const 1
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_7_6
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_flag_9_7
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -6551,7 +6791,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_6_7
+  call $async-void-await/__Cps_voidCatch#set:__cps___async_try_err_7_8
   local.get $state
   local.set $2
   global.get $~lib/memory/__stack_pointer
@@ -6609,6 +6849,31 @@
   i32.store
   local.get $1
   call $async-void-await/__Cps_voidCatch#get:__error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $async-void-await/__async_async_void_await_voidCatch_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-void-await/__Cps_voidCatch#get:__errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -7039,6 +7304,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-void-await/__async_async_void_await_voidStmt_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-void-await/__async_async_void_await_voidStmt_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-void-await/__async_async_void_await_voidStmt_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -7128,6 +7412,25 @@
   i32.store
   local.get $0
   call $async-void-await/__async_async_void_await_voidReturn_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-void-await/__async_async_void_await_voidReturn_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-void-await/__async_async_void_await_voidReturn_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -7227,6 +7530,25 @@
   i32.store
   local.get $0
   call $async-void-await/__async_async_void_await_voidCatch_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-void-await/__async_async_void_await_voidCatch_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-void-await/__async_async_void_await_voidCatch_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
