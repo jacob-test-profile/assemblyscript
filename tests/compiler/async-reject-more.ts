@@ -1,6 +1,6 @@
 // Diagnostic fixture: one function per loud rejection that had no
-// pinned fixture (throw-await, labeled break, member-call await,
-// arrow misuse, generic/namespaced-class methods, void await).
+// pinned fixture (labeled break, member-call await,
+// arrow misuse, generic/namespaced-class methods).
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getVoid")
@@ -33,10 +33,6 @@ namespace NS2 {
       return c;
     }
   }
-}
-
-export async function throwAwait(): Promise<string> {
-  throw await getChunk(0);
 }
 
 export async function labeledBreak(): Promise<string> {
@@ -87,10 +83,6 @@ export async function arrowAssignedInClosure(): Promise<i32> {
   return f(1);
 }
 
-export async function awaitVoid(): Promise<string> {
-  await getVoid();
-  return "x";
-}
 
 // Member-call await stays loud when the callee is not a transformed
 // async method: a sync method, an unresolvable member, a generic-class

@@ -118,6 +118,112 @@ export async function catchRejectFinally(): Promise<string> {
   return out;
 }
 
+// An uncaught Error object rejects the task with the Error's message.
+export async function throwErrorUncaught(): Promise<string> {
+  throw new Error("coord-err");
+  return "unreachable";
+}
+
+// An uncaught string rejects the task with the string.
+export async function throwStringUncaught(): Promise<string> {
+  throw "coord-str";
+  return "unreachable";
+}
+
+// An uncaught number rejects the task with its toString.
+export async function throwNumberUncaught(): Promise<string> {
+  throw 42;
+  return "unreachable";
+}
+
+// A caught Error: the catch sees the Error's message.
+export async function throwErrorCaught(): Promise<string> {
+  try {
+    throw new Error("coord-caught");
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// throw await <string>: the awaited string is the thrown value.
+export async function throwAwaitString(): Promise<string> {
+  throw await getChunk(0);
+  return "unreachable";
+}
+
+// throw await <number>: the awaited number is the thrown value.
+export async function throwAwaitNumber(): Promise<string> {
+  throw await getNumber();
+  return "unreachable";
+}
+
+// throw await caught: the awaited string is caught with its message.
+export async function throwAwaitCaught(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// A rejection of the await inside `throw await` reaches the catch, not
+// the throw's (zero) bound value.
+export async function throwAwaitRejected(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// Stored promises read out of an array or an object field, and copied
+// from a tracked binding, all suspend on the issued token.
+export async function storedMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(2);
+  arr[0] = getChunk(0);
+  arr[1] = getChunk(1);
+  let a = await arr[0];
+  let b = await arr[1];
+  return a + b;
+}
+
+class PromiseBox {
+  p: Promise<string> = changetype<Promise<string>>(0);
+}
+
+export async function storedField(): Promise<string> {
+  let box = new PromiseBox();
+  box.p = getChunk(0);
+  let c = await box.p;
+  return "got-" + c;
+}
+
+export async function storedCopy(): Promise<string> {
+  let p = getChunk(0);
+  let q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyRebind(): Promise<string> {
+  let p = getChunk(0);
+  let q: Promise<string>;
+  q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(1);
+  arr[0] = getChunk(0);
+  let p = arr[0];
+  let c = await p;
+  return "got-" + c;
+}
+
 // A stored promise is issued at bind time and awaited later; the await
 // must not re-issue the import.
 export async function storedAwait(): Promise<string> {
@@ -489,6 +595,61 @@ export async function ternaryCondFlag(): Promise<string> {
 
 export async function voidTask(): Promise<void> {
   await getChunk(0);
+}
+
+//@ external("env", "getVoid")
+declare function getVoid(): Promise<void>;
+
+// Awaiting a Promise<void> completes the suspension with no value: as a
+// statement, as the return of a Promise<void> function, through a catch
+// when the awaited import rejects, and nested through another async fn.
+export async function voidStmt(): Promise<string> {
+  await getVoid();
+  return "after-void";
+}
+
+export async function voidReturn(): Promise<void> {
+  return await getVoid();
+}
+
+export async function voidCatch(): Promise<string> {
+  try {
+    await getVoid();
+    return "ok";
+  } catch (e) {
+    return "caught:" + e;
+  }
+}
+
+export async function innerVoid(): Promise<void> {
+  await getVoid();
+}
+
+export async function outerVoid(): Promise<string> {
+  await innerVoid();
+  return "outer-void-done";
+}
+
+// Default / optional / rest parameters: defaults are filled per call by
+// the varargs stub, rest arguments collect into an array, and both
+// survive suspension as state fields.
+export async function defInt(x: i32 = 5): Promise<i32> {
+  const v = await getNumber();
+  return x + v;
+}
+export async function defOther(a: i32, b: i32 = a + 1): Promise<i32> {
+  const v = await getNumber();
+  return b + v;
+}
+export async function restNums(first: i32, ...rest: i32[]): Promise<i32> {
+  const v = await getNumber();
+  let sum = first + v;
+  for (let i = 0; i < rest.length; ++i) sum += rest[i];
+  return sum;
+}
+export async function restStrings(...words: string[]): Promise<string> {
+  const v = await getChunk(0);
+  return words.join(",") + "|" + v;
 }
 
 // Allocates garbage so the e2e can churn the heap (plus __collect) while

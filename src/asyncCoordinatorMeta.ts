@@ -35,6 +35,7 @@ import {
 
 import {
   Type,
+  Signature,
   TypeKind,
   TypeFlags
 } from "./types";
@@ -43,6 +44,24 @@ import {
 export interface ValueDesc {
   kind: string;
   nullable: boolean;
+}
+
+/** Metadata for a rest parameter: how the runtime builds the collected
+ *  array (element kind for lowering, the Array<T> runtime id, and the
+ *  element layout for the typed-array fill). */
+export interface RestDesc {
+  kind: string;
+  nullable: boolean;
+  /** Runtime id of the Array<T> class. */
+  id: number;
+  /** log2 element size: 0, 1, 2 or 3. */
+  align: number;
+  /** The element view is signed (integer elements only). */
+  signed: boolean;
+  /** The element view is floating-point. */
+  float: boolean;
+  /** Elements are managed references (pointers), not scalars. */
+  managed: boolean;
 }
 
 /** Metadata for one await site, per the chunk 1 wire protocol. A join
@@ -80,6 +99,12 @@ export interface FunctionMeta {
   exportName: string | null;
   fileBase: string;
   params: ValueDesc[];
+  /** True when the function takes optional or rest parameters: the
+   *  runtime sets `__setArgumentsLength` before the entry call so the
+   *  varargs stub fills the omitted ones. */
+  varargs: boolean;
+  /** Rest-element description, or `null` when there is no rest param. */
+  rest: RestDesc | null;
   resultKind: string;
   resultNullable: boolean;
   statusExport: string;
@@ -125,6 +150,10 @@ export interface ClassMeta {
   /** `__async_<file>_<Class>_new` (chunk A). */
   newExport: string;
   newParams: ValueDesc[];
+  /** True when the constructor takes optional or rest parameters. */
+  newVarargs: boolean;
+  /** Rest-element description for the constructor, or `null`. */
+  newRest: RestDesc | null;
   methods: MethodMeta[];
 }
 
@@ -277,6 +306,90 @@ export function methodClassOf(prototype: FunctionPrototype): ClassPrototype | nu
     prototype.parent.kind == ElementKind.ClassPrototype
   ) return <ClassPrototype>prototype.parent;
   return null;
+}
+
+/** Describes one rest element type, or `null` when the runtime cannot
+ *  build the collected array for it. Rest elements are written through
+ *  a DataView fill, so externref elements are unsupported (they cannot
+ *  be written that way) and class/array elements are unsupported (no
+ *  lowering); the precise integer width is kept, since `describeType`
+ *  collapses i8/i16/i32 and the fill needs the real element size. */
+function describeRestElement(element: Type): RestDesc | null {
+  let nullable = (element.flags & TypeFlags.Nullable) != 0;
+  let base = nullable ? element.nonNullableType : element;
+  let classReference = base.getClass();
+  if (classReference) {
+    if (classReference.prototype.name == CommonNames.String) {
+      return { kind: "string", nullable, id: 0, align: 2, signed: false, float: false, managed: true };
+    }
+    return null;
+  }
+  switch (base.kind) {
+    case TypeKind.Bool: return { kind: "bool", nullable, id: 0, align: 0, signed: false, float: false, managed: false };
+    case TypeKind.I8: return { kind: "i32", nullable, id: 0, align: 0, signed: true, float: false, managed: false };
+    case TypeKind.I16: return { kind: "i32", nullable, id: 0, align: 1, signed: true, float: false, managed: false };
+    case TypeKind.I32:
+    case TypeKind.Isize: return { kind: "i32", nullable, id: 0, align: 2, signed: true, float: false, managed: false };
+    case TypeKind.U8: return { kind: "u32", nullable, id: 0, align: 0, signed: false, float: false, managed: false };
+    case TypeKind.U16: return { kind: "u32", nullable, id: 0, align: 1, signed: false, float: false, managed: false };
+    case TypeKind.U32:
+    case TypeKind.Usize: return { kind: "u32", nullable, id: 0, align: 2, signed: false, float: false, managed: false };
+    case TypeKind.I64: return { kind: "i64", nullable, id: 0, align: 3, signed: true, float: false, managed: false };
+    case TypeKind.U64: return { kind: "u64", nullable, id: 0, align: 3, signed: false, float: false, managed: false };
+    case TypeKind.F32: return { kind: "f32", nullable, id: 0, align: 2, signed: true, float: true, managed: false };
+    case TypeKind.F64: return { kind: "f64", nullable, id: 0, align: 3, signed: true, float: true, managed: false };
+    case TypeKind.String: return { kind: "string", nullable, id: 0, align: 2, signed: false, float: false, managed: true };
+    default: return null;
+  }
+}
+
+/** Splits a signature's parameter types into the fixed params and the
+ *  rest element description, or a reason when a type is unsupported.
+ *  `varargs` is true when the function takes optional or rest
+ *  parameters (the compiler's own stub condition): the runtime must set
+ *  `__setArgumentsLength` before the entry call. */
+export function describeParamsAndRest(
+  signature: Signature,
+  owner: string
+): { params: ValueDesc[], rest: RestDesc | null, varargs: boolean, reason: string | null } {
+  let types = signature.parameterTypes;
+  let fixed = signature.hasRest ? types.slice(0, types.length - 1) : types;
+  let params = describeParams(fixed, owner);
+  if (params.reason) {
+    return { params: params.params, rest: null, varargs: false, reason: params.reason };
+  }
+  let rest: RestDesc | null = null;
+  if (signature.hasRest) {
+    let restType = types[types.length - 1];
+    let base = (restType.flags & TypeFlags.Nullable) != 0 ? restType.nonNullableType : restType;
+    let restClass = base.getClass();
+    if (!restClass || !restClass.typeArguments || restClass.typeArguments.length == 0) {
+      return {
+        params: params.params,
+        rest: null,
+        varargs: false,
+        reason: "unsupported rest parameter type '" + restType.toString() + "' in '" + owner + "'"
+      };
+    }
+    let element = restClass.typeArguments[0];
+    let desc = describeRestElement(element);
+    if (!desc) {
+      return {
+        params: params.params,
+        rest: null,
+        varargs: false,
+        reason: "unsupported rest element type '" + element.toString() + "' in '" + owner + "'"
+      };
+    }
+    desc.id = restClass.id;
+    rest = desc;
+  }
+  return {
+    params: params.params,
+    rest,
+    varargs: signature.requiredParameters < types.length,
+    reason: null
+  };
 }
 
 /** Qualified name used for all generated names: `Class_method` for a bound

@@ -47,6 +47,14 @@ export class Counter {
     return this.count;
   }
 
+  // A method default, filled by the entry's varargs stub.
+  async addDefault(step: i32 = 1): Promise<i32> {
+    this.count += step;
+    let m = await getNumber();
+    this.count += m;
+    return this.count;
+  }
+
   // Rejects when the awaited import rejects.
   async fail(n: i32): Promise<i32> {
     let m = await getNumber();
@@ -171,6 +179,36 @@ export async function viaObjGuarded(n: i32): Promise<i32> {
     log("catch:" + e);
     return -1;
   }
+}
+
+// A constructor and a method with defaults: the _new and the entry get
+// their own varargs stubs, and the coordinator sets __setArgumentsLength
+// before each call (counting the receiver for the entry).
+export class Greeter {
+  greeting: string;
+  constructor(greeting: string = "hi") {
+    this.greeting = greeting;
+  }
+  async greet(name: string = "there"): Promise<string> {
+    const v = await getNumber();
+    return this.greeting + " " + name + " " + v.toString();
+  }
+}
+// A rest method has no entry (a pre-built array cannot be passed as a
+// rest argument), so it has no wrapper class — but nested await still
+// drives it, with elements wrapping into the array normally.
+export class RestCounter {
+  count: i32 = 10;
+  async sumAll(base: i32, ...more: i32[]): Promise<i32> {
+    const v = await getNumber();
+    let sum = base + v;
+    for (let i = 0; i < more.length; ++i) sum += more[i];
+    return sum;
+  }
+}
+export async function driveRest(): Promise<i32> {
+  const c = new RestCounter();
+  return await c.sumAll(1, 2, 3);
 }
 
 // Allocates garbage so the e2e can churn the heap (plus __collect) while

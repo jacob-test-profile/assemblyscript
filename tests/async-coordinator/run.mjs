@@ -125,6 +125,7 @@ const useDeferreds = [];
 const seenHandles = [];
 const issueLog = [];
 const memberDeferreds = [];
+const voidDeferreds = [];
 const registry = createJoinRegistry();
 let issuesAtJoin = -1;
 const sentinel = { tag: "handle" };
@@ -146,6 +147,35 @@ const api = await instantiateAsync(bytes, {
     getFlag(i) {
       const d = deferred();
       flagDeferreds.push(d);
+      return d.promise;
+    },
+    getHandle() {
+      const d = deferred();
+      handleDeferreds.push(d);
+      return d.promise;
+    },
+    useHandle(h) {
+      seenHandles.push(h);
+      const d = deferred();
+      useDeferreds.push(d);
+      return d.promise;
+    },
+    issueNumber(i) {
+      issueLog.push(i);
+      const d = deferred();
+      memberDeferreds.push(d);
+      return registry.issue(d.promise);
+    },
+    joinNumbers(policy) {
+      issuesAtJoin = issueLog.length;
+      return registry.join(policy === 0 ? "all" : "race").then((vals) => (Array.isArray(vals) ? vals.join("|") : String(vals)));
+    }
+  }
+});
+
+    getVoid() {
+      const d = deferred();
+      voidDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -550,6 +580,52 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS stored externref promise");
 }
 
+// Stored promises read out of an array / an object field, and copied
+// from a tracked binding, suspend on the issued token.
+{
+  let base = chunkDeferreds.length;
+  let p = api.storedMember();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "storedMember must issue both promises before awaiting");
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p) === "AB", "storedMember must resolve AB");
+  console.log("PASS stored promise read out of an array");
+
+  base = chunkDeferreds.length;
+  p = api.storedField();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedField must issue once");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedField must resolve got-A");
+  console.log("PASS stored promise read out of an object field");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopy();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopy must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopy must resolve got-A");
+  console.log("PASS stored promise copied from a tracked binding");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyRebind();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyRebind must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyRebind must resolve got-A");
+  console.log("PASS stored promise copied by rebind");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyMember();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyMember must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyMember must resolve got-A");
+  console.log("PASS stored promise copied from an array element");
+}
+
 // Nested await: the inner task is driven, its result (not the inner
 // import's raw value) reaches the outer resume.
 {
@@ -582,6 +658,67 @@ const api = await instantiateAsync(bytes, {
   numDeferreds[base].resolve(10);
   check((await p4) === 12, "awaited async arrow must resolve (10+1)+1");
   console.log("PASS nested await of an extracted async arrow");
+}
+
+// Default / optional / rest parameters: the coordinator sets
+// __setArgumentsLength before the entry call so the varargs stub fills
+// omitted defaults, and extra arguments collect into a rest array.
+{
+  let base = numDeferreds.length;
+  let p = api.defInt();
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 105, "defInt() must fill the default 5");
+  console.log("PASS default parameter filled when omitted");
+
+  base = numDeferreds.length;
+  p = api.defInt(2);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 102, "defInt(2) must give 102");
+  console.log("PASS default parameter overridden when passed");
+
+  base = numDeferreds.length;
+  p = api.defOther(3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 104, "defOther(3) must default b to a + 1");
+  console.log("PASS default parameter referencing another parameter");
+
+  base = numDeferreds.length;
+  p = api.defOther(3, 10);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 110, "defOther(3, 10) must give 110");
+  console.log("PASS default parameter overridden with an explicit value");
+
+  base = numDeferreds.length;
+  p = api.restNums(1);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 101, "restNums(1) must give 101 with an empty rest");
+  console.log("PASS rest parameter empty when no extra arguments");
+
+  base = numDeferreds.length;
+  p = api.restNums(1, 2, 3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 106, "restNums(1, 2, 3) must give 106");
+  console.log("PASS rest parameter collects extra arguments into an array");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings();
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "|S", "restStrings() must give '|S'");
+  console.log("PASS rest parameter of strings empty when no extra arguments");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings("a", "b");
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "a,b|S", "restStrings('a', 'b') must give 'a,b|S'");
+  console.log("PASS rest parameter of strings collects extra arguments");
 }
 
 // Closure counter across an await: 1 then 2, shared storage exact.
@@ -731,6 +868,60 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS for-of with break after an await");
 }
 
+// Thrown values: the error channel carries the value; the task rejects
+// with the message (Error via .message, string as-is, number via toString).
+{
+  await assertRejects(api.throwErrorUncaught(), /coord-err/, "an uncaught Error must reject with its message");
+  console.log("PASS uncaught Error rejects with its message");
+}
+{
+  await assertRejects(api.throwStringUncaught(), /coord-str/, "an uncaught string must reject with the string");
+  console.log("PASS uncaught string rejects with the string");
+}
+{
+  await assertRejects(api.throwNumberUncaught(), /^42$/, "an uncaught number must reject with its toString");
+  console.log("PASS uncaught number rejects with its toString");
+}
+{
+  check((await api.throwErrorCaught()) === "caught:coord-caught", "a caught Error must resolve with its message");
+  console.log("PASS caught Error resolves with its message");
+}
+
+// throw await: the awaited value becomes the thrown value.
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitString();
+  await tick();
+  chunkDeferreds[base].resolve("thrown-A");
+  await assertRejects(p, /^thrown-A$/, "throw await <string> must reject with the awaited string");
+  console.log("PASS throw await string rejects with the awaited string");
+}
+{
+  const base = numDeferreds.length;
+  const p = api.throwAwaitNumber();
+  await tick();
+  numDeferreds[base].resolve(42);
+  await assertRejects(p, /^42$/, "throw await <number> must reject with the awaited number");
+  console.log("PASS throw await number rejects with the awaited number");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitCaught();
+  await tick();
+  chunkDeferreds[base].resolve("caught-A");
+  check((await p) === "caught:caught-A", "throw await <string> in a try must resolve with the caught message");
+  console.log("PASS throw await string caught with its message");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitRejected();
+  await tick();
+  chunkDeferreds[base].reject(new Error("import-boom"));
+  const caught = await p;
+  check(caught === "caught:import-boom", "a rejected await inside throw await must land in the catch, got " + caught);
+  console.log("PASS rejected await inside throw await lands in catch");
+}
+
 // Void task resolves undefined.
 {
   const base = chunkDeferreds.length;
@@ -739,6 +930,40 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base].resolve("x");
   check((await p) === undefined, "void task must resolve undefined");
   console.log("PASS void task");
+}
+
+// Awaiting a Promise<void> completes the suspension with no value.
+{
+  let base = voidDeferreds.length;
+  let p = api.voidStmt();
+  await tick();
+  check(voidDeferreds.length === base + 1, "voidStmt must suspend on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "after-void", "voidStmt must resolve after-void");
+  console.log("PASS void await as a statement");
+
+  base = voidDeferreds.length;
+  p = api.voidReturn();
+  await tick();
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === undefined, "voidReturn must resolve undefined");
+  console.log("PASS void await as a return value");
+
+  base = voidDeferreds.length;
+  p = api.voidCatch();
+  await tick();
+  voidDeferreds[base].reject(new Error("void-boom"));
+  const caughtVoid = await p;
+  check(caughtVoid === "caught:void-boom", "a rejected void await must land in the catch, got " + caughtVoid);
+  console.log("PASS void await rejection lands in catch");
+
+  base = voidDeferreds.length;
+  p = api.outerVoid();
+  await tick();
+  check(voidDeferreds.length === base + 1, "outerVoid must suspend the inner void task on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "outer-void-done", "nested void await must resolve outer-void-done");
+  console.log("PASS nested void await");
 }
 
 // Spill-pool FIFO queue: each handleRoundtrip holds 2 of the 8 slots, so
@@ -1139,6 +1364,55 @@ const api = await instantiateAsync(bytes, {
     check((await p) === 15, "Counter.setField must give 15 (10, then += 5)");
     c.dispose();
     console.log("PASS basic async method, known values 12/119/130");
+  }
+
+  // Default parameters on a method and its constructor: the entry and
+  // the _new fill omitted defaults through their own varargs stubs.
+  {
+    const g = new methodsApi.Greeter();
+    let base = methodNums.length;
+    let p = g.greet();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hi there 100", "Greeter().greet() must give 'hi there 100'");
+    g.dispose();
+    console.log("PASS constructor and method defaults filled when omitted");
+
+    const g2 = new methodsApi.Greeter("hey");
+    base = methodNums.length;
+    p = g2.greet("bob");
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hey bob 100", "Greeter('hey').greet('bob') must give 'hey bob 100'");
+    g2.dispose();
+    console.log("PASS constructor and method defaults overridden when passed");
+
+    const c = new methodsApi.Counter();
+    base = methodNums.length;
+    p = c.addDefault();
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 8, "Counter.addDefault() must give 8 with the default step 1");
+    base = methodNums.length;
+    p = c.addDefault(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 20, "Counter.addDefault(5) must give 20");
+    c.dispose();
+    console.log("PASS method default filled when omitted, overridden when passed");
+  }
+
+  // A rest method has no wrapper class (its entry is skipped), but a
+  // top-level fn awaiting it still drives it through nested await.
+  {
+    check(typeof methodsApi.RestCounter === "undefined", "a rest method's class must have no wrapper class");
+    check(typeof methodsApi.driveRest === "function", "generated coordinator must expose driveRest");
+    const base = methodNums.length;
+    const p = methodsApi.driveRest();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === 106, "driveRest() must give 106 through nested await of a rest method");
+    console.log("PASS rest method driven through nested await, no wrapper class");
   }
 
   // Two instances driven concurrently keep independent counts.

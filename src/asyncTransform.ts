@@ -70,12 +70,14 @@ import {
 } from "./diagnostics";
 
 import {
-  CommonFlags
+  CommonFlags,
+  CommonNames
 } from "./common";
 
 import {
   Type,
-  TypeKind
+  TypeKind,
+  TypeFlags
 } from "./types";
 
 import {
@@ -91,6 +93,7 @@ import {
   Element,
   ElementKind,
   Namespace,
+  Class,
   ClassPrototype
 } from "./program";
 
@@ -165,6 +168,7 @@ import {
   rewriteStatement,
   rewriteClosureMethod,
   containsAwait,
+  containsThisOrSuper,
   validateBody,
   cpsStateClassName,
   cpsStateGlobalName,
@@ -172,11 +176,13 @@ import {
   SPILL_ACQUIRE,
   SPILL_RELEASE,
   SPILL_GET,
-  SPILL_SET
+  SPILL_SET,
+  TRY_THROW_MARKER,
+  TRY_FAIL_MARKER
 } from "./asyncRewrite";
 
 import {
-  describeParams,
+  describeParamsAndRest,
   findExportName,
   warnSkipped,
   qualNameOf,
@@ -827,8 +833,12 @@ class AsyncFunctionTransform {
     let parameters = prototype.functionTypeNode.parameters;
     for (let i = 0, k = parameters.length; i < k; ++i) {
       let parameter = parameters[i];
-      if (parameter.parameterKind != ParameterKind.Default || parameter.initializer) {
-        this.fail("Async functions with default, optional or rest parameters are not yet supported", parameter.range);
+      // Optional parameters without an initializer are a stock AS215
+      // error (the compiler needs an initializer to fill the omitted
+      // argument); defaulted and rest parameters go through the varargs
+      // stub, whose defaults are evaluated per call by the stub itself.
+      if (parameter.parameterKind == ParameterKind.Optional && !parameter.initializer) {
+        this.fail("Async functions with optional parameters without an initializer are not yet supported (AssemblyScript requires an initializer for optional parameters)", parameter.range);
         return TransformOutcome.Rejected;
       }
     }
@@ -1320,12 +1330,24 @@ class AsyncFunctionTransform {
         return;
       }
       case NodeKind.Throw: {
-        // The try desugar's fail-the-task primitive: set the error slot
-        // and close the task as failed. Reaching here with an await in the
-        // value is a loud error via `rewriteChecked`.
-        let value = this.rewriteChecked((<ThrowStatement>stmt).value);
-        if (!value) return;
-        this.emitFail(value, stmt.range);
+        // The try desugar binds every thrown value to a local first, so
+        // this sees an identifier; derive its message and value with
+        // full type info and fail the task with both.
+        let thrown = (<ThrowStatement>stmt).value;
+        let type = this.resolver.resolveExpression(thrown, assert(this.flow), Type.auto, ReportMode.Swallow);
+        if (!type) {
+          this.punted = true;
+          return;
+        }
+        if (type.kind == TypeKind.Void) {
+          this.fail("Cannot throw a value of type 'void'", stmt.range);
+          return;
+        }
+        let rewritten = this.rewriteChecked(thrown);
+        if (!rewritten) return;
+        let derived = this.throwMessageAndValue(rewritten, type, stmt.range);
+        if (!derived) return;
+        this.emitThrowFail(derived.message, derived.value, stmt.range);
         return;
       }
       case NodeKind.Empty: {
@@ -1591,6 +1613,10 @@ class AsyncFunctionTransform {
         }
         let site = this.transformAwait(awaitExpr, true);
         if (!site) return;
+        if (site.type.kind == TypeKind.Void) {
+          this.fail("Cannot store the result of 'await' of type 'void' in a variable; await it as a statement instead", awaitExpr.range);
+          return;
+        }
         let type: Type | null = site.type;
         if (declaration.type) {
           let annotated = this.resolver.resolveType(declaration.type, this.flow, this.parent, null, ReportMode.Swallow);
@@ -1630,7 +1656,7 @@ class AsyncFunctionTransform {
         let rewrittenInit = this.rewriteChecked(hoisted);
         if (!rewrittenInit) return;
         this.emitLocalAssign(name, rewrittenInit, declaration.range);
-        if (this.isSuspendingImportCall(initializer)) {
+        if (this.isSuspendingImportCall(initializer) || this.isTrackedStoredValue(initializer)) {
           let binding = this.scope.lookup(name);
           if (binding) this.storedPromises.add(binding.field);
         }
@@ -1640,6 +1666,21 @@ class AsyncFunctionTransform {
 
   private transformExpressionStatement(stmt: ExpressionStatement, breakTarget: i32): void {
     let expr = unwrapParens(stmt.expression);
+    if (expr.kind == NodeKind.Call) {
+      let call = <CallExpression>expr;
+      let callee = call.expression;
+      if (callee.kind == NodeKind.Identifier) {
+        let name = (<IdentifierExpression>callee).text;
+        if (name == TRY_THROW_MARKER) {
+          this.lowerTryThrow(call, stmt.range);
+          return;
+        }
+        if (name == TRY_FAIL_MARKER) {
+          this.lowerTryFail(call, stmt.range);
+          return;
+        }
+      }
+    }
     if (expr.kind == NodeKind.Await) {
       let awaitExpr = <AwaitExpression>expr;
       let joinCall = this.joinCallOf(awaitExpr);
@@ -1717,6 +1758,10 @@ class AsyncFunctionTransform {
     }
     let site = this.transformAwait(awaitExpr, true);
     if (!site) return;
+    if (site.type.kind == TypeKind.Void) {
+      this.fail("Cannot assign the result of 'await' of type 'void'; await it as a statement instead", awaitExpr.range);
+      return;
+    }
     this.suspendCurrent(site);
     this.emitAwaitTargetAssign(target, this.pendAccess(site, range), range);
   }
@@ -1779,6 +1824,66 @@ class AsyncFunctionTransform {
     return true;
   }
 
+  /** Lowers the try desugar's throw marker: derives the message and value
+   *  from the bound thrown value and records them in the frame's slots,
+   *  guarded so a coordinator rejection resuming at this segment is not
+   *  clobbered by the (zero) bound value. */
+  private lowerTryThrow(call: CallExpression, range: Range): void {
+    let args = call.args;
+    if (args.length != 4) {
+      this.fail("Invalid '" + TRY_THROW_MARKER + "' marker", range);
+      return;
+    }
+    let thrown = args[0];
+    let type = this.resolver.resolveExpression(thrown, assert(this.flow), Type.auto, ReportMode.Swallow);
+    if (!type) {
+      this.punted = true;
+      return;
+    }
+    if (type.kind == TypeKind.Void) {
+      this.fail("Cannot throw a value of type 'void'", range);
+      return;
+    }
+    let rewritten = this.rewriteChecked(thrown);
+    if (!rewritten) return;
+    let derived = this.throwMessageAndValue(rewritten, type, range);
+    if (!derived) return;
+    let errVar = this.rewriteChecked(args[1]);
+    if (!errVar) return;
+    let errValVar = this.rewriteChecked(args[2]);
+    if (!errValVar) return;
+    let flagCond = this.rewriteChecked(args[3]);
+    if (!flagCond) return;
+    let flagSet = this.rewriteChecked(args[3]);
+    if (!flagSet) return;
+    this.emit(new IfStatement(
+      new UnaryPrefixExpression(Token.Exclamation, flagCond, range),
+      blockStmt([
+        exprStmt(assignExpr(errVar, derived.message, range)),
+        exprStmt(assignExpr(errValVar, derived.value, range)),
+        exprStmt(assignExpr(flagSet, new TrueExpression(range), range))
+      ], range),
+      null,
+      range
+    ));
+  }
+
+  /** Lowers the try desugar's fail marker: the message and value are
+   *  already computed, so they go straight to the error slots and fail
+   *  the task. */
+  private lowerTryFail(call: CallExpression, range: Range): void {
+    let args = call.args;
+    if (args.length != 2) {
+      this.fail("Invalid '" + TRY_FAIL_MARKER + "' marker", range);
+      return;
+    }
+    let message = this.rewriteChecked(args[0]);
+    if (!message) return;
+    let value = this.rewriteChecked(args[1]);
+    if (!value) return;
+    this.emitThrowFail(message, value, range);
+  }
+
   private transformReturn(stmt: ReturnStatement, breakTarget: i32): void {
     let value = stmt.value;
     if (value && unwrapParens(value).kind == NodeKind.Await) {
@@ -1798,6 +1903,10 @@ class AsyncFunctionTransform {
       }
       let site = this.transformAwait(awaitExpr, true);
       if (!site) return;
+      if (site.type.kind == TypeKind.Void && this.returnType.kind != TypeKind.Void) {
+        this.fail("Cannot return the result of 'await' of type 'void' from a function returning '" + this.returnType.toString() + "'", awaitExpr.range);
+        return;
+      }
       this.suspendCurrent(site);
       this.emitReturnAssignment(site, stmt.range);
       this.emitTerminal(stmt.range);
@@ -2307,6 +2416,19 @@ class AsyncFunctionTransform {
       && (<FunctionPrototype>element).is(CommonFlags.Ambient);
   }
 
+  /** Whether the expression's value is a tracked stored promise: a local
+   *  bound by a suspending-import call (or copied from one), or a
+   *  member/index read, whose token the coordinator resolves at runtime
+   *  (failing loudly on an unknown token). */
+  private isTrackedStoredValue(expr: Expression): bool {
+    let node = unwrapParens(expr);
+    if (node.kind == NodeKind.Identifier) {
+      let binding = this.scope.lookup((<IdentifierExpression>node).text);
+      return !!binding && this.storedPromises.has(binding.field);
+    }
+    return node.kind == NodeKind.ElementAccess || node.kind == NodeKind.PropertyAccess;
+  }
+
   /** Maintains the stored-promise binding set across `p = ...` rebinds:
    *  a rebind to a suspending-import call binds a fresh token, anything
    *  else unbinds. Only plain `=` assignments to a local are tracked;
@@ -2321,11 +2443,29 @@ class AsyncFunctionTransform {
     if (left.kind != NodeKind.Identifier) return;
     let binding = this.scope.lookup((<IdentifierExpression>left).text);
     if (!binding) return;
-    if (this.isSuspendingImportCall(binary.right)) {
+    if (this.isSuspendingImportCall(binary.right) || this.isTrackedStoredValue(binary.right)) {
       this.storedPromises.add(binding.field);
     } else {
       this.storedPromises.delete(binding.field);
     }
+  }
+
+  /** Resolves the type node of an awaited value, or `null` after failing
+   *  loudly. `void` has no spelling and no zero value, but it is a valid
+   *  awaited type: the site carries no value, so the void node is
+   *  returned directly and the resume export takes no value parameter. */
+  private resolveAwaitType(unwrapped: Type, range: Range): TypeNode | null {
+    if (unwrapped.kind == TypeKind.Void) return namedType("void", null, false, range);
+    let typeNode = typeToTypeNode(unwrapped, range);
+    if (!typeNode) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, range);
+      return null;
+    }
+    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, range)) {
+      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, range);
+      return null;
+    }
+    return typeNode;
   }
 
   /** Awaits a stored promise: the operation was already issued when the
@@ -2337,9 +2477,17 @@ class AsyncFunctionTransform {
   private transformStoredAwait(node: AwaitExpression, operand: IdentifierExpression, used: bool): AwaitSite | null {
     let binding = this.scope.lookup(operand.text);
     if (!binding || !this.storedPromises.has(binding.field)) {
-      this.fail("'await' of a stored promise is only supported when the promise was bound by a direct call to a suspending import in this function", node.range);
+      this.fail("'await' of a stored promise is only supported when the promise was bound by a direct call to a suspending import in this function (or copied from such a binding)", node.range);
       return null;
     }
+    return this.buildWaitSite(node, operand, used);
+  }
+
+  /** Builds a `__async_wait` site for an operand evaluating to an issued
+   *  token: a tracked stored promise, or a member/index read whose value
+   *  the coordinator resolves to an issued token at runtime (and fails
+   *  loudly on an unknown token). */
+  private buildWaitSite(node: AwaitExpression, operand: Expression, used: bool): AwaitSite | null {
     let flow = assert(this.flow);
     let operandType = this.resolver.resolveExpression(operand, flow, Type.auto, ReportMode.Swallow);
     if (!operandType) {
@@ -2355,15 +2503,8 @@ class AsyncFunctionTransform {
       this.failed = true;
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenOperand = rewriteExpression(operand, this.rewriter());
     if (!rewrittenOperand) {
       this.failed = true;
@@ -2420,6 +2561,11 @@ class AsyncFunctionTransform {
     let operand = unwrapParens(node.operand);
     if (operand.kind == NodeKind.Identifier) {
       return this.transformStoredAwait(node, <IdentifierExpression>operand, used);
+    }
+    if (operand.kind == NodeKind.ElementAccess || operand.kind == NodeKind.PropertyAccess) {
+      this.checkDirectAsyncCalls(operand);
+      if (this.failed) return null;
+      return this.buildWaitSite(node, operand, used);
     }
     if (operand.kind != NodeKind.Call) {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
@@ -2497,15 +2643,8 @@ class AsyncFunctionTransform {
       this.fail("'await' is only supported on direct calls to suspending imports", node.range);
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenCall = rewriteExpression(call, this.rewriter());
     if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
       this.failed = true;
@@ -2595,15 +2734,8 @@ class AsyncFunctionTransform {
       this.failed = true;
       return null;
     }
-    let typeNode = typeToTypeNode(unwrapped, node.range);
-    if (!typeNode) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
-    if (unwrapped.kind != TypeKind.Extern && !zeroValue(unwrapped, typeNode, node.range)) {
-      this.fail(`Async functions cannot await values of type '${unwrapped.toString()}' yet`, node.range);
-      return null;
-    }
+    let typeNode = this.resolveAwaitType(unwrapped, node.range);
+    if (!typeNode) return null;
     let rewrittenCall = rewriteExpression(call, this.rewriter());
     if (!rewrittenCall || rewrittenCall.kind != NodeKind.Call) {
       this.failed = true;
@@ -3363,6 +3495,99 @@ class AsyncFunctionTransform {
     this.closeCurrent(new SegmentEnd("fail"));
   }
 
+  /** Fails the task with a message and a thrown value. */
+  private emitThrowFail(message: Expression, value: Expression, range: Range): void {
+    this.emit(exprStmt(assignExpr(thisProp("__errorValue", range), value, range)));
+    this.emitFail(message, range);
+  }
+
+  /** True when the class is Error or extends it. */
+  private isErrorClass(classReference: Class): bool {
+    let cls: Class | null = classReference;
+    while (cls) {
+      if (cls.prototype.name == "Error") return true;
+      cls = cls.base;
+    }
+    return false;
+  }
+
+  /** `changetype<Error>(value)`: the thrown value as the stored error value. */
+  private changetypeError(value: Expression, range: Range): Expression {
+    return new CallExpression(
+      ident("changetype", range),
+      [ namedType("Error", null, false, range) ],
+      [ value ],
+      range
+    );
+  }
+
+  /** Derives a thrown value's error message and stored value from its
+   *  (already rewritten) expression and resolved type. */
+  private throwMessageAndValue(value: Expression, type: Type, range: Range): { message: Expression, value: Expression } | null {
+    let nullable = (type.flags & TypeFlags.Nullable) != 0;
+    let base = nullable ? type.nonNullableType : type;
+    let message: Expression;
+    let stored: Expression;
+    let classReference = base.getClass();
+    if (classReference) {
+      if (classReference.prototype.name == CommonNames.String) {
+        message = value;
+        stored = this.changetypeError(value, range);
+      } else if (this.isErrorClass(classReference)) {
+        message = new PropertyAccessExpression(value, ident("message", range), range);
+        stored = this.changetypeError(value, range);
+      } else {
+        message = strLit("", range);
+        stored = this.changetypeError(value, range);
+      }
+    } else if (base.kind == TypeKind.Extern) {
+      // An externref cannot be stored in a managed field; the stored
+      // value is the null sentinel, like a null class field.
+      message = strLit("", range);
+      stored = this.changetypeError(intLit(0, range), range);
+    } else {
+      switch (base.kind) {
+        case TypeKind.Bool:
+        case TypeKind.I8:
+        case TypeKind.I16:
+        case TypeKind.I32:
+        case TypeKind.I64:
+        case TypeKind.Isize:
+        case TypeKind.U8:
+        case TypeKind.U16:
+        case TypeKind.U32:
+        case TypeKind.U64:
+        case TypeKind.Usize:
+        case TypeKind.F32:
+        case TypeKind.F64: {
+          message = callExpr(
+            new PropertyAccessExpression(value, ident("toString", range), range),
+            [],
+            range
+          );
+          // No value to store: the null sentinel, like a null class field.
+          stored = this.changetypeError(intLit(0, range), range);
+          break;
+        }
+        default: {
+          this.fail("Cannot throw a value of type '" + type.toString() + "'", range);
+          return null;
+        }
+      }
+    }
+    if (nullable && classReference) {
+      // A null reference has no message; the stored value is already
+      // null-safe (`changetype<Error>(null)` is 0).
+      message = new TernaryExpression(
+        new BinaryExpression(Token.Equals_Equals, value, new NullExpression(range), range),
+        strLit("", range),
+        message,
+        range
+      );
+    }
+    return { message, value: stored };
+  }
+
   /** Rejects direct (non-awaited) calls to async functions in an expression. */
   private checkDirectAsyncCalls(expr: Expression): void {
     if (expr instanceof CallExpression) {
@@ -3683,6 +3908,7 @@ class AsyncFunctionTransform {
     }
     declarations.push(this.buildResult());
     declarations.push(this.buildError());
+    declarations.push(this.buildErrorValue());
     declarations.push(this.buildStatus());
     if (emitEntry) {
       let entry = this.buildMethodEntry(assert(receiverClass));
@@ -3738,6 +3964,10 @@ class AsyncFunctionTransform {
 
   private errorName(): string {
     return `__async_${this.fileBase}_${this.fnName}_error`;
+  }
+
+  private errorValueName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_errorValue`;
   }
 
   private statusName(): string {
@@ -4055,9 +4285,19 @@ class AsyncFunctionTransform {
       namedType("string", null, false, range),
       strLit("", range), -1, range
     ));
+    members.push(new FieldDeclaration(
+      ident("__errorValue", range), null, CommonFlags.None,
+      namedType("Error", null, false, range),
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("Error", null, false, range) ],
+        [ intLit(0, range) ],
+        range
+      ), -1, range
+    ));
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
-      if (site.isJoin || !site.used || site.type.kind == TypeKind.Extern) continue;
+      if (site.isJoin || !site.used || site.type.kind == TypeKind.Extern || site.type.kind == TypeKind.Void) continue;
       let zero = zeroValue(site.type, site.typeNode, range);
       if (!zero) return null;
       members.push(new FieldDeclaration(
@@ -4292,22 +4532,28 @@ class AsyncFunctionTransform {
       null,
       range
     );
-    let valueParam = new ParameterNode(
-      ParameterKind.Default,
-      ident("value", range),
-      site.typeNode,
-      null,
-      range
-    );
+    // A void site carries no value: the resume export takes only the
+    // state, and the coordinator calls it with no value argument.
+    let params = new Array<ParameterNode>();
+    params.push(stateParam);
+    if (site.type.kind != TypeKind.Void) {
+      params.push(new ParameterNode(
+        ParameterKind.Default,
+        ident("value", range),
+        site.typeNode,
+        null,
+        range
+      ));
+    }
     let signature = new FunctionTypeNode(
-      [ stateParam, valueParam ],
+      params,
       namedType("i32", null, false, range),
       null,
       false,
       range
     );
     let body = new Array<Statement>();
-    if (site.used) {
+    if (site.used && site.type.kind != TypeKind.Void) {
       if (site.type.kind == TypeKind.Extern) {
         body.push(exprStmt(callExpr(
           ident(SPILL_SET, range),
@@ -4487,6 +4733,33 @@ class AsyncFunctionTransform {
     ));
     return new FunctionDeclaration(
       ident(this.errorName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private buildErrorValue(): FunctionDeclaration {
+    let range = this.range;
+    let stateParam = new ParameterNode(
+      ParameterKind.Default,
+      ident("state", range),
+      namedType(this.stateClassName, null, false, range),
+      null,
+      range
+    );
+    let signature = new FunctionTypeNode(
+      [ stateParam ],
+      namedType("Error", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new PropertyAccessExpression(ident("state", range), ident("__errorValue", range), range),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.errorValueName(), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }
@@ -4716,16 +4989,36 @@ class AsyncFunctionTransform {
     let signature = assert(this.instance).signature;
     for (let i = 0, k = parameters.length; i < k; ++i) {
       let parameter = parameters[i];
+      // A rest array built by the coordinator cannot be forwarded
+      // through the entry: AssemblyScript cannot pass a pre-built array
+      // as a rest argument (the call wraps it into a one-element array
+      // instead). The method stays transformable — nested await passes
+      // elements, which wrap normally — but it is not drivable through
+      // the coordinator.
+      if (parameter.parameterKind == ParameterKind.Rest) {
+        warnSkipped(this.program, this.prototype, "rest parameters cannot be driven through the coordinator (a pre-built array cannot be passed as a rest argument)", []);
+        return null;
+      }
       let typeNode = parameter.type || typeToTypeNode(signature.parameterTypes[i], range);
       if (!typeNode) {
         warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has no usable type", []);
         return null;
       }
+      // The entry mirrors the method's parameter kinds and initializers
+      // so it gets its own varargs stub: omitted arguments are filled by
+      // the stub exactly as a direct call would fill them. An initializer
+      // that mentions `this` or `super` cannot be evaluated in the entry
+      // (a free function, so it has no `this`); such a method stays
+      // transformable but is not drivable through the coordinator.
+      if (parameter.initializer && containsThisOrSuper(parameter.initializer)) {
+        warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has a default value that references 'this' or 'super'", []);
+        return null;
+      }
       entryParams.push(new ParameterNode(
-        ParameterKind.Default,
+        parameter.parameterKind,
         ident(parameter.name.text, range),
         typeNode,
-        null,
+        parameter.initializer,
         range
       ));
       callArgs.push(ident(parameter.name.text, range));
@@ -4770,7 +5063,7 @@ class AsyncFunctionTransform {
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
-      let described = describeParams(ctor.signature.parameterTypes, className);
+      let described = describeParamsAndRest(ctor.signature, className);
       if (described.reason) {
         warnSkipped(this.program, this.prototype, described.reason, []);
         return null;
@@ -4778,16 +5071,30 @@ class AsyncFunctionTransform {
       let ctorParams = ctorPrototype.functionTypeNode.parameters;
       for (let i = 0, k = ctorParams.length; i < k; ++i) {
         let parameter = ctorParams[i];
+        // As in buildMethodEntry: a rest array cannot be forwarded
+        // through _new, so a class with a rest constructor is not
+        // drivable through the coordinator.
+        if (parameter.parameterKind == ParameterKind.Rest) {
+          warnSkipped(this.program, this.prototype, "rest parameters cannot be driven through the coordinator (a pre-built array cannot be passed as a rest argument)", []);
+          return null;
+        }
         let typeNode = parameter.type || typeToTypeNode(ctor.signature.parameterTypes[i], range);
         if (!typeNode) {
           warnSkipped(this.program, this.prototype, "constructor of '" + className + "' has a parameter without a usable type", []);
           return null;
         }
+        // As in buildMethodEntry: the _new mirrors the constructor's
+        // parameter kinds and initializers so it gets its own varargs
+        // stub, and a `this`/`super` default is not drivable.
+        if (parameter.initializer && containsThisOrSuper(parameter.initializer)) {
+          warnSkipped(this.program, this.prototype, "constructor parameter '" + parameter.name.text + "' has a default value that references 'this' or 'super'", []);
+          return null;
+        }
         parameters.push(new ParameterNode(
-          ParameterKind.Default,
+          parameter.parameterKind,
           ident(parameter.name.text, range),
           typeNode,
-          null,
+          parameter.initializer,
           range
         ));
         args.push(ident(parameter.name.text, range));

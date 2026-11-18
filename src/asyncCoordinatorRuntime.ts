@@ -120,6 +120,9 @@ export function createCoordinator(metadata) {
   }
 
   function lower(value, kind, nullable) {
+    // A void value is always undefined: the promise resolved with no
+    // value, so there is nothing to check or convert.
+    if (kind === 'void') return undefined;
     if (value == null) {
       if (!nullable) throw new TypeError('async coordinator: null is not a valid ' + kind + ' value');
       return 0;
@@ -154,6 +157,53 @@ export function createCoordinator(metadata) {
     return jsArgs.map(function (arg, i) {
       return lower(arg, params[i].kind, params[i].nullable);
     });
+  }
+
+  // Lowers the JS arguments for an entry call: the fixed params lower
+  // as usual, and any extra arguments collect into the rest array (when
+  // the function has one). The returned list is what the entry call
+  // passes; the caller sets __setArgumentsLength to its length first.
+  function lowerCallArgs(jsArgs, params, rest) {
+    const fixed = params.length;
+    const wasmArgs = lowerArgs(jsArgs.slice(0, fixed), params);
+    if (rest && jsArgs.length > fixed) {
+      wasmArgs.push(newRestArray(jsArgs.slice(fixed), rest));
+    }
+    return wasmArgs;
+  }
+
+  // Builds the Array<T> a rest parameter collects: an ArrayBuffer (id 1)
+  // filled through a typed view, then the array header (16 bytes) with
+  // buffer/dataStart/byteLength/length at +0/+4/+8/+12. Elements are
+  // lowered first, so no allocation can happen between creating the fill
+  // view and writing through it (an allocation could grow memory and
+  // detach the view). The buffer stays pinned until the header
+  // references it, so a GC during an element's allocation cannot collect
+  // it. Externref and class/array elements are rejected by the
+  // generator, so the fill only handles scalar and string elements.
+  function newRestArray(values, rest) {
+    if (!alloc) throw new Error('async coordinator: rest arguments need the wasm runtime (compile with --exportRuntime)');
+    const length = values.length;
+    const buf = alloc(length << rest.align, 1);
+    if (pin) { try { pin(buf); } catch (e) { /* pinning is best-effort; the header roots the buffer once built */ } }
+    const lowered = values.map(function (value) { return lower(value, rest.kind, rest.nullable); });
+    let view;
+    if (rest.float) view = rest.align === 2 ? new Float32Array(memory.buffer) : new Float64Array(memory.buffer);
+    else if (rest.managed) view = new Uint32Array(memory.buffer);
+    else if (rest.align === 0) view = rest.signed ? new Int8Array(memory.buffer) : new Uint8Array(memory.buffer);
+    else if (rest.align === 1) view = rest.signed ? new Int16Array(memory.buffer) : new Uint16Array(memory.buffer);
+    else if (rest.align === 2) view = rest.signed ? new Int32Array(memory.buffer) : new Uint32Array(memory.buffer);
+    else view = rest.signed ? new BigInt64Array(memory.buffer) : new BigUint64Array(memory.buffer);
+    const start = buf >>> rest.align;
+    for (let i = 0; i < length; ++i) view[start + i] = lowered[i];
+    const arr = alloc(16, rest.id);
+    const U32 = new Uint32Array(memory.buffer);
+    U32[arr >>> 2] = buf;
+    U32[arr + 4 >>> 2] = buf;
+    U32[arr + 8 >>> 2] = length << rest.align;
+    U32[arr + 12 >>> 2] = length;
+    if (unpin) { try { unpin(buf); } catch (e) { /* pinning is best-effort */ } }
+    return arr;
   }
 
   function lift(value, kind, nullable) {
@@ -687,17 +737,18 @@ export function createCoordinator(metadata) {
   // queues behind the running tasks for its file and starts when one
   // settles, with the receiver carried along.
   function attemptEntry(fn, jsArgs, resolve, reject, queueOnExhausted, receiver) {
-    let wasmArgs;
-    try {
-      wasmArgs = lowerArgs(jsArgs, fn.params);
-      if (receiver != null) wasmArgs.unshift(receiver);
-    } catch (e) {
-      reject(e instanceof Error ? e : new Error(String(e)));
-      return true;
-    }
-    const task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
+    let task = null;
     let handle = 0;
     try {
+      const wasmArgs = lowerCallArgs(jsArgs, fn.params, fn.rest);
+      if (receiver != null) wasmArgs.unshift(receiver);
+      // The entry is a varargs stub when the function takes optional or
+      // rest parameters: it reads __argumentsLength to decide which
+      // defaults to fill. The count is the number of arguments passed to
+      // the entry, receiver included (the entry is a free function, so
+      // the receiver is an ordinary parameter for its stub).
+      if (wasmExports.__setArgumentsLength) wasmExports.__setArgumentsLength(wasmArgs.length);
+      task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
         handle = wasmExports[fn.entryExport || fn.exportName].apply(null, wasmArgs);
@@ -705,7 +756,8 @@ export function createCoordinator(metadata) {
         activeTask = null;
       }
     } catch (e) {
-      settleError(task, e);
+      if (task) settleError(task, e);
+      else reject(e instanceof Error ? e : new Error(String(e)));
       return true;
     }
     if (handle === 0) {
@@ -846,7 +898,12 @@ export function createCoordinator(metadata) {
       if (!pin) throw new Error("async coordinator: class '" + cls.name + "' needs the wasm runtime (compile with --exportRuntime)");
       let ptr = 0;
       try {
-        ptr = wasmExports[cls.newExport].apply(null, lowerArgs(Array.prototype.slice.call(arguments), cls.newParams));
+        const args = lowerCallArgs(Array.prototype.slice.call(arguments), cls.newParams, cls.newRest);
+        // The _new is a varargs stub when the constructor takes optional
+        // or rest parameters: the count is the number of constructor
+        // arguments passed (there is no receiver for _new).
+        if (wasmExports.__setArgumentsLength) wasmExports.__setArgumentsLength(args.length);
+        ptr = wasmExports[cls.newExport].apply(null, args);
       } catch (e) {
         throw e instanceof Error ? e : new Error(String(e));
       }
