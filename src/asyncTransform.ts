@@ -171,6 +171,12 @@ import {
   SPILL_SET
 } from "./asyncRewrite";
 
+import {
+  describeParams,
+  findExportName,
+  warnSkipped
+} from "./asyncCoordinatorMeta";
+
 /** Fallthrough target meaning "the function completes". */
 const CONT_TERMINAL = -1;
 /** Break/continue target meaning "no enclosing loop". */
@@ -323,6 +329,7 @@ interface TransformWorkItem {
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
   let pools = new Set<string>();
+  let classNews = new Set<ClassPrototype>();
   let files = Map_values(program.filesByName);
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
@@ -425,7 +432,7 @@ export function transformAsyncFunctions(program: Program): void {
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, lift, item.qualName, item.genParent, item.isMethod, item.receiverClass, classNews);
       transform.run();
     }
   }
@@ -511,6 +518,11 @@ class AsyncFunctionTransform {
   private genParent: Element;
   /** Whether the prototype is an instance method (receiver via `this`). */
   private isMethod: bool;
+  /** Enclosing class, for methods; `null` for plain functions. */
+  private receiverClass: ClassPrototype | null;
+  /** Classes whose `__async_<file>_<Class>_new` export was already
+   *  emitted by an earlier transformed method of the class. */
+  private classNews: Set<ClassPrototype>;
   /** Lifted closure methods, appended to the state class. */
   private liftedMethods: MethodDeclaration[];
   /** Adapter name to lifted method, for the rewrite hook; `null` when none. */
@@ -533,12 +545,16 @@ class AsyncFunctionTransform {
     lift: EnvLiftResult,
     qualName: string,
     genParent: Element,
-    isMethod: bool
+    isMethod: bool,
+    receiverClass: ClassPrototype | null,
+    classNews: Set<ClassPrototype>
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
     this.genParent = genParent;
     this.isMethod = isMethod;
+    this.receiverClass = receiverClass;
+    this.classNews = classNews;
     this.fnName = qualName;
     this.range = this.declaration.range;
     this.fileBase = sanitizeName(file.source.simplePath);
@@ -2338,6 +2354,17 @@ class AsyncFunctionTransform {
   private generate(): bool {
     if (this.hasNameCollision(this.stateClassName)) return false;
     if (this.hasNameCollision(this.rootsName)) return false;
+    let receiverClass = this.isMethod ? this.receiverClass : null;
+    let emitEntry = false;
+    let emitClassNew = false;
+    if (receiverClass && findExportName(this.program, this.file, receiverClass) != null) {
+      if (!this.classNews.has(receiverClass)) {
+        if (this.hasNameCollision(this.classNewName(receiverClass))) return false;
+        emitClassNew = true;
+      }
+      if (this.hasNameCollision(this.methodEntryName())) return false;
+      emitEntry = true;
+    }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       if (this.sites[i].isJoin) {
         if (this.hasNameCollision(joinStoreName(this.fileBase, this.fnName, i))) return false;
@@ -2384,6 +2411,15 @@ class AsyncFunctionTransform {
     declarations.push(this.buildResult());
     declarations.push(this.buildError());
     declarations.push(this.buildStatus());
+    if (emitEntry) {
+      let entry = this.buildMethodEntry(assert(receiverClass));
+      if (entry) declarations.push(entry);
+    }
+    if (emitClassNew) {
+      this.classNews.add(assert(receiverClass));
+      let classNew = this.buildClassNew(assert(receiverClass));
+      if (classNew) declarations.push(classNew);
+    }
     let statements = this.parentStatements();
     for (let i = 0, k = declarations.length; i < k; ++i) {
       statements.push(declarations[i]);
@@ -3085,6 +3121,138 @@ class AsyncFunctionTransform {
     ));
     return new FunctionDeclaration(
       ident(this.statusName(), range), null, CommonFlags.Export,
+      null, signature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private methodEntryName(): string {
+    return `__async_${this.fileBase}_${this.fnName}_entry`;
+  }
+
+  private classNewName(receiverClass: ClassPrototype): string {
+    return `__async_${this.fileBase}_${receiverClass.name}_new`;
+  }
+
+  private buildMethodEntry(receiverClass: ClassPrototype): FunctionDeclaration | null {
+    let range = this.range;
+    let parameters = this.prototype.functionTypeNode.parameters;
+    let receiverName = "receiver";
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      if (parameters[i].name.text == receiverName) {
+        receiverName = "__receiver";
+        break;
+      }
+    }
+    let entryParams = new Array<ParameterNode>();
+    entryParams.push(new ParameterNode(
+      ParameterKind.Default,
+      ident(receiverName, range),
+      namedType(receiverClass.name, null, false, range),
+      null,
+      range
+    ));
+    let callArgs = new Array<Expression>();
+    let signature = assert(this.instance).signature;
+    for (let i = 0, k = parameters.length; i < k; ++i) {
+      let parameter = parameters[i];
+      let typeNode = parameter.type || typeToTypeNode(signature.parameterTypes[i], range);
+      if (!typeNode) {
+        warnSkipped(this.program, this.prototype, "parameter '" + parameter.name.text + "' has no usable type", []);
+        return null;
+      }
+      entryParams.push(new ParameterNode(
+        ParameterKind.Default,
+        ident(parameter.name.text, range),
+        typeNode,
+        null,
+        range
+      ));
+      callArgs.push(ident(parameter.name.text, range));
+    }
+    let entrySignature = new FunctionTypeNode(
+      entryParams,
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ callExpr(
+          new PropertyAccessExpression(ident(receiverName, range), ident(this.prototype.name, range), range),
+          callArgs,
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.methodEntryName(), range), null, CommonFlags.Export,
+      null, entrySignature, blockStmt(body, range), ArrowKind.None, range
+    );
+  }
+
+  private buildClassNew(receiverClass: ClassPrototype): FunctionDeclaration | null {
+    let range = this.range;
+    let className = receiverClass.name;
+    let parameters = new Array<ParameterNode>();
+    let args = new Array<Expression>();
+    let thisType = assert(this.instance).signature.thisType;
+    let classInstance = thisType ? thisType.getClass() : null;
+    let ctor = classInstance ? classInstance.constructorInstance : null;
+    if (ctor) {
+      let ctorPrototype = ctor.prototype;
+      let described = describeParams(ctor.signature.parameterTypes, className);
+      if (described.reason) {
+        warnSkipped(this.program, this.prototype, described.reason, []);
+        return null;
+      }
+      let ctorParams = ctorPrototype.functionTypeNode.parameters;
+      for (let i = 0, k = ctorParams.length; i < k; ++i) {
+        let parameter = ctorParams[i];
+        let typeNode = parameter.type || typeToTypeNode(ctor.signature.parameterTypes[i], range);
+        if (!typeNode) {
+          warnSkipped(this.program, this.prototype, "constructor of '" + className + "' has a parameter without a usable type", []);
+          return null;
+        }
+        parameters.push(new ParameterNode(
+          ParameterKind.Default,
+          ident(parameter.name.text, range),
+          typeNode,
+          null,
+          range
+        ));
+        args.push(ident(parameter.name.text, range));
+      }
+    }
+    let signature = new FunctionTypeNode(
+      parameters,
+      namedType("i32", null, false, range),
+      null,
+      false,
+      range
+    );
+    let body = new Array<Statement>();
+    body.push(new ReturnStatement(
+      new CallExpression(
+        ident("changetype", range),
+        [ namedType("i32", null, false, range) ],
+        [ new NewExpression(
+          new TypeName(ident(className, range), null, range),
+          null,
+          args,
+          range
+        ) ],
+        range
+      ),
+      range
+    ));
+    return new FunctionDeclaration(
+      ident(this.classNewName(receiverClass), range), null, CommonFlags.Export,
       null, signature, blockStmt(body, range), ArrowKind.None, range
     );
   }
