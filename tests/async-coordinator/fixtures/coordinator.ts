@@ -194,7 +194,7 @@ class PromiseBox {
   p: Promise<string> = changetype<Promise<string>>(0);
 }
 
-export async function storedField(): Promise<string> {
+export async function storedFieldRead(): Promise<string> {
   let box = new PromiseBox();
   box.p = getChunk(0);
   let c = await box.p;

@@ -93,7 +93,6 @@ import {
   Element,
   ElementKind,
   Namespace,
-  Class,
   ClassPrototype
 } from "./program";
 

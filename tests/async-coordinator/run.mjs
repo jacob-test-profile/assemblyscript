@@ -149,30 +149,6 @@ const api = await instantiateAsync(bytes, {
       flagDeferreds.push(d);
       return d.promise;
     },
-    getHandle() {
-      const d = deferred();
-      handleDeferreds.push(d);
-      return d.promise;
-    },
-    useHandle(h) {
-      seenHandles.push(h);
-      const d = deferred();
-      useDeferreds.push(d);
-      return d.promise;
-    },
-    issueNumber(i) {
-      issueLog.push(i);
-      const d = deferred();
-      memberDeferreds.push(d);
-      return registry.issue(d.promise);
-    },
-    joinNumbers(policy) {
-      issuesAtJoin = issueLog.length;
-      return registry.join(policy === 0 ? "all" : "race").then((vals) => (Array.isArray(vals) ? vals.join("|") : String(vals)));
-    }
-  }
-});
-
     getVoid() {
       const d = deferred();
       voidDeferreds.push(d);
@@ -594,11 +570,11 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS stored promise read out of an array");
 
   base = chunkDeferreds.length;
-  p = api.storedField();
+  p = api.storedFieldRead();
   await tick();
-  check(chunkDeferreds.length === base + 1, "storedField must issue once");
+  check(chunkDeferreds.length === base + 1, "storedFieldRead must issue once");
   chunkDeferreds[base].resolve("A");
-  check((await p) === "got-A", "storedField must resolve got-A");
+  check((await p) === "got-A", "storedFieldRead must resolve got-A");
   console.log("PASS stored promise read out of an object field");
 
   base = chunkDeferreds.length;
@@ -1105,6 +1081,9 @@ const api = await instantiateAsync(bytes, {
         return new Promise(() => {});
       },
       getFlag() {
+        return new Promise(() => {});
+      },
+      getVoid() {
         return new Promise(() => {});
       },
       issueNumber() {
