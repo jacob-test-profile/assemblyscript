@@ -1740,7 +1740,7 @@ class AsyncFunctionTransform {
     if (this.failed) return false;
     let target = this.prepareAwaitTarget(left, operator != Token.Equals, operator, range);
     if (!target) return false;
-    let hoisted = this.hoistAwaits(binary.right, breakTarget, breakTarget);
+    let hoisted = this.hoistAwaits(binary.right, breakTarget);
     if (!hoisted) return false;
     let rewritten = this.rewriteChecked(hoisted);
     if (!rewritten) return false;
@@ -1769,7 +1769,7 @@ class AsyncFunctionTransform {
     this.checkDirectAsyncCalls(expr);
     if (this.failed) return false;
     this.trackStoredRebind(expr);
-    let hoisted = this.hoistAwaits(expr, breakTarget, breakTarget);
+    let hoisted = this.hoistAwaits(expr, breakTarget);
     if (!hoisted) return false;
     let rewritten = this.rewriteChecked(hoisted);
     if (!rewritten) return false;

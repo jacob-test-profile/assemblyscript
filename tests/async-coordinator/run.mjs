@@ -879,6 +879,9 @@ const api = await instantiateAsync(bytes, {
       getNumber() {
         return new Promise(() => {});
       },
+      getFlag() {
+        return new Promise(() => {});
+      },
       issueNumber() {
         return 0;
       },
