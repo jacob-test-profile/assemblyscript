@@ -28,7 +28,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "namespaces.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "namespaces.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -1891,6 +1891,134 @@ const api = await instantiateAsync(bytes, {
   jmNums[base].resolve(10);
   await tick();
   console.log("PASS join-argument await, race");
+}
+
+// Generic async functions and generic-class methods (close-gaps Group
+// 3b): per-instantiation clones driven through the generated coordinator
+// (i32, string and externref type args; nested awaits; a generic-class
+// method awaited from an async fn). The generic class has no wrapper
+// class yet (Group 4) and the class-typed instantiation has no method
+// (the pre-existing class-await limit).
+{
+  const wasmBytes = readFileSync(compile("generics.ts"));
+  const genericsCoord = join(dir, "generics.async.js");
+  check(existsSync(genericsCoord), "generics.async.js must be emitted for the generics fixture");
+  const { instantiateAsync: instantiateGenerics } = await import(pathToFileURL(genericsCoord).href);
+  const genValues = [];
+  const genHandles = [];
+  const genFetches = [];
+  const sentinel = { tag: "generics-handle" };
+  const genApi = await instantiateGenerics(wasmBytes, {
+    env: {
+      fetchValue() {
+        const d = deferred();
+        genValues.push(d);
+        return d.promise;
+      },
+      fetchHandle() {
+        const d = deferred();
+        genHandles.push(d);
+        return d.promise;
+      },
+      fetch(x) {
+        const d = deferred();
+        genFetches.push(d);
+        return d.promise;
+      }
+    }
+  });
+  check(typeof genApi.id_i32 === "function", "generated coordinator must expose id_i32");
+  check(typeof genApi.id__x7e_lib_x2f_string_x2f_String === "function", "generated coordinator must expose id<string>");
+  check(typeof genApi.withHandle_ref_x5f_extern_x7c_null === "function", "generated coordinator must expose withHandle<externref>");
+  check(typeof genApi.runGeneric === "function", "generated coordinator must expose runGeneric");
+  check(typeof genApi.runHandle === "function", "generated coordinator must expose runHandle");
+  check(typeof genApi.runBox === "function", "generated coordinator must expose runBox");
+  check(typeof genApi.runFetch === "function", "generated coordinator must expose runFetch");
+  check(genApi.Box === undefined, "a generic class must not get a wrapper class yet (Group 4)");
+  check(genApi.runPoint === undefined, "a class-typed instantiation must not be coordinator-driven");
+  check(!Object.keys(genApi).some((k) => k.endsWith("_Point")), "no id<Point> clone method must be exposed");
+  console.log("PASS generics coordinator file emitted with the per-instantiation clones");
+
+  // Direct clone calls: id<i32>(42) -> 42, id<string>("hi") -> "hi".
+  {
+    const p1 = genApi.id_i32(42);
+    await tick();
+    genValues[0].resolve(1);
+    check((await p1) === 42, "id<i32>(42) must give 42");
+    const p2 = genApi.id__x7e_lib_x2f_string_x2f_String("hi");
+    await tick();
+    genValues[1].resolve(1);
+    check((await p2) === "hi", "id<string>('hi') must give 'hi'");
+    console.log("PASS generic async fn clones, direct calls 42/'hi'");
+  }
+
+  // Nested awaits: runGeneric awaits id<i32> then id<string>.
+  {
+    const p = genApi.runGeneric();
+    await tick();
+    genValues[2].resolve(1);
+    await tick();
+    genValues[3].resolve(1);
+    check((await p) === 43, "runGeneric must give 43");
+    console.log("PASS generic async fns as nested awaits, 43");
+  }
+
+  // Externref type arg + spill pool: runHandle awaits fetchHandle, then
+  // withHandle<externref> and withHandle<i32>.
+  {
+    const p = genApi.runHandle();
+    await tick();
+    genHandles[0].resolve(sentinel);
+    await tick();
+    genHandles[1].resolve(sentinel);
+    await tick();
+    genHandles[2].resolve(sentinel);
+    check((await p) === 2, "runHandle must give 2");
+    console.log("PASS externref generic instantiation + spill pool, 2");
+  }
+
+  // Generic-class method awaited from an async fn.
+  {
+    const p = genApi.runBox();
+    await tick();
+    genValues[4].resolve(1);
+    check((await p) === 42, "runBox must give 42");
+    console.log("PASS generic-class method awaited from an async fn, 42");
+  }
+
+  // Generic suspending import: one wrapper serves the i32 and string
+  // instantiations (both pass an i32); each result is delivered through
+  // its own await site.
+  {
+    const p = genApi.runFetch();
+    await tick();
+    genFetches[0].resolve(42);
+    await tick();
+    genFetches[1].resolve("hi");
+    check((await p) === 43, "runFetch must give 43");
+    console.log("PASS generic suspending import, one wrapper for agreeing instantiations, 43");
+  }
+}
+
+// A generic suspending import whose instantiations disagree on parameter
+// types stays loud: the coordinator installs a stub that rejects with
+// the reason instead of wrapping it.
+{
+  const wasmBytes = readFileSync(compile("generic-import-disagree.ts"));
+  const disagreeCoord = join(dir, "generic-import-disagree.async.js");
+  check(existsSync(disagreeCoord), "generic-import-disagree.async.js must be emitted");
+  const { instantiateAsync: instantiateDisagree } = await import(pathToFileURL(disagreeCoord).href);
+  const disagreeApi = await instantiateDisagree(wasmBytes, {
+    env: {
+      fetch(x) { return Promise.resolve(1); }
+    }
+  });
+  await assertRejects(
+    disagreeApi.run(),
+    /instantiations disagree on parameter types/,
+    "run() with a disagreeing generic import must reject with the reason"
+  );
+  console.log("PASS disagreeing generic suspending import stays loud with the reason");
 }
 
 console.log("ALL COORDINATOR TESTS PASS");

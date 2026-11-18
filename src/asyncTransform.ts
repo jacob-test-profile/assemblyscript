@@ -55,6 +55,7 @@ import {
   TemplateLiteralExpression,
   AssertionExpression,
   TypeName,
+  DecoratorNode,
   ArrowKind,
   TrueExpression,
   FalseExpression,
@@ -143,7 +144,8 @@ import {
 
 import {
   scanFileForAsyncArrows,
-  ArrowWorkItem
+  ArrowWorkItem,
+  FileArrowAliases
 } from "./asyncArrowExtract";
 
 import {
@@ -171,6 +173,7 @@ import {
   validateBody,
   cpsStateClassName,
   cpsStateGlobalName,
+  mangleGenericName,
   SPILL_POOL_SIZE,
   SPILL_ACQUIRE,
   SPILL_RELEASE,
@@ -363,7 +366,7 @@ class PreparedJoin {
 }
 
 /** One async function or method awaiting the pre-passes and the core. */
-interface TransformWorkItem {
+export interface TransformWorkItem {
   prototype: FunctionPrototype;
   /** Whether the prototype is a method (instance or static). */
   isMethod: bool;
@@ -371,6 +374,9 @@ interface TransformWorkItem {
   isStatic: bool;
   /** Enclosing class, for methods and for arrows closing over a receiver. */
   receiverClass: ClassPrototype | null;
+  /** Resolved class instance the method is bound to, when already known
+   *  (per-instantiation clones); `null` resolves the class here. */
+  boundClass: Class | null;
   /** Element generated declarations are registered under. */
   genParent: Element;
   /** Qualified name used for all generated names. */
@@ -386,9 +392,6 @@ interface TransformWorkItem {
 
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
-  let pools = new Set<string>();
-  let mints = new Set<string>();
-  let classNews = new Set<ClassPrototype>();
   let files = Map_values(program.filesByName);
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
@@ -407,6 +410,7 @@ export function transformAsyncFunctions(program: Program): void {
     });
     if (!scan) continue;
     let aliases = scan.aliases;
+    program.asyncFileAliases.set(file.internalName, aliases);
     let fileBase = sanitizeName(file.source.simplePath);
     let worklist = new Array<TransformWorkItem>();
     for (let j = 0, l = functions.length; j < l; ++j) {
@@ -421,6 +425,7 @@ export function transformAsyncFunctions(program: Program): void {
         isMethod: false,
         isStatic: false,
         receiverClass: null,
+        boundClass: null,
         genParent: file,
         qualName: qualNameOf(prototype),
         selfName: null,
@@ -437,6 +442,7 @@ export function transformAsyncFunctions(program: Program): void {
         isMethod: true,
         isStatic: !prototype.is(CommonFlags.Instance),
         receiverClass,
+        boundClass: null,
         genParent: receiverClass.parent,
         qualName: `${receiverClass.name}_${prototype.name}`,
         selfName: null,
@@ -453,6 +459,23 @@ export function transformAsyncFunctions(program: Program): void {
       // Functions the try desugar rejected already carry a specific
       // diagnostic; skip them so the core does not double-report.
       if (program.rejectedAsyncFunctions.has(prototype)) continue;
+      // Generic functions and methods, and methods on generic classes, are
+      // transformed per instantiation (the hook), never here: the pre-passes
+      // mutate the body in place, and the shared generic body must stay
+      // pristine for the next instantiation's clone. A registered clone is
+      // already an instantiation, so it is transformed here.
+      if (!program.asyncGenericCloneDeclarations.has(prototype.declaration)) {
+        if (!item.isMethod) {
+          let typeParameters = prototype.typeParameterNodes;
+          if (typeParameters && typeParameters.length > 0) continue;
+        } else {
+          let receiverClass = assert(item.receiverClass);
+          let classParameters = receiverClass.typeParameterNodes;
+          if (classParameters && classParameters.length > 0) continue;
+          let ownParameters = prototype.typeParameterNodes;
+          if (ownParameters && ownParameters.length > 0) continue;
+        }
+      }
       // Instance methods resolve through a prototype bound to the
       // resolved class; bind up front so the pre-passes, the core and
       // the compiler guard all see the same prototype. Static methods
@@ -465,11 +488,6 @@ export function transformAsyncFunctions(program: Program): void {
       };
       if (item.isMethod) {
         let receiverClass = assert(item.receiverClass);
-        let typeParameters = receiverClass.typeParameterNodes;
-        if (typeParameters && typeParameters.length > 0) {
-          fail("Async methods in generic classes are not yet supported", prototype.identifierNode.range);
-          continue;
-        }
         if (receiverClass.parent.kind == ElementKind.Namespace) {
           fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
           continue;
@@ -504,7 +522,7 @@ export function transformAsyncFunctions(program: Program): void {
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, pools, mints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, classNews);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews);
       transform.run();
     }
   }
@@ -602,6 +620,92 @@ function reexportInnerProtocol(
   }
 }
 
+/** Transforms one async function, method or extracted arrow: the
+ *  this-lift, env-lift and core, in order. Generic functions, generic
+ *  methods and methods on generic classes are skipped here: they are
+ *  transformed once per instantiation by the `resolveFunction` hook
+ *  (`src/asyncGeneric.ts`), which calls this with the clone. Arrow items
+ *  the env-lift extracts are appended to `worklist` for the caller to
+ *  drain. */
+export function transformAsyncWorkItem(
+  program: Program,
+  file: File,
+  item: TransformWorkItem,
+  aliases: FileArrowAliases,
+  worklist: TransformWorkItem[]
+): void {
+  let prototype = item.prototype;
+  // Functions the try desugar rejected already carry a specific
+  // diagnostic; skip them so the core does not double-report.
+  if (program.rejectedAsyncFunctions.has(prototype)) return;
+  // Generic functions and methods, and methods on generic classes, are
+  // transformed per instantiation (the hook), never here: the pre-passes
+  // mutate the body in place, and the shared generic body must stay
+  // pristine for the next instantiation's clone. A registered clone is
+  // already an instantiation, so it is transformed here.
+  if (!program.asyncGenericCloneDeclarations.has(prototype.declaration)) {
+    if (!item.isMethod) {
+      let typeParameters = prototype.typeParameterNodes;
+      if (typeParameters && typeParameters.length > 0) return;
+    } else {
+      let receiverClass = assert(item.receiverClass);
+      let classParameters = receiverClass.typeParameterNodes;
+      if (classParameters && classParameters.length > 0) return;
+      let ownParameters = prototype.typeParameterNodes;
+      if (ownParameters && ownParameters.length > 0) return;
+    }
+  }
+  // Instance methods resolve through a prototype bound to the
+  // resolved class; bind up front so the pre-passes, the core and
+  // the compiler guard all see the same prototype.
+  let transformPrototype = prototype;
+  let fail = (message: string, range: Range): void => {
+    program.error(DiagnosticCode.Not_implemented_0, range, message);
+    program.rejectedAsyncFunctions.add(transformPrototype);
+  };
+  if (item.isMethod) {
+    let receiverClass = assert(item.receiverClass);
+    if (receiverClass.parent.kind == ElementKind.Namespace) {
+      fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
+      return;
+    }
+    let classInstance: Class | null = item.boundClass;
+    if (!classInstance) {
+      classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
+      if (!classInstance) {
+        program.rejectedAsyncFunctions.add(prototype);
+        return;
+      }
+    }
+    // Static methods stay unbound: toBound asserts Instance, and a
+    // static has no receiver to bind.
+    if (!item.isStatic) transformPrototype = prototype.toBound(classInstance);
+  } else if (prototype.parent.kind == ElementKind.Namespace) {
+    fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
+    return;
+  }
+  if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) return;
+  let fileBase = sanitizeName(file.source.simplePath);
+  let ctx: LiftContext = {
+    program,
+    file,
+    genParent: item.genParent,
+    qualName: item.qualName,
+    stateClassName: cpsStateClassName(item.qualName),
+    stateGlobalName: cpsStateGlobalName(fileBase, item.qualName),
+    hasReceiver: (item.isMethod && !item.isStatic) || (!item.isMethod && item.receiverClass != null),
+    receiverClass: item.isStatic ? null : item.receiverClass,
+    aliases
+  };
+  let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, fail);
+  if (!lift) return;
+  for (let a = 0, b = lift.arrows.length; a < b; ++a) {
+    worklist.push(arrowWorkItem(lift.arrows[a]));
+  }
+  let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews);
+  transform.run();
+}
+
 /** Turns an extracted arrow into a worklist item. Extracted arrows are
  *  plain functions whose receiver, when present, arrives as a leading
  *  `__async_this` parameter, so they are not methods for the core. */
@@ -611,6 +715,7 @@ function arrowWorkItem(arrow: ArrowWorkItem): TransformWorkItem {
     isMethod: false,
     isStatic: false,
     receiverClass: arrow.receiverClass,
+    boundClass: null,
     genParent: arrow.genParent,
     qualName: arrow.prototype.name,
     selfName: arrow.selfName,
@@ -749,8 +854,10 @@ class AsyncFunctionTransform {
    *  functions and methods. */
   private namespacePath: string[];
   /** Classes whose `__async_<file>_<Class>_new` export was already
-   *  emitted by an earlier transformed method of the class. */
-  private classNews: Set<ClassPrototype>;
+   *  emitted by an earlier transformed method of the class, by export
+   *  name. Keyed by name, not prototype: two instantiations of one
+   *  generic class need two exports. */
+  private classNews: Set<string>;
   /** Lifted closure methods, appended to the state class. */
   private liftedMethods: MethodDeclaration[];
   /** Adapter name to lifted method, for the rewrite hook; `null` when none. */
@@ -777,7 +884,7 @@ class AsyncFunctionTransform {
     isMethod: bool,
     isStatic: bool,
     receiverClass: ClassPrototype | null,
-    classNews: Set<ClassPrototype>
+    classNews: Set<string>
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
@@ -2587,7 +2694,7 @@ class AsyncFunctionTransform {
           if (this.failed) return null;
         }
         this.qualifyNestedCall(call, namespaced);
-        return this.transformNestedAwait(call, qualNameOf(namespaced), node, used);
+        return this.transformNestedAwait(call, namespaced, node, used);
       }
       return this.transformMemberAwait(node, call, used);
     }
@@ -2609,14 +2716,13 @@ class AsyncFunctionTransform {
       // inner function is transformed in its own file pass, and the
       // coordinator resolves it by (file, qualified name). "#" cannot
       // appear in a sanitized file base or a qualified name.
-      let innerBase = sanitizeName(innerPrototype.declaration.range.source.simplePath);
       let args = call.args;
       for (let i = 0, k = args.length; i < k; ++i) {
         this.checkDirectAsyncCalls(args[i]);
         if (this.failed) return null;
       }
       this.qualifyNestedCall(call, innerPrototype);
-      return this.transformNestedAwait(call, innerBase + "#" + qualNameOf(innerPrototype), node, used);
+      return this.transformNestedAwait(call, innerPrototype, node, used);
     }
     this.checkDirectAsyncCalls(call);
     if (this.failed) return null;
@@ -2716,15 +2822,18 @@ class AsyncFunctionTransform {
   /** Records a nested await site for a call that starts an inner async
    *  task and returns its handle: the outer step calls it, the pending
    *  export exposes the handle, and the coordinator drives the inner
-   *  task, delivering its result through this site's resume export. */
-  private transformNestedAwait(call: CallExpression, innerQual: string, node: AwaitExpression, used: bool): AwaitSite | null {
+   *  task, delivering its result through this site's resume export. The
+   *  inner is resolved through `maybeInferCall`, so for a generic inner
+   *  the instance is the per-instantiation clone and the recorded
+   *  qualified name is the clone's mangled name. */
+  private transformNestedAwait(call: CallExpression, innerPrototype: FunctionPrototype, node: AwaitExpression, used: bool): AwaitSite | null {
     let flow = assert(this.flow);
-    let operandType = this.resolver.resolveExpression(call, flow, Type.auto, ReportMode.Swallow);
-    if (!operandType) {
+    let innerInstance = this.resolver.maybeInferCall(call, innerPrototype, flow, ReportMode.Swallow);
+    if (!innerInstance) {
       this.punted = true;
       return null;
     }
-    let unwrapped = this.resolver.unwrapPromiseType(operandType);
+    let unwrapped = this.resolver.unwrapPromiseType(innerInstance.signature.returnType);
     if (!unwrapped) {
       this.program.error(
         DiagnosticCode.The_operand_of_an_await_expression_must_be_a_Promise,
@@ -2746,7 +2855,11 @@ class AsyncFunctionTransform {
     );
     site.isNested = true;
     site.handleField = `__handle${site.id}`;
-    site.innerQual = innerQual;
+    // The inner may live in another file: key it by (file, qualified
+    // name) so the coordinator resolves it under its own file, exactly
+    // as for a direct cross-file call.
+    let innerBase = sanitizeName(innerInstance.prototype.declaration.range.source.simplePath);
+    site.innerQual = innerBase + "#" + qualNameOf(innerInstance.prototype);
     this.sites.push(site);
     // A coordinator rejection of this site lands in the enclosing try's
     // catch when the desugar recorded one: resolve the error locals to
@@ -2782,20 +2895,28 @@ class AsyncFunctionTransform {
       return null;
     }
     let declaringClass = <ClassPrototype>method.parent;
-    let typeParameters = declaringClass.typeParameterNodes;
-    if (typeParameters && typeParameters.length > 0) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
-    }
     if (declaringClass.parent.kind == ElementKind.Namespace) {
       this.fail("'await' of a member call is not yet supported", node.range);
       return null;
     }
     // As for plain functions above, the method may live in another file:
     // it is transformed in its own file pass, and the coordinator
-    // resolves it by (file, qualified name).
-    let innerBase = sanitizeName(method.declaration.range.source.simplePath);
-    return this.transformNestedAwait(call, innerBase + "#" + `${declaringClass.name}_${method.name}`, node, used);
+    // resolves it by (file, qualified name). Bind the method to the
+    // receiver's class instance: for a generic class this is the
+    // instantiated class, and resolving the bound prototype runs the
+    // per-instantiation hook.
+    let flow = assert(this.flow);
+    let receiverType = this.resolver.resolveExpression(unwrapParens(access.expression), flow, Type.auto, ReportMode.Swallow);
+    if (!receiverType) {
+      this.punted = true;
+      return null;
+    }
+    let receiverClassInstance = receiverType.getClass();
+    if (!receiverClassInstance) {
+      this.fail("'await' of a member call is not yet supported", node.range);
+      return null;
+    }
+    return this.transformNestedAwait(call, method.toBound(receiverClassInstance), node, used);
   }
 
   /** Awaits a static call (`await C.method(...)`) as a nested site: the
@@ -2821,7 +2942,7 @@ class AsyncFunctionTransform {
       this.fail("'await' of a member call is not yet supported", node.range);
       return null;
     }
-    return this.transformNestedAwait(call, `${declaringClass.name}_${method.name}`, node, used);
+    return this.transformNestedAwait(call, method, node, used);
   }
 
   /** Finds a static method by name, walking the base-class chain, so an
@@ -3825,7 +3946,7 @@ class AsyncFunctionTransform {
     let emitEntry = false;
     let emitClassNew = false;
     if (receiverClass && findExportName(this.program, this.file, receiverClass) != null) {
-      if (!this.classNews.has(receiverClass)) {
+      if (!this.classNews.has(this.classNewName(receiverClass))) {
         if (this.hasNameCollision(this.classNewName(receiverClass))) return false;
         emitClassNew = true;
       }
@@ -3918,7 +4039,7 @@ class AsyncFunctionTransform {
       if (entry) declarations.push(entry);
     }
     if (emitClassNew) {
-      this.classNews.add(assert(receiverClass));
+      this.classNews.add(this.classNewName(assert(receiverClass)));
       let classNew = this.buildClassNew(assert(receiverClass));
       if (classNew) declarations.push(classNew);
     }
@@ -4103,7 +4224,7 @@ class AsyncFunctionTransform {
     let globals = new Array<VariableDeclaration>();
     for (let i = 0; i < SPILL_POOL_SIZE; ++i) {
       globals.push(new VariableDeclaration(
-        ident(`__async_spill_${i}`, range), null, CommonFlags.None,
+        ident(`__async_spill_${i}`, range), lazyDecorator(range), CommonFlags.None,
         namedType("externref", null, false, range),
         new NullExpression(range),
         range
@@ -4114,7 +4235,7 @@ class AsyncFunctionTransform {
       freeElements.push(intLit(i, range));
     }
     globals.push(new VariableDeclaration(
-      ident("__async_spill_free", range), null, CommonFlags.None,
+      ident("__async_spill_free", range), lazyDecorator(range), CommonFlags.None,
       namedType("Array", [ namedType("i32", null, false, range) ], false, range),
       new ArrayLiteralExpression(freeElements, range),
       range
@@ -4459,7 +4580,7 @@ class AsyncFunctionTransform {
     return new VariableStatement(
       null,
       [ new VariableDeclaration(
-        ident(this.rootsName, range), null, CommonFlags.None,
+        ident(this.rootsName, range), lazyDecorator(range), CommonFlags.None,
         namedType("Array", [ stateType ], false, range),
         new NewExpression(
           new TypeName(ident("Array", range), null, range),
@@ -4478,7 +4599,7 @@ class AsyncFunctionTransform {
     return new VariableStatement(
       null,
       [ new VariableDeclaration(
-        ident(this.stateGlobalName, range), null, CommonFlags.None,
+        ident(this.stateGlobalName, range), lazyDecorator(range), CommonFlags.None,
         namedType("usize", null, false, range),
         intLit(0, range),
         range
@@ -4886,7 +5007,26 @@ class AsyncFunctionTransform {
   }
 
   private classNewName(receiverClass: ClassPrototype): string {
-    return `__async_${this.fileBase}_${receiverClass.name}_new`;
+    return `__async_${this.fileBase}_${this.instantiatedClassName(receiverClass)}_new`;
+  }
+
+  /** Class name with its instantiation's type arguments encoded
+   *  (`Box_i32` for `Box<i32>`, plain `Box` otherwise), so two
+   *  instantiations of one generic class get distinct exports. */
+  private instantiatedClassName(receiverClass: ClassPrototype): string {
+    let thisType = assert(this.instance).signature.thisType;
+    let cls = thisType ? thisType.getClass() : null;
+    let args = cls ? cls.typeArguments : null;
+    if (!args || args.length == 0) return receiverClass.name;
+    return mangleGenericName(receiverClass.name, args);
+  }
+
+  /** Type node for the resolved receiver (`Box<i32>` for a method on an
+   *  instantiated generic class, plain `Box` otherwise). */
+  private receiverTypeNode(range: Range): TypeNode | null {
+    let thisType = assert(this.instance).signature.thisType;
+    if (!thisType) return null;
+    return typeToTypeNode(thisType, range);
   }
 
   /** Whether the function is exported through its whole namespace chain:
@@ -4976,10 +5116,14 @@ class AsyncFunctionTransform {
     let entryParams = new Array<ParameterNode>();
     // A static entry takes no receiver: the call qualifies the class.
     if (!this.isStatic) {
+      // The resolved receiver type, not the bare class name: for a
+      // generic class the bare name carries no type arguments and does
+      // not resolve (`Box` needs `<i32>`).
+      let receiverTypeNode = this.receiverTypeNode(range);
       entryParams.push(new ParameterNode(
         ParameterKind.Default,
         ident(receiverName, range),
-        namedType(receiverClass.name, null, false, range),
+        receiverTypeNode || namedType(receiverClass.name, null, false, range),
         null,
         range
       ));
@@ -5077,7 +5221,11 @@ class AsyncFunctionTransform {
           warnSkipped(this.program, this.prototype, "rest parameters cannot be driven through the coordinator (a pre-built array cannot be passed as a rest argument)", []);
           return null;
         }
-        let typeNode = parameter.type || typeToTypeNode(ctor.signature.parameterTypes[i], range);
+        // The resolved type, not the declared node: the declared node
+        // can name a type parameter of a generic class, which has no
+        // meaning in the generated function. Falls back to the declared
+        // node when the resolved type has no spelling.
+        let typeNode = typeToTypeNode(ctor.signature.parameterTypes[i], range) || parameter.type;
         if (!typeNode) {
           warnSkipped(this.program, this.prototype, "constructor of '" + className + "' has a parameter without a usable type", []);
           return null;
@@ -5107,13 +5255,23 @@ class AsyncFunctionTransform {
       range
     );
     let body = new Array<Statement>();
+    let receiverTypeNode = this.receiverTypeNode(range);
+    let newTypeName = new TypeName(ident(className, range), null, range);
+    let newTypeArgs: TypeNode[] | null = null;
+    if (receiverTypeNode && receiverTypeNode.kind == NodeKind.NamedType) {
+      let named = <NamedTypeNode>receiverTypeNode;
+      if (named.typeArguments) {
+        newTypeName = named.name;
+        newTypeArgs = named.typeArguments;
+      }
+    }
     body.push(new ReturnStatement(
       new CallExpression(
         ident("changetype", range),
         [ namedType("i32", null, false, range) ],
         [ new NewExpression(
-          new TypeName(ident(className, range), null, range),
-          null,
+          newTypeName,
+          newTypeArgs,
           args,
           range
         ) ],
@@ -5276,5 +5434,15 @@ function sanitizeName(name: string): string {
     out += ok ? name.charAt(i) : "_";
   }
   return out;
+}
+
+/** A `@lazy` decorator for a generated global, so it compiles on first
+ *  use (`compileGlobalLazy`): a clone transformed mid-compilation (a
+ *  sync direct call to a generic async function) registers its globals
+ *  after `compileFile` already ran, so their initializers never ran at
+ *  startup. Lazy initialization is safe here: every generated global is
+ *  only read by the generated code that first initializes it. */
+function lazyDecorator(range: Range): DecoratorNode[] {
+  return [ Node.createDecorator(ident("lazy", range), null, range) ];
 }
 

@@ -486,7 +486,7 @@ export class Compiler extends DiagnosticEmitter {
   /** Elements currently undergoing compilation. */
   pendingElements: Set<Element> = new Set();
   /** Elements, that are module exports, already processed */
-  doneModuleExports: Set<Element> = new Set();
+  doneModuleExports: Set<string> = new Set();
   /** Shadow stack reference. */
   shadowStack!: ShadowStackPass;
   /** Whether the module has custom function exports. */
@@ -953,21 +953,47 @@ export class Compiler extends DiagnosticEmitter {
 
   // === Exports ==================================================================================
 
-  /** Compiles the respective module exports for the specified entry file. */
+  /** Compiles the respective module exports for the specified entry file.
+   *  Re-scans until a full pass finds nothing new: compiling a body can
+   *  register new exports (a generic async instantiation creates its
+   *  clone and protocol exports mid-compilation), and a single pass over
+   *  a snapshot would miss them. Entries are tracked in
+   *  `doneModuleExports` by (name, element): one element can be
+   *  re-exported under several names, and each name is its own export. */
   private compileModuleExports(file: File): void {
-    let exports = file.exports;
-    if (exports) {
-      // TODO: for (let [elementName, element] of exports) {
-      for (let _keys = Map_keys(exports), i = 0, k = _keys.length; i < k; ++i) {
-        let elementName = unchecked(_keys[i]);
-        let element = assert(exports.get(elementName));
-        this.compileModuleExport(elementName, element);
-      }
-    }
-    let exportsStar = file.exportsStar;
-    if (exportsStar)  {
-      for (let i = 0, k = exportsStar.length; i < k; ++i) {
-        this.compileModuleExports(exportsStar[i]);
+    let files = new Array<File>();
+    files.push(file);
+    let seen = new Set<File>();
+    seen.add(file);
+    let progress = true;
+    while (progress) {
+      progress = false;
+      for (let i = 0, k = files.length; i < k; ++i) {
+        let current = files[i];
+        let exports = current.exports;
+        if (exports) {
+          // TODO: for (let [elementName, element] of exports) {
+          for (let _keys = Map_keys(exports), j = 0, l = _keys.length; j < l; ++j) {
+            let elementName = unchecked(_keys[j]);
+            let element = assert(exports.get(elementName));
+            let key = elementName + "\0" + element.internalName;
+            if (this.doneModuleExports.has(key)) continue;
+            this.doneModuleExports.add(key);
+            progress = true;
+            this.compileModuleExport(elementName, element);
+          }
+        }
+        let exportsStar = current.exportsStar;
+        if (exportsStar) {
+          for (let j = 0, l = exportsStar.length; j < l; ++j) {
+            let star = exportsStar[j];
+            if (!seen.has(star)) {
+              seen.add(star);
+              files.push(star);
+              progress = true;
+            }
+          }
+        }
       }
     }
   }

@@ -101,6 +101,37 @@ export function cpsStateClassName(qualName: string): string {
   return `__Cps_${qualName}`;
 }
 
+/** Encodes one type into an identifier-safe fragment, injectively: an
+ *  identifier character stays itself, every other character becomes
+ *  `_x<hex>_`. The encoding is uniquely decodable (an escape is always
+ *  `_x` + hex + `_`, and a bare `_` never occurs), so distinct type
+ *  lists mangle to distinct names. */
+export function encodeTypeName(text: string): string {
+  let out = "";
+  for (let i = 0, k = text.length; i < k; ++i) {
+    let code = text.charCodeAt(i);
+    let ok = (code >= 48 && code <= 57)
+      || (code >= 65 && code <= 90)
+      || (code >= 97 && code <= 122)
+      || code == 36;
+    out += ok ? text.charAt(i) : "_x" + code.toString(16) + "_";
+  }
+  return out;
+}
+
+/** Mangles a base name with concrete type arguments, e.g. `f` + `[i32]`
+ *  becomes `f_i32`, `Box` + `[~lib/string/String]` becomes
+ *  `Box__x7e_lib_x2f_string_x2f_String`. One mangled name per distinct
+ *  type-argument list; callers still guard against collisions with user
+ *  declarations (a user could have written the mangled name by hand). */
+export function mangleGenericName(base: string, typeArguments: Type[]): string {
+  let parts = new Array<string>(typeArguments.length);
+  for (let i = 0, k = typeArguments.length; i < k; ++i) {
+    parts[i] = encodeTypeName(typeArguments[i].toString(true));
+  }
+  return base + "_" + parts.join("_");
+}
+
 /** Module-global holding the currently-stepping state object (as a raw
  *  pointer) for an async function or method. */
 export function cpsStateGlobalName(fileBase: string, qualName: string): string {

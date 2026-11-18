@@ -22,6 +22,7 @@ import {
 
 import {
   Program,
+  Function,
   FunctionPrototype,
   ClassPrototype,
   Element,
@@ -456,9 +457,24 @@ function collectFromElement(program: Program, element: Element, out: FunctionPro
   for (let member of members.values()) {
     if (member.kind == ElementKind.FunctionPrototype && member.is(CommonFlags.Ambient)) {
       let prototype = <FunctionPrototype>member;
-      let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
-      if (instance && program.resolver.unwrapPromiseType(instance.signature.returnType)) {
-        out.push(prototype);
+      if (prototype.typeParameterNodes && prototype.typeParameterNodes.length > 0) {
+        // Generic: there is no default instance (resolving with null
+        // type arguments asserts), so look at the resolved
+        // instantiations instead.
+        let instances = prototype.instances;
+        if (instances) {
+          for (let _values = Map_values(instances), i = 0, k = _values.length; i < k; ++i) {
+            if (program.resolver.unwrapPromiseType(_values[i].signature.returnType)) {
+              out.push(prototype);
+              break;
+            }
+          }
+        }
+      } else {
+        let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+        if (instance && program.resolver.unwrapPromiseType(instance.signature.returnType)) {
+          out.push(prototype);
+        }
       }
     } else if (member.kind == ElementKind.Namespace) {
       collectFromElement(program, member, out);
@@ -466,7 +482,11 @@ function collectFromElement(program: Program, element: Element, out: FunctionPro
   }
 }
 
-/** Looks up the wasm import module/name of an ambient function. */
+/** Looks up the wasm import module/name of an ambient function. For a
+ *  generic import the module holds only the last-registered instance
+ *  (one import per (module, name), several internal functions), so an
+ *  element matches when it is the prototype, the passed instance, or any
+ *  other instance of the prototype. */
 export function findImportName(
   program: Program,
   prototype: FunctionPrototype,
@@ -479,6 +499,9 @@ export function findImportName(
       let elementName = nameEntry[0];
       let element = nameEntry[1];
       if (element === prototype || element === instance) {
+        return { module: moduleName, name: elementName };
+      }
+      if (element.kind == ElementKind.Function && (<Function>element).prototype === prototype) {
         return { module: moduleName, name: elementName };
       }
     }
