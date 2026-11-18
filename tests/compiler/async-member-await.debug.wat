@@ -4,8 +4,8 @@
  (type $2 (func (param i32 i32) (result i32)))
  (type $3 (func (param i32 i32 i32) (result i32)))
  (type $4 (func (param i32)))
- (type $5 (func))
- (type $6 (func (result i32)))
+ (type $5 (func (result i32)))
+ (type $6 (func))
  (type $7 (func (param i32 i32 i32)))
  (type $8 (func (param i32 i32 i32 i32)))
  (type $9 (func (param i32 i32 i64) (result i32)))
@@ -64,6 +64,7 @@
  (export "startViaNew" (func $async-member-await/startViaNew))
  (export "startViaObjGuarded" (func $async-member-await/startViaObjGuarded))
  (export "rejectMessage" (func $async-member-await/rejectMessage))
+ (export "__async_async_member_await_W_new" (func $async-member-await/__async_async_member_await_W_new))
  (export "memory" (memory $0))
  (export "__async_async_member_await_viaObj_pending_0" (func $export:async-member-await/__async_async_member_await_viaObj_pending_0))
  (export "__async_async_member_await_viaObj_resume_0" (func $export:async-member-await/__async_async_member_await_viaObj_resume_0))
@@ -88,18 +89,21 @@
  (export "__async_async_member_await_W_helper_result" (func $export:async-member-await/__async_async_member_await_W_helper_result))
  (export "__async_async_member_await_W_helper_error" (func $export:async-member-await/__async_async_member_await_W_helper_error))
  (export "__async_async_member_await_W_helper_status" (func $export:async-member-await/__async_async_member_await_W_helper_status))
+ (export "__async_async_member_await_W_helper_entry" (func $export:async-member-await/__async_async_member_await_W_helper_entry))
  (export "__async_async_member_await_W_viaThis_pending_0" (func $export:async-member-await/__async_async_member_await_W_viaThis_pending_0))
  (export "__async_async_member_await_W_viaThis_resume_0" (func $export:async-member-await/__async_async_member_await_W_viaThis_resume_0))
  (export "__async_async_member_await_W_viaThis_reject_0" (func $export:async-member-await/__async_async_member_await_W_viaThis_reject_0))
  (export "__async_async_member_await_W_viaThis_result" (func $export:async-member-await/__async_async_member_await_W_viaThis_result))
  (export "__async_async_member_await_W_viaThis_error" (func $export:async-member-await/__async_async_member_await_W_viaThis_error))
  (export "__async_async_member_await_W_viaThis_status" (func $export:async-member-await/__async_async_member_await_W_viaThis_status))
+ (export "__async_async_member_await_W_viaThis_entry" (func $export:async-member-await/__async_async_member_await_W_viaThis_entry))
  (export "__async_async_member_await_W_viaNested_pending_0" (func $export:async-member-await/__async_async_member_await_W_viaNested_pending_0))
  (export "__async_async_member_await_W_viaNested_resume_0" (func $export:async-member-await/__async_async_member_await_W_viaNested_resume_0))
  (export "__async_async_member_await_W_viaNested_reject_0" (func $export:async-member-await/__async_async_member_await_W_viaNested_reject_0))
  (export "__async_async_member_await_W_viaNested_result" (func $export:async-member-await/__async_async_member_await_W_viaNested_result))
  (export "__async_async_member_await_W_viaNested_error" (func $export:async-member-await/__async_async_member_await_W_viaNested_error))
  (export "__async_async_member_await_W_viaNested_status" (func $export:async-member-await/__async_async_member_await_W_viaNested_status))
+ (export "__async_async_member_await_W_viaNested_entry" (func $export:async-member-await/__async_async_member_await_W_viaNested_entry))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
   local.get $this
@@ -3244,6 +3248,11 @@
  (func $async-member-await/__Cps_W_helper#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-member-await/__async_async_member_await_W_new (result i32)
+  i32.const 0
+  call $async-member-await/W#constructor
+  return
  )
  (func $async-member-await/__Cps_W_viaThis#get:__handle0 (param $this i32) (result i32)
   local.get $this
@@ -10606,6 +10615,32 @@
   local.get $1
   return
  )
+ (func $async-member-await/__async_async_member_await_W_helper_entry (param $receiver i32) (param $n i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $n
+  call $async-member-await/W#helper
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
  (func $async-member-await/__async_async_member_await_W_viaThis_pending_0 (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -10805,6 +10840,32 @@
   local.get $1
   return
  )
+ (func $async-member-await/__async_async_member_await_W_viaThis_entry (param $receiver i32) (param $n i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $n
+  call $async-member-await/W#viaThis
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+  return
+ )
  (func $async-member-await/__async_async_member_await_W_viaNested_pending_0 (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11002,6 +11063,32 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+  return
+ )
+ (func $async-member-await/__async_async_member_await_W_viaNested_entry (param $receiver i32) (param $n i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $receiver
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  local.get $n
+  call $async-member-await/W#viaNested
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
   return
  )
  (func $~lib/array/Array<async-member-await/__Cps_viaObj>#__visit (param $this i32) (param $cookie i32)
@@ -11988,6 +12075,26 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-member-await/__async_async_member_await_W_helper_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-member-await/__async_async_member_await_W_helper_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
  (func $export:async-member-await/__async_async_member_await_W_viaThis_pending_0 (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12107,6 +12214,26 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-member-await/__async_async_member_await_W_viaThis_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-member-await/__async_async_member_await_W_viaThis_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
+ )
  (func $export:async-member-await/__async_async_member_await_W_viaNested_pending_0 (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12225,5 +12352,25 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $export:async-member-await/__async_async_member_await_W_viaNested_entry (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  local.get $1
+  call $async-member-await/__async_async_member_await_W_viaNested_entry
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $2
  )
 )
