@@ -21,8 +21,10 @@
  (global $~lib/rt/itcms/fromSpace (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots_arrowed (mut i32) (i32.const 0))
+ (global $async-arrow/__async_state_async_arrow_arrowed (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots___async_arrow_arrowed_0 (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots_Worker_run (mut i32) (i32.const 0))
+ (global $async-arrow/__async_state_async_arrow_Worker_run (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots___async_arrow_Worker_run_0 (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots___async_arrow_Holder_getValue_0 (mut i32) (i32.const 0))
  (global $async-arrow/__async_roots_Holder_fetch (mut i32) (i32.const 0))
@@ -59,7 +61,7 @@
  (data $17 (i32.const 1804) "|")
  (data $17.1 (i32.const 1816) "\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y")
  (data $18 (i32.const 1936) "\18\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 ")
- (data $18.1 (i32.const 1984) "\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A")
+ (data $18.1 (i32.const 1988) "\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A")
  (data $18.2 (i32.const 2032) "\02A")
  (export "arrowed" (func $async-arrow/arrowed))
  (export "startWorker" (func $async-arrow/startWorker))
@@ -784,7 +786,7 @@
     global.get $~lib/memory/__stack_pointer
     local.get $0
     i32.store
-    block $__inlined_func$~lib/rt/itcms/__renew$484
+    block $__inlined_func$~lib/rt/itcms/__renew$485
      i32.const 1073741820
      local.get $2
      i32.const 1
@@ -827,7 +829,7 @@
       i32.store offset=16
       local.get $2
       local.set $3
-      br $__inlined_func$~lib/rt/itcms/__renew$484
+      br $__inlined_func$~lib/rt/itcms/__renew$485
      end
      local.get $5
      local.get $4
@@ -1564,7 +1566,7 @@
    local.get $1
    global.set $~lib/rt/itcms/iter
   end
-  block $__inlined_func$~lib/rt/itcms/Object#unlink$517
+  block $__inlined_func$~lib/rt/itcms/Object#unlink$518
    local.get $0
    i32.load offset=4
    i32.const -4
@@ -1588,7 +1590,7 @@
      call $~lib/builtins/abort
      unreachable
     end
-    br $__inlined_func$~lib/rt/itcms/Object#unlink$517
+    br $__inlined_func$~lib/rt/itcms/Object#unlink$518
    end
    local.get $0
    i32.load offset=8
@@ -1682,9 +1684,9 @@
     block $folding-inner1
      block $folding-inner0
       block $invalid
-       block $async-arrow/__Cps_Worker_run
+       block $async-arrow/__Cps___async_arrow_Worker_run_0
         block $~lib/array/Array<i32>
-         block $async-arrow/__Cps___async_arrow_arrowed_0
+         block $async-arrow/__Cps_Worker_run
           block $~lib/error/Error
            block $async-arrow/Holder
             block $async-arrow/Worker
@@ -1697,7 +1699,7 @@
                   i32.const 8
                   i32.sub
                   i32.load
-                  br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $folding-inner0 $async-arrow/Worker $folding-inner0 $async-arrow/Holder $folding-inner1 $~lib/error/Error $folding-inner2 $async-arrow/__Cps___async_arrow_arrowed_0 $folding-inner2 $~lib/array/Array<i32> $async-arrow/__Cps_Worker_run $folding-inner2 $folding-inner1 $folding-inner2 $folding-inner1 $folding-inner2 $folding-inner0 $folding-inner1 $folding-inner2 $invalid
+                  br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $folding-inner0 $async-arrow/Worker $folding-inner0 $async-arrow/Holder $folding-inner1 $~lib/error/Error $async-arrow/__Cps_Worker_run $folding-inner2 $folding-inner1 $folding-inner2 $~lib/array/Array<i32> $folding-inner2 $async-arrow/__Cps___async_arrow_Worker_run_0 $folding-inner2 $folding-inner1 $folding-inner2 $folding-inner0 $folding-inner1 $folding-inner2 $invalid
                  end
                  return
                 end
@@ -1731,11 +1733,7 @@
           return
          end
          local.get $0
-         i32.load offset=8
-         call $~lib/rt/itcms/__visit
-         local.get $0
-         i32.load offset=12
-         call $~lib/rt/itcms/__visit
+         call $async-arrow/__Cps_Worker_run~visit
          return
         end
         global.get $~lib/memory/__stack_pointer
@@ -1762,17 +1760,7 @@
         return
        end
        local.get $0
-       i32.load offset=8
-       call $~lib/rt/itcms/__visit
-       local.get $0
-       i32.load offset=12
-       call $~lib/rt/itcms/__visit
-       local.get $0
-       i32.load offset=20
-       call $~lib/rt/itcms/__visit
-       local.get $0
-       i32.load offset=24
-       call $~lib/rt/itcms/__visit
+       call $async-arrow/__Cps_Worker_run~visit
        return
       end
       unreachable
@@ -1942,7 +1930,7 @@
   i32.gt_s
   select
   local.tee $1
-  i32.const 11
+  i32.const 12
   call $~lib/rt/__newArray
   local.tee $3
   i32.store offset=4
@@ -2065,7 +2053,7 @@
   i32.gt_s
   select
   local.tee $1
-  i32.const 13
+  i32.const 14
   call $~lib/rt/__newArray
   local.tee $3
   i32.store offset=4
@@ -3085,6 +3073,8 @@
    global.get $~lib/memory/__stack_pointer
    i32.const 0
    i32.store offset=8
+   local.get $0
+   global.set $async-arrow/__async_state_async_arrow_arrowed
    loop $while-continue|0
     global.get $~lib/memory/__stack_pointer
     local.get $0
@@ -3173,8 +3163,8 @@
         i64.const 0
         i64.store
         global.get $~lib/memory/__stack_pointer
-        i32.const 24
-        i32.const 12
+        i32.const 28
+        i32.const 13
         call $~lib/rt/itcms/__new
         local.tee $2
         i32.store
@@ -3230,12 +3220,36 @@
         local.get $2
         i32.const 0
         i32.store offset=20
+        local.get $2
+        i32.const 0
+        i32.const 0
+        call $~lib/rt/itcms/__link
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        local.get $2
+        i32.const 0
+        i32.store offset=24
         global.get $~lib/memory/__stack_pointer
         i32.const 8
         i32.add
         global.set $~lib/memory/__stack_pointer
         local.get $2
         i32.store
+        global.get $~lib/memory/__stack_pointer
+        local.get $2
+        i32.store offset=4
+        global.get $~lib/memory/__stack_pointer
+        global.get $async-arrow/__async_state_async_arrow_arrowed
+        local.tee $1
+        i32.store offset=8
+        local.get $2
+        local.get $1
+        i32.store offset=20
+        local.get $2
+        local.get $1
+        i32.const 0
+        call $~lib/rt/itcms/__link
         global.get $~lib/memory/__stack_pointer
         global.get $async-arrow/__async_roots___async_arrow_arrowed_0
         local.tee $1
@@ -3440,7 +3454,7 @@
     local.get $0
     local.get $0
     i32.load offset=16
-    i32.store offset=20
+    i32.store offset=24
     global.get $~lib/memory/__stack_pointer
     local.get $0
     i32.store
@@ -3449,7 +3463,7 @@
     i32.store offset=4
     local.get $0
     local.get $0
-    i32.load offset=20
+    i32.load offset=24
     i32.const 1
     i32.add
     i32.store offset=4
@@ -3588,7 +3602,7 @@
     local.get $0
     local.get $0
     i32.load offset=16
-    i32.store offset=24
+    i32.store offset=28
     global.get $~lib/memory/__stack_pointer
     local.get $0
     i32.store
@@ -3609,7 +3623,7 @@
     local.get $0
     local.get $1
     local.get $0
-    i32.load offset=24
+    i32.load offset=28
     i32.add
     i32.store offset=4
     global.get $~lib/memory/__stack_pointer
@@ -3805,6 +3819,20 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $async-arrow/__Cps_Worker_run~visit (param $0 i32)
+  local.get $0
+  i32.load offset=8
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  call $~lib/rt/itcms/__visit
+ )
  (func $async-arrow/__Cps_Worker_run#step (param $0 i32) (result i32)
   (local $1 i32)
   (local $2 i32)
@@ -3824,6 +3852,8 @@
    global.get $~lib/memory/__stack_pointer
    i32.const 0
    i32.store offset=8
+   local.get $0
+   global.set $async-arrow/__async_state_async_arrow_Worker_run
    loop $while-continue|0
     global.get $~lib/memory/__stack_pointer
     local.get $0
@@ -3920,7 +3950,7 @@
         i64.const 0
         i64.store
         global.get $~lib/memory/__stack_pointer
-        i32.const 28
+        i32.const 32
         i32.const 17
         call $~lib/rt/itcms/__new
         local.tee $3
@@ -3987,12 +4017,36 @@
         local.get $3
         i32.const 0
         i32.store offset=24
+        local.get $3
+        i32.const 0
+        i32.const 0
+        call $~lib/rt/itcms/__link
+        global.get $~lib/memory/__stack_pointer
+        local.get $3
+        i32.store offset=4
+        local.get $3
+        i32.const 0
+        i32.store offset=28
         global.get $~lib/memory/__stack_pointer
         i32.const 8
         i32.add
         global.set $~lib/memory/__stack_pointer
         local.get $3
         i32.store
+        global.get $~lib/memory/__stack_pointer
+        local.get $3
+        i32.store offset=4
+        global.get $~lib/memory/__stack_pointer
+        global.get $async-arrow/__async_state_async_arrow_Worker_run
+        local.tee $2
+        i32.store offset=8
+        local.get $3
+        local.get $2
+        i32.store offset=24
+        local.get $3
+        local.get $2
+        i32.const 0
+        call $~lib/rt/itcms/__link
         global.get $~lib/memory/__stack_pointer
         local.get $3
         i32.store offset=4
@@ -4450,7 +4504,7 @@
    i64.store
    global.get $~lib/memory/__stack_pointer
    i32.const 36
-   i32.const 15
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $2
    i32.store
@@ -4888,7 +4942,7 @@
    i64.store offset=8
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $0
    i32.store
@@ -4979,7 +5033,7 @@
    i64.store offset=8
    global.get $~lib/memory/__stack_pointer
    i32.const 16
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $0
    i32.store

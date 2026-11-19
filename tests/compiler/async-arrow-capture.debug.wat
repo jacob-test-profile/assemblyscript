@@ -2,12 +2,12 @@
  (type $0 (func (param i32) (result i32)))
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32 i32) (result i32)))
- (type $3 (func (param i32 i32 i32) (result i32)))
- (type $4 (func (result i32)))
+ (type $3 (func (result i32)))
+ (type $4 (func (param i32 i32 i32) (result i32)))
  (type $5 (func (param i32)))
  (type $6 (func))
- (type $7 (func (param i32 i32 i32)))
- (type $8 (func (param i32 i32 i32 i32)))
+ (type $7 (func (param i32 i32 i32 i32)))
+ (type $8 (func (param i32 i32 i32)))
  (type $9 (func (param i32 externref) (result i32)))
  (type $10 (func (param i32 i32 i64) (result i32)))
  (type $11 (func (param i32) (result externref)))
@@ -18,9 +18,6 @@
  (import "env" "getNumber" (func $async-arrow-capture/getNumber (result i32)))
  (import "env" "getHandle" (func $async-arrow-capture/getHandle (result i32)))
  (import "env" "useHandle" (func $async-arrow-capture/useHandle (param externref) (result i32)))
- (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
- (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
- (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/total (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/threshold (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/state (mut i32) (i32.const 0))
@@ -29,18 +26,29 @@
  (global $~lib/rt/itcms/iter (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/toSpace (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/white (mut i32) (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
+ (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/fromSpace (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
  (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
  (global $async-arrow-capture/__async_roots_arrowCapture (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCapture (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0 (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_roots_arrowCaptureWrite (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCaptureWrite (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0 (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_roots_arrowCaptureShadow (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCaptureShadow (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0 (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_roots_arrowCallsArrow (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCallsArrow (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0 (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1 (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_spill_free (mut i32) (i32.const 784))
+ (global $async-arrow-capture/__async_roots_arrowCaptureExtern (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCaptureExtern (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_spill_0 (mut externref) (ref.null noextern))
  (global $async-arrow-capture/__async_spill_1 (mut externref) (ref.null noextern))
  (global $async-arrow-capture/__async_spill_2 (mut externref) (ref.null noextern))
@@ -49,45 +57,41 @@
  (global $async-arrow-capture/__async_spill_5 (mut externref) (ref.null noextern))
  (global $async-arrow-capture/__async_spill_6 (mut externref) (ref.null noextern))
  (global $async-arrow-capture/__async_spill_7 (mut externref) (ref.null noextern))
- (global $async-arrow-capture/__async_spill_free (mut i32) (i32.const 592))
- (global $async-arrow-capture/__async_roots_arrowCaptureExtern (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_state_async_arrow_capture_arrowCaptureExtern (mut i32) (i32.const 0))
+ (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0 (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_roots_ArrowHolder_run (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_state_async_arrow_capture_ArrowHolder_run (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0 (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0 (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0 (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0 (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1 (mut i32) (i32.const 0))
- (global $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0 (mut i32) (i32.const 0))
  (global $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0 (mut i32) (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 928))
- (global $~lib/memory/__data_end i32 (i32.const 1076))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33844))
- (global $~lib/memory/__heap_base i32 (i32.const 33844))
+ (global $~lib/rt/__rtti_base i32 (i32.const 1200))
+ (global $~lib/memory/__data_end i32 (i32.const 1352))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 34120))
+ (global $~lib/memory/__heap_base i32 (i32.const 34120))
  (memory $0 1)
- (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
- (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
- (data $2 (i32.const 108) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
- (data $3 (i32.const 172) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $4 (i32.const 240) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $5 (i32.const 272) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $6 (i32.const 300) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
- (data $7 (i32.const 364) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
- (data $8 (i32.const 416) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $9 (i32.const 444) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $10 (i32.const 508) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\00\07\00\00\00\06\00\00\00\05\00\00\00\04\00\00\00\03\00\00\00\02\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $11 (i32.const 572) ",\00\00\00\00\00\00\00\00\00\00\00\13\00\00\00\10\00\00\00\10\02\00\00\10\02\00\00 \00\00\00\08\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $12 (i32.const 620) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $13 (i32.const 652) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00")
- (data $14 (i32.const 684) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00")
- (data $15 (i32.const 716) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\03\00\00\00\00\00\00\00\00\00\00\00")
- (data $16 (i32.const 748) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\04\00\00\00\00\00\00\00\00\00\00\00")
- (data $17 (i32.const 780) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\05\00\00\00\00\00\00\00\00\00\00\00")
+ (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
+ (data $1 (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $2 (i32.const 144) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $3 (i32.const 176) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $4 (i32.const 204) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
+ (data $5 (i32.const 268) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
+ (data $6 (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $7 (i32.const 348) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $8 (i32.const 412) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $9 (i32.const 444) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $10 (i32.const 492) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
+ (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00")
+ (data $12 (i32.const 572) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00")
+ (data $13 (i32.const 604) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\03\00\00\00\00\00\00\00\00\00\00\00")
+ (data $14 (i32.const 636) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\04\00\00\00\00\00\00\00\00\00\00\00")
+ (data $15 (i32.const 668) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\05\00\00\00\00\00\00\00\00\00\00\00")
+ (data $16 (i32.const 700) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\00\07\00\00\00\06\00\00\00\05\00\00\00\04\00\00\00\03\00\00\00\02\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $17 (i32.const 764) ",\00\00\00\00\00\00\00\00\00\00\00\13\00\00\00\10\00\00\00\d0\02\00\00\d0\02\00\00 \00\00\00\08\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $18 (i32.const 812) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00A\00r\00r\00a\00y\00 \00i\00s\00 \00e\00m\00p\00t\00y\00")
  (data $19 (i32.const 860) "\1c\00\00\00\00\00\00\00\00\00\00\00\05\00\00\00\08\00\00\00\06\00\00\00\00\00\00\00\00\00\00\00")
  (data $20 (i32.const 892) "\1c\00\00\00\00\00\00\00\00\00\00\00\08\00\00\00\08\00\00\00\07\00\00\00\00\00\00\00\00\00\00\00")
- (data $21 (i32.const 928) "$\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02A\00\00\02A\00\00\02A\00\00\02\t\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
+ (data $21 (i32.const 924) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
+ (data $22 (i32.const 988) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
+ (data $23 (i32.const 1020) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
+ (data $24 (i32.const 1068) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $25 (i32.const 1200) "%\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 8 8 funcref)
  (elem $0 (i32.const 1) $async-arrow-capture/__async_arrow_arrowCapture_0 $async-arrow-capture/__async_arrow_arrowCaptureWrite_0 $async-arrow-capture/__async_arrow_arrowCaptureShadow_0 $async-arrow-capture/__async_arrow_arrowCallsArrow_0 $async-arrow-capture/__async_arrow_arrowCallsArrow_1 $async-arrow-capture/__async_arrow_arrowCaptureExtern_0 $async-arrow-capture/__async_arrow_ArrowHolder_run_0)
  (export "arrowCapture" (func $async-arrow-capture/arrowCapture))
@@ -96,32 +100,56 @@
  (export "arrowCallsArrow" (func $async-arrow-capture/arrowCallsArrow))
  (export "arrowCaptureExtern" (func $async-arrow-capture/arrowCaptureExtern))
  (export "startHolderRun" (func $async-arrow-capture/startHolderRun))
+ (export "__async_async_arrow_capture_mint" (func $async-arrow-capture/__async_async_arrow_capture_mint))
+ (export "__async_async_arrow_capture_mint_string" (func $async-arrow-capture/__async_async_arrow_capture_mint_string))
+ (export "__async_async_arrow_capture_arrowCapture_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_last_handle))
+ (export "__async_async_arrow_capture_arrowCaptureWrite_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_last_handle))
+ (export "__async_async_arrow_capture_arrowCaptureShadow_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_last_handle))
+ (export "__async_async_arrow_capture_arrowCallsArrow_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_last_handle))
+ (export "__async_async_arrow_capture_arrowCaptureExtern_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_last_handle))
+ (export "__async_async_arrow_capture_ArrowHolder_run_last_handle" (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_last_handle))
  (export "__async_async_arrow_capture_ArrowHolder_new" (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_new))
+ (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_last_handle))
+ (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_last_handle" (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_last_handle))
  (export "memory" (memory $0))
+ (export "__async_async_arrow_capture_arrowCapture_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_reclaim))
  (export "__async_async_arrow_capture_arrowCapture_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_pending_0))
  (export "__async_async_arrow_capture_arrowCapture_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_resume_0))
  (export "__async_async_arrow_capture_arrowCapture_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_reject_0))
  (export "__async_async_arrow_capture_arrowCapture_result" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_result))
  (export "__async_async_arrow_capture_arrowCapture_error" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_error))
+ (export "__async_async_arrow_capture_arrowCapture_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_errorValue))
  (export "__async_async_arrow_capture_arrowCapture_status" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_status))
+ (export "__async_async_arrow_capture_arrowCaptureWrite_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_reclaim))
  (export "__async_async_arrow_capture_arrowCaptureWrite_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_pending_0))
  (export "__async_async_arrow_capture_arrowCaptureWrite_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_resume_0))
  (export "__async_async_arrow_capture_arrowCaptureWrite_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_reject_0))
  (export "__async_async_arrow_capture_arrowCaptureWrite_result" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_result))
  (export "__async_async_arrow_capture_arrowCaptureWrite_error" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_error))
+ (export "__async_async_arrow_capture_arrowCaptureWrite_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_errorValue))
  (export "__async_async_arrow_capture_arrowCaptureWrite_status" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_status))
+ (export "__async_async_arrow_capture_arrowCaptureShadow_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_reclaim))
  (export "__async_async_arrow_capture_arrowCaptureShadow_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_pending_0))
  (export "__async_async_arrow_capture_arrowCaptureShadow_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_resume_0))
  (export "__async_async_arrow_capture_arrowCaptureShadow_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_reject_0))
  (export "__async_async_arrow_capture_arrowCaptureShadow_result" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_result))
  (export "__async_async_arrow_capture_arrowCaptureShadow_error" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_error))
+ (export "__async_async_arrow_capture_arrowCaptureShadow_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_errorValue))
  (export "__async_async_arrow_capture_arrowCaptureShadow_status" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_status))
+ (export "__async_async_arrow_capture_arrowCallsArrow_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_reclaim))
  (export "__async_async_arrow_capture_arrowCallsArrow_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_pending_0))
  (export "__async_async_arrow_capture_arrowCallsArrow_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_resume_0))
  (export "__async_async_arrow_capture_arrowCallsArrow_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_reject_0))
  (export "__async_async_arrow_capture_arrowCallsArrow_result" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_result))
  (export "__async_async_arrow_capture_arrowCallsArrow_error" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_error))
+ (export "__async_async_arrow_capture_arrowCallsArrow_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_errorValue))
  (export "__async_async_arrow_capture_arrowCallsArrow_status" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_status))
+ (export "__async_async_arrow_capture_arrowCaptureExtern_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reclaim))
  (export "__async_async_arrow_capture_arrowCaptureExtern_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_resume_0))
  (export "__async_async_arrow_capture_arrowCaptureExtern_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reject_0))
  (export "__async_async_arrow_capture_arrowCaptureExtern_pending_1" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_pending_1))
@@ -129,51 +157,68 @@
  (export "__async_async_arrow_capture_arrowCaptureExtern_reject_1" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reject_1))
  (export "__async_async_arrow_capture_arrowCaptureExtern_result" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_result))
  (export "__async_async_arrow_capture_arrowCaptureExtern_error" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_error))
+ (export "__async_async_arrow_capture_arrowCaptureExtern_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_errorValue))
  (export "__async_async_arrow_capture_arrowCaptureExtern_status" (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_status))
+ (export "__async_async_arrow_capture_ArrowHolder_run_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_reclaim))
  (export "__async_async_arrow_capture_ArrowHolder_run_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_pending_0))
  (export "__async_async_arrow_capture_ArrowHolder_run_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_resume_0))
  (export "__async_async_arrow_capture_ArrowHolder_run_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_reject_0))
  (export "__async_async_arrow_capture_ArrowHolder_run_result" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_result))
  (export "__async_async_arrow_capture_ArrowHolder_run_error" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_error))
+ (export "__async_async_arrow_capture_ArrowHolder_run_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_errorValue))
  (export "__async_async_arrow_capture_ArrowHolder_run_status" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_status))
  (export "__async_async_arrow_capture_ArrowHolder_run_entry" (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_entry))
+ (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCapture_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_status))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_status))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_status))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_status))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_pending_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_pending_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_status))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_resume_1" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_resume_1))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reject_1" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reject_1))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_result))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_error))
+ (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_status))
+ (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reclaim" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reclaim))
  (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_resume_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_resume_0))
  (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reject_0" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reject_0))
  (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_result" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_result))
  (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_error" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_error))
+ (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_errorValue" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_errorValue))
  (export "__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_status" (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -240,7 +285,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 160
      i32.const 16
      call $~lib/builtins/abort
@@ -310,7 +355,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 128
     i32.const 18
     call $~lib/builtins/abort
@@ -327,7 +372,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 132
    i32.const 16
    call $~lib/builtins/abort
@@ -357,8 +402,8 @@
   i32.load
   i32.gt_u
   if
-   i32.const 320
-   i32.const 384
+   i32.const 224
+   i32.const 288
    i32.const 21
    i32.const 28
    call $~lib/builtins/abort
@@ -426,7 +471,7 @@
    i32.eqz
    if (result i32)
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 148
     i32.const 30
     call $~lib/builtins/abort
@@ -578,7 +623,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 268
    i32.const 14
    call $~lib/builtins/abort
@@ -598,7 +643,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 270
    i32.const 14
    call $~lib/builtins/abort
@@ -661,7 +706,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 284
    i32.const 14
    call $~lib/builtins/abort
@@ -814,7 +859,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 201
    i32.const 14
    call $~lib/builtins/abort
@@ -831,7 +876,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 203
    i32.const 14
    call $~lib/builtins/abort
@@ -920,7 +965,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 221
     i32.const 16
     call $~lib/builtins/abort
@@ -963,7 +1008,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 233
    i32.const 14
    call $~lib/builtins/abort
@@ -981,7 +1026,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 234
    i32.const 14
    call $~lib/builtins/abort
@@ -1049,7 +1094,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 251
    i32.const 14
    call $~lib/builtins/abort
@@ -1166,7 +1211,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 382
    i32.const 14
    call $~lib/builtins/abort
@@ -1212,7 +1257,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 389
     i32.const 16
     call $~lib/builtins/abort
@@ -1244,7 +1289,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 402
     i32.const 5
     call $~lib/builtins/abort
@@ -1488,7 +1533,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 562
    i32.const 3
    call $~lib/builtins/abort
@@ -1708,7 +1753,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 229
      i32.const 20
      call $~lib/builtins/abort
@@ -1819,8 +1864,8 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 128
-   i32.const 464
+   i32.const 32
+   i32.const 368
    i32.const 461
    i32.const 29
    call $~lib/builtins/abort
@@ -1922,7 +1967,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 334
    i32.const 14
    call $~lib/builtins/abort
@@ -1993,7 +2038,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 464
+     i32.const 368
      i32.const 347
      i32.const 18
      call $~lib/builtins/abort
@@ -2150,7 +2195,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 361
    i32.const 14
    call $~lib/builtins/abort
@@ -2265,7 +2310,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 499
     i32.const 16
     call $~lib/builtins/abort
@@ -2285,7 +2330,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 501
    i32.const 14
    call $~lib/builtins/abort
@@ -2333,8 +2378,8 @@
   i32.const 1073741804
   i32.ge_u
   if
-   i32.const 128
-   i32.const 192
+   i32.const 32
+   i32.const 96
    i32.const 261
    i32.const 31
    call $~lib/builtins/abort
@@ -2379,6 +2424,16 @@
   local.get $ptr
   return
  )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
  (func $~lib/rt/itcms/__link (param $parentPtr i32) (param $childPtr i32) (param $expectMultiple i32)
   (local $child i32)
   (local $parent i32)
@@ -2394,7 +2449,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 295
    i32.const 14
    call $~lib/builtins/abort
@@ -2447,6 +2502,48 @@
    end
   end
  )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=16
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
+  local.get $this
+  local.get $__cps_x_0
+  i32.store offset=20
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__cps_f_1 (param $this i32) (param $__cps_f_1 i32)
+  local.get $this
+  local.get $__cps_f_1
+  i32.store offset=24
+  local.get $this
+  local.get $__cps_f_1
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-arrow-capture/__Cps_arrowCapture#set:__handle0 (param $this i32) (param $__handle0 i32)
+  local.get $this
+  local.get $__handle0
+  i32.store offset=28
+ )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
   local.get $buffer
@@ -2470,409 +2567,6 @@
   local.get $this
   local.get $length_
   i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $start:async-arrow-capture
-  (local $0 i32)
-  memory.size
-  i32.const 16
-  i32.shl
-  global.get $~lib/memory/__heap_base
-  i32.sub
-  i32.const 1
-  i32.shr_u
-  global.set $~lib/rt/itcms/threshold
-  i32.const 240
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/pinSpace
-  i32.const 272
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/toSpace
-  i32.const 416
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/fromSpace
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#constructor
-  global.set $async-arrow-capture/__async_roots_arrowCapture
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#constructor
-  global.set $async-arrow-capture/__async_roots_arrowCaptureWrite
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#constructor
-  global.set $async-arrow-capture/__async_roots_arrowCaptureShadow
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#constructor
-  global.set $async-arrow-capture/__async_roots_arrowCallsArrow
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#constructor
-  global.set $async-arrow-capture/__async_roots_arrowCaptureExtern
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#constructor
-  global.set $async-arrow-capture/__async_roots_ArrowHolder_run
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#constructor
-  global.set $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:state (param $this i32) (param $state i32)
-  local.get $this
-  local.get $state
-  i32.store
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__result (param $this i32) (param $__result i32)
-  local.get $this
-  local.get $__result
-  i32.store offset=4
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__error (param $this i32) (param $__error i32)
-  local.get $this
-  local.get $__error
-  i32.store offset=8
-  local.get $this
-  local.get $__error
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__pend0 (param $this i32) (param $__pend0 i32)
-  local.get $this
-  local.get $__pend0
-  i32.store offset=12
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
-  local.get $this
-  local.get $__cps_x_0
-  i32.store offset=16
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__cps_f_1 (param $this i32) (param $__cps_f_1 i32)
-  local.get $this
-  local.get $__cps_f_1
-  i32.store offset=20
-  local.get $this
-  local.get $__cps_f_1
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $async-arrow-capture/__Cps_arrowCapture#set:__handle0 (param $this i32) (param $__handle0 i32)
-  local.get $this
-  local.get $__handle0
-  i32.store offset=24
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2963,15 +2657,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -2980,7 +2683,31 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__cps_m_0 (param $this i32) (param $__cps_m_0 i32)
   local.get $this
   local.get $__cps_m_0
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2996,19 +2723,19 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCapture#get:__cps_x_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:__cps_m_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -3028,7 +2755,7 @@
  )
  (func $async-arrow-capture/__Cps_arrowCapture#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3049,20 +2776,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
   local.get $this
   local.get $__cps_x_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__cps_f_1 (param $this i32) (param $__cps_f_1 i32)
   local.get $this
   local.get $__cps_f_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_f_1
   i32.const 0
@@ -3071,12 +2807,36 @@
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__cps_v_2 (param $this i32) (param $__cps_v_2 i32)
   local.get $this
   local.get $__cps_v_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3109,15 +2869,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3126,7 +2895,31 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__cps_m_0 (param $this i32) (param $__cps_m_0 i32)
   local.get $this
   local.get $__cps_m_0
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3142,27 +2935,27 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__cps_x_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__cps_m_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__cps_v_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3183,20 +2976,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
   local.get $this
   local.get $__cps_x_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__cps_f_1 (param $this i32) (param $__cps_f_1 i32)
   local.get $this
   local.get $__cps_f_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_f_1
   i32.const 0
@@ -3205,12 +3007,36 @@
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__cps_x_2 (param $this i32) (param $__cps_x_2 i32)
   local.get $this
   local.get $__cps_x_2
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3243,15 +3069,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3260,7 +3095,31 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__cps_m_0 (param $this i32) (param $__cps_m_0 i32)
   local.get $this
   local.get $__cps_m_0
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3276,23 +3135,23 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#get:__cps_x_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__cps_m_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3313,20 +3172,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__cps_x_0 (param $this i32) (param $__cps_x_0 i32)
   local.get $this
   local.get $__cps_x_0
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__cps_g_1 (param $this i32) (param $__cps_g_1 i32)
   local.get $this
   local.get $__cps_g_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_g_1
   i32.const 0
@@ -3335,7 +3203,7 @@
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__cps_f_2 (param $this i32) (param $__cps_f_2 i32)
   local.get $this
   local.get $__cps_f_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_f_2
   i32.const 0
@@ -3344,7 +3212,31 @@
  (func $async-arrow-capture/__Cps_arrowCallsArrow#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3377,15 +3269,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3394,7 +3295,31 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__cps_m_0 (param $this i32) (param $__cps_m_0 i32)
   local.get $this
   local.get $__cps_m_0
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3410,19 +3335,19 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#get:__cps_x_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__cps_m_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3443,15 +3368,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3460,12 +3394,36 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__cps_v_0 (param $this i32) (param $__cps_v_0 i32)
   local.get $this
   local.get $__cps_v_0
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=24
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3481,15 +3439,15 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__cps_v_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3523,15 +3481,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__cps_f_1 (param $this i32) (param $__cps_f_1 i32)
   local.get $this
   local.get $__cps_f_1
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps_f_1
   i32.const 0
@@ -3540,17 +3507,41 @@
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__handle1 (param $this i32) (param $__handle1 i32)
   local.get $this
   local.get $__handle1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__slot_pend0 (param $this i32) (param $__slot_pend0 i32)
   local.get $this
   local.get $__slot_pend0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#set:__slot_h_0 (param $this i32) (param $__slot_h_0 i32)
   local.get $this
   local.get $__slot_h_0
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3566,11 +3557,11 @@
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__slot_h_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__slot_pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__async_spill_get (param $slot i32) (result externref)
   (local $1 i32)
@@ -3748,20 +3739,29 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__pend1 (param $this i32) (param $__pend1 i32)
   local.get $this
   local.get $__pend1
-  i32.store offset=16
+  i32.store offset=20
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3770,12 +3770,36 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__cps_m_0 (param $this i32) (param $__cps_m_0 i32)
   local.get $this
   local.get $__cps_m_0
-  i32.store offset=24
+  i32.store offset=28
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__cps_n_1 (param $this i32) (param $__cps_n_1 i32)
   local.get $this
   local.get $__cps_n_1
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3791,27 +3815,27 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__cps_n_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__cps_m_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__pend1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/ArrowHolder#set:base (param $this i32) (param $base i32)
   local.get $this
@@ -3837,15 +3861,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3854,12 +3887,12 @@
  (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__cps_bonus_1 (param $this i32) (param $__cps_bonus_1 i32)
   local.get $this
   local.get $__cps_bonus_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__cps_f_2 (param $this i32) (param $__cps_f_2 i32)
   local.get $this
   local.get $__cps_f_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_f_2
   i32.const 0
@@ -3868,7 +3901,31 @@
  (func $async-arrow-capture/__Cps_ArrowHolder_run#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=28
+  i32.store offset=32
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3901,15 +3958,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3918,7 +3984,7 @@
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3927,7 +3993,31 @@
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=24
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3943,11 +4033,11 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/ArrowHolder#get:base (param $this i32) (result i32)
   local.get $this
@@ -3955,27 +4045,80 @@
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__async_outer (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__cps_bonus_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_mint (result i32)
+  i32.const 0
+  i32.const 8
+  call $~lib/arraybuffer/ArrayBuffer#constructor
+  return
+ )
+ (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $~lib/string/String#get:length (param $this i32) (result i32)
+  local.get $this
+  i32.const 20
+  i32.sub
+  call $~lib/rt/common/OBJECT#get:rtSize
+  i32.const 1
+  i32.shr_u
+  return
+ )
+ (func $~lib/memory/memory.repeat (param $dst i32) (param $src i32) (param $srcLength i32) (param $count i32)
+  (local $index i32)
+  (local $total i32)
+  i32.const 0
+  local.set $index
+  local.get $srcLength
+  local.get $count
+  i32.mul
+  local.set $total
+  loop $while-continue|0
+   local.get $index
+   local.get $total
+   i32.lt_u
+   if
+    local.get $dst
+    local.get $index
+    i32.add
+    local.get $src
+    local.get $srcLength
+    memory.copy
+    local.get $index
+    local.get $srcLength
+    i32.add
+    local.set $index
+    br $while-continue|0
+   end
+  end
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_mint_string (param $len i32) (result i32)
+  i32.const 1008
+  local.get $len
+  call $~lib/string/String#repeat
+  return
  )
  (func $async-arrow-capture/__Cps_arrowCapture#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps_arrowCapture#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3985,9 +4128,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps_arrowCapture#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3997,9 +4144,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureWrite#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps_arrowCaptureShadow#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4009,9 +4160,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureShadow#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps_arrowCallsArrow#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4021,9 +4176,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps_arrowCallsArrow#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__handle1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4033,9 +4192,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps_arrowCaptureExtern#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=28
+  i32.load offset=32
  )
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4044,6 +4207,10 @@
  (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-arrow-capture/__Cps_ArrowHolder_run#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_new (result i32)
   i32.const 0
@@ -4058,6 +4225,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -4065,6 +4236,10 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4074,6 +4249,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -4082,9 +4261,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4094,6 +4277,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -4101,6 +4288,10 @@
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__result (param $this i32) (result i32)
   local.get $this
@@ -4110,18 +4301,25 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
-  i32.const 320
+  i32.const 224
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 32
+  i32.const 464
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 832
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 128
+  i32.const 1088
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 32
   local.get $0
   call $~lib/rt/itcms/__visit
   global.get $async-arrow-capture/__async_roots_arrowCapture
@@ -4269,7 +4467,29 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4283,7 +4503,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4297,7 +4521,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4311,11 +4539,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4329,7 +4561,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4343,11 +4579,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4363,78 +4603,6 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#__visit
  )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__visit
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__visit
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__visit
- )
- (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<i32>#__visit
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__visit
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__visit
- )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCapture_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4445,7 +4613,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4461,6 +4633,30 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#__visit
  )
+ (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<i32>#__visit
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__visit
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4471,7 +4667,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4487,6 +4687,18 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#__visit
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__visit
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4497,7 +4709,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4513,6 +4729,18 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#__visit
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__visit
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4523,7 +4751,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4549,7 +4781,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4565,6 +4801,18 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#__visit
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__visit
+ )
  (func $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4575,7 +4823,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=20
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4591,6 +4843,18 @@
   local.get $1
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#__visit
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__visit
+ )
  (func $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -4601,11 +4865,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -4625,76 +4893,82 @@
   block $invalid
    block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>
     block $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0
-     block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>
-      block $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0
-       block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>
-        block $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1
-         block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>
-          block $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0
-           block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>
-            block $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0
-             block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>
-              block $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0
-               block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>
-                block $async-arrow-capture/__Cps___async_arrow_arrowCapture_0
-                 block $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>
-                  block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>
-                   block $~lib/array/Array<i32>
-                    block $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>
-                     block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>
-                      block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>
+     block $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>
+      block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>
+       block $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0
+        block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>
+         block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>
+          block $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1
+           block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>
+            block $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0
+             block $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>
+              block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>
+               block $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0
+                block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>
+                 block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>
+                  block $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0
+                   block $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>
+                    block $~lib/array/Array<i32>
+                     block $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>
+                      block $async-arrow-capture/__Cps___async_arrow_arrowCapture_0
                        block $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>
                         block $async-arrow-capture/__Cps_ArrowHolder_run
                          block $async-arrow-capture/__Cps_arrowCaptureExtern
                           block $async-arrow-capture/__Cps_arrowCallsArrow
                            block $async-arrow-capture/__Cps_arrowCaptureShadow
                             block $async-arrow-capture/__Cps_arrowCaptureWrite
-                             block $async-arrow-capture/__Cps_arrowCapture
-                              block $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>>
-                               block $async-arrow-capture/ArrowHolder
-                                block $~lib/promise/Promise<ref_extern|null>
-                                 block $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>>
-                                  block $~lib/promise/Promise<i32>
-                                   block $~lib/arraybuffer/ArrayBufferView
-                                    block $~lib/string/String
-                                     block $~lib/arraybuffer/ArrayBuffer
-                                      block $~lib/object/Object
-                                       local.get $0
-                                       i32.const 8
-                                       i32.sub
-                                       i32.load
-                                       br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>> $~lib/promise/Promise<ref_extern|null> $async-arrow-capture/ArrowHolder $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>> $async-arrow-capture/__Cps_arrowCapture $async-arrow-capture/__Cps_arrowCaptureWrite $async-arrow-capture/__Cps_arrowCaptureShadow $async-arrow-capture/__Cps_arrowCallsArrow $async-arrow-capture/__Cps_arrowCaptureExtern $async-arrow-capture/__Cps_ArrowHolder_run $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow> $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow> $~lib/array/Array<i32> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern> $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run> $async-arrow-capture/__Cps___async_arrow_arrowCapture_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0> $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0> $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0> $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0> $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1> $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0> $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0> $invalid
+                             block $~lib/error/Error
+                              block $async-arrow-capture/__Cps_arrowCapture
+                               block $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>>
+                                block $async-arrow-capture/ArrowHolder
+                                 block $~lib/promise/Promise<ref_extern|null>
+                                  block $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>>
+                                   block $~lib/promise/Promise<i32>
+                                    block $~lib/arraybuffer/ArrayBufferView
+                                     block $~lib/string/String
+                                      block $~lib/arraybuffer/ArrayBuffer
+                                       block $~lib/object/Object
+                                        local.get $0
+                                        i32.const 8
+                                        i32.sub
+                                        i32.load
+                                        br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<i32> $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>> $~lib/promise/Promise<ref_extern|null> $async-arrow-capture/ArrowHolder $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>> $async-arrow-capture/__Cps_arrowCapture $~lib/error/Error $async-arrow-capture/__Cps_arrowCaptureWrite $async-arrow-capture/__Cps_arrowCaptureShadow $async-arrow-capture/__Cps_arrowCallsArrow $async-arrow-capture/__Cps_arrowCaptureExtern $async-arrow-capture/__Cps_ArrowHolder_run $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture> $async-arrow-capture/__Cps___async_arrow_arrowCapture_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0> $~lib/array/Array<i32> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite> $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow> $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0> $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow> $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0> $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1> $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern> $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0> $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run> $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0 $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0> $invalid
+                                       end
+                                       return
                                       end
                                       return
                                      end
                                      return
                                     end
+                                    local.get $0
+                                    local.get $1
+                                    call $~lib/arraybuffer/ArrayBufferView~visit
                                     return
                                    end
-                                   local.get $0
-                                   local.get $1
-                                   call $~lib/arraybuffer/ArrayBufferView~visit
                                    return
                                   end
+                                  local.get $0
+                                  local.get $1
+                                  call $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>>~visit
                                   return
                                  end
-                                 local.get $0
-                                 local.get $1
-                                 call $~lib/function/Function<%28%29=>~lib/promise/Promise<i32>>~visit
                                  return
                                 end
                                 return
                                end
+                               local.get $0
+                               local.get $1
+                               call $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>>~visit
                                return
                               end
                               local.get $0
                               local.get $1
-                              call $~lib/function/Function<%28async-arrow-capture/ArrowHolder%29=>~lib/promise/Promise<i32>>~visit
+                              call $async-arrow-capture/__Cps_arrowCapture~visit
                               return
                              end
                              local.get $0
                              local.get $1
-                             call $async-arrow-capture/__Cps_arrowCapture~visit
+                             call $~lib/error/Error~visit
                              return
                             end
                             local.get $0
@@ -4729,92 +5003,92 @@
                       end
                       local.get $0
                       local.get $1
-                      call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>~visit
+                      call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0~visit
                       return
                      end
                      local.get $0
                      local.get $1
-                     call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>~visit
+                     call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>~visit
                      return
                     end
                     local.get $0
                     local.get $1
-                    call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>~visit
+                    call $~lib/array/Array<i32>~visit
                     return
                    end
                    local.get $0
                    local.get $1
-                   call $~lib/array/Array<i32>~visit
+                   call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>~visit
                    return
                   end
                   local.get $0
                   local.get $1
-                  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>~visit
+                  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0~visit
                   return
                  end
                  local.get $0
                  local.get $1
-                 call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>~visit
+                 call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>~visit
                  return
                 end
                 local.get $0
                 local.get $1
-                call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0~visit
+                call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>~visit
                 return
                end
                local.get $0
                local.get $1
-               call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>~visit
+               call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0~visit
                return
               end
               local.get $0
               local.get $1
-              call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0~visit
+              call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>~visit
               return
              end
              local.get $0
              local.get $1
-             call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>~visit
+             call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>~visit
              return
             end
             local.get $0
             local.get $1
-            call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0~visit
+            call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0~visit
             return
            end
            local.get $0
            local.get $1
-           call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>~visit
+           call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>~visit
            return
           end
           local.get $0
           local.get $1
-          call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0~visit
+          call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1~visit
           return
          end
          local.get $0
          local.get $1
-         call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>~visit
+         call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>~visit
          return
         end
         local.get $0
         local.get $1
-        call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1~visit
+        call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>~visit
         return
        end
        local.get $0
        local.get $1
-       call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>~visit
+       call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0~visit
        return
       end
       local.get $0
       local.get $1
-      call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0~visit
+      call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>~visit
       return
      end
      local.get $0
      local.get $1
-     call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>~visit
+     call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>~visit
      return
     end
     local.get $0
@@ -4830,1814 +5104,88 @@
   unreachable
  )
  (func $~start
-  call $start:async-arrow-capture
+  memory.size
+  i32.const 16
+  i32.shl
+  global.get $~lib/memory/__heap_base
+  i32.sub
+  i32.const 1
+  i32.shr_u
+  global.set $~lib/rt/itcms/threshold
+  i32.const 144
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/pinSpace
+  i32.const 176
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/toSpace
+  i32.const 320
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/fromSpace
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#constructor
+  global.set $async-arrow-capture/__async_roots_arrowCapture
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#constructor
+  global.set $async-arrow-capture/__async_roots_arrowCaptureWrite
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#constructor
+  global.set $async-arrow-capture/__async_roots_arrowCaptureShadow
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#constructor
+  global.set $async-arrow-capture/__async_roots_arrowCallsArrow
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#constructor
+  global.set $async-arrow-capture/__async_roots_arrowCaptureExtern
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#constructor
+  global.set $async-arrow-capture/__async_roots_ArrowHolder_run
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#constructor
+  global.set $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
  )
  (func $~stack_check
   global.get $~lib/memory/__stack_pointer
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 33872
-   i32.const 33920
+   i32.const 34144
+   i32.const 34192
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 15
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 16
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 17
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 18
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 20
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 21
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 23
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 25
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 27
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 29
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 31
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 33
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 35
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
  )
  (func $async-arrow-capture/__Cps_arrowCapture#constructor (param $this i32) (result i32)
   (local $1 i32)
@@ -6653,7 +5201,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
+   i32.const 32
    i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -6691,8 +5239,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_arrowCapture#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_arrowCapture#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6732,6 +5288,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 16
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/ensureCapacity (param $array i32) (param $newSize i32) (param $alignLog2 i32) (param $canGrow i32)
   (local $oldCapacity i32)
@@ -6773,8 +5467,8 @@
    i32.shr_u
    i32.gt_u
    if
-    i32.const 32
-    i32.const 80
+    i32.const 464
+    i32.const 512
     i32.const 19
     i32.const 48
     call $~lib/builtins/abort
@@ -6931,8 +5625,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 22
+   i32.const 28
+   i32.const 17
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6969,8 +5663,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7002,6 +5704,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 18
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -7251,7 +6091,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 23
+  i32.const 18
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7769,7 +6609,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 16
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7927,7 +6767,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 672
+       i32.const 560
        local.set $2
        global.get $~lib/memory/__stack_pointer
        local.get $2
@@ -8104,8 +6944,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 10
+   i32.const 36
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8142,8 +6982,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_arrowCaptureWrite#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_arrowCaptureWrite#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8191,6 +7039,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 20
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8271,8 +7257,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 24
+   i32.const 28
+   i32.const 21
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8309,8 +7295,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8342,6 +7336,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 22
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8591,7 +7723,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 25
+  i32.const 22
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9135,7 +8267,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 16
+  i32.const 20
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9293,7 +8425,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 704
+       i32.const 592
        local.set $2
        global.get $~lib/memory/__stack_pointer
        local.get $2
@@ -9492,8 +8624,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 11
+   i32.const 36
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9530,8 +8662,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_arrowCaptureShadow#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_arrowCaptureShadow#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9579,6 +8719,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 23
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -9659,8 +8937,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
+   i32.const 28
    i32.const 24
-   i32.const 26
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9697,8 +8975,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9730,6 +9016,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 25
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -9979,7 +9403,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 27
+  i32.const 25
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10495,7 +9919,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 23
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10661,7 +10085,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 736
+       i32.const 624
        local.set $2
        global.get $~lib/memory/__stack_pointer
        local.get $2
@@ -10838,8 +10262,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 12
+   i32.const 36
+   i32.const 13
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10876,8 +10300,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_arrowCallsArrow#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_arrowCallsArrow#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -10925,6 +10357,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 26
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -11005,8 +10575,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
    i32.const 28
+   i32.const 27
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11043,8 +10613,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11076,6 +10654,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 28
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -11325,7 +11041,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 29
+  i32.const 28
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11672,8 +11388,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 30
+   i32.const 32
+   i32.const 29
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11710,8 +11426,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -11751,6 +11475,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 30
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -12000,7 +11862,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 31
+  i32.const 30
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12510,7 +12372,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 18
+  i32.const 26
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12668,7 +12530,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 768
+       i32.const 656
        local.set $2
        global.get $~lib/memory/__stack_pointer
        local.get $2
@@ -12681,7 +12543,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 800
+       i32.const 688
        local.set $2
        global.get $~lib/memory/__stack_pointer
        local.get $2
@@ -12894,7 +12756,7 @@
   i32.lt_s
   if
    i32.const 832
-   i32.const 80
+   i32.const 512
    i32.const 271
    i32.const 18
    call $~lib/builtins/abort
@@ -13076,8 +12938,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 13
+   i32.const 36
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13114,8 +12976,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_arrowCaptureExtern#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13163,6 +13033,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 31
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -13243,7 +13251,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
+   i32.const 36
    i32.const 32
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -13281,8 +13289,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -13330,6 +13346,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 33
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -14156,7 +14310,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 20
+  i32.const 31
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -14650,8 +14804,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 32
-   i32.const 14
+   i32.const 36
+   i32.const 15
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14688,8 +14842,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps_ArrowHolder_run#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps_ArrowHolder_run#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -14737,6 +14899,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 34
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -14817,8 +15117,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 34
+   i32.const 32
+   i32.const 35
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14855,8 +15155,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 640
+  i32.const 432
   call $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -14896,6 +15204,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 36
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -15145,7 +15591,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 35
+  i32.const 36
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -15688,7 +16134,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 21
+  i32.const 34
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -16065,6 +16511,325 @@
   local.get $1
   return
  )
+ (func $~lib/string/String#repeat (param $this i32) (param $count i32) (result i32)
+  (local $length i32)
+  (local $out i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/string/String#get:length
+  local.set $length
+  local.get $count
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i64.extend_i32_s
+   local.get $count
+   i64.extend_i32_s
+   i64.mul
+   i64.const 1
+   i64.const 28
+   i64.shl
+   i64.gt_u
+  end
+  if
+   i32.const 464
+   i32.const 1040
+   i32.const 334
+   i32.const 7
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $count
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i32.eqz
+  end
+  if
+   i32.const 432
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  local.get $count
+  i32.const 1
+  i32.eq
+  if
+   local.get $this
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  local.get $count
+  i32.mul
+  i32.const 1
+  i32.shl
+  i32.const 2
+  call $~lib/rt/itcms/__new
+  local.tee $out
+  i32.store offset=4
+  local.get $out
+  local.get $this
+  local.get $length
+  i32.const 1
+  i32.shl
+  local.get $count
+  call $~lib/memory/memory.repeat
+  local.get $out
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_arrowCapture
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_arrowCapture
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_arrowCapture
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCapture#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_arrowCapture#set:state
+  global.get $async-arrow-capture/__async_roots_arrowCapture
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_arrowCapture
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCapture>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_pending_0 (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16239,6 +17004,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCapture#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCapture_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16259,6 +17049,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_arrowCaptureWrite
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_arrowCaptureWrite
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_arrowCaptureWrite
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureWrite#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_arrowCaptureWrite#set:state
+  global.get $async-arrow-capture/__async_roots_arrowCaptureWrite
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_arrowCaptureWrite
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -16438,6 +17445,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureWrite#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16458,6 +17490,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_arrowCaptureShadow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_arrowCaptureShadow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_arrowCaptureShadow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureShadow#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_arrowCaptureShadow#set:state
+  global.get $async-arrow-capture/__async_roots_arrowCaptureShadow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_arrowCaptureShadow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -16637,6 +17886,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureShadow#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16657,6 +17931,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_arrowCallsArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_arrowCallsArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_arrowCallsArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCallsArrow#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_arrowCallsArrow#set:state
+  global.get $async-arrow-capture/__async_roots_arrowCallsArrow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_arrowCallsArrow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -16836,6 +18327,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCallsArrow#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -16856,6 +18372,239 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_arrowCaptureExtern
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_arrowCaptureExtern
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_arrowCaptureExtern
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#set:state
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#get:__slot_pend0
+  call $async-arrow-capture/__async_spill_release
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#get:__slot_h_0
+  call $async-arrow-capture/__async_spill_release
+  global.get $async-arrow-capture/__async_roots_arrowCaptureExtern
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_arrowCaptureExtern
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -17167,6 +18916,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_arrowCaptureExtern#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17187,6 +18961,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots_ArrowHolder_run
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots_ArrowHolder_run
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots_ArrowHolder_run
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_ArrowHolder_run#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps_ArrowHolder_run#set:state
+  global.get $async-arrow-capture/__async_roots_ArrowHolder_run
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots_ArrowHolder_run
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -17366,6 +19357,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps_ArrowHolder_run#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17411,6 +19427,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCapture_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -17565,6 +19798,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCapture_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17585,6 +19843,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureWrite_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -17739,6 +20214,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureWrite_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17759,6 +20259,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureShadow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -17913,6 +20630,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -17933,6 +20675,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -18087,6 +21046,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -18107,6 +21091,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCallsArrow_1
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -18286,6 +21487,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCallsArrow_1#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -18306,6 +21532,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_arrowCaptureExtern_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -18559,6 +22002,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -18579,6 +22047,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 1088
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#set:state
+  global.get $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-arrow-capture/__async_roots___async_arrow_ArrowHolder_run_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -18733,6 +22418,31 @@
   local.get $1
   return
  )
+ (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-arrow-capture/__Cps___async_arrow_ArrowHolder_run_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -18876,382 +22586,6 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
-  (local $2 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 0
-  drop
-  local.get $this
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  local.get $2
-  i32.store
-  local.get $2
-  call $~lib/array/Array<i32>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#__visit (param $this i32) (param $cookie i32)
   (local $cur i32)
   (local $end i32)
@@ -19315,6 +22649,102 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCapture_0>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 0
+  drop
+  local.get $this
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $~lib/array/Array<i32>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureWrite>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -19392,6 +22822,76 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureShadow>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#__visit (param $this i32) (param $cookie i32)
   (local $cur i32)
   (local $end i32)
@@ -19455,6 +22955,76 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureShadow_0>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCallsArrow>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -19602,6 +23172,76 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_arrowCaptureExtern>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#__visit (param $this i32) (param $cookie i32)
   (local $cur i32)
   (local $end i32)
@@ -19665,6 +23305,76 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-arrow-capture/__Cps___async_arrow_arrowCaptureExtern_0>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-arrow-capture/__Cps_ArrowHolder_run>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -19823,6 +23533,66 @@
   local.get $7
   return
  )
+ (func $~lib/arraybuffer/ArrayBuffer#constructor (param $this i32) (param $length i32) (result i32)
+  (local $buffer i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $length
+  i32.const 1073741820
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 944
+   i32.const 52
+   i32.const 43
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $buffer
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCapture_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_pending_0 (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19923,6 +23693,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCapture_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCapture_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -19935,6 +23724,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_arrowCapture_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20042,6 +23850,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20054,6 +23881,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureWrite_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20161,6 +24007,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20173,6 +24038,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureShadow_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20280,6 +24164,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20292,6 +24195,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_arrowCallsArrow_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20442,6 +24364,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20454,6 +24395,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_arrowCaptureExtern_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20561,6 +24521,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20592,6 +24571,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture_ArrowHolder_run_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20680,6 +24678,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20692,6 +24709,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCapture_0_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20780,6 +24816,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20792,6 +24847,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureWrite_0_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20880,6 +24954,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20892,6 +24985,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureShadow_0_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -20980,6 +25092,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -20992,6 +25123,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_0_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -21099,6 +25249,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -21111,6 +25280,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCallsArrow_1_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -21242,6 +25430,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -21254,6 +25461,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_arrowCaptureExtern_0_status
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -21335,6 +25561,25 @@
   i32.store
   local.get $0
   call $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-arrow-capture/__async_async_arrow_capture___async_arrow_ArrowHolder_run_0_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4

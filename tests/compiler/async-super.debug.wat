@@ -2,19 +2,16 @@
  (type $0 (func (param i32) (result i32)))
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32 i32) (result i32)))
- (type $3 (func (param i32 i32 i32) (result i32)))
- (type $4 (func (result i32)))
+ (type $3 (func (result i32)))
+ (type $4 (func (param i32 i32 i32) (result i32)))
  (type $5 (func (param i32)))
  (type $6 (func))
- (type $7 (func (param i32 i32 i32)))
- (type $8 (func (param i32 i32 i32 i32)))
+ (type $7 (func (param i32 i32 i32 i32)))
+ (type $8 (func (param i32 i32 i32)))
  (type $9 (func (param i32 i32 i64) (result i32)))
  (type $10 (func (param i32 i32 i32 i32) (result i32)))
  (import "env" "abort" (func $~lib/builtins/abort (param i32 i32 i32 i32)))
  (import "env" "getNumber" (func $async-super/getNumber (result i32)))
- (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
- (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
- (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/total (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/threshold (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/state (mut i32) (i32.const 0))
@@ -23,6 +20,9 @@
  (global $~lib/rt/itcms/iter (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/toSpace (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/white (mut i32) (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
+ (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/fromSpace (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
@@ -32,31 +32,35 @@
  (global $async-super/__async_roots_Child_superAccessor (mut i32) (i32.const 0))
  (global $async-super/__async_roots_Child_superInClosure (mut i32) (i32.const 0))
  (global $async-super/__async_state_async_super_Child_superInClosure (mut i32) (i32.const 0))
+ (global $~argumentsLength (mut i32) (i32.const 0))
  (global $async-super/__async_roots_Child_superInArrow (mut i32) (i32.const 0))
  (global $async-super/__async_state_async_super_Child_superInArrow (mut i32) (i32.const 0))
+ (global $async-super/__async_roots___async_arrow_Child_superInArrow_0 (mut i32) (i32.const 0))
  (global $async-super/__async_roots_Child_superInherited (mut i32) (i32.const 0))
  (global $async-super/__async_roots_Child_superCompound (mut i32) (i32.const 0))
- (global $async-super/__async_roots___async_arrow_Child_superInArrow_0 (mut i32) (i32.const 0))
- (global $~argumentsLength (mut i32) (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 608))
- (global $~lib/memory/__data_end i32 (i32.const 716))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33484))
- (global $~lib/memory/__heap_base i32 (i32.const 33484))
+ (global $~lib/rt/__rtti_base i32 (i32.const 880))
+ (global $~lib/memory/__data_end i32 (i32.const 992))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33760))
+ (global $~lib/memory/__heap_base i32 (i32.const 33760))
  (memory $0 1)
- (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
- (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
- (data $2 (i32.const 108) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
- (data $3 (i32.const 172) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $4 (i32.const 240) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $5 (i32.const 272) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $6 (i32.const 300) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
- (data $7 (i32.const 364) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
- (data $8 (i32.const 416) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $9 (i32.const 444) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $10 (i32.const 508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
+ (data $1 (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $2 (i32.const 144) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $3 (i32.const 176) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $4 (i32.const 204) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
+ (data $5 (i32.const 268) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
+ (data $6 (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $7 (i32.const 348) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $8 (i32.const 412) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $9 (i32.const 444) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $10 (i32.const 492) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\07\00\00\00\08\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00")
  (data $12 (i32.const 572) "\1c\00\00\00\00\00\00\00\00\00\00\00\08\00\00\00\08\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00")
- (data $13 (i32.const 608) "\1a\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $13 (i32.const 604) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
+ (data $14 (i32.const 668) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
+ (data $15 (i32.const 700) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
+ (data $16 (i32.const 748) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $17 (i32.const 880) "\1b\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 3 3 funcref)
  (elem $0 (i32.const 1) $async-super/__adapt_Child_superInClosure_0 $async-super/__async_arrow_Child_superInArrow_0)
  (export "startSuperCall" (func $async-super/startSuperCall))
@@ -66,55 +70,81 @@
  (export "startSuperInArrow" (func $async-super/startSuperInArrow))
  (export "startSuperInherited" (func $async-super/startSuperInherited))
  (export "startSuperCompound" (func $async-super/startSuperCompound))
+ (export "__async_async_super_mint" (func $async-super/__async_async_super_mint))
+ (export "__async_async_super_mint_string" (func $async-super/__async_async_super_mint_string))
+ (export "__async_async_super_Child_superCall_last_handle" (func $async-super/__async_async_super_Child_superCall_last_handle))
  (export "__async_async_super_Child_new" (func $async-super/__async_async_super_Child_new))
+ (export "__async_async_super_Child_superField_last_handle" (func $async-super/__async_async_super_Child_superField_last_handle))
+ (export "__async_async_super_Child_superAccessor_last_handle" (func $async-super/__async_async_super_Child_superAccessor_last_handle))
+ (export "__async_async_super_Child_superInClosure_last_handle" (func $async-super/__async_async_super_Child_superInClosure_last_handle))
+ (export "__async_async_super_Child_superInArrow_last_handle" (func $async-super/__async_async_super_Child_superInArrow_last_handle))
+ (export "__async_async_super_Child_superInherited_last_handle" (func $async-super/__async_async_super_Child_superInherited_last_handle))
+ (export "__async_async_super_Child_superCompound_last_handle" (func $async-super/__async_async_super_Child_superCompound_last_handle))
+ (export "__async_async_super___async_arrow_Child_superInArrow_0_last_handle" (func $async-super/__async_async_super___async_arrow_Child_superInArrow_0_last_handle))
  (export "memory" (memory $0))
+ (export "__async_async_super_Child_superCall_reclaim" (func $export:async-super/__async_async_super_Child_superCall_reclaim))
  (export "__async_async_super_Child_superCall_resume_0" (func $export:async-super/__async_async_super_Child_superCall_resume_0))
  (export "__async_async_super_Child_superCall_reject_0" (func $export:async-super/__async_async_super_Child_superCall_reject_0))
  (export "__async_async_super_Child_superCall_result" (func $export:async-super/__async_async_super_Child_superCall_result))
  (export "__async_async_super_Child_superCall_error" (func $export:async-super/__async_async_super_Child_superCall_error))
+ (export "__async_async_super_Child_superCall_errorValue" (func $export:async-super/__async_async_super_Child_superCall_errorValue))
  (export "__async_async_super_Child_superCall_status" (func $export:async-super/__async_async_super_Child_superCall_status))
  (export "__async_async_super_Child_superCall_entry" (func $export:async-super/__async_async_super_Child_superCall_entry))
+ (export "__async_async_super_Child_superField_reclaim" (func $export:async-super/__async_async_super_Child_superField_reclaim))
  (export "__async_async_super_Child_superField_resume_0" (func $export:async-super/__async_async_super_Child_superField_resume_0))
  (export "__async_async_super_Child_superField_reject_0" (func $export:async-super/__async_async_super_Child_superField_reject_0))
  (export "__async_async_super_Child_superField_result" (func $export:async-super/__async_async_super_Child_superField_result))
  (export "__async_async_super_Child_superField_error" (func $export:async-super/__async_async_super_Child_superField_error))
+ (export "__async_async_super_Child_superField_errorValue" (func $export:async-super/__async_async_super_Child_superField_errorValue))
  (export "__async_async_super_Child_superField_status" (func $export:async-super/__async_async_super_Child_superField_status))
  (export "__async_async_super_Child_superField_entry" (func $export:async-super/__async_async_super_Child_superField_entry))
+ (export "__async_async_super_Child_superAccessor_reclaim" (func $export:async-super/__async_async_super_Child_superAccessor_reclaim))
  (export "__async_async_super_Child_superAccessor_resume_0" (func $export:async-super/__async_async_super_Child_superAccessor_resume_0))
  (export "__async_async_super_Child_superAccessor_reject_0" (func $export:async-super/__async_async_super_Child_superAccessor_reject_0))
  (export "__async_async_super_Child_superAccessor_result" (func $export:async-super/__async_async_super_Child_superAccessor_result))
  (export "__async_async_super_Child_superAccessor_error" (func $export:async-super/__async_async_super_Child_superAccessor_error))
+ (export "__async_async_super_Child_superAccessor_errorValue" (func $export:async-super/__async_async_super_Child_superAccessor_errorValue))
  (export "__async_async_super_Child_superAccessor_status" (func $export:async-super/__async_async_super_Child_superAccessor_status))
  (export "__async_async_super_Child_superAccessor_entry" (func $export:async-super/__async_async_super_Child_superAccessor_entry))
+ (export "__async_async_super_Child_superInClosure_reclaim" (func $export:async-super/__async_async_super_Child_superInClosure_reclaim))
  (export "__async_async_super_Child_superInClosure_resume_0" (func $export:async-super/__async_async_super_Child_superInClosure_resume_0))
  (export "__async_async_super_Child_superInClosure_reject_0" (func $export:async-super/__async_async_super_Child_superInClosure_reject_0))
  (export "__async_async_super_Child_superInClosure_result" (func $export:async-super/__async_async_super_Child_superInClosure_result))
  (export "__async_async_super_Child_superInClosure_error" (func $export:async-super/__async_async_super_Child_superInClosure_error))
+ (export "__async_async_super_Child_superInClosure_errorValue" (func $export:async-super/__async_async_super_Child_superInClosure_errorValue))
  (export "__async_async_super_Child_superInClosure_status" (func $export:async-super/__async_async_super_Child_superInClosure_status))
  (export "__async_async_super_Child_superInClosure_entry" (func $export:async-super/__async_async_super_Child_superInClosure_entry))
+ (export "__async_async_super_Child_superInArrow_reclaim" (func $export:async-super/__async_async_super_Child_superInArrow_reclaim))
  (export "__async_async_super_Child_superInArrow_pending_0" (func $export:async-super/__async_async_super_Child_superInArrow_pending_0))
  (export "__async_async_super_Child_superInArrow_resume_0" (func $export:async-super/__async_async_super_Child_superInArrow_resume_0))
  (export "__async_async_super_Child_superInArrow_reject_0" (func $export:async-super/__async_async_super_Child_superInArrow_reject_0))
  (export "__async_async_super_Child_superInArrow_result" (func $export:async-super/__async_async_super_Child_superInArrow_result))
  (export "__async_async_super_Child_superInArrow_error" (func $export:async-super/__async_async_super_Child_superInArrow_error))
+ (export "__async_async_super_Child_superInArrow_errorValue" (func $export:async-super/__async_async_super_Child_superInArrow_errorValue))
  (export "__async_async_super_Child_superInArrow_status" (func $export:async-super/__async_async_super_Child_superInArrow_status))
  (export "__async_async_super_Child_superInArrow_entry" (func $export:async-super/__async_async_super_Child_superInArrow_entry))
+ (export "__async_async_super_Child_superInherited_reclaim" (func $export:async-super/__async_async_super_Child_superInherited_reclaim))
  (export "__async_async_super_Child_superInherited_resume_0" (func $export:async-super/__async_async_super_Child_superInherited_resume_0))
  (export "__async_async_super_Child_superInherited_reject_0" (func $export:async-super/__async_async_super_Child_superInherited_reject_0))
  (export "__async_async_super_Child_superInherited_result" (func $export:async-super/__async_async_super_Child_superInherited_result))
  (export "__async_async_super_Child_superInherited_error" (func $export:async-super/__async_async_super_Child_superInherited_error))
+ (export "__async_async_super_Child_superInherited_errorValue" (func $export:async-super/__async_async_super_Child_superInherited_errorValue))
  (export "__async_async_super_Child_superInherited_status" (func $export:async-super/__async_async_super_Child_superInherited_status))
  (export "__async_async_super_Child_superInherited_entry" (func $export:async-super/__async_async_super_Child_superInherited_entry))
+ (export "__async_async_super_Child_superCompound_reclaim" (func $export:async-super/__async_async_super_Child_superCompound_reclaim))
  (export "__async_async_super_Child_superCompound_resume_0" (func $export:async-super/__async_async_super_Child_superCompound_resume_0))
  (export "__async_async_super_Child_superCompound_reject_0" (func $export:async-super/__async_async_super_Child_superCompound_reject_0))
  (export "__async_async_super_Child_superCompound_result" (func $export:async-super/__async_async_super_Child_superCompound_result))
  (export "__async_async_super_Child_superCompound_error" (func $export:async-super/__async_async_super_Child_superCompound_error))
+ (export "__async_async_super_Child_superCompound_errorValue" (func $export:async-super/__async_async_super_Child_superCompound_errorValue))
  (export "__async_async_super_Child_superCompound_status" (func $export:async-super/__async_async_super_Child_superCompound_status))
  (export "__async_async_super_Child_superCompound_entry" (func $export:async-super/__async_async_super_Child_superCompound_entry))
+ (export "__async_async_super___async_arrow_Child_superInArrow_0_reclaim" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_reclaim))
  (export "__async_async_super___async_arrow_Child_superInArrow_0_resume_0" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_resume_0))
  (export "__async_async_super___async_arrow_Child_superInArrow_0_reject_0" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_reject_0))
  (export "__async_async_super___async_arrow_Child_superInArrow_0_result" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_result))
  (export "__async_async_super___async_arrow_Child_superInArrow_0_error" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_error))
+ (export "__async_async_super___async_arrow_Child_superInArrow_0_errorValue" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_errorValue))
  (export "__async_async_super___async_arrow_Child_superInArrow_0_status" (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_status))
  (start $~start)
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
@@ -181,7 +211,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 160
      i32.const 16
      call $~lib/builtins/abort
@@ -251,7 +281,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 128
     i32.const 18
     call $~lib/builtins/abort
@@ -268,7 +298,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 132
    i32.const 16
    call $~lib/builtins/abort
@@ -298,8 +328,8 @@
   i32.load
   i32.gt_u
   if
-   i32.const 320
-   i32.const 384
+   i32.const 224
+   i32.const 288
    i32.const 21
    i32.const 28
    call $~lib/builtins/abort
@@ -367,7 +397,7 @@
    i32.eqz
    if (result i32)
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 148
     i32.const 30
     call $~lib/builtins/abort
@@ -519,7 +549,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 268
    i32.const 14
    call $~lib/builtins/abort
@@ -539,7 +569,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 270
    i32.const 14
    call $~lib/builtins/abort
@@ -602,7 +632,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 284
    i32.const 14
    call $~lib/builtins/abort
@@ -755,7 +785,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 201
    i32.const 14
    call $~lib/builtins/abort
@@ -772,7 +802,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 203
    i32.const 14
    call $~lib/builtins/abort
@@ -861,7 +891,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 221
     i32.const 16
     call $~lib/builtins/abort
@@ -904,7 +934,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 233
    i32.const 14
    call $~lib/builtins/abort
@@ -922,7 +952,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 234
    i32.const 14
    call $~lib/builtins/abort
@@ -990,7 +1020,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 251
    i32.const 14
    call $~lib/builtins/abort
@@ -1107,7 +1137,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 382
    i32.const 14
    call $~lib/builtins/abort
@@ -1153,7 +1183,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 389
     i32.const 16
     call $~lib/builtins/abort
@@ -1185,7 +1215,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 402
     i32.const 5
     call $~lib/builtins/abort
@@ -1429,7 +1459,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 562
    i32.const 3
    call $~lib/builtins/abort
@@ -1649,7 +1679,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 229
      i32.const 20
      call $~lib/builtins/abort
@@ -1760,8 +1790,8 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 128
-   i32.const 464
+   i32.const 32
+   i32.const 368
    i32.const 461
    i32.const 29
    call $~lib/builtins/abort
@@ -1863,7 +1893,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 334
    i32.const 14
    call $~lib/builtins/abort
@@ -1934,7 +1964,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 464
+     i32.const 368
      i32.const 347
      i32.const 18
      call $~lib/builtins/abort
@@ -2091,7 +2121,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 361
    i32.const 14
    call $~lib/builtins/abort
@@ -2206,7 +2236,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 499
     i32.const 16
     call $~lib/builtins/abort
@@ -2226,7 +2256,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 501
    i32.const 14
    call $~lib/builtins/abort
@@ -2274,8 +2304,8 @@
   i32.const 1073741804
   i32.ge_u
   if
-   i32.const 128
-   i32.const 192
+   i32.const 32
+   i32.const 96
    i32.const 261
    i32.const 31
    call $~lib/builtins/abort
@@ -2320,6 +2350,26 @@
   local.get $ptr
   return
  )
+ (func $async-super/Base#set:n (param $this i32) (param $n i32)
+  local.get $this
+  local.get $n
+  i32.store
+ )
+ (func $async-super/Base#set:_v (param $this i32) (param $_v i32)
+  local.get $this
+  local.get $_v
+  i32.store offset=4
+ )
+ (func $async-super/__Cps_Child_superCall#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
+ (func $async-super/__Cps_Child_superCall#set:__result (param $this i32) (param $__result i32)
+  local.get $this
+  local.get $__result
+  i32.store offset=4
+ )
  (func $~lib/rt/itcms/__link (param $parentPtr i32) (param $childPtr i32) (param $expectMultiple i32)
   (local $child i32)
   (local $parent i32)
@@ -2335,7 +2385,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 295
    i32.const 14
    call $~lib/builtins/abort
@@ -2388,6 +2438,43 @@
    end
   end
  )
+ (func $async-super/__Cps_Child_superCall#set:__error (param $this i32) (param $__error i32)
+  local.get $this
+  local.get $__error
+  i32.store offset=8
+  local.get $this
+  local.get $__error
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-super/__Cps_Child_superCall#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-super/__Cps_Child_superCall#set:__pend0 (param $this i32) (param $__pend0 i32)
+  local.get $this
+  local.get $__pend0
+  i32.store offset=16
+ )
+ (func $async-super/__Cps_Child_superCall#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
+  local.get $this
+  local.get $__cps___async_this_0
+  i32.store offset=20
+  local.get $this
+  local.get $__cps___async_this_0
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $async-super/__Cps_Child_superCall#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
+  local.get $this
+  local.get $__cps_m_1
+  i32.store offset=24
+ )
  (func $~lib/array/Array<async-super/__Cps_Child_superCall>#set:buffer (param $this i32) (param $buffer i32)
   local.get $this
   local.get $buffer
@@ -2411,273 +2498,6 @@
   local.get $this
   local.get $length_
   i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $start:async-super
-  memory.size
-  i32.const 16
-  i32.shl
-  global.get $~lib/memory/__heap_base
-  i32.sub
-  i32.const 1
-  i32.shr_u
-  global.set $~lib/rt/itcms/threshold
-  i32.const 240
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/pinSpace
-  i32.const 272
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/toSpace
-  i32.const 416
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/fromSpace
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#constructor
-  global.set $async-super/__async_roots_Child_superCall
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#constructor
-  global.set $async-super/__async_roots_Child_superField
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#constructor
-  global.set $async-super/__async_roots_Child_superAccessor
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#constructor
-  global.set $async-super/__async_roots_Child_superInClosure
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#constructor
-  global.set $async-super/__async_roots_Child_superInArrow
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#constructor
-  global.set $async-super/__async_roots_Child_superInherited
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#constructor
-  global.set $async-super/__async_roots_Child_superCompound
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#constructor
-  global.set $async-super/__async_roots___async_arrow_Child_superInArrow_0
- )
- (func $async-super/Base#set:n (param $this i32) (param $n i32)
-  local.get $this
-  local.get $n
-  i32.store
- )
- (func $async-super/Base#set:_v (param $this i32) (param $_v i32)
-  local.get $this
-  local.get $_v
-  i32.store offset=4
- )
- (func $async-super/__Cps_Child_superCall#set:state (param $this i32) (param $state i32)
-  local.get $this
-  local.get $state
-  i32.store
- )
- (func $async-super/__Cps_Child_superCall#set:__result (param $this i32) (param $__result i32)
-  local.get $this
-  local.get $__result
-  i32.store offset=4
- )
- (func $async-super/__Cps_Child_superCall#set:__error (param $this i32) (param $__error i32)
-  local.get $this
-  local.get $__error
-  i32.store offset=8
-  local.get $this
-  local.get $__error
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $async-super/__Cps_Child_superCall#set:__pend0 (param $this i32) (param $__pend0 i32)
-  local.get $this
-  local.get $__pend0
-  i32.store offset=12
- )
- (func $async-super/__Cps_Child_superCall#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
-  local.get $this
-  local.get $__cps___async_this_0
-  i32.store offset=16
-  local.get $this
-  local.get $__cps___async_this_0
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $async-super/__Cps_Child_superCall#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
-  local.get $this
-  local.get $__cps_m_1
-  i32.store offset=20
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2751,11 +2571,11 @@
  )
  (func $async-super/__Cps_Child_superCall#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superCall#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/Base#foo (param $this i32) (result i32)
   i32.const 2
@@ -2763,7 +2583,7 @@
  )
  (func $async-super/__Cps_Child_superCall#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $~lib/rt/__newBuffer (param $size i32) (param $id i32) (param $data i32) (result i32)
   (local $buffer i32)
@@ -2800,15 +2620,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superField#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superField#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superField#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -2817,7 +2646,31 @@
  (func $async-super/__Cps_Child_superField#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superField>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2833,11 +2686,11 @@
  )
  (func $async-super/__Cps_Child_superField#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superField#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/Base#get:n (param $this i32) (result i32)
   local.get $this
@@ -2845,7 +2698,7 @@
  )
  (func $async-super/__Cps_Child_superField#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-super/__Cps_Child_superAccessor#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2866,15 +2719,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superAccessor#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superAccessor#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superAccessor#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -2883,12 +2745,36 @@
  (func $async-super/__Cps_Child_superAccessor#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-super/__Cps_Child_superAccessor#set:__cps_before_2 (param $this i32) (param $__cps_before_2 i32)
   local.get $this
   local.get $__cps_before_2
-  i32.store offset=24
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2904,11 +2790,11 @@
  )
  (func $async-super/__Cps_Child_superAccessor#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superAccessor#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/Base#get:_v (param $this i32) (result i32)
   local.get $this
@@ -2916,11 +2802,11 @@
  )
  (func $async-super/__Cps_Child_superAccessor#get:__cps_before_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-super/__Cps_Child_superAccessor#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-super/__Cps_Child_superInClosure#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -2941,15 +2827,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superInClosure#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superInClosure#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superInClosure#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -2958,16 +2853,40 @@
  (func $async-super/__Cps_Child_superInClosure#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=20
+  i32.store offset=24
  )
  (func $async-super/__Cps_Child_superInClosure#set:__cps_f_2 (param $this i32) (param $__cps_f_2 i32)
   local.get $this
   local.get $__cps_f_2
-  i32.store offset=24
+  i32.store offset=28
   local.get $this
   local.get $__cps_f_2
   i32.const 0
   call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2983,19 +2902,19 @@
  )
  (func $async-super/__Cps_Child_superInClosure#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superInClosure#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/__Cps_Child_superInClosure#get:__cps_f_2 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-super/__Cps_Child_superInClosure#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-super/__Cps_Child_superInArrow#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3016,15 +2935,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superInArrow#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superInArrow#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superInArrow#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3033,7 +2961,7 @@
  (func $async-super/__Cps_Child_superInArrow#set:__cps_g_1 (param $this i32) (param $__cps_g_1 i32)
   local.get $this
   local.get $__cps_g_1
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__cps_g_1
   i32.const 0
@@ -3042,7 +2970,31 @@
  (func $async-super/__Cps_Child_superInArrow#set:__handle0 (param $this i32) (param $__handle0 i32)
   local.get $this
   local.get $__handle0
-  i32.store offset=24
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3075,15 +3027,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3092,7 +3053,7 @@
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__async_outer (param $this i32) (param $__async_outer i32)
   local.get $this
   local.get $__async_outer
-  i32.store offset=20
+  i32.store offset=24
   local.get $this
   local.get $__async_outer
   i32.const 0
@@ -3101,7 +3062,31 @@
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=24
+  i32.store offset=28
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3117,23 +3102,23 @@
  )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-super/__Cps_Child_superInArrow#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/__Cps_Child_superInArrow#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superInherited#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3154,15 +3139,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superInherited#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superInherited#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superInherited#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3171,7 +3165,31 @@
  (func $async-super/__Cps_Child_superInherited#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3187,11 +3205,11 @@
  )
  (func $async-super/__Cps_Child_superInherited#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superInherited#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/Base#bar (param $this i32) (result i32)
   i32.const 200
@@ -3199,7 +3217,7 @@
  )
  (func $async-super/__Cps_Child_superInherited#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
  )
  (func $async-super/__Cps_Child_superCompound#set:state (param $this i32) (param $state i32)
   local.get $this
@@ -3220,15 +3238,24 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $async-super/__Cps_Child_superCompound#set:__errorValue (param $this i32) (param $__errorValue i32)
+  local.get $this
+  local.get $__errorValue
+  i32.store offset=12
+  local.get $this
+  local.get $__errorValue
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
  (func $async-super/__Cps_Child_superCompound#set:__pend0 (param $this i32) (param $__pend0 i32)
   local.get $this
   local.get $__pend0
-  i32.store offset=12
+  i32.store offset=16
  )
  (func $async-super/__Cps_Child_superCompound#set:__cps___async_this_0 (param $this i32) (param $__cps___async_this_0 i32)
   local.get $this
   local.get $__cps___async_this_0
-  i32.store offset=16
+  i32.store offset=20
   local.get $this
   local.get $__cps___async_this_0
   i32.const 0
@@ -3237,7 +3264,31 @@
  (func $async-super/__Cps_Child_superCompound#set:__cps_m_1 (param $this i32) (param $__cps_m_1 i32)
   local.get $this
   local.get $__cps_m_1
-  i32.store offset=20
+  i32.store offset=24
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3253,15 +3304,68 @@
  )
  (func $async-super/__Cps_Child_superCompound#get:__pend0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=12
+  i32.load offset=16
  )
  (func $async-super/__Cps_Child_superCompound#get:__cps___async_this_0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=16
+  i32.load offset=20
  )
  (func $async-super/__Cps_Child_superCompound#get:__cps_m_1 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=20
+  i32.load offset=24
+ )
+ (func $async-super/__async_async_super_mint (result i32)
+  i32.const 0
+  i32.const 8
+  call $~lib/arraybuffer/ArrayBuffer#constructor
+  return
+ )
+ (func $~lib/rt/common/OBJECT#get:rtSize (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $~lib/string/String#get:length (param $this i32) (result i32)
+  local.get $this
+  i32.const 20
+  i32.sub
+  call $~lib/rt/common/OBJECT#get:rtSize
+  i32.const 1
+  i32.shr_u
+  return
+ )
+ (func $~lib/memory/memory.repeat (param $dst i32) (param $src i32) (param $srcLength i32) (param $count i32)
+  (local $index i32)
+  (local $total i32)
+  i32.const 0
+  local.set $index
+  local.get $srcLength
+  local.get $count
+  i32.mul
+  local.set $total
+  loop $while-continue|0
+   local.get $index
+   local.get $total
+   i32.lt_u
+   if
+    local.get $dst
+    local.get $index
+    i32.add
+    local.get $src
+    local.get $srcLength
+    memory.copy
+    local.get $index
+    local.get $srcLength
+    i32.add
+    local.set $index
+    br $while-continue|0
+   end
+  end
+ )
+ (func $async-super/__async_async_super_mint_string (param $len i32) (result i32)
+  i32.const 688
+  local.get $len
+  call $~lib/string/String#repeat
+  return
  )
  (func $async-super/__Cps_Child_superCall#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3270,6 +3374,10 @@
  (func $async-super/__Cps_Child_superCall#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-super/__Cps_Child_superCall#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-super/__async_async_super_Child_new (result i32)
   i32.const 0
@@ -3284,6 +3392,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-super/__Cps_Child_superField#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-super/__Cps_Child_superAccessor#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3291,6 +3403,10 @@
  (func $async-super/__Cps_Child_superAccessor#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-super/__Cps_Child_superAccessor#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-super/__Cps_Child_superInClosure#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3300,9 +3416,13 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-super/__Cps_Child_superInClosure#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-super/__Cps_Child_superInArrow#get:__handle0 (param $this i32) (result i32)
   local.get $this
-  i32.load offset=24
+  i32.load offset=28
  )
  (func $async-super/__Cps_Child_superInArrow#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3312,6 +3432,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-super/__Cps_Child_superInArrow#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-super/__Cps_Child_superInherited#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3319,6 +3443,10 @@
  (func $async-super/__Cps_Child_superInherited#get:__error (param $this i32) (result i32)
   local.get $this
   i32.load offset=8
+ )
+ (func $async-super/__Cps_Child_superInherited#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
  )
  (func $async-super/__Cps_Child_superCompound#get:__result (param $this i32) (result i32)
   local.get $this
@@ -3328,6 +3456,10 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-super/__Cps_Child_superCompound#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__result (param $this i32) (result i32)
   local.get $this
   i32.load offset=4
@@ -3336,15 +3468,22 @@
   local.get $this
   i32.load offset=8
  )
+ (func $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__errorValue (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
-  i32.const 320
+  i32.const 224
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 464
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 768
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 32
-  local.get $0
-  call $~lib/rt/itcms/__visit
-  i32.const 128
   local.get $0
   call $~lib/rt/itcms/__visit
   global.get $async-super/__async_roots_Child_superCall
@@ -3450,11 +3589,33 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
   i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/error/Error~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=8
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3468,7 +3629,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3484,6 +3649,18 @@
   local.get $1
   call $~lib/array/Array<async-super/__Cps_Child_superCall>#__visit
  )
+ (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<i32>#__visit
+ )
  (func $async-super/__Cps_Child_superField~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -3494,7 +3671,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3520,7 +3701,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3546,11 +3731,15 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=24
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=28
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3578,6 +3767,40 @@
   local.get $1
   call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#__visit
  )
+ (func $async-super/__Cps___async_arrow_Child_superInArrow_0~visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  i32.load offset=8
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=24
+  local.get $1
+  call $~lib/rt/itcms/__visit
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__visit
+ )
  (func $async-super/__Cps_Child_superInherited~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
@@ -3588,7 +3811,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3614,7 +3841,11 @@
   local.get $1
   call $~lib/rt/itcms/__visit
   local.get $0
-  i32.load offset=16
+  i32.load offset=12
+  local.get $1
+  call $~lib/rt/itcms/__visit
+  local.get $0
+  i32.load offset=20
   local.get $1
   call $~lib/rt/itcms/__visit
  )
@@ -3630,112 +3861,76 @@
   local.get $1
   call $~lib/array/Array<async-super/__Cps_Child_superCompound>#__visit
  )
- (func $async-super/__Cps___async_arrow_Child_superInArrow_0~visit (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  i32.load offset=8
-  local.get $1
-  call $~lib/rt/itcms/__visit
-  local.get $0
-  i32.load offset=16
-  local.get $1
-  call $~lib/rt/itcms/__visit
-  local.get $0
-  i32.load offset=20
-  local.get $1
-  call $~lib/rt/itcms/__visit
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__visit
- )
- (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<i32>#__visit
- )
  (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
   block $invalid
-   block $~lib/array/Array<i32>
-    block $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>
-     block $async-super/__Cps___async_arrow_Child_superInArrow_0
-      block $~lib/array/Array<async-super/__Cps_Child_superCompound>
-       block $async-super/__Cps_Child_superCompound
-        block $~lib/array/Array<async-super/__Cps_Child_superInherited>
-         block $async-super/__Cps_Child_superInherited
-          block $~lib/array/Array<async-super/__Cps_Child_superInArrow>
-           block $~lib/array/Array<async-super/__Cps_Child_superInClosure>
-            block $async-super/__Cps_Child_superInClosure
-             block $~lib/array/Array<async-super/__Cps_Child_superAccessor>
-              block $async-super/__Cps_Child_superAccessor
-               block $~lib/array/Array<async-super/__Cps_Child_superField>
-                block $async-super/__Cps_Child_superField
+   block $~lib/array/Array<async-super/__Cps_Child_superCompound>
+    block $async-super/__Cps_Child_superCompound
+     block $~lib/array/Array<async-super/__Cps_Child_superInherited>
+      block $async-super/__Cps_Child_superInherited
+       block $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>
+        block $async-super/__Cps___async_arrow_Child_superInArrow_0
+         block $~lib/array/Array<async-super/__Cps_Child_superInArrow>
+          block $~lib/array/Array<async-super/__Cps_Child_superInClosure>
+           block $async-super/__Cps_Child_superInClosure
+            block $~lib/array/Array<async-super/__Cps_Child_superAccessor>
+             block $async-super/__Cps_Child_superAccessor
+              block $~lib/array/Array<async-super/__Cps_Child_superField>
+               block $async-super/__Cps_Child_superField
+                block $~lib/array/Array<i32>
                  block $~lib/array/Array<async-super/__Cps_Child_superCall>
                   block $async-super/__Cps_Child_superCall
-                   block $async-super/__Cps_Child_superInArrow
-                    block $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>>
-                     block $~lib/function/Function<%28%29=>i32>
-                      block $~lib/promise/Promise<i32>
-                       block $async-super/Base
-                        block $async-super/Child
-                         block $~lib/arraybuffer/ArrayBufferView
-                          block $~lib/string/String
-                           block $~lib/arraybuffer/ArrayBuffer
-                            block $~lib/object/Object
-                             local.get $0
-                             i32.const 8
-                             i32.sub
-                             i32.load
-                             br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-super/Child $async-super/Base $~lib/promise/Promise<i32> $~lib/function/Function<%28%29=>i32> $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>> $async-super/__Cps_Child_superInArrow $async-super/__Cps_Child_superCall $~lib/array/Array<async-super/__Cps_Child_superCall> $async-super/__Cps_Child_superField $~lib/array/Array<async-super/__Cps_Child_superField> $async-super/__Cps_Child_superAccessor $~lib/array/Array<async-super/__Cps_Child_superAccessor> $async-super/__Cps_Child_superInClosure $~lib/array/Array<async-super/__Cps_Child_superInClosure> $~lib/array/Array<async-super/__Cps_Child_superInArrow> $async-super/__Cps_Child_superInherited $~lib/array/Array<async-super/__Cps_Child_superInherited> $async-super/__Cps_Child_superCompound $~lib/array/Array<async-super/__Cps_Child_superCompound> $async-super/__Cps___async_arrow_Child_superInArrow_0 $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0> $~lib/array/Array<i32> $invalid
+                   block $~lib/error/Error
+                    block $async-super/__Cps_Child_superInArrow
+                     block $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>>
+                      block $~lib/function/Function<%28%29=>i32>
+                       block $~lib/promise/Promise<i32>
+                        block $async-super/Base
+                         block $async-super/Child
+                          block $~lib/arraybuffer/ArrayBufferView
+                           block $~lib/string/String
+                            block $~lib/arraybuffer/ArrayBuffer
+                             block $~lib/object/Object
+                              local.get $0
+                              i32.const 8
+                              i32.sub
+                              i32.load
+                              br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $async-super/Child $async-super/Base $~lib/promise/Promise<i32> $~lib/function/Function<%28%29=>i32> $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>> $async-super/__Cps_Child_superInArrow $~lib/error/Error $async-super/__Cps_Child_superCall $~lib/array/Array<async-super/__Cps_Child_superCall> $~lib/array/Array<i32> $async-super/__Cps_Child_superField $~lib/array/Array<async-super/__Cps_Child_superField> $async-super/__Cps_Child_superAccessor $~lib/array/Array<async-super/__Cps_Child_superAccessor> $async-super/__Cps_Child_superInClosure $~lib/array/Array<async-super/__Cps_Child_superInClosure> $~lib/array/Array<async-super/__Cps_Child_superInArrow> $async-super/__Cps___async_arrow_Child_superInArrow_0 $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0> $async-super/__Cps_Child_superInherited $~lib/array/Array<async-super/__Cps_Child_superInherited> $async-super/__Cps_Child_superCompound $~lib/array/Array<async-super/__Cps_Child_superCompound> $invalid
+                             end
+                             return
                             end
                             return
                            end
                            return
                           end
+                          local.get $0
+                          local.get $1
+                          call $~lib/arraybuffer/ArrayBufferView~visit
                           return
                          end
-                         local.get $0
-                         local.get $1
-                         call $~lib/arraybuffer/ArrayBufferView~visit
                          return
                         end
                         return
                        end
                        return
                       end
+                      local.get $0
+                      local.get $1
+                      call $~lib/function/Function<%28%29=>i32>~visit
                       return
                      end
                      local.get $0
                      local.get $1
-                     call $~lib/function/Function<%28%29=>i32>~visit
+                     call $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>>~visit
                      return
                     end
                     local.get $0
                     local.get $1
-                    call $~lib/function/Function<%28async-super/Child%29=>~lib/promise/Promise<i32>>~visit
+                    call $async-super/__Cps_Child_superInArrow~visit
                     return
                    end
                    local.get $0
                    local.get $1
-                   call $async-super/__Cps_Child_superInArrow~visit
+                   call $~lib/error/Error~visit
                    return
                   end
                   local.get $0
@@ -3750,1195 +3945,139 @@
                 end
                 local.get $0
                 local.get $1
-                call $async-super/__Cps_Child_superField~visit
+                call $~lib/array/Array<i32>~visit
                 return
                end
                local.get $0
                local.get $1
-               call $~lib/array/Array<async-super/__Cps_Child_superField>~visit
+               call $async-super/__Cps_Child_superField~visit
                return
               end
               local.get $0
               local.get $1
-              call $async-super/__Cps_Child_superAccessor~visit
+              call $~lib/array/Array<async-super/__Cps_Child_superField>~visit
               return
              end
              local.get $0
              local.get $1
-             call $~lib/array/Array<async-super/__Cps_Child_superAccessor>~visit
+             call $async-super/__Cps_Child_superAccessor~visit
              return
             end
             local.get $0
             local.get $1
-            call $async-super/__Cps_Child_superInClosure~visit
+            call $~lib/array/Array<async-super/__Cps_Child_superAccessor>~visit
             return
            end
            local.get $0
            local.get $1
-           call $~lib/array/Array<async-super/__Cps_Child_superInClosure>~visit
+           call $async-super/__Cps_Child_superInClosure~visit
            return
           end
           local.get $0
           local.get $1
-          call $~lib/array/Array<async-super/__Cps_Child_superInArrow>~visit
+          call $~lib/array/Array<async-super/__Cps_Child_superInClosure>~visit
           return
          end
          local.get $0
          local.get $1
-         call $async-super/__Cps_Child_superInherited~visit
+         call $~lib/array/Array<async-super/__Cps_Child_superInArrow>~visit
          return
         end
         local.get $0
         local.get $1
-        call $~lib/array/Array<async-super/__Cps_Child_superInherited>~visit
+        call $async-super/__Cps___async_arrow_Child_superInArrow_0~visit
         return
        end
        local.get $0
        local.get $1
-       call $async-super/__Cps_Child_superCompound~visit
+       call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>~visit
        return
       end
       local.get $0
       local.get $1
-      call $~lib/array/Array<async-super/__Cps_Child_superCompound>~visit
+      call $async-super/__Cps_Child_superInherited~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-super/__Cps___async_arrow_Child_superInArrow_0~visit
+     call $~lib/array/Array<async-super/__Cps_Child_superInherited>~visit
      return
     end
     local.get $0
     local.get $1
-    call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>~visit
+    call $async-super/__Cps_Child_superCompound~visit
     return
    end
    local.get $0
    local.get $1
-   call $~lib/array/Array<i32>~visit
+   call $~lib/array/Array<async-super/__Cps_Child_superCompound>~visit
    return
   end
   unreachable
  )
  (func $~start
-  call $start:async-super
+  memory.size
+  i32.const 16
+  i32.shl
+  global.get $~lib/memory/__heap_base
+  i32.sub
+  i32.const 1
+  i32.shr_u
+  global.set $~lib/rt/itcms/threshold
+  i32.const 144
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/pinSpace
+  i32.const 176
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/toSpace
+  i32.const 320
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/fromSpace
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#constructor
+  global.set $async-super/__async_roots_Child_superCall
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#constructor
+  global.set $async-super/__async_roots_Child_superField
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#constructor
+  global.set $async-super/__async_roots_Child_superAccessor
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#constructor
+  global.set $async-super/__async_roots_Child_superInClosure
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#constructor
+  global.set $async-super/__async_roots_Child_superInArrow
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#constructor
+  global.set $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#constructor
+  global.set $async-super/__async_roots_Child_superInherited
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#constructor
+  global.set $async-super/__async_roots_Child_superCompound
  )
  (func $~stack_check
   global.get $~lib/memory/__stack_pointer
   global.get $~lib/memory/__data_end
   i32.lt_s
   if
-   i32.const 33504
-   i32.const 33552
+   i32.const 33792
+   i32.const 33840
    i32.const 1
    i32.const 1
    call $~lib/builtins/abort
    unreachable
   end
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCall>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 11
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superField>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 13
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 15
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 17
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 18
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 20
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 22
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 24
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
  )
  (func $async-super/Base#constructor (param $this i32) (result i32)
   (local $1 i32)
@@ -5046,8 +4185,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 10
+   i32.const 28
+   i32.const 11
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5084,8 +4223,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superCall#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superCall#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5117,6 +4264,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCall>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 12
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/ensureCapacity (param $array i32) (param $newSize i32) (param $alignLog2 i32) (param $canGrow i32)
   (local $oldCapacity i32)
@@ -5158,8 +4443,8 @@
    i32.shr_u
    i32.gt_u
    if
-    i32.const 32
-    i32.const 80
+    i32.const 464
+    i32.const 512
     i32.const 19
     i32.const 48
     call $~lib/builtins/abort
@@ -5510,7 +4795,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 11
+  i32.const 12
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -5883,8 +5168,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 12
+   i32.const 28
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -5921,8 +5206,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superField#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superField#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -5954,6 +5247,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 15
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superField>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -6203,7 +5634,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 13
+  i32.const 15
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -6590,8 +6021,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 14
+   i32.const 32
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -6628,8 +6059,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superAccessor#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superAccessor#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -6669,6 +6108,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 17
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -7014,7 +6591,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 15
+  i32.const 17
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -7431,8 +7008,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 16
+   i32.const 32
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7469,8 +7046,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superInClosure#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superInClosure#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -7510,6 +7095,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 19
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -7815,7 +7538,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 17
+  i32.const 19
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8021,7 +7744,7 @@
       local.get $2
       call $async-super/__Cps_Child_superInClosure#get:__cps_f_2
       i32.load
-      call_indirect (type $4)
+      call_indirect (type $3)
       local.get $this
       local.set $2
       global.get $~lib/memory/__stack_pointer
@@ -8201,7 +7924,7 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
+   i32.const 32
    i32.const 9
    call $~lib/rt/itcms/__new
    local.tee $this
@@ -8239,8 +7962,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superInArrow#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superInArrow#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8280,6 +8011,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 20
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8360,8 +8229,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 28
-   i32.const 23
+   i32.const 32
+   i32.const 21
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8398,8 +8267,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps___async_arrow_Child_superInArrow_0#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -8439,6 +8316,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 22
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8688,7 +8703,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 24
+  i32.const 22
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9217,7 +9232,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 18
+  i32.const 20
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9595,8 +9610,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 19
+   i32.const 28
+   i32.const 23
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9633,8 +9648,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superInherited#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superInherited#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -9666,6 +9689,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 24
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -9940,7 +10101,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 20
+  i32.const 24
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10313,8 +10474,8 @@
   i32.eqz
   if
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
-   i32.const 21
+   i32.const 28
+   i32.const 25
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10351,8 +10512,16 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-super/__Cps_Child_superCompound#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-super/__Cps_Child_superCompound#set:__errorValue
   local.get $this
   local.set $1
   global.get $~lib/memory/__stack_pointer
@@ -10384,6 +10553,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 26
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -10633,7 +10940,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 22
+  i32.const 26
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11048,6 +11355,325 @@
   local.get $0
   return
  )
+ (func $~lib/string/String#repeat (param $this i32) (param $count i32) (result i32)
+  (local $length i32)
+  (local $out i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  local.get $4
+  i32.store
+  local.get $4
+  call $~lib/string/String#get:length
+  local.set $length
+  local.get $count
+  i32.const 0
+  i32.lt_s
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i64.extend_i32_s
+   local.get $count
+   i64.extend_i32_s
+   i64.mul
+   i64.const 1
+   i64.const 28
+   i64.shl
+   i64.gt_u
+  end
+  if
+   i32.const 464
+   i32.const 720
+   i32.const 334
+   i32.const 7
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $count
+  i32.const 0
+  i32.eq
+  if (result i32)
+   i32.const 1
+  else
+   local.get $length
+   i32.eqz
+  end
+  if
+   i32.const 432
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  local.get $count
+  i32.const 1
+  i32.eq
+  if
+   local.get $this
+   local.set $4
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $4
+   return
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  local.get $count
+  i32.mul
+  i32.const 1
+  i32.shl
+  i32.const 2
+  call $~lib/rt/itcms/__new
+  local.tee $out
+  i32.store offset=4
+  local.get $out
+  local.get $this
+  local.get $length
+  i32.const 1
+  i32.shl
+  local.get $count
+  call $~lib/memory/memory.repeat
+  local.get $out
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCall>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superCall_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superCall
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superCall
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superCall
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superCall_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superCall#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superCall#set:state
+  global.get $async-super/__async_roots_Child_superCall
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superCall
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superCall>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superCall_resume_0 (param $state i32) (param $value i32) (result i32)
   (local $2 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11197,6 +11823,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superCall_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superCall#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superCall_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11242,6 +11893,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superField>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superField_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superField
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superField
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superField
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superField_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superField#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superField#set:state
+  global.get $async-super/__async_roots_Child_superField
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superField
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superField>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -11396,6 +12264,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superField_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superField#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superField_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11441,6 +12334,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superAccessor>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superAccessor_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superAccessor
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superAccessor
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superAccessor
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superAccessor_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superAccessor#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superAccessor#set:state
+  global.get $async-super/__async_roots_Child_superAccessor
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superAccessor
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superAccessor>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -11595,6 +12705,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superAccessor_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superAccessor#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superAccessor_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11640,6 +12775,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInClosure>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInClosure_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superInClosure
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superInClosure
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superInClosure
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInClosure_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInClosure#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superInClosure#set:state
+  global.get $async-super/__async_roots_Child_superInClosure
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superInClosure
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superInClosure>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -11794,6 +13146,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superInClosure_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInClosure#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superInClosure_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -11839,6 +13216,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInArrow>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInArrow_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superInArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superInArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superInArrow
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInArrow_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInArrow#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superInArrow#set:state
+  global.get $async-super/__async_roots_Child_superInArrow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superInArrow
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superInArrow>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -12018,6 +13612,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superInArrow_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInArrow#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superInArrow_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12063,6 +13682,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInherited_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superInherited
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superInherited
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superInherited
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superInherited_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInherited#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superInherited#set:state
+  global.get $async-super/__async_roots_Child_superInherited
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superInherited
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superInherited>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -12217,6 +14053,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superInherited_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superInherited#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superInherited_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12262,6 +14123,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps_Child_superCompound>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super_Child_superCompound_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots_Child_superCompound
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots_Child_superCompound
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots_Child_superCompound
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super_Child_superCompound_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superCompound#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps_Child_superCompound#set:state
+  global.get $async-super/__async_roots_Child_superCompound
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots_Child_superCompound
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps_Child_superCompound>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -12416,6 +14494,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super_Child_superCompound_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps_Child_superCompound#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super_Child_superCompound_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12461,6 +14564,223 @@
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length_
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__get (param $this i32) (param $index i32) (result i32)
+  (local $value i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $index
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length_
+  i32.ge_u
+  if
+   i32.const 224
+   i32.const 512
+   i32.const 114
+   i32.const 42
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  local.get $3
+  i32.store
+  local.get $3
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:dataStart
+  local.get $index
+  i32.const 2
+  i32.shl
+  i32.add
+  i32.load
+  local.tee $value
+  i32.store offset=4
+  i32.const 1
+  drop
+  i32.const 0
+  i32.eqz
+  drop
+  local.get $value
+  i32.eqz
+  if
+   i32.const 768
+   i32.const 512
+   i32.const 118
+   i32.const 40
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $value
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $async-super/__async_async_super___async_arrow_Child_superInArrow_0_last_handle (result i32)
+  (local $0 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length
+  i32.const 0
+  i32.eq
+  if
+   i32.const 0
+   local.set $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 8
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $0
+   return
+  end
+  global.get $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  global.get $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store offset=4
+  local.get $0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length
+  i32.const 1
+  i32.sub
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__get
+  local.set $0
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $0
+  return
+ )
+ (func $async-super/__async_async_super___async_arrow_Child_superInArrow_0_reclaim (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store offset=8
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps___async_arrow_Child_superInArrow_0#get:state
+  i32.const 0
+  i32.lt_s
+  if
+   i32.const 2
+   local.set $1
+   global.get $~lib/memory/__stack_pointer
+   i32.const 12
+   i32.add
+   global.set $~lib/memory/__stack_pointer
+   local.get $1
+   return
+  end
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  i32.const -2
+  call $async-super/__Cps___async_arrow_Child_superInArrow_0#set:state
+  global.get $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  global.get $async-super/__async_roots___async_arrow_Child_superInArrow_0
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=8
+  local.get $1
+  i32.const 0
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#indexOf
+  i32.const 1
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#splice
+  drop
+  i32.const 2
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
@@ -12615,6 +14935,31 @@
   local.get $1
   return
  )
+ (func $async-super/__async_async_super___async_arrow_Child_superInArrow_0_errorValue (param $state i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $state
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store
+  local.get $1
+  call $async-super/__Cps___async_arrow_Child_superInArrow_0#get:__errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+  return
+ )
  (func $async-super/__async_async_super___async_arrow_Child_superInArrow_0_status (param $state i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -12751,6 +15096,32 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-super/__Cps_Child_superCall>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 0
+  drop
+  local.get $this
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $~lib/array/Array<i32>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -13038,6 +15409,76 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
+ (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__visit (param $this i32) (param $cookie i32)
+  (local $cur i32)
+  (local $end i32)
+  (local $val i32)
+  (local $5 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 1
+  drop
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:dataStart
+  local.set $cur
+  local.get $cur
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length_
+  i32.const 2
+  i32.shl
+  i32.add
+  local.set $end
+  loop $while-continue|0
+   local.get $cur
+   local.get $end
+   i32.lt_u
+   if
+    local.get $cur
+    i32.load
+    local.set $val
+    local.get $val
+    if
+     local.get $val
+     local.get $cookie
+     call $~lib/rt/itcms/__visit
+    end
+    local.get $cur
+    i32.const 4
+    i32.add
+    local.set $cur
+    br $while-continue|0
+   end
+  end
+  local.get $this
+  local.set $5
+  global.get $~lib/memory/__stack_pointer
+  local.get $5
+  i32.store
+  local.get $5
+  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
  (func $~lib/array/Array<async-super/__Cps_Child_superInherited>#__visit (param $this i32) (param $cookie i32)
   (local $cur i32)
   (local $end i32)
@@ -13178,102 +15619,6 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
- (func $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#__visit (param $this i32) (param $cookie i32)
-  (local $cur i32)
-  (local $end i32)
-  (local $val i32)
-  (local $5 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 1
-  drop
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:dataStart
-  local.set $cur
-  local.get $cur
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:length_
-  i32.const 2
-  i32.shl
-  i32.add
-  local.set $end
-  loop $while-continue|0
-   local.get $cur
-   local.get $end
-   i32.lt_u
-   if
-    local.get $cur
-    i32.load
-    local.set $val
-    local.get $val
-    if
-     local.get $val
-     local.get $cookie
-     call $~lib/rt/itcms/__visit
-    end
-    local.get $cur
-    i32.const 4
-    i32.add
-    local.set $cur
-    br $while-continue|0
-   end
-  end
-  local.get $this
-  local.set $5
-  global.get $~lib/memory/__stack_pointer
-  local.get $5
-  i32.store
-  local.get $5
-  call $~lib/array/Array<async-super/__Cps___async_arrow_Child_superInArrow_0>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
- (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
-  (local $2 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 0
-  drop
-  local.get $this
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  local.get $2
-  i32.store
-  local.get $2
-  call $~lib/array/Array<i32>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
  (func $~lib/object/Object#constructor (param $this i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13354,6 +15699,66 @@
   global.set $~lib/memory/__stack_pointer
   local.get $7
   return
+ )
+ (func $~lib/arraybuffer/ArrayBuffer#constructor (param $this i32) (param $length i32) (result i32)
+  (local $buffer i32)
+  (local $3 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $length
+  i32.const 1073741820
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 624
+   i32.const 52
+   i32.const 43
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $length
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $buffer
+  local.set $3
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $3
+  return
+ )
+ (func $export:async-super/__async_async_super_Child_superCall_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superCall_reclaim
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
  )
  (func $export:async-super/__async_async_super_Child_superCall_resume_0 (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
@@ -13436,6 +15841,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superCall_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superCall_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superCall_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13467,6 +15891,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superCall_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superField_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superField_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -13555,6 +15998,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superField_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superField_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superField_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13586,6 +16048,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superField_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superAccessor_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superAccessor_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -13674,6 +16155,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superAccessor_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superAccessor_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superAccessor_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13705,6 +16205,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superAccessor_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superInClosure_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInClosure_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -13793,6 +16312,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superInClosure_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInClosure_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superInClosure_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13824,6 +16362,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superInClosure_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superInArrow_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInArrow_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -13931,6 +16488,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superInArrow_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInArrow_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superInArrow_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -13962,6 +16538,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superInArrow_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superInherited_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInherited_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14050,6 +16645,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superInherited_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superInherited_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superInherited_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14081,6 +16695,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superInherited_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super_Child_superCompound_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superCompound_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14169,6 +16802,25 @@
   global.set $~lib/memory/__stack_pointer
   local.get $1
  )
+ (func $export:async-super/__async_async_super_Child_superCompound_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super_Child_superCompound_errorValue
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
  (func $export:async-super/__async_async_super_Child_superCompound_status (param $0 i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -14200,6 +16852,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super_Child_superCompound_entry
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_reclaim (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super___async_arrow_Child_superInArrow_0_reclaim
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -14281,6 +16952,25 @@
   i32.store
   local.get $0
   call $async-super/__async_async_super___async_arrow_Child_superInArrow_0_error
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
+ )
+ (func $export:async-super/__async_async_super___async_arrow_Child_superInArrow_0_errorValue (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  local.get $0
+  i32.store
+  local.get $0
+  call $async-super/__async_async_super___async_arrow_Child_superInArrow_0_errorValue
   local.set $1
   global.get $~lib/memory/__stack_pointer
   i32.const 4
