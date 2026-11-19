@@ -707,6 +707,44 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS closure counter 1-then-2 across await");
 }
 
+// Nested closures capturing outer-closure names, driven through the
+// generated coordinator: the outer capture is passed as an argument.
+{
+  const base = numDeferreds.length;
+  const p1 = api.nestedParam();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 21, "nestedParam must resolve 11 + 10");
+  const p2 = api.nestedMixed();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 121, "nestedMixed must resolve 111 + 10");
+  const p3 = api.nestedMixedLocal();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 1027, "nestedMixedLocal must resolve 1017 + 10");
+  console.log("PASS nested closures capture outer-closure names");
+}
+
+// Async arrows capturing outer locals, driven through the generated
+// coordinator: the capture reads the enclosing state object.
+{
+  const base = numDeferreds.length;
+  const p1 = api.arrowCapture();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 12, "arrowCapture must resolve (1+10)+1");
+  const p2 = api.arrowCaptureWrite();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 40, "arrowCaptureWrite must resolve 25 + 15");
+  const p3 = api.arrowCallsArrow();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 13, "arrowCallsArrow must resolve 12 + 1");
+  console.log("PASS async arrows capture outer locals");
+}
+
 // A rejection that lands in a catch must drive the catch, not fail the task.
 {
   const base = chunkDeferreds.length;
@@ -1392,6 +1430,35 @@ const api = await instantiateAsync(bytes, {
     methodNums[base].resolve(100);
     check((await p) === 106, "driveRest() must give 106 through nested await of a rest method");
     console.log("PASS rest method driven through nested await, no wrapper class");
+  }
+
+  // `super` in async methods, all with getNumber()=7 and a fresh instance
+  // per check (superAccessor and superCompound mutate the base field).
+  // superCall: Base.foo()=2 (not Child's override 3); superField: n set
+  // to 30; superAccessor: before is Base's 10, v is 5 after the Base
+  // setter; superInClosure: Base.foo()=2 in the lifted closure;
+  // superInherited: Base.bar()=200; superCompound: v 10 += 2 -> 12, ++ -> 13.
+  {
+    check(typeof methodsApi.SuperChild === "function", "generated coordinator must expose a SuperChild wrapper class");
+    const base = methodNums.length;
+    const driveSuper = async (method) => {
+      const c = new methodsApi.SuperChild();
+      const p = c[method]();
+      await tick();
+      methodNums[base + driveSuper.n].resolve(7);
+      driveSuper.n++;
+      const value = await p;
+      c.dispose();
+      return value;
+    };
+    driveSuper.n = 0;
+    check((await driveSuper("superCall")) === 9, "SuperChild.superCall() with getNumber()=7 must give 9");
+    check((await driveSuper("superField")) === 37, "SuperChild.superField() with getNumber()=7 must give 37");
+    check((await driveSuper("superAccessor")) === 1012, "SuperChild.superAccessor() with getNumber()=7 must give 1012");
+    check((await driveSuper("superInClosure")) === 9, "SuperChild.superInClosure() with getNumber()=7 must give 9");
+    check((await driveSuper("superInherited")) === 207, "SuperChild.superInherited() with getNumber()=7 must give 207");
+    check((await driveSuper("superCompound")) === 20, "SuperChild.superCompound() with getNumber()=7 must give 20");
+    console.log("PASS super in async methods, known values 9/37/1012/9/207/20");
   }
 
   // Two instances driven concurrently keep independent counts.

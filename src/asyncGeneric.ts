@@ -76,7 +76,8 @@ import {
 } from "./ast";
 
 import {
-  DiagnosticCode
+  DiagnosticCode,
+  Range
 } from "./diagnostics";
 
 import {
@@ -114,6 +115,10 @@ import {
   transformAsyncWorkItem,
   TransformWorkItem
 } from "./asyncTransform";
+
+import {
+  OuterArrowBinding
+} from "./asyncArrowExtract";
 
 import {
   owningFile
@@ -916,7 +921,10 @@ export function ensureAsyncGenericInstance(
     qualName,
     selfName: null,
     forbidden: new Set<string>(),
-    isExtracted: false
+    isExtracted: false,
+    outerQual: null,
+    outerNames: new Map<string, Range>(),
+    outerArrows: new Map<string, OuterArrowBinding>()
   };
   let worklist = new Array<TransformWorkItem>();
   worklist.push(item);

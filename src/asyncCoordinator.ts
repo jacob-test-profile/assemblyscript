@@ -479,11 +479,6 @@ function findInnerPrototypeByBase(program: Program, innerBase: string, qual: str
   return null;
 }
 
-/** Builds metadata for a nested inner function by file-qualified name, or
- *  `null` when it cannot be found or driven. The inner may live in another
- *  file than the outer function and needs no export. A method inner has
- *  innerQual `Class_method`, so the match uses the qualified name, not
- *  `prototype.name` (which is just the method name). */
 /** Resolved instantiations of a generic suspending import. */
 function genericImportInstances(prototype: FunctionPrototype): Function[] | null {
   let instances = prototype.instances;

@@ -133,7 +133,9 @@ import {
 } from "./asyncTryDesugar";
 
 import {
-  liftThisInAsyncBody
+  liftThisInAsyncBody,
+  prepareSuperHelpers,
+  SuperPrepass
 } from "./asyncThisLift";
 
 import {
@@ -145,7 +147,12 @@ import {
 import {
   scanFileForAsyncArrows,
   ArrowWorkItem,
-  FileArrowAliases
+  FileArrowAliases,
+  OuterArrowBinding,
+  OuterFieldInfo,
+  OuterRecord,
+  outerFieldMaps,
+  outerFieldKey
 } from "./asyncArrowExtract";
 
 import {
@@ -153,6 +160,7 @@ import {
   AsyncRewriter,
   AsyncFail,
   ASYNC_THIS_NAME,
+  ASYNC_OUTER_NAME,
   ident,
   thisProp,
   intLit,
@@ -388,11 +396,33 @@ export interface TransformWorkItem {
   /** Whether the prototype is an extracted async arrow (its receiver, if
    *  any, arrives as a generated `__async_this` parameter). */
   isExtracted: bool;
+  /** QualName of the enclosing async function or method, for extracted
+   *  arrows capturing its locals; `null` otherwise. */
+  outerQual: string | null;
+  /** Enclosing local name to its declaration name range, captured at
+   *  extraction time; empty unless extracted. */
+  outerNames: Map<string, Range>;
+  /** Enclosing arrow name to its binding, captured at extraction time. */
+  outerArrows: Map<string, OuterArrowBinding>;
 }
 
 /** Transforms all async functions in the program. Called from `Program.initialize()`. */
 export function transformAsyncFunctions(program: Program): void {
   let files = Map_values(program.filesByName);
+  // The `super` pre-pass registers helper methods on class prototypes,
+  // which must happen before any worklist `resolveClass` finishes a
+  // class instance, so it runs over all files up front.
+  let superPrototypes = new Array<FunctionPrototype>();
+  for (let i = 0, k = files.length; i < k; ++i) {
+    let file = files[i];
+    if (file.source.sourceKind == SourceKind.LibraryEntry) continue;
+    let functions = new Array<FunctionPrototype>();
+    let methods = new Array<FunctionPrototype>();
+    collectAsyncFunctions(file, functions, methods);
+    for (let j = 0, l = functions.length; j < l; ++j) superPrototypes.push(functions[j]);
+    for (let j = 0, l = methods.length; j < l; ++j) superPrototypes.push(methods[j]);
+  }
+  let superHelpers = prepareSuperHelpers(program, superPrototypes);
   for (let i = 0, k = files.length; i < k; ++i) {
     let file = files[i];
     if (file.source.sourceKind == SourceKind.LibraryEntry) continue;
@@ -430,7 +460,10 @@ export function transformAsyncFunctions(program: Program): void {
         qualName: qualNameOf(prototype),
         selfName: null,
         forbidden: new Set<string>(),
-        isExtracted: false
+        isExtracted: false,
+        outerQual: null,
+        outerNames: new Map<string, Range>(),
+        outerArrows: new Map<string, OuterArrowBinding>()
       });
     }
     for (let j = 0, l = methods.length; j < l; ++j) {
@@ -447,7 +480,10 @@ export function transformAsyncFunctions(program: Program): void {
         qualName: `${receiverClass.name}_${prototype.name}`,
         selfName: null,
         forbidden: new Set<string>(),
-        isExtracted: false
+        isExtracted: false,
+        outerQual: null,
+        outerNames: new Map<string, Range>(),
+        outerArrows: new Map<string, OuterArrowBinding>()
       });
     }
     for (let j = 0, l = scan.arrows.length; j < l; ++j) {
@@ -502,7 +538,35 @@ export function transformAsyncFunctions(program: Program): void {
       // A namespaced function is transformed like a top-level one: its
       // protocol members already register under the file, and generate()
       // emits a top-level entry alias the coordinator can drive.
-      if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) continue;
+      // A method the `super` pre-pass rejected already carries its
+      // diagnostic; mark the bound prototype rejected so the compiler
+      // guard skips it silently.
+      if (superHelpers.failed.has(prototype)) {
+        program.rejectedAsyncFunctions.add(transformPrototype);
+        continue;
+      }
+      let superPrepass: SuperPrepass | null = null;
+      if (item.receiverClass) superPrepass = superHelpers.helpers.get(item.receiverClass) || null;
+      // An extracted arrow resolves its captures through the enclosing
+      // function's field map, filled by the enclosing transform (which
+      // runs first: the arrow is queued behind it). A missing map means
+      // the enclosing function did not transform and already carries a
+      // diagnostic, so skip silently.
+      let outer: OuterRecord | null = null;
+      if (item.isExtracted && item.outerQual) {
+        let fields = outerFieldMaps.get(item.outerQual);
+        if (!fields) {
+          program.rejectedAsyncFunctions.add(transformPrototype);
+          continue;
+        }
+        outer = {
+          outerQual: item.outerQual,
+          names: item.outerNames,
+          arrows: item.outerArrows,
+          fields
+        };
+      }
+      if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted, superPrepass)) continue;
       // Static methods have no receiver: arrows inside them close over
       // the class name, not an instance, so the lift sees no receiver.
       let hasReceiver = (item.isMethod && !item.isStatic) || (!item.isMethod && item.receiverClass != null);
@@ -517,12 +581,12 @@ export function transformAsyncFunctions(program: Program): void {
         receiverClass: item.isStatic ? null : item.receiverClass,
         aliases
       };
-      let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, fail);
+      let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, outer, fail);
       if (!lift) continue;
       for (let a = 0, b = lift.arrows.length; a < b; ++a) {
         worklist.push(arrowWorkItem(lift.arrows[a]));
       }
-      let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews);
+      let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews, item.outerQual);
       transform.run();
     }
   }
@@ -697,12 +761,12 @@ export function transformAsyncWorkItem(
     receiverClass: item.isStatic ? null : item.receiverClass,
     aliases
   };
-  let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, fail);
+  let lift = liftEnvInAsyncBody(program, transformPrototype, ctx, item.selfName, item.forbidden, null, fail);
   if (!lift) return;
   for (let a = 0, b = lift.arrows.length; a < b; ++a) {
     worklist.push(arrowWorkItem(lift.arrows[a]));
   }
-  let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews);
+  let transform = new AsyncFunctionTransform(program, file, transformPrototype, program.asyncSpillPools, program.asyncMints, lift, item.qualName, item.genParent, item.isMethod, item.isStatic, item.receiverClass, program.asyncClassNews, item.outerQual);
   transform.run();
 }
 
@@ -720,7 +784,10 @@ function arrowWorkItem(arrow: ArrowWorkItem): TransformWorkItem {
     qualName: arrow.prototype.name,
     selfName: arrow.selfName,
     forbidden: arrow.forbidden,
-    isExtracted: true
+    isExtracted: true,
+    outerQual: arrow.outerQual,
+    outerNames: arrow.outerNames,
+    outerArrows: arrow.outerArrows
   };
 }
 
@@ -864,8 +931,20 @@ class AsyncFunctionTransform {
   private adapters: Map<string, MethodDeclaration> | null;
   /** Whether any adapter exists, so the state global is needed. */
   private hasAdapters: bool;
+  /** Whether any async arrow was extracted from the body, so the state
+   *  global is needed (extracted arrows read it for their outer). */
+  private hasArrows: bool;
+  /** Whether the state global is needed: adapters or extracted arrows. */
+  private needsStateGlobal: bool;
   /** Module global holding the currently-stepping state object. */
   private stateGlobalName: string;
+  /** QualName of the enclosing async function or method, for an
+   *  extracted arrow capturing its locals; `null` otherwise. */
+  private outerQual: string | null;
+  /** State-field map for this function's locals, keyed by declaration
+   *  name range, stashed on success so extracted arrows can resolve
+   *  their captures. */
+  private fieldMap = new Map<string, OuterFieldInfo>();
   /** State fields holding stored-promise tokens: a local is tracked here
    *  when its binding (declaration initializer or `=` rebind) is a direct
    *  call to a suspending import. Keyed by field, so a shadowing local
@@ -884,7 +963,8 @@ class AsyncFunctionTransform {
     isMethod: bool,
     isStatic: bool,
     receiverClass: ClassPrototype | null,
-    classNews: Set<string>
+    classNews: Set<string>,
+    outerQual: string | null
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
@@ -903,6 +983,9 @@ class AsyncFunctionTransform {
     this.liftedMethods = lift.methods;
     this.adapters = lift.adapters.size > 0 ? lift.adapters : null;
     this.hasAdapters = lift.hasAdapters;
+    this.hasArrows = lift.arrows.length > 0;
+    this.needsStateGlobal = this.hasAdapters || this.hasArrows;
+    this.outerQual = outerQual;
   }
 
   private get fail(): AsyncFail {
@@ -920,6 +1003,8 @@ class AsyncFunctionTransform {
     let outcome = this.transform();
     if (outcome == TransformOutcome.Transformed) {
       this.program.transformedAsyncFunctions.add(this.prototype);
+      // Publish the field map so extracted arrows can resolve captures.
+      outerFieldMaps.set(this.fnName, this.fieldMap);
     } else if (outcome == TransformOutcome.Rejected) {
       this.program.rejectedAsyncFunctions.add(this.prototype);
     }
@@ -993,6 +1078,10 @@ class AsyncFunctionTransform {
         return TransformOutcome.Rejected;
       }
       let outcome = this.declareLocal(ASYNC_THIS_NAME, receiverTypeNode, receiverType, this.declaration.name.range, this.declaration, true);
+      if (outcome != TransformOutcome.Transformed) return outcome;
+    }
+    if (this.outerQual) {
+      let outcome = this.declareOuter();
       if (outcome != TransformOutcome.Transformed) return outcome;
     }
     this.newSegment();
@@ -1091,6 +1180,7 @@ class AsyncFunctionTransform {
         range: nameRange,
         shadowed: false
       });
+      this.recordField(name, nameRange, "", true, slotField);
       return TransformOutcome.Transformed;
     }
     let fieldTypeNode: TypeNode | null = typeNode;
@@ -1112,6 +1202,40 @@ class AsyncFunctionTransform {
       spilled: false,
       slotField: "",
       range: nameRange,
+      shadowed: false
+    });
+    this.recordField(name, nameRange, fieldName, false, "");
+    return TransformOutcome.Transformed;
+  }
+
+  /** Records a lifted local in the field map, so an extracted arrow
+   *  can resolve a capture of it. Synthetic names are not user locals. */
+  private recordField(name: string, nameRange: Range, field: string, spilled: bool, slotField: string): void {
+    if (name == ASYNC_THIS_NAME || name == ASYNC_OUTER_NAME) return;
+    this.fieldMap.set(outerFieldKey(nameRange), { field, spilled, slotField });
+  }
+
+  /** Declares the `__async_outer` state field holding the enclosing
+   *  function's state object, and binds the name in the scope so the
+   *  rewriter turns references into `this.__async_outer`. */
+  private declareOuter(): TransformOutcome {
+    let outerQual = assert(this.outerQual);
+    let range = this.range;
+    if (this.scope.lookupCurrent(ASYNC_OUTER_NAME)) {
+      this.fail(`Async arrows cannot capture a local named '${ASYNC_OUTER_NAME}'`, range);
+      return TransformOutcome.Rejected;
+    }
+    let outerClassName = cpsStateClassName(outerQual);
+    let outerTypeNode = namedType(outerClassName, null, false, range);
+    let flow = assert(this.flow);
+    let outerType = this.resolver.resolveType(outerTypeNode, flow, this.parent, new Map());
+    if (!outerType) return TransformOutcome.Rejected;
+    this.fields.push(new StateField(ASYNC_OUTER_NAME, outerTypeNode, outerType));
+    this.scope.declare(ASYNC_OUTER_NAME, {
+      field: ASYNC_OUTER_NAME,
+      spilled: false,
+      slotField: "",
+      range,
       shadowed: false
     });
     return TransformOutcome.Transformed;
@@ -3995,7 +4119,7 @@ class AsyncFunctionTransform {
     if (this.hasNameCollision(this.statusName())) return false;
     if (this.hasNameCollision(this.lastHandleName())) return false;
     if (this.hasNameCollision(this.reclaimName())) return false;
-    if (this.hasAdapters) {
+    if (this.needsStateGlobal) {
       if (this.hasNameCollision(this.stateGlobalName)) return false;
     }
     if (this.slots.length > 0) {
@@ -4009,7 +4133,7 @@ class AsyncFunctionTransform {
     declarations.push(this.buildRootsGlobal());
     declarations.push(this.buildLastHandleGetter());
     declarations.push(this.buildReclaim());
-    if (this.hasAdapters) declarations.push(this.buildStateGlobal());
+    if (this.needsStateGlobal) declarations.push(this.buildStateGlobal());
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
       if (site.isJoin) {
@@ -4554,8 +4678,9 @@ class AsyncFunctionTransform {
       range
     );
     let body = new Array<Statement>();
-    if (this.hasAdapters) {
-      // Adapters forward through the currently-stepping state object.
+    if (this.needsStateGlobal) {
+      // Adapters forward through the currently-stepping state object,
+      // and extracted arrows read it for their outer.
       body.push(exprStmt(assignExpr(
         ident(this.stateGlobalName, range),
         new CallExpression(
@@ -5347,6 +5472,23 @@ class AsyncFunctionTransform {
       ) ],
       range
     ));
+    if (this.outerQual) {
+      // Pin the enclosing function's state object: it is read from the
+      // state global while the enclosing step is running synchronously,
+      // so the global holds this task's state; the field then pins it
+      // across suspension and is never re-read. The global is usize
+      // typed, so the read is cast back to the state class.
+      body.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(ident("__st", range), ident(ASYNC_OUTER_NAME, range), range),
+        new CallExpression(
+          ident("changetype", range),
+          [ namedType(cpsStateClassName(this.outerQual), null, false, range) ],
+          [ ident(cpsStateGlobalName(this.fileBase, this.outerQual), range) ],
+          range
+        ),
+        range
+      )));
+    }
     for (let i = 0, k = this.slots.length; i < k; ++i) {
       let slot = this.slots[i];
       let temp = `__s${i}`;

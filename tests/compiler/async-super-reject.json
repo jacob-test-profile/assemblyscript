@@ -1,0 +1,1 @@
+{"stderr":["AS100: Not implemented: 'super' to a member of a generic base class is not yet supported","AS100: Not implemented: 'super' to a member of a base class in another file is not yet supported","AS100: Not implemented: 'super' methods cannot be used as values","AS100: Not implemented: 'super' property assignment is only supported as a full expression statement"]}

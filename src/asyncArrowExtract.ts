@@ -32,6 +32,10 @@ import {
 } from "./common";
 
 import {
+  Range
+} from "./diagnostics";
+
+import {
   Program,
   FunctionPrototype,
   File,
@@ -59,6 +63,49 @@ export interface ArrowAlias {
   needsReceiver: bool;
 }
 
+/** An outer async arrow visible to an extracted arrow's body: how to
+ *  call it. The receiver name is the outer's `__async_this`, which the
+ *  inner arrow also receives as its own leading parameter. */
+export interface OuterArrowBinding {
+  extractedName: string;
+  needsReceiver: bool;
+  receiverName: string | null;
+}
+
+/** Field info for one outer local, keyed by its declaration name range. */
+export interface OuterFieldInfo {
+  /** State field holding the value, or "" when spilled. */
+  field: string;
+  /** Whether the value lives in an externref spill slot instead. */
+  spilled: bool;
+  /** State field holding the spill slot index, or "" when not spilled. */
+  slotField: string;
+}
+
+/** State-field map for one transformed async function, keyed by its
+ *  qualName, so an extracted arrow can resolve its captures. The inner
+ *  map is keyed by declaration name range (`start:end`). Filled by the
+ *  outer's core transform; an arrow's transform reads it. */
+export const outerFieldMaps = new Map<string, Map<string, OuterFieldInfo>>();
+
+/** Key for one declaration name range in an outer field map. */
+export function outerFieldKey(range: Range): string {
+  return range.start.toString() + ":" + range.end.toString();
+}
+
+/** What an extracted arrow needs to resolve captures from its enclosing
+ *  async function. */
+export interface OuterRecord {
+  outerQual: string;
+  /** Enclosing local name to its declaration name range, captured at
+   *  extraction time (nearest declaration wins, so shadowing is exact). */
+  names: Map<string, Range>;
+  /** Enclosing arrow name to its binding, captured at extraction time. */
+  arrows: Map<string, OuterArrowBinding>;
+  /** Field map of the outer, filled by the outer's core transform. */
+  fields: Map<string, OuterFieldInfo>;
+}
+
 /** A generated async function awaiting its pre-passes. */
 export interface ArrowWorkItem {
   prototype: FunctionPrototype;
@@ -70,6 +117,14 @@ export interface ArrowWorkItem {
   genParent: Element;
   /** Enclosing class, when the arrow closes over a receiver. */
   receiverClass: ClassPrototype | null;
+  /** QualName of the enclosing async function or method, or `null` for
+   *  file-level arrows (no enclosing function, no captures). */
+  outerQual: string | null;
+  /** Enclosing local name to its declaration name range, captured at
+   *  extraction time. Empty for file-level arrows. */
+  outerNames: Map<string, Range>;
+  /** Enclosing arrow name to its binding, captured at extraction time. */
+  outerArrows: Map<string, OuterArrowBinding>;
 }
 
 /** Arrow aliases visible in one file: globals by name, fields by name. */
@@ -111,7 +166,10 @@ export function validateLiftableParams(
 /** Extracts one async arrow to a generated top-level async function.
  *  Returns `null` when a failure was reported through `fail`. The
  *  `forbidden` set is carried to the work item so the extracted body is
- *  rejected loudly if it references an enclosing local. */
+ *  rejected loudly if it references an enclosing local it cannot
+ *  capture (a transitive capture through an ancestor). The outer info
+ *  is carried so the extracted body can resolve its captures from the
+ *  enclosing function; file-level arrows pass `null`/empty maps. */
 export function extractAsyncArrow(
   program: Program,
   genParent: Element,
@@ -121,6 +179,9 @@ export function extractAsyncArrow(
   receiverClassName: string,
   receiverClass: ClassPrototype | null,
   forbidden: Set<string>,
+  outerQual: string | null,
+  outerNames: Map<string, Range>,
+  outerArrows: Map<string, OuterArrowBinding>,
   fail: AsyncFail
 ): ArrowWorkItem | null {
   let range = declaration.range;
@@ -194,7 +255,10 @@ export function extractAsyncArrow(
     selfName: null,
     forbidden,
     genParent,
-    receiverClass
+    receiverClass,
+    outerQual,
+    outerNames,
+    outerArrows
   };
 }
 
@@ -263,7 +327,7 @@ function scanStatements(
         let name = `__async_arrow_${declaration.name.text}_${counter.value++}`;
         let extracted = extractAsyncArrow(
           program, parent, funcExpr.declaration, name,
-          false, "", null, new Set<string>(), fail
+          false, "", null, new Set<string>(), null, new Map<string, Range>(), new Map<string, OuterArrowBinding>(), fail
         );
         if (!extracted) return false;
         extracted.selfName = declaration.name.text;
@@ -301,7 +365,7 @@ function scanStatements(
         let name = `__async_arrow_${className}_${fieldName}_${counter.value++}`;
         let extracted = extractAsyncArrow(
           program, parent, funcExpr.declaration, name,
-          true, className, classPrototype, new Set<string>(), fail
+          true, className, classPrototype, new Set<string>(), null, new Map<string, Range>(), new Map<string, OuterArrowBinding>(), fail
         );
         if (!extracted) return false;
         // The extracted function takes the receiver as a leading
