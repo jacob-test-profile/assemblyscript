@@ -5,8 +5,8 @@
  (type $3 (func (result i32)))
  (type $4 (func (param i32 i32 i32) (result i32)))
  (type $5 (func (param i32)))
- (type $6 (func))
- (type $7 (func (param i32 i32 i32)))
+ (type $6 (func (param i32 i32 i32)))
+ (type $7 (func))
  (type $8 (func (param i32 i32 i32 i32)))
  (type $9 (func (param i32 i32 i64) (result i32)))
  (type $10 (func (param i32 i64 i32)))
@@ -17,9 +17,6 @@
  (import "env" "getChunk" (func $async-throw-values/getChunk (param i32) (result i32)))
  (import "env" "getError" (func $async-throw-values/getError (result i32)))
  (import "env" "getNumber" (func $async-throw-values/getNumber (result i32)))
- (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
- (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
- (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/total (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/threshold (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/state (mut i32) (i32.const 0))
@@ -28,6 +25,9 @@
  (global $~lib/rt/itcms/iter (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/toSpace (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/white (mut i32) (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
+ (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/fromSpace (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
@@ -35,6 +35,7 @@
  (global $async-throw-values/__async_roots_throwError (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwString (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwNumber (mut i32) (i32.const 0))
+ (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $async-throw-values/__async_roots_catchError (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwAwaitString (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwAwaitError (mut i32) (i32.const 0))
@@ -43,23 +44,22 @@
  (global $async-throw-values/__async_roots_nestedThrow (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwInCatch (mut i32) (i32.const 0))
  (global $async-throw-values/__async_roots_throwBox (mut i32) (i32.const 0))
- (global $~lib/native/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 3136))
  (global $~lib/memory/__data_end i32 (i32.const 3268))
  (global $~lib/memory/__stack_pointer (mut i32) (i32.const 36036))
  (global $~lib/memory/__heap_base i32 (i32.const 36036))
  (memory $0 1)
- (data $0 (i32.const 12) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
- (data $1 (i32.const 60) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
- (data $2 (i32.const 108) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
- (data $3 (i32.const 172) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $4 (i32.const 240) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $5 (i32.const 272) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $6 (i32.const 300) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
- (data $7 (i32.const 364) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
- (data $8 (i32.const 416) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $9 (i32.const 444) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $10 (i32.const 508) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
+ (data $1 (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $2 (i32.const 144) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $3 (i32.const 176) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $4 (i32.const 204) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
+ (data $5 (i32.const 268) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
+ (data $6 (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $7 (i32.const 348) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $8 (i32.const 412) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $9 (i32.const 444) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $10 (i32.const 492) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
  (data $11 (i32.const 540) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\n\00\00\00E\00r\00r\00o\00r\00\00\00")
  (data $12 (i32.const 572) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\10\00\00\00e\00r\00r\00-\00b\00o\00o\00m\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $13 (i32.const 620) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\16\00\00\00u\00n\00r\00e\00a\00c\00h\00a\00b\00l\00e\00\00\00\00\00\00\00")
@@ -83,7 +83,7 @@
  (data $31 (i32.const 2924) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
  (data $32 (i32.const 2956) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00~\00l\00i\00b\00/\00s\00t\00r\00i\00n\00g\00.\00t\00s\00")
  (data $33 (i32.const 3004) "|\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $34 (i32.const 3136) " \00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\02\t\00\00")
+ (data $34 (i32.const 3136) " \00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00\02A\00\00\02\t\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00\00\00\00\00\02A\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "throwError" (func $async-throw-values/throwError))
@@ -244,7 +244,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 160
      i32.const 16
      call $~lib/builtins/abort
@@ -314,7 +314,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 128
     i32.const 18
     call $~lib/builtins/abort
@@ -331,7 +331,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 132
    i32.const 16
    call $~lib/builtins/abort
@@ -361,8 +361,8 @@
   i32.load
   i32.gt_u
   if
-   i32.const 320
-   i32.const 384
+   i32.const 224
+   i32.const 288
    i32.const 21
    i32.const 28
    call $~lib/builtins/abort
@@ -430,7 +430,7 @@
    i32.eqz
    if (result i32)
     i32.const 0
-    i32.const 192
+    i32.const 96
     i32.const 148
     i32.const 30
     call $~lib/builtins/abort
@@ -582,7 +582,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 268
    i32.const 14
    call $~lib/builtins/abort
@@ -602,7 +602,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 270
    i32.const 14
    call $~lib/builtins/abort
@@ -665,7 +665,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 284
    i32.const 14
    call $~lib/builtins/abort
@@ -818,7 +818,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 201
    i32.const 14
    call $~lib/builtins/abort
@@ -835,7 +835,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 203
    i32.const 14
    call $~lib/builtins/abort
@@ -924,7 +924,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 221
     i32.const 16
     call $~lib/builtins/abort
@@ -967,7 +967,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 233
    i32.const 14
    call $~lib/builtins/abort
@@ -985,7 +985,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 234
    i32.const 14
    call $~lib/builtins/abort
@@ -1053,7 +1053,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 251
    i32.const 14
    call $~lib/builtins/abort
@@ -1170,7 +1170,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 382
    i32.const 14
    call $~lib/builtins/abort
@@ -1216,7 +1216,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 389
     i32.const 16
     call $~lib/builtins/abort
@@ -1248,7 +1248,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 402
     i32.const 5
     call $~lib/builtins/abort
@@ -1492,7 +1492,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 562
    i32.const 3
    call $~lib/builtins/abort
@@ -1712,7 +1712,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 192
+     i32.const 96
      i32.const 229
      i32.const 20
      call $~lib/builtins/abort
@@ -1823,8 +1823,8 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 128
-   i32.const 464
+   i32.const 32
+   i32.const 368
    i32.const 461
    i32.const 29
    call $~lib/builtins/abort
@@ -1926,7 +1926,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 334
    i32.const 14
    call $~lib/builtins/abort
@@ -1997,7 +1997,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 464
+     i32.const 368
      i32.const 347
      i32.const 18
      call $~lib/builtins/abort
@@ -2154,7 +2154,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 361
    i32.const 14
    call $~lib/builtins/abort
@@ -2269,7 +2269,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 464
+    i32.const 368
     i32.const 499
     i32.const 16
     call $~lib/builtins/abort
@@ -2289,7 +2289,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 464
+   i32.const 368
    i32.const 501
    i32.const 14
    call $~lib/builtins/abort
@@ -2337,8 +2337,8 @@
   i32.const 1073741804
   i32.ge_u
   if
-   i32.const 128
-   i32.const 192
+   i32.const 32
+   i32.const 96
    i32.const 261
    i32.const 31
    call $~lib/builtins/abort
@@ -2383,6 +2383,11 @@
   local.get $ptr
   return
  )
+ (func $async-throw-values/__Cps_throwError#set:state (param $this i32) (param $state i32)
+  local.get $this
+  local.get $state
+  i32.store
+ )
  (func $~lib/rt/itcms/__link (param $parentPtr i32) (param $childPtr i32) (param $expectMultiple i32)
   (local $child i32)
   (local $parent i32)
@@ -2398,7 +2403,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 192
+   i32.const 96
    i32.const 295
    i32.const 14
    call $~lib/builtins/abort
@@ -2451,338 +2456,6 @@
    end
   end
  )
- (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $start:async-throw-values
-  memory.size
-  i32.const 16
-  i32.shl
-  global.get $~lib/memory/__heap_base
-  i32.sub
-  i32.const 1
-  i32.shr_u
-  global.set $~lib/rt/itcms/threshold
-  i32.const 240
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/pinSpace
-  i32.const 272
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/toSpace
-  i32.const 416
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/fromSpace
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwError>#constructor
-  global.set $async-throw-values/__async_roots_throwError
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#constructor
-  global.set $async-throw-values/__async_roots_throwString
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#constructor
-  global.set $async-throw-values/__async_roots_throwNumber
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#constructor
-  global.set $async-throw-values/__async_roots_catchError
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#constructor
-  global.set $async-throw-values/__async_roots_throwAwaitString
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#constructor
-  global.set $async-throw-values/__async_roots_throwAwaitError
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#constructor
-  global.set $async-throw-values/__async_roots_throwAwaitNumber
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#constructor
-  global.set $async-throw-values/__async_roots_catchAwaitString
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#constructor
-  global.set $async-throw-values/__async_roots_nestedThrow
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#constructor
-  global.set $async-throw-values/__async_roots_throwInCatch
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#constructor
-  global.set $async-throw-values/__async_roots_throwBox
- )
- (func $async-throw-values/__Cps_throwError#set:state (param $this i32) (param $state i32)
-  local.get $this
-  local.get $state
-  i32.store
- )
  (func $async-throw-values/__Cps_throwError#set:__result (param $this i32) (param $__result i32)
   local.get $this
   local.get $__result
@@ -2818,6 +2491,30 @@
   local.get $__cps___async_try_throwVal_0_0
   i32.const 0
   call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwError>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwError>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2981,6 +2678,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_throwString>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -3033,6 +2754,30 @@
   local.get $this
   local.get $__cps___async_try_throwVal_0_0
   i32.store offset=16
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3586,6 +3331,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_catchError>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -3709,6 +3478,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -3779,6 +3572,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -3840,6 +3657,30 @@
   local.get $this
   local.get $__cps___async_try_throwVal_0_0
   i32.store offset=20
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -3989,6 +3830,30 @@
   local.get $__cps_e_11
   i32.const 0
   call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -4215,6 +4080,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -4415,6 +4304,30 @@
   i32.const 0
   call $~lib/rt/itcms/__link
  )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
  (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#get:length_ (param $this i32) (result i32)
   local.get $this
   i32.load offset=12
@@ -4524,6 +4437,30 @@
   local.get $__cps___async_try_throwVal_0_1
   i32.const 0
   call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -4742,16 +4679,16 @@
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
-  i32.const 320
+  i32.const 224
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 32
+  i32.const 464
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 3024
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 128
+  i32.const 32
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 1360
@@ -4901,6 +4838,18 @@
   local.get $0
   local.get $1
   call $~lib/array/Array<async-throw-values/__Cps_throwError>#__visit
+ )
+ (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  call $~lib/object/Object~visit
+  local.get $0
+  local.get $1
+  call $~lib/array/Array<i32>#__visit
  )
  (func $async-throw-values/__Cps_throwString~visit (param $0 i32) (param $1 i32)
   (local $2 i32)
@@ -5362,41 +5311,29 @@
   local.get $1
   call $~lib/array/Array<async-throw-values/__Cps_throwBox>#__visit
  )
- (func $~lib/array/Array<i32>#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/array/Array<i32>~visit (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  call $~lib/object/Object~visit
-  local.get $0
-  local.get $1
-  call $~lib/array/Array<i32>#__visit
- )
  (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
   block $invalid
-   block $~lib/array/Array<i32>
-    block $~lib/array/Array<async-throw-values/__Cps_throwBox>
-     block $async-throw-values/__Cps_throwBox
-      block $~lib/array/Array<async-throw-values/__Cps_throwInCatch>
-       block $async-throw-values/__Cps_throwInCatch
-        block $~lib/array/Array<async-throw-values/__Cps_nestedThrow>
-         block $async-throw-values/__Cps_nestedThrow
-          block $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>
-           block $async-throw-values/__Cps_catchAwaitString
-            block $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>
-             block $async-throw-values/__Cps_throwAwaitNumber
-              block $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>
-               block $async-throw-values/__Cps_throwAwaitError
-                block $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>
-                 block $async-throw-values/__Cps_throwAwaitString
-                  block $~lib/array/Array<async-throw-values/__Cps_catchError>
-                   block $async-throw-values/__Cps_catchError
-                    block $~lib/array/Array<async-throw-values/__Cps_throwNumber>
-                     block $async-throw-values/__Cps_throwNumber
-                      block $~lib/array/Array<async-throw-values/__Cps_throwString>
-                       block $async-throw-values/__Cps_throwString
+   block $~lib/array/Array<async-throw-values/__Cps_throwBox>
+    block $async-throw-values/__Cps_throwBox
+     block $~lib/array/Array<async-throw-values/__Cps_throwInCatch>
+      block $async-throw-values/__Cps_throwInCatch
+       block $~lib/array/Array<async-throw-values/__Cps_nestedThrow>
+        block $async-throw-values/__Cps_nestedThrow
+         block $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>
+          block $async-throw-values/__Cps_catchAwaitString
+           block $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>
+            block $async-throw-values/__Cps_throwAwaitNumber
+             block $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>
+              block $async-throw-values/__Cps_throwAwaitError
+               block $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>
+                block $async-throw-values/__Cps_throwAwaitString
+                 block $~lib/array/Array<async-throw-values/__Cps_catchError>
+                  block $async-throw-values/__Cps_catchError
+                   block $~lib/array/Array<async-throw-values/__Cps_throwNumber>
+                    block $async-throw-values/__Cps_throwNumber
+                     block $~lib/array/Array<async-throw-values/__Cps_throwString>
+                      block $async-throw-values/__Cps_throwString
+                       block $~lib/array/Array<i32>
                         block $~lib/array/Array<async-throw-values/__Cps_throwError>
                          block $async-throw-values/__Cps_throwError
                           block $async-throw-values/Box
@@ -5412,7 +5349,7 @@
                                    i32.const 8
                                    i32.sub
                                    i32.load
-                                   br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/error/Error $~lib/promise/Promise<~lib/error/Error> $~lib/promise/Promise<i32> $async-throw-values/Box $async-throw-values/__Cps_throwError $~lib/array/Array<async-throw-values/__Cps_throwError> $async-throw-values/__Cps_throwString $~lib/array/Array<async-throw-values/__Cps_throwString> $async-throw-values/__Cps_throwNumber $~lib/array/Array<async-throw-values/__Cps_throwNumber> $async-throw-values/__Cps_catchError $~lib/array/Array<async-throw-values/__Cps_catchError> $async-throw-values/__Cps_throwAwaitString $~lib/array/Array<async-throw-values/__Cps_throwAwaitString> $async-throw-values/__Cps_throwAwaitError $~lib/array/Array<async-throw-values/__Cps_throwAwaitError> $async-throw-values/__Cps_throwAwaitNumber $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber> $async-throw-values/__Cps_catchAwaitString $~lib/array/Array<async-throw-values/__Cps_catchAwaitString> $async-throw-values/__Cps_nestedThrow $~lib/array/Array<async-throw-values/__Cps_nestedThrow> $async-throw-values/__Cps_throwInCatch $~lib/array/Array<async-throw-values/__Cps_throwInCatch> $async-throw-values/__Cps_throwBox $~lib/array/Array<async-throw-values/__Cps_throwBox> $~lib/array/Array<i32> $invalid
+                                   br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/promise/Promise<~lib/string/String> $~lib/error/Error $~lib/promise/Promise<~lib/error/Error> $~lib/promise/Promise<i32> $async-throw-values/Box $async-throw-values/__Cps_throwError $~lib/array/Array<async-throw-values/__Cps_throwError> $~lib/array/Array<i32> $async-throw-values/__Cps_throwString $~lib/array/Array<async-throw-values/__Cps_throwString> $async-throw-values/__Cps_throwNumber $~lib/array/Array<async-throw-values/__Cps_throwNumber> $async-throw-values/__Cps_catchError $~lib/array/Array<async-throw-values/__Cps_catchError> $async-throw-values/__Cps_throwAwaitString $~lib/array/Array<async-throw-values/__Cps_throwAwaitString> $async-throw-values/__Cps_throwAwaitError $~lib/array/Array<async-throw-values/__Cps_throwAwaitError> $async-throw-values/__Cps_throwAwaitNumber $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber> $async-throw-values/__Cps_catchAwaitString $~lib/array/Array<async-throw-values/__Cps_catchAwaitString> $async-throw-values/__Cps_nestedThrow $~lib/array/Array<async-throw-values/__Cps_nestedThrow> $async-throw-values/__Cps_throwInCatch $~lib/array/Array<async-throw-values/__Cps_throwInCatch> $async-throw-values/__Cps_throwBox $~lib/array/Array<async-throw-values/__Cps_throwBox> $invalid
                                   end
                                   return
                                  end
@@ -5450,113 +5387,173 @@
                        end
                        local.get $0
                        local.get $1
-                       call $async-throw-values/__Cps_throwString~visit
+                       call $~lib/array/Array<i32>~visit
                        return
                       end
                       local.get $0
                       local.get $1
-                      call $~lib/array/Array<async-throw-values/__Cps_throwString>~visit
+                      call $async-throw-values/__Cps_throwString~visit
                       return
                      end
                      local.get $0
                      local.get $1
-                     call $async-throw-values/__Cps_throwNumber~visit
+                     call $~lib/array/Array<async-throw-values/__Cps_throwString>~visit
                      return
                     end
                     local.get $0
                     local.get $1
-                    call $~lib/array/Array<async-throw-values/__Cps_throwNumber>~visit
+                    call $async-throw-values/__Cps_throwNumber~visit
                     return
                    end
                    local.get $0
                    local.get $1
-                   call $async-throw-values/__Cps_catchError~visit
+                   call $~lib/array/Array<async-throw-values/__Cps_throwNumber>~visit
                    return
                   end
                   local.get $0
                   local.get $1
-                  call $~lib/array/Array<async-throw-values/__Cps_catchError>~visit
+                  call $async-throw-values/__Cps_catchError~visit
                   return
                  end
                  local.get $0
                  local.get $1
-                 call $async-throw-values/__Cps_throwAwaitString~visit
+                 call $~lib/array/Array<async-throw-values/__Cps_catchError>~visit
                  return
                 end
                 local.get $0
                 local.get $1
-                call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>~visit
+                call $async-throw-values/__Cps_throwAwaitString~visit
                 return
                end
                local.get $0
                local.get $1
-               call $async-throw-values/__Cps_throwAwaitError~visit
+               call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>~visit
                return
               end
               local.get $0
               local.get $1
-              call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>~visit
+              call $async-throw-values/__Cps_throwAwaitError~visit
               return
              end
              local.get $0
              local.get $1
-             call $async-throw-values/__Cps_throwAwaitNumber~visit
+             call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>~visit
              return
             end
             local.get $0
             local.get $1
-            call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>~visit
+            call $async-throw-values/__Cps_throwAwaitNumber~visit
             return
            end
            local.get $0
            local.get $1
-           call $async-throw-values/__Cps_catchAwaitString~visit
+           call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>~visit
            return
           end
           local.get $0
           local.get $1
-          call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>~visit
+          call $async-throw-values/__Cps_catchAwaitString~visit
           return
          end
          local.get $0
          local.get $1
-         call $async-throw-values/__Cps_nestedThrow~visit
+         call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>~visit
          return
         end
         local.get $0
         local.get $1
-        call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>~visit
+        call $async-throw-values/__Cps_nestedThrow~visit
         return
        end
        local.get $0
        local.get $1
-       call $async-throw-values/__Cps_throwInCatch~visit
+       call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>~visit
        return
       end
       local.get $0
       local.get $1
-      call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>~visit
+      call $async-throw-values/__Cps_throwInCatch~visit
       return
      end
      local.get $0
      local.get $1
-     call $async-throw-values/__Cps_throwBox~visit
+     call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>~visit
      return
     end
     local.get $0
     local.get $1
-    call $~lib/array/Array<async-throw-values/__Cps_throwBox>~visit
+    call $async-throw-values/__Cps_throwBox~visit
     return
    end
    local.get $0
    local.get $1
-   call $~lib/array/Array<i32>~visit
+   call $~lib/array/Array<async-throw-values/__Cps_throwBox>~visit
    return
   end
   unreachable
  )
  (func $~start
-  call $start:async-throw-values
+  memory.size
+  i32.const 16
+  i32.shl
+  global.get $~lib/memory/__heap_base
+  i32.sub
+  i32.const 1
+  i32.shr_u
+  global.set $~lib/rt/itcms/threshold
+  i32.const 144
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/pinSpace
+  i32.const 176
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/toSpace
+  i32.const 320
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/fromSpace
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwError>#constructor
+  global.set $async-throw-values/__async_roots_throwError
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#constructor
+  global.set $async-throw-values/__async_roots_throwString
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#constructor
+  global.set $async-throw-values/__async_roots_throwNumber
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#constructor
+  global.set $async-throw-values/__async_roots_catchError
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#constructor
+  global.set $async-throw-values/__async_roots_throwAwaitString
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#constructor
+  global.set $async-throw-values/__async_roots_throwAwaitError
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#constructor
+  global.set $async-throw-values/__async_roots_throwAwaitNumber
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#constructor
+  global.set $async-throw-values/__async_roots_catchAwaitString
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#constructor
+  global.set $async-throw-values/__async_roots_nestedThrow
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#constructor
+  global.set $async-throw-values/__async_roots_throwInCatch
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#constructor
+  global.set $async-throw-values/__async_roots_throwBox
  )
  (func $~stack_check
   global.get $~lib/memory/__stack_pointer
@@ -5570,6 +5567,84 @@
    call $~lib/builtins/abort
    unreachable
   end
+ )
+ (func $async-throw-values/__Cps_throwError#constructor (param $this i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 20
+   i32.const 9
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  call $~lib/object/Object#constructor
+  local.tee $this
+  i32.store
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-throw-values/__Cps_throwError#set:state
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 432
+  call $async-throw-values/__Cps_throwError#set:__result
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 432
+  call $async-throw-values/__Cps_throwError#set:__error
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-throw-values/__Cps_throwError#set:__errorValue
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  local.get $1
+  i32.store offset=4
+  local.get $1
+  i32.const 0
+  call $async-throw-values/__Cps_throwError#set:__cps___async_try_throwVal_0_0
+  local.get $this
+  local.set $1
+  global.get $~lib/memory/__stack_pointer
+  i32.const 8
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $1
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwError>#constructor (param $this i32) (param $length i32) (result i32)
   (local $2 i32)
@@ -5636,8 +5711,8 @@
   i32.shr_u
   i32.gt_u
   if
-   i32.const 32
-   i32.const 80
+   i32.const 464
+   i32.const 512
    i32.const 70
    i32.const 60
    call $~lib/builtins/abort
@@ -5709,1464 +5784,6 @@
   global.set $~lib/memory/__stack_pointer
   local.get $6
  )
- (func $~lib/array/Array<async-throw-values/__Cps_throwString>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 12
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 14
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchError>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 16
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 18
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 20
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 22
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 24
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 26
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 28
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 30
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 32
-   i32.const 80
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
- )
- (func $async-throw-values/__Cps_throwError#constructor (param $this i32) (result i32)
-  (local $1 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 20
-   i32.const 9
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  global.get $~lib/memory/__stack_pointer
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  call $~lib/object/Object#constructor
-  local.tee $this
-  i32.store
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 0
-  call $async-throw-values/__Cps_throwError#set:state
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-throw-values/__Cps_throwError#set:__result
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 528
-  call $async-throw-values/__Cps_throwError#set:__error
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 0
-  call $async-throw-values/__Cps_throwError#set:__errorValue
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  local.get $1
-  i32.store offset=4
-  local.get $1
-  i32.const 0
-  call $async-throw-values/__Cps_throwError#set:__cps___async_try_throwVal_0_0
-  local.get $this
-  local.set $1
-  global.get $~lib/memory/__stack_pointer
-  i32.const 8
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $1
- )
  (func $~lib/array/ensureCapacity (param $array i32) (param $newSize i32) (param $alignLog2 i32) (param $canGrow i32)
   (local $oldCapacity i32)
   (local $oldData i32)
@@ -7207,8 +5824,8 @@
    i32.shr_u
    i32.gt_u
    if
-    i32.const 32
-    i32.const 80
+    i32.const 464
+    i32.const 512
     i32.const 19
     i32.const 48
     call $~lib/builtins/abort
@@ -7401,7 +6018,7 @@
   local.get $2
   i32.store offset=4
   local.get $2
-  i32.const 528
+  i32.const 432
   call $~lib/error/Error#set:stack
   local.get $this
   local.set $2
@@ -7960,7 +6577,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 20
-   i32.const 11
+   i32.const 12
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -7989,7 +6606,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwString#set:__result
   local.get $this
   local.set $1
@@ -7997,7 +6614,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwString#set:__error
   local.get $this
   local.set $1
@@ -8013,7 +6630,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwString#set:__cps___async_try_throwVal_0_0
   local.get $this
   local.set $1
@@ -8022,6 +6639,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwString>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 13
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwString>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwString>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8271,7 +7026,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 12
+  i32.const 13
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -8624,7 +7379,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 20
-   i32.const 13
+   i32.const 14
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -8653,7 +7408,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwNumber#set:__result
   local.get $this
   local.set $1
@@ -8661,7 +7416,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwNumber#set:__error
   local.get $this
   local.set $1
@@ -8686,6 +7441,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 15
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwNumber>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -8935,7 +7828,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 14
+  i32.const 15
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -9279,7 +8172,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 56
-   i32.const 15
+   i32.const 16
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -9308,7 +8201,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__result
   local.get $this
   local.set $1
@@ -9316,7 +8209,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__error
   local.get $this
   local.set $1
@@ -9356,7 +8249,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__cps___async_try_pendErr_3_3
   local.get $this
   local.set $1
@@ -9380,7 +8273,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__cps___async_try_retVal_6_6
   local.get $this
   local.set $1
@@ -9396,7 +8289,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__cps___async_try_err_7_8
   local.get $this
   local.set $1
@@ -9420,7 +8313,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchError#set:__cps_e_11
   local.get $this
   local.set $1
@@ -9429,6 +8322,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchError>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 17
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_catchError>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_catchError>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -9537,7 +8568,7 @@
   i32.const 0
   i32.eq
   if
-   i32.const 528
+   i32.const 432
    local.set $6
    global.get $~lib/memory/__stack_pointer
    i32.const 8
@@ -9785,7 +8816,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 16
+  i32.const 17
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -10002,7 +9033,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 528
+                   i32.const 432
                    call $async-throw-values/__Cps_catchError#set:__cps___async_try_pendErr_3_3
                    local.get $this
                    local.set $2
@@ -10026,7 +9057,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 528
+                   i32.const 432
                    call $async-throw-values/__Cps_catchError#set:__cps___async_try_err_7_8
                    local.get $this
                    local.set $2
@@ -10821,7 +9852,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 24
-   i32.const 17
+   i32.const 18
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -10850,7 +9881,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitString#set:__result
   local.get $this
   local.set $1
@@ -10858,7 +9889,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitString#set:__error
   local.get $this
   local.set $1
@@ -10874,7 +9905,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitString#set:__pend0
   local.get $this
   local.set $1
@@ -10882,7 +9913,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitString#set:__cps___async_try_throwVal_0_0
   local.get $this
   local.set $1
@@ -10891,6 +9922,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 19
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -11140,7 +10309,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 18
+  i32.const 19
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -11544,7 +10713,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 24
-   i32.const 19
+   i32.const 20
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -11573,7 +10742,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitError#set:__result
   local.get $this
   local.set $1
@@ -11581,7 +10750,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitError#set:__error
   local.get $this
   local.set $1
@@ -11614,6 +10783,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 21
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -11863,7 +11170,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 20
+  i32.const 21
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12272,7 +11579,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 24
-   i32.const 21
+   i32.const 22
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -12301,7 +11608,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitNumber#set:__result
   local.get $this
   local.set $1
@@ -12309,7 +11616,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwAwaitNumber#set:__error
   local.get $this
   local.set $1
@@ -12342,6 +11649,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 23
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -12591,7 +12036,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 22
+  i32.const 23
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -12980,7 +12425,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 60
-   i32.const 23
+   i32.const 24
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -13009,7 +12454,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__result
   local.get $this
   local.set $1
@@ -13017,7 +12462,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__error
   local.get $this
   local.set $1
@@ -13033,7 +12478,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__pend0
   local.get $this
   local.set $1
@@ -13065,7 +12510,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_pendErr_3_3
   local.get $this
   local.set $1
@@ -13089,7 +12534,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_retVal_6_6
   local.get $this
   local.set $1
@@ -13105,7 +12550,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_err_7_8
   local.get $this
   local.set $1
@@ -13121,7 +12566,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_throwVal_10_10
   local.get $this
   local.set $1
@@ -13129,7 +12574,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_catchAwaitString#set:__cps_e_11
   local.get $this
   local.set $1
@@ -13138,6 +12583,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 25
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -13387,7 +12970,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 24
+  i32.const 25
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -13624,7 +13207,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    i32.const 528
+                    i32.const 432
                     call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_pendErr_3_3
                     local.get $this
                     local.set $2
@@ -13648,7 +13231,7 @@
                     local.get $2
                     i32.store
                     local.get $2
-                    i32.const 528
+                    i32.const 432
                     call $async-throw-values/__Cps_catchAwaitString#set:__cps___async_try_err_7_8
                     local.get $this
                     local.set $2
@@ -14461,7 +14044,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 76
-   i32.const 25
+   i32.const 26
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -14490,7 +14073,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__result
   local.get $this
   local.set $1
@@ -14498,7 +14081,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__error
   local.get $this
   local.set $1
@@ -14538,7 +14121,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_pendErr_3_3
   local.get $this
   local.set $1
@@ -14562,7 +14145,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_retVal_6_6
   local.get $this
   local.set $1
@@ -14578,7 +14161,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_err_7_8
   local.get $this
   local.set $1
@@ -14602,7 +14185,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_err_10_11
   local.get $this
   local.set $1
@@ -14626,7 +14209,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps_e_14
   local.get $this
   local.set $1
@@ -14642,7 +14225,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_nestedThrow#set:__cps_e_16
   local.get $this
   local.set $1
@@ -14651,6 +14234,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 27
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -14900,7 +14621,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 26
+  i32.const 27
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -15170,7 +14891,7 @@
                               local.get $2
                               i32.store
                               local.get $2
-                              i32.const 528
+                              i32.const 432
                               call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_pendErr_3_3
                               local.get $this
                               local.set $2
@@ -15194,7 +14915,7 @@
                               local.get $2
                               i32.store
                               local.get $2
-                              i32.const 528
+                              i32.const 432
                               call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_err_7_8
                               local.get $this
                               local.set $2
@@ -15260,7 +14981,7 @@
                            local.get $2
                            i32.store
                            local.get $2
-                           i32.const 528
+                           i32.const 432
                            call $async-throw-values/__Cps_nestedThrow#set:__cps___async_try_err_10_11
                            local.get $this
                            local.set $2
@@ -16479,7 +16200,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 52
-   i32.const 27
+   i32.const 28
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -16508,7 +16229,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__result
   local.get $this
   local.set $1
@@ -16516,7 +16237,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__error
   local.get $this
   local.set $1
@@ -16556,7 +16277,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__cps___async_try_pendErr_3_3
   local.get $this
   local.set $1
@@ -16588,7 +16309,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__cps___async_try_err_6_7
   local.get $this
   local.set $1
@@ -16604,7 +16325,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__cps___async_try_throwVal_9_9
   local.get $this
   local.set $1
@@ -16612,7 +16333,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwInCatch#set:__cps_e_10
   local.get $this
   local.set $1
@@ -16629,6 +16350,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 29
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -16878,7 +16737,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 28
+  i32.const 29
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -17093,7 +16952,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 528
+                   i32.const 432
                    call $async-throw-values/__Cps_throwInCatch#set:__cps___async_try_pendErr_3_3
                    local.get $this
                    local.set $2
@@ -17117,7 +16976,7 @@
                    local.get $2
                    i32.store
                    local.get $2
-                   i32.const 528
+                   i32.const 432
                    call $async-throw-values/__Cps_throwInCatch#set:__cps___async_try_err_6_7
                    local.get $this
                    local.set $2
@@ -17941,7 +17800,7 @@
   if
    global.get $~lib/memory/__stack_pointer
    i32.const 24
-   i32.const 29
+   i32.const 30
    call $~lib/rt/itcms/__new
    local.tee $this
    i32.store
@@ -17970,7 +17829,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwBox#set:__result
   local.get $this
   local.set $1
@@ -17978,7 +17837,7 @@
   local.get $1
   i32.store offset=4
   local.get $1
-  i32.const 528
+  i32.const 432
   call $async-throw-values/__Cps_throwBox#set:__error
   local.get $this
   local.set $1
@@ -18011,6 +17870,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 31
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 464
+   i32.const 512
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-throw-values/__Cps_throwBox>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-throw-values/__Cps_throwBox>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -18306,7 +18303,7 @@
   global.get $~lib/memory/__stack_pointer
   local.get $deleteCount
   i32.const 2
-  i32.const 30
+  i32.const 31
   i32.const 0
   call $~lib/rt/__newArray
   local.tee $result
@@ -18505,7 +18502,7 @@
        local.get $2
        i32.store
        local.get $2
-       i32.const 528
+       i32.const 432
        call $async-throw-values/__Cps_throwBox#set:__error
        local.get $this
        local.set $2
@@ -18759,7 +18756,7 @@
    i64.gt_u
   end
   if
-   i32.const 32
+   i32.const 464
    i32.const 2976
    i32.const 334
    i32.const 7
@@ -18776,7 +18773,7 @@
    i32.eqz
   end
   if
-   i32.const 528
+   i32.const 432
    local.set $4
    global.get $~lib/memory/__stack_pointer
    i32.const 8
@@ -18870,8 +18867,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwError>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -18901,7 +18898,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -19187,8 +19184,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwString>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -19218,7 +19215,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -19504,8 +19501,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwNumber>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -19535,7 +19532,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -19821,8 +19818,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_catchError>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -19852,7 +19849,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -20138,8 +20135,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwAwaitString>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -20169,7 +20166,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -20559,8 +20556,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwAwaitError>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -20590,7 +20587,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -20980,8 +20977,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwAwaitNumber>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -21011,7 +21008,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -21396,8 +21393,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_catchAwaitString>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -21427,7 +21424,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -21797,8 +21794,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_nestedThrow>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -21828,7 +21825,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -22114,8 +22111,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwInCatch>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -22145,7 +22142,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -22431,8 +22428,8 @@
   call $~lib/array/Array<async-throw-values/__Cps_throwBox>#get:length_
   i32.ge_u
   if
-   i32.const 320
-   i32.const 80
+   i32.const 224
+   i32.const 512
    i32.const 114
    i32.const 42
    call $~lib/builtins/abort
@@ -22462,7 +22459,7 @@
   i32.eqz
   if
    i32.const 3024
-   i32.const 80
+   i32.const 512
    i32.const 118
    i32.const 40
    call $~lib/builtins/abort
@@ -22765,6 +22762,32 @@
   i32.store
   local.get $5
   call $~lib/array/Array<async-throw-values/__Cps_throwError>#get:buffer
+  local.get $cookie
+  call $~lib/rt/itcms/__visit
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
+  (local $2 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  i32.const 0
+  drop
+  local.get $this
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.store
+  local.get $2
+  call $~lib/array/Array<i32>#get:buffer
   local.get $cookie
   call $~lib/rt/itcms/__visit
   global.get $~lib/memory/__stack_pointer
@@ -23472,32 +23495,6 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
- (func $~lib/array/Array<i32>#__visit (param $this i32) (param $cookie i32)
-  (local $2 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i32.const 0
-  i32.store
-  i32.const 0
-  drop
-  local.get $this
-  local.set $2
-  global.get $~lib/memory/__stack_pointer
-  local.get $2
-  i32.store
-  local.get $2
-  call $~lib/array/Array<i32>#get:buffer
-  local.get $cookie
-  call $~lib/rt/itcms/__visit
-  global.get $~lib/memory/__stack_pointer
-  i32.const 4
-  i32.add
-  global.set $~lib/memory/__stack_pointer
- )
  (func $~lib/object/Object#constructor (param $this i32) (result i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
@@ -23776,7 +23773,7 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 32
+   i32.const 464
    i32.const 2880
    i32.const 52
    i32.const 43

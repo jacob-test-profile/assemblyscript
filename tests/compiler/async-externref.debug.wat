@@ -17,14 +17,6 @@
  (import "env" "abort" (func $~lib/builtins/abort (param i32 i32 i32 i32)))
  (import "env" "getHandle" (func $async-externref/getHandle (result i32)))
  (import "env" "useHandle" (func $async-externref/useHandle (param externref) (result i32)))
- (global $async-externref/__async_spill_0 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_1 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_2 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_3 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_4 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_5 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_6 (mut externref) (ref.null noextern))
- (global $async-externref/__async_spill_7 (mut externref) (ref.null noextern))
  (global $async-externref/__async_spill_free (mut i32) (i32.const 96))
  (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
  (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
@@ -42,6 +34,14 @@
  (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
  (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
  (global $async-externref/__async_roots_handleRoundtrip (mut i32) (i32.const 0))
+ (global $async-externref/__async_spill_0 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_1 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_2 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_3 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_4 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_5 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_6 (mut externref) (ref.null noextern))
+ (global $async-externref/__async_spill_7 (mut externref) (ref.null noextern))
  (global $~lib/rt/__rtti_base i32 (i32.const 976))
  (global $~lib/memory/__data_end i32 (i32.const 1020))
  (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33788))
@@ -49,17 +49,17 @@
  (memory $0 1)
  (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\00\07\00\00\00\06\00\00\00\05\00\00\00\04\00\00\00\03\00\00\00\02\00\00\00\01\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $1 (i32.const 76) ",\00\00\00\00\00\00\00\00\00\00\00\06\00\00\00\10\00\00\00 \00\00\00 \00\00\00 \00\00\00\08\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $2 (i32.const 124) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $2 (i32.const 124) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00A\00r\00r\00a\00y\00 \00i\00s\00 \00e\00m\00p\00t\00y\00")
  (data $3 (i32.const 172) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1a\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00")
- (data $4 (i32.const 220) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
- (data $5 (i32.const 284) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $6 (i32.const 352) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $7 (i32.const 384) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $8 (i32.const 412) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
- (data $9 (i32.const 476) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
- (data $10 (i32.const 528) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $11 (i32.const 556) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $12 (i32.const 620) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00A\00r\00r\00a\00y\00 \00i\00s\00 \00e\00m\00p\00t\00y\00")
+ (data $4 (i32.const 220) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $5 (i32.const 268) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
+ (data $6 (i32.const 332) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $7 (i32.const 400) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $8 (i32.const 432) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $9 (i32.const 460) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
+ (data $10 (i32.const 524) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
+ (data $11 (i32.const 576) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $12 (i32.const 604) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $13 (i32.const 668) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data $14 (i32.const 700) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s\00\00\00\00\00\00\00")
  (data $15 (i32.const 764) "\1c\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00")
@@ -83,6 +83,40 @@
  (export "__async_async_externref_handleRoundtrip_errorValue" (func $export:async-externref/__async_async_externref_handleRoundtrip_errorValue))
  (export "__async_async_externref_handleRoundtrip_status" (func $export:async-externref/__async_async_externref_handleRoundtrip_status))
  (start $~start)
+ (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
+ (func $~lib/array/Array<i32>#get:dataStart (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=4
+ )
+ (func $~lib/array/Array<i32>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
+ )
+ (func $~lib/arraybuffer/ArrayBufferView#get:byteLength (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=8
+ )
+ (func $~lib/arraybuffer/ArrayBufferView#get:buffer (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/rt/common/BLOCK#get:mmInfo (param $this i32) (result i32)
+  local.get $this
+  i32.load
+ )
+ (func $~lib/rt/itcms/Object#set:rtSize (param $this i32) (param $rtSize i32)
+  local.get $this
+  local.get $rtSize
+  i32.store offset=16
+ )
+ (func $~lib/rt/itcms/Object#get:rtId (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=12
+ )
  (func $~lib/rt/itcms/Object#set:nextWithColor (param $this i32) (param $nextWithColor i32)
   local.get $this
   local.get $nextWithColor
@@ -147,7 +181,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 304
+     i32.const 352
      i32.const 160
      i32.const 16
      call $~lib/builtins/abort
@@ -217,7 +251,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 304
+    i32.const 352
     i32.const 128
     i32.const 18
     call $~lib/builtins/abort
@@ -234,7 +268,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 304
+   i32.const 352
    i32.const 132
    i32.const 16
    call $~lib/builtins/abort
@@ -246,10 +280,6 @@
   local.get $prev
   local.get $next
   call $~lib/rt/itcms/Object#set:next
- )
- (func $~lib/rt/itcms/Object#get:rtId (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
  )
  (func $~lib/shared/typeinfo/Typeinfo#get:flags (param $this i32) (result i32)
   local.get $this
@@ -264,8 +294,8 @@
   i32.load
   i32.gt_u
   if
-   i32.const 432
-   i32.const 496
+   i32.const 480
+   i32.const 544
    i32.const 21
    i32.const 28
    call $~lib/builtins/abort
@@ -333,7 +363,7 @@
    i32.eqz
    if (result i32)
     i32.const 0
-    i32.const 304
+    i32.const 352
     i32.const 148
     i32.const 30
     call $~lib/builtins/abort
@@ -403,10 +433,6 @@
     br $while-continue|0
    end
   end
- )
- (func $~lib/rt/common/BLOCK#get:mmInfo (param $this i32) (result i32)
-  local.get $this
-  i32.load
  )
  (func $~lib/rt/itcms/Object#get:size (param $this i32) (result i32)
   i32.const 4
@@ -485,7 +511,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 268
    i32.const 14
    call $~lib/builtins/abort
@@ -505,7 +531,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 270
    i32.const 14
    call $~lib/builtins/abort
@@ -568,7 +594,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 284
    i32.const 14
    call $~lib/builtins/abort
@@ -721,7 +747,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 201
    i32.const 14
    call $~lib/builtins/abort
@@ -738,7 +764,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 203
    i32.const 14
    call $~lib/builtins/abort
@@ -827,7 +853,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 576
+    i32.const 624
     i32.const 221
     i32.const 16
     call $~lib/builtins/abort
@@ -870,7 +896,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 233
    i32.const 14
    call $~lib/builtins/abort
@@ -888,7 +914,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 234
    i32.const 14
    call $~lib/builtins/abort
@@ -956,7 +982,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 251
    i32.const 14
    call $~lib/builtins/abort
@@ -1073,7 +1099,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 382
    i32.const 14
    call $~lib/builtins/abort
@@ -1119,7 +1145,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 576
+    i32.const 624
     i32.const 389
     i32.const 16
     call $~lib/builtins/abort
@@ -1151,7 +1177,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 576
+    i32.const 624
     i32.const 402
     i32.const 5
     call $~lib/builtins/abort
@@ -1395,7 +1421,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 562
    i32.const 3
    call $~lib/builtins/abort
@@ -1615,7 +1641,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 304
+     i32.const 352
      i32.const 229
      i32.const 20
      call $~lib/builtins/abort
@@ -1726,8 +1752,8 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 240
-   i32.const 576
+   i32.const 288
+   i32.const 624
    i32.const 461
    i32.const 29
    call $~lib/builtins/abort
@@ -1829,7 +1855,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 334
    i32.const 14
    call $~lib/builtins/abort
@@ -1900,7 +1926,7 @@
     i32.eqz
     if
      i32.const 0
-     i32.const 576
+     i32.const 624
      i32.const 347
      i32.const 18
      call $~lib/builtins/abort
@@ -2057,7 +2083,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 361
    i32.const 14
    call $~lib/builtins/abort
@@ -2172,7 +2198,7 @@
    i32.eqz
    if
     i32.const 0
-    i32.const 576
+    i32.const 624
     i32.const 499
     i32.const 16
     call $~lib/builtins/abort
@@ -2192,7 +2218,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 576
+   i32.const 624
    i32.const 501
    i32.const 14
    call $~lib/builtins/abort
@@ -2228,11 +2254,6 @@
   local.get $rtId
   i32.store offset=12
  )
- (func $~lib/rt/itcms/Object#set:rtSize (param $this i32) (param $rtSize i32)
-  local.get $this
-  local.get $rtSize
-  i32.store offset=16
- )
  (func $~lib/rt/itcms/__new (param $size i32) (param $id i32) (result i32)
   (local $obj i32)
   (local $ptr i32)
@@ -2240,8 +2261,8 @@
   i32.const 1073741804
   i32.ge_u
   if
-   i32.const 240
-   i32.const 304
+   i32.const 288
+   i32.const 352
    i32.const 261
    i32.const 31
    call $~lib/builtins/abort
@@ -2286,6 +2307,56 @@
   local.get $ptr
   return
  )
+ (func $~lib/rt/itcms/Object#get:rtSize (param $this i32) (result i32)
+  local.get $this
+  i32.load offset=16
+ )
+ (func $~lib/rt/itcms/__renew (param $oldPtr i32) (param $size i32) (result i32)
+  (local $oldObj i32)
+  (local $newPtr i32)
+  (local $4 i32)
+  (local $5 i32)
+  local.get $oldPtr
+  i32.const 20
+  i32.sub
+  local.set $oldObj
+  local.get $size
+  local.get $oldObj
+  call $~lib/rt/common/BLOCK#get:mmInfo
+  i32.const 3
+  i32.const -1
+  i32.xor
+  i32.and
+  i32.const 16
+  i32.sub
+  i32.le_u
+  if
+   local.get $oldObj
+   local.get $size
+   call $~lib/rt/itcms/Object#set:rtSize
+   local.get $oldPtr
+   return
+  end
+  local.get $size
+  local.get $oldObj
+  call $~lib/rt/itcms/Object#get:rtId
+  call $~lib/rt/itcms/__new
+  local.set $newPtr
+  local.get $newPtr
+  local.get $oldPtr
+  local.get $size
+  local.tee $4
+  local.get $oldObj
+  call $~lib/rt/itcms/Object#get:rtSize
+  local.tee $5
+  local.get $4
+  local.get $5
+  i32.lt_u
+  select
+  memory.copy
+  local.get $newPtr
+  return
+ )
  (func $~lib/rt/itcms/__link (param $parentPtr i32) (param $childPtr i32) (param $expectMultiple i32)
   (local $child i32)
   (local $parent i32)
@@ -2301,7 +2372,7 @@
   i32.eqz
   if
    i32.const 0
-   i32.const 304
+   i32.const 352
    i32.const 295
    i32.const 14
    call $~lib/builtins/abort
@@ -2354,125 +2425,6 @@
    end
   end
  )
- (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer (param $this i32) (param $buffer i32)
-  local.get $this
-  local.get $buffer
-  i32.store
-  local.get $this
-  local.get $buffer
-  i32.const 0
-  call $~lib/rt/itcms/__link
- )
- (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart (param $this i32) (param $dataStart i32)
-  local.get $this
-  local.get $dataStart
-  i32.store offset=4
- )
- (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength (param $this i32) (param $byteLength i32)
-  local.get $this
-  local.get $byteLength
-  i32.store offset=8
- )
- (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $start:async-externref
-  (local $0 i32)
-  memory.size
-  i32.const 16
-  i32.shl
-  global.get $~lib/memory/__heap_base
-  i32.sub
-  i32.const 1
-  i32.shr_u
-  global.set $~lib/rt/itcms/threshold
-  i32.const 352
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/pinSpace
-  i32.const 384
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/toSpace
-  i32.const 528
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/fromSpace
-  i32.const 0
-  i32.const 0
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#constructor
-  global.set $async-externref/__async_roots_handleRoundtrip
- )
- (func $~lib/array/Array<i32>#get:length_ (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=12
- )
- (func $~lib/array/Array<i32>#get:dataStart (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=4
- )
- (func $~lib/array/Array<i32>#set:length_ (param $this i32) (param $length_ i32)
-  local.get $this
-  local.get $length_
-  i32.store offset=12
- )
- (func $~lib/arraybuffer/ArrayBufferView#get:byteLength (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=8
- )
- (func $~lib/arraybuffer/ArrayBufferView#get:buffer (param $this i32) (result i32)
-  local.get $this
-  i32.load
- )
- (func $~lib/rt/itcms/Object#get:rtSize (param $this i32) (result i32)
-  local.get $this
-  i32.load offset=16
- )
- (func $~lib/rt/itcms/__renew (param $oldPtr i32) (param $size i32) (result i32)
-  (local $oldObj i32)
-  (local $newPtr i32)
-  (local $4 i32)
-  (local $5 i32)
-  local.get $oldPtr
-  i32.const 20
-  i32.sub
-  local.set $oldObj
-  local.get $size
-  local.get $oldObj
-  call $~lib/rt/common/BLOCK#get:mmInfo
-  i32.const 3
-  i32.const -1
-  i32.xor
-  i32.and
-  i32.const 16
-  i32.sub
-  i32.le_u
-  if
-   local.get $oldObj
-   local.get $size
-   call $~lib/rt/itcms/Object#set:rtSize
-   local.get $oldPtr
-   return
-  end
-  local.get $size
-  local.get $oldObj
-  call $~lib/rt/itcms/Object#get:rtId
-  call $~lib/rt/itcms/__new
-  local.set $newPtr
-  local.get $newPtr
-  local.get $oldPtr
-  local.get $size
-  local.tee $4
-  local.get $oldObj
-  call $~lib/rt/itcms/Object#get:rtSize
-  local.tee $5
-  local.get $4
-  local.get $5
-  i32.lt_u
-  select
-  memory.copy
-  local.get $newPtr
-  return
- )
  (func $async-externref/__Cps_handleRoundtrip#set:state (param $this i32) (param $state i32)
   local.get $this
   local.get $state
@@ -2520,6 +2472,30 @@
   local.get $this
   local.get $__slot_h_0
   i32.store offset=28
+ )
+ (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer (param $this i32) (param $buffer i32)
+  local.get $this
+  local.get $buffer
+  i32.store
+  local.get $this
+  local.get $buffer
+  i32.const 0
+  call $~lib/rt/itcms/__link
+ )
+ (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart (param $this i32) (param $dataStart i32)
+  local.get $this
+  local.get $dataStart
+  i32.store offset=4
+ )
+ (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength (param $this i32) (param $byteLength i32)
+  local.get $this
+  local.get $byteLength
+  i32.store offset=8
+ )
+ (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_ (param $this i32) (param $length_ i32)
+  local.get $this
+  local.get $length_
+  i32.store offset=12
  )
  (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#get:length_ (param $this i32) (result i32)
   local.get $this
@@ -2789,19 +2765,19 @@
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
-  i32.const 432
+  i32.const 480
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 240
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 144
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 640
-  local.get $0
-  call $~lib/rt/itcms/__visit
   i32.const 864
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 240
+  i32.const 288
   local.get $0
   call $~lib/rt/itcms/__visit
   global.get $async-externref/__async_spill_free
@@ -2943,7 +2919,27 @@
   unreachable
  )
  (func $~start
-  call $start:async-externref
+  memory.size
+  i32.const 16
+  i32.shl
+  global.get $~lib/memory/__heap_base
+  i32.sub
+  i32.const 1
+  i32.shr_u
+  global.set $~lib/rt/itcms/threshold
+  i32.const 400
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/pinSpace
+  i32.const 432
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/toSpace
+  i32.const 576
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/fromSpace
+  i32.const 0
+  i32.const 0
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#constructor
+  global.set $async-externref/__async_roots_handleRoundtrip
  )
  (func $~stack_check
   global.get $~lib/memory/__stack_pointer
@@ -2957,144 +2953,6 @@
    call $~lib/builtins/abort
    unreachable
   end
- )
- (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#constructor (param $this i32) (param $length i32) (result i32)
-  (local $2 i32)
-  (local $3 i32)
-  (local $bufferSize i32)
-  (local $buffer i32)
-  (local $6 i32)
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.sub
-  global.set $~lib/memory/__stack_pointer
-  call $~stack_check
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store
-  global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store offset=8
-  local.get $this
-  i32.eqz
-  if
-   global.get $~lib/memory/__stack_pointer
-   i32.const 16
-   i32.const 9
-   call $~lib/rt/itcms/__new
-   local.tee $this
-   i32.store
-  end
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  i32.const 0
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_
-  local.get $length
-  i32.const 1073741820
-  i32.const 2
-  i32.shr_u
-  i32.gt_u
-  if
-   i32.const 144
-   i32.const 192
-   i32.const 70
-   i32.const 60
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $length
-  local.tee $2
-  i32.const 8
-  local.tee $3
-  local.get $2
-  local.get $3
-  i32.gt_u
-  select
-  i32.const 2
-  i32.shl
-  local.set $bufferSize
-  global.get $~lib/memory/__stack_pointer
-  local.get $bufferSize
-  i32.const 1
-  call $~lib/rt/itcms/__new
-  local.tee $buffer
-  i32.store offset=8
-  i32.const 2
-  global.get $~lib/shared/runtime/Runtime.Incremental
-  i32.ne
-  drop
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=12
-  local.get $6
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $buffer
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $bufferSize
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  local.get $6
-  i32.store offset=4
-  local.get $6
-  local.get $length
-  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_
-  local.get $this
-  local.set $6
-  global.get $~lib/memory/__stack_pointer
-  i32.const 16
-  i32.add
-  global.set $~lib/memory/__stack_pointer
-  local.get $6
  )
  (func $~lib/array/Array<i32>#get:length (param $this i32) (result i32)
   (local $1 i32)
@@ -3145,7 +3003,7 @@
   i32.const 1
   i32.lt_s
   if
-   i32.const 640
+   i32.const 144
    i32.const 192
    i32.const 271
    i32.const 18
@@ -3269,7 +3127,7 @@
    i32.shr_u
    i32.gt_u
    if
-    i32.const 144
+    i32.const 240
     i32.const 192
     i32.const 19
     i32.const 48
@@ -3534,6 +3392,144 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $1
+ )
+ (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#constructor (param $this i32) (param $length i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $bufferSize i32)
+  (local $buffer i32)
+  (local $6 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store
+  global.get $~lib/memory/__stack_pointer
+  i64.const 0
+  i64.store offset=8
+  local.get $this
+  i32.eqz
+  if
+   global.get $~lib/memory/__stack_pointer
+   i32.const 16
+   i32.const 9
+   call $~lib/rt/itcms/__new
+   local.tee $this
+   i32.store
+  end
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  i32.const 0
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_
+  local.get $length
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 240
+   i32.const 192
+   i32.const 70
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $length
+  local.tee $2
+  i32.const 8
+  local.tee $3
+  local.get $2
+  local.get $3
+  i32.gt_u
+  select
+  i32.const 2
+  i32.shl
+  local.set $bufferSize
+  global.get $~lib/memory/__stack_pointer
+  local.get $bufferSize
+  i32.const 1
+  call $~lib/rt/itcms/__new
+  local.tee $buffer
+  i32.store offset=8
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=12
+  local.get $6
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:buffer
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $buffer
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:dataStart
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $bufferSize
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:byteLength
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  local.get $6
+  i32.store offset=4
+  local.get $6
+  local.get $length
+  call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#set:length_
+  local.get $this
+  local.set $6
+  global.get $~lib/memory/__stack_pointer
+  i32.const 16
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $6
  )
  (func $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#push (param $this i32) (param $value i32) (result i32)
   (local $oldLen i32)
@@ -4255,7 +4251,7 @@
    i64.gt_u
   end
   if
-   i32.const 144
+   i32.const 240
    i32.const 816
    i32.const 334
    i32.const 7
@@ -4366,7 +4362,7 @@
   call $~lib/array/Array<async-externref/__Cps_handleRoundtrip>#get:length_
   i32.ge_u
   if
-   i32.const 432
+   i32.const 480
    i32.const 192
    i32.const 114
    i32.const 42
@@ -5076,7 +5072,7 @@
   i32.const 1073741820
   i32.gt_u
   if
-   i32.const 144
+   i32.const 240
    i32.const 720
    i32.const 52
    i32.const 43
