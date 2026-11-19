@@ -18,8 +18,15 @@ declare function issueNumber(i: i32): i32;
 //@ external("env", "getNumber")
 declare function getNumber(): Promise<i32>;
 
+//@ external("env", "getFlag")
+declare function getFlag(i: i32): Promise<bool>;
+
 //@ external("env", "joinNumbers")
 declare function joinNumbers(policy: i32): Promise<string>;
+
+export function combine(a: string, b: string): string {
+  return a + b;
+}
 
 export async function concatThree(): Promise<string> {
   let out = "";
@@ -32,6 +39,28 @@ export async function concatThree(): Promise<string> {
 
 export async function handleRoundtrip(): Promise<i32> {
   let h = await getHandle();
+  let n = await useHandle(h);
+  return n;
+}
+
+export function boom(): void {
+  unreachable();
+}
+
+// Traps after the first await, while holding both spill slots: the
+// coordinator must reclaim them so a queued task can start.
+export async function trapRoundtrip(): Promise<i32> {
+  let h = await getHandle();
+  boom();
+  let n = await useHandle(h);
+  return n;
+}
+
+// Traps before the first await, while holding the parameter's spill slot:
+// the entry never returns a handle, so the coordinator must recover it
+// from the last-handle global.
+export async function trapEntry(h: externref): Promise<i32> {
+  boom();
   let n = await useHandle(h);
   return n;
 }
@@ -87,6 +116,112 @@ export async function catchRejectFinally(): Promise<string> {
     out = out + "!finally";
   }
   return out;
+}
+
+// An uncaught Error object rejects the task with the Error's message.
+export async function throwErrorUncaught(): Promise<string> {
+  throw new Error("coord-err");
+  return "unreachable";
+}
+
+// An uncaught string rejects the task with the string.
+export async function throwStringUncaught(): Promise<string> {
+  throw "coord-str";
+  return "unreachable";
+}
+
+// An uncaught number rejects the task with its toString.
+export async function throwNumberUncaught(): Promise<string> {
+  throw 42;
+  return "unreachable";
+}
+
+// A caught Error: the catch sees the Error's message.
+export async function throwErrorCaught(): Promise<string> {
+  try {
+    throw new Error("coord-caught");
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// throw await <string>: the awaited string is the thrown value.
+export async function throwAwaitString(): Promise<string> {
+  throw await getChunk(0);
+  return "unreachable";
+}
+
+// throw await <number>: the awaited number is the thrown value.
+export async function throwAwaitNumber(): Promise<string> {
+  throw await getNumber();
+  return "unreachable";
+}
+
+// throw await caught: the awaited string is caught with its message.
+export async function throwAwaitCaught(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// A rejection of the await inside `throw await` reaches the catch, not
+// the throw's (zero) bound value.
+export async function throwAwaitRejected(): Promise<string> {
+  try {
+    throw await getChunk(0);
+  } catch (e) {
+    return "caught:" + e;
+  }
+  return "unreachable";
+}
+
+// Stored promises read out of an array or an object field, and copied
+// from a tracked binding, all suspend on the issued token.
+export async function storedMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(2);
+  arr[0] = getChunk(0);
+  arr[1] = getChunk(1);
+  let a = await arr[0];
+  let b = await arr[1];
+  return a + b;
+}
+
+class PromiseBox {
+  p: Promise<string> = changetype<Promise<string>>(0);
+}
+
+export async function storedFieldRead(): Promise<string> {
+  let box = new PromiseBox();
+  box.p = getChunk(0);
+  let c = await box.p;
+  return "got-" + c;
+}
+
+export async function storedCopy(): Promise<string> {
+  let p = getChunk(0);
+  let q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyRebind(): Promise<string> {
+  let p = getChunk(0);
+  let q: Promise<string>;
+  q = p;
+  let c = await q;
+  return "got-" + c;
+}
+
+export async function storedCopyMember(): Promise<string> {
+  let arr = new Array<Promise<string>>(1);
+  arr[0] = getChunk(0);
+  let p = arr[0];
+  let c = await p;
+  return "got-" + c;
 }
 
 // A stored promise is issued at bind time and awaited later; the await
@@ -202,8 +337,392 @@ export async function closureCounter(): Promise<i32> {
   return a * 10 + b;
 }
 
+// Await in switch: the dispatch survives suspension; fallthrough from
+// one case into the next and the default keep their ordinary meaning.
+export async function switchAwait(n: i32): Promise<string> {
+  let out = "";
+  switch (n) {
+    case 1: out = await getChunk(0); break;
+    case 2: out = await getChunk(1);
+    case 3: { let c = await getChunk(2); out = out + c; break; }
+    default: out = "dflt";
+  }
+  return out;
+}
+
+// Compound assignment with await: the read happens before the suspension.
+export async function compoundStr(): Promise<string> {
+  let out = "";
+  out += await getChunk(0);
+  out += await getChunk(1);
+  return out;
+}
+
+export async function compoundNum(): Promise<i32> {
+  let n = 10;
+  n += await getNumber();
+  n -= await getNumber();
+  n *= await getNumber();
+  n /= await getNumber();
+  n %= await getNumber();
+  n <<= await getNumber();
+  n &= await getNumber();
+  n |= await getNumber();
+  n ^= await getNumber();
+  n >>= await getNumber();
+  return n;
+}
+
+class Box {
+  s: string = "";
+  n: i32 = 0;
+  chunks: Array<string> = new Array<string>();
+}
+
+// Field-assignment await and compound assignment to a field.
+export async function fieldAssign(): Promise<string> {
+  let w = new Box();
+  w.s = await getChunk(2);
+  w.n = await getNumber();
+  return w.s + w.n.toString();
+}
+
+export async function fieldCompound(): Promise<string> {
+  let w = new Box();
+  w.s = "x";
+  w.s += await getChunk(0);
+  w.n = 1;
+  w.n += await getNumber();
+  return w.s + w.n.toString();
+}
+
+// A join awaited into a field.
+export async function fieldJoin(): Promise<string> {
+  let w = new Box();
+  w.chunks = await Promise.all([getChunk(0), getChunk(1)]);
+  return w.chunks[0] + w.chunks[1];
+}
+
+// Element-assignment await; the index side effect happens before the suspension.
+export async function elemAssign(): Promise<string> {
+  let arr = new Array<string>(2);
+  let i = 0;
+  arr[i++] = await getChunk(0);
+  arr[i] = await getChunk(1);
+  return arr[0] + arr[1] + i.toString();
+}
+
+// The awaited call's argument observes the index side effect: j is 1 here.
+export async function indexOrder(): Promise<i32> {
+  let arr = new Array<string>(2);
+  let j = 0;
+  arr[j++] = await getChunk(j);
+  return j;
+}
+
+export async function elemCompound(): Promise<i32> {
+  let arr = new Array<i32>(1);
+  arr[0] = 100;
+  arr[0] += await getNumber();
+  return arr[0];
+}
+
+// A stored promise awaited into a field.
+export async function storedField(): Promise<string> {
+  let w = new Box();
+  let p = getChunk(3);
+  w.s = await p;
+  return w.s;
+}
+
+// Await in an if condition.
+export async function ifCondFlag(): Promise<string> {
+  if (await getFlag(0)) {
+    return "YES";
+  }
+  return "NO";
+}
+
+// Await in a while condition: re-evaluated on every iteration.
+export async function whileCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  while (await getFlag(i)) {
+    out += await getChunk(i);
+    i++;
+  }
+  return out;
+}
+
+// A switch inside a loop: continue skips to the next iteration, break
+// leaves the switch only.
+export async function switchInLoop(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 4; i++) {
+    switch (i) {
+      case 1: continue;
+      case 2: { let c = await getChunk(2); out = out + c; break; }
+      default: out = out + "x";
+    }
+  }
+  return out;
+}
+
+// Await in a for condition: re-evaluated on every iteration.
+export async function forCondFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; await getFlag(i); i++) {
+    out += await getChunk(i);
+  }
+  return out;
+}
+
+// A finally may await: it runs exactly once, never on suspend.
+export async function finallyAwait(mode: i32): Promise<string> {
+  let out = "";
+  try {
+    let c = await getChunk(0);
+    if (mode == 1) throw "body-boom";
+    out = "ok-" + c;
+  } catch (e) {
+    out = "caught";
+  } finally {
+    let d = await getChunk(1);
+    out = out + "/" + d;
+  }
+  return out;
+}
+
+// Await in a do-while condition: evaluated after each body run.
+export async function doCondFlag(): Promise<string> {
+  let out = "";
+  let i = 0;
+  do {
+    out += await getChunk(i);
+    i++;
+  } while (await getFlag(i));
+  return out;
+}
+
+// Await in a for incrementor: runs after each body run.
+export async function forIncrFlag(): Promise<string> {
+  let out = "";
+  for (let i = 0; i < 2; i += await getNumber()) {
+    out += await getChunk(i);
+  }
+  return out;
+}
+
+// A rejection of a finally await replaces the pending body error.
+export async function finallyRejectOuter(): Promise<string> {
+  try {
+    try {
+      throw "body-boom";
+    } finally {
+      await getChunk(0);
+    }
+  } catch (e) {
+    return "outer-caught:" + e;
+  }
+}
+
+// Try inside a switch case, with catch and finally; a break out of the
+// switch from inside the try must still run the finally, then leave.
+export async function tryInSwitch(n: i32): Promise<string> {
+  let out = "";
+  switch (n) {
+    case 1:
+      try {
+        let c = await getChunk(0);
+        out = "t-" + c;
+        break;
+      } catch (e) {
+        out = "t-caught";
+      } finally {
+        out = out + "!";
+      }
+      out = out + "unreached";
+      break;
+    case 2:
+      try {
+        await getChunk(0);
+        throw "sw-boom";
+      } catch (e) {
+        out = "sw-caught:" + e;
+      }
+      break;
+    default: out = "sw-dflt";
+  }
+  return out;
+}
+
+// For-of over an array: the iterator state survives suspension.
+export async function forOfAwait(): Promise<string> {
+  let xs = [0, 1, 2];
+  let out = "";
+  for (const x of xs) {
+    let c = await getChunk(x);
+    out = out + c;
+  }
+  return out;
+}
+
+export async function forOfBreak(): Promise<i32> {
+  let xs = [10, 20, 30, 40];
+  let s = 0;
+  for (const x of xs) {
+    let v = await getNumber();
+    if (v == 20) break;
+    s += v;
+  }
+  return s;
+}
+
+// Awaits in call arguments, in order.
+export async function callArgsHoist(): Promise<string> {
+  return combine(await getChunk(0), await getChunk(1));
+}
+
+// Awaits as binary operands, in order.
+export async function binaryHoist(): Promise<i32> {
+  return 1 + await getNumber() + await getNumber();
+}
+
+// Await in a ternary condition.
+export async function ternaryCondFlag(): Promise<string> {
+  return (await getFlag(0)) ? "YES" : "NO";
+}
+
+// A nested closure capturing the outer closure's parameter.
+export async function nestedParam(): Promise<i32> {
+  let m = await getNumber();
+  let outer = (x: i32): i32 => {
+    let inner = (y: i32): i32 => x + y;
+    return inner(10);
+  };
+  return outer(1) + m;
+}
+
+// A nested closure capturing an outer-closure parameter AND an
+// async-function local: the outer capture becomes an extra parameter
+// of the lifted inner closure.
+export async function nestedMixed(): Promise<i32> {
+  let base: i32 = 100;
+  let m = await getNumber();
+  let outer = (x: i32): i32 => {
+    let inner = (y: i32): i32 => x + y + base;
+    return inner(10);
+  };
+  return outer(1) + m;
+}
+
+// A nested closure capturing an outer-closure parameter, an
+// outer-closure annotated local, and an async-function local.
+export async function nestedMixedLocal(): Promise<i32> {
+  let base: i32 = 1000;
+  let m = await getNumber();
+  let outer = (x: i32): i32 => {
+    let z: i32 = 5;
+    let inner = (y: i32): i32 => x + y + z + base;
+    return inner(10);
+  };
+  return outer(2) + m;
+}
+
+// An async arrow capturing an outer local, read across a suspension.
+export async function arrowCapture(): Promise<i32> {
+  let x: i32 = 1;
+  let f = async (): Promise<i32> => {
+    let m = await getNumber();
+    return x + m + 1;
+  };
+  return await f();
+}
+
+// An async arrow writing to a captured plain local: the write is shared
+// through the enclosing function's state object.
+export async function arrowCaptureWrite(): Promise<i32> {
+  let x: i32 = 10;
+  let f = async (): Promise<i32> => {
+    let m = await getNumber();
+    x += 5;
+    return x + m;
+  };
+  let v = await f();
+  return v + x;
+}
+
+// An async arrow calling another async arrow from the same function.
+export async function arrowCallsArrow(): Promise<i32> {
+  let x: i32 = 2;
+  let g = async (): Promise<i32> => {
+    let m = await getNumber();
+    return x + m;
+  };
+  let f = async (): Promise<i32> => {
+    let v = await g();
+    return v + 1;
+  };
+  return await f();
+}
+
 export async function voidTask(): Promise<void> {
   await getChunk(0);
+}
+
+//@ external("env", "getVoid")
+declare function getVoid(): Promise<void>;
+
+// Awaiting a Promise<void> completes the suspension with no value: as a
+// statement, as the return of a Promise<void> function, through a catch
+// when the awaited import rejects, and nested through another async fn.
+export async function voidStmt(): Promise<string> {
+  await getVoid();
+  return "after-void";
+}
+
+export async function voidReturn(): Promise<void> {
+  return await getVoid();
+}
+
+export async function voidCatch(): Promise<string> {
+  try {
+    await getVoid();
+    return "ok";
+  } catch (e) {
+    return "caught:" + e;
+  }
+}
+
+export async function innerVoid(): Promise<void> {
+  await getVoid();
+}
+
+export async function outerVoid(): Promise<string> {
+  await innerVoid();
+  return "outer-void-done";
+}
+
+// Default / optional / rest parameters: defaults are filled per call by
+// the varargs stub, rest arguments collect into an array, and both
+// survive suspension as state fields.
+export async function defInt(x: i32 = 5): Promise<i32> {
+  const v = await getNumber();
+  return x + v;
+}
+export async function defOther(a: i32, b: i32 = a + 1): Promise<i32> {
+  const v = await getNumber();
+  return b + v;
+}
+export async function restNums(first: i32, ...rest: i32[]): Promise<i32> {
+  const v = await getNumber();
+  let sum = first + v;
+  for (let i = 0; i < rest.length; ++i) sum += rest[i];
+  return sum;
+}
+export async function restStrings(...words: string[]): Promise<string> {
+  const v = await getChunk(0);
+  return words.join(",") + "|" + v;
 }
 
 // Allocates garbage so the e2e can churn the heap (plus __collect) while

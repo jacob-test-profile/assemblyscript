@@ -47,6 +47,7 @@ import {
   IfStatement,
   WhileStatement,
   ForStatement,
+  ForOfStatement,
   DoStatement,
   FunctionExpression,
   ClassExpression,
@@ -54,7 +55,9 @@ import {
   AwaitExpression,
   FunctionTypeNode,
   ParameterNode,
-  ParameterKind
+  ParameterKind,
+  ArrowKind,
+  ThrowStatement
 } from "./ast";
 
 import {
@@ -76,21 +79,66 @@ import {
   CommonFlags
 } from "./common";
 
+import {
+  ElementKind
+} from "./program";
+
 /** Spill-pool entry points, generated once per module when needed. */
 export const SPILL_POOL_SIZE = 8;
 export const SPILL_ACQUIRE = "__async_spill_acquire";
 export const SPILL_RELEASE = "__async_spill_release";
 export const SPILL_GET = "__async_spill_get";
 export const SPILL_SET = "__async_spill_set";
+/** Markers the try desugar emits and the transform lowers: the first
+ *  derives a throw's message + value and records them in the frame's
+ *  slots; the second fails the task with already-computed slots. */
+export const TRY_THROW_MARKER = "__async_try_throw";
+export const TRY_FAIL_MARKER = "__async_try_fail";
 
 /** Local holding the receiver of an async method, introduced by the
  *  this-lift pre-pass (`this` is rewritten to this identifier). */
 export const ASYNC_THIS_NAME = "__async_this";
 
+/** State field of an extracted async arrow holding the enclosing
+ *  function's state object, so the arrow can read captured locals
+ *  across suspension. Initialised by the arrow's entry wrapper. */
+export const ASYNC_OUTER_NAME = "__async_outer";
+
 /** State class name for an async function or method, from its qualified
  *  name (the plain function name, or `<Class>_<method>` for methods). */
 export function cpsStateClassName(qualName: string): string {
   return `__Cps_${qualName}`;
+}
+
+/** Encodes one type into an identifier-safe fragment, injectively: an
+ *  identifier character stays itself, every other character becomes
+ *  `_x<hex>_`. The encoding is uniquely decodable (an escape is always
+ *  `_x` + hex + `_`, and a bare `_` never occurs), so distinct type
+ *  lists mangle to distinct names. */
+export function encodeTypeName(text: string): string {
+  let out = "";
+  for (let i = 0, k = text.length; i < k; ++i) {
+    let code = text.charCodeAt(i);
+    let ok = (code >= 48 && code <= 57)
+      || (code >= 65 && code <= 90)
+      || (code >= 97 && code <= 122)
+      || code == 36;
+    out += ok ? text.charAt(i) : "_x" + code.toString(16) + "_";
+  }
+  return out;
+}
+
+/** Mangles a base name with concrete type arguments, e.g. `f` + `[i32]`
+ *  becomes `f_i32`, `Box` + `[~lib/string/String]` becomes
+ *  `Box__x7e_lib_x2f_string_x2f_String`. One mangled name per distinct
+ *  type-argument list; callers still guard against collisions with user
+ *  declarations (a user could have written the mangled name by hand). */
+export function mangleGenericName(base: string, typeArguments: Type[]): string {
+  let parts = new Array<string>(typeArguments.length);
+  for (let i = 0, k = typeArguments.length; i < k; ++i) {
+    parts[i] = encodeTypeName(typeArguments[i].toString(true));
+  }
+  return base + "_" + parts.join("_");
 }
 
 /** Module-global holding the currently-stepping state object (as a raw
@@ -111,6 +159,11 @@ export interface AsyncLocalBinding {
   range: Range;
   /** Whether this name is a plain step-method local shadowing an outer lifted local. */
   shadowed: bool;
+  /** Resolved type of the local, when known; `null` for shadow bindings. */
+  type: Type | null;
+  /** Identifier holding the env object, when the value lives in a
+   *  loop-closure env instead of the state object; "" otherwise. */
+  envReceiver: string;
 }
 
 export function shadowBinding(range: Range): AsyncLocalBinding {
@@ -119,9 +172,36 @@ export function shadowBinding(range: Range): AsyncLocalBinding {
     spilled: false,
     slotField: "",
     range,
-    shadowed: true
+    shadowed: true,
+    type: null,
+    envReceiver: ""
   };
 }
+
+/** Per-iteration env for one loop closure: the hidden env parameter the
+ *  lifted method takes, the env class holding the snapshots, and the
+ *  loop-scoped names captured in it (first-reference order). */
+export interface LoopEnvInfo {
+  envParam: string;
+  envClass: string;
+  captureName: string;
+  captures: string[];
+  /** Adapter stem `__adapt_<qual>_<N>`; slot `s` is `<stem>_<s>`. */
+  adapterBase: string;
+  /** Module-global env array, adapter array, and slot counter. */
+  envsName: string;
+  fnsName: string;
+  slotName: string;
+}
+
+/** Slots in one loop closure's adapter table: at most this many stored
+ *  closures per closure site stay distinct; the next creation reuses the
+ *  oldest slot. A bare function pointer carries no liveness, so the bound
+ *  cannot fail loudly without breaking transient closures. */
+export const LOOP_ADAPTER_SLOTS = 32;
+
+/** Hidden env parameter name for loop-closure methods. */
+export const LOOP_ENV_PARAM = "__async_env";
 
 /** Scoped map of lifted locals, innermost scope last. */
 export class AsyncScope {
@@ -275,7 +355,18 @@ export function typeToTypeNode(type: Type, range: Range): TypeNode | null {
         typeArguments[i] = argNode;
       }
     }
-    return namedType(classReference.prototype.name, typeArguments, type.isNullableReference, range);
+    // Qualified with the class's namespace path (`NS.H`): generated code
+    // lives at file level, where the bare class name would not resolve.
+    // The recursion above qualifies type arguments the same way, so
+    // `Array<NS.H>` spells fully qualified throughout. A top-level class
+    // spells as before.
+    let name = new TypeName(ident(classReference.prototype.name, range), null, range);
+    let parent = classReference.prototype.parent;
+    while (parent && parent.kind == ElementKind.Namespace) {
+      name = new TypeName(ident(parent.name, range), name, range);
+      parent = parent.parent;
+    }
+    return new NamedTypeNode(name, typeArguments, type.isNullableReference, range);
   }
   // Function types are usize-based too, so the signature check must
   // precede the primitive lookup or every function would spell as `usize`.
@@ -422,17 +513,65 @@ export interface AsyncRewriter {
    *  first rewritten, while the enclosing scope is still live; the entry
    *  is removed then. `null` when the transform has no lifted closures. */
   adapters: Map<string, MethodDeclaration> | null;
+  /** Per-iteration envs of loop closures, by lifted method name. `null`
+   *  when the transform has no loop closure. */
+  loopEnvs: Map<string, LoopEnvInfo> | null;
+  /** Replaces a loop closure's adapter identifier with its capture call.
+   *  Set together with `loopEnvs`; the core implements it. */
+  rewriteLoopAdapter: ((adapterName: string, method: MethodDeclaration) => Expression | null) | null;
+}
+
+/** Reads one lifted local: a spill slot, an env field, or a state field. */
+export function bindingRead(binding: AsyncLocalBinding, range: Range): Expression {
+  if (binding.spilled) {
+    return callExpr(
+      ident(SPILL_GET, range),
+      [ thisProp(binding.slotField, range) ],
+      range
+    );
+  }
+  if (binding.envReceiver != "") {
+    return new PropertyAccessExpression(
+      ident(binding.envReceiver, range),
+      ident(binding.field, range),
+      range
+    );
+  }
+  return thisProp(binding.field, range);
 }
 
 /** Rewrites one lifted closure method body with the enclosing scope: the
  *  method's parameters are shadowed so references to them stay plain,
- *  while captured locals become state-field accesses. */
+ *  while captured locals become state-field accesses. A loop closure's
+ *  captured names become env-field accesses instead. */
 export function rewriteClosureMethod(method: MethodDeclaration, ctx: AsyncRewriter): bool {
   if (!method.body) return false;
   ctx.scope.push();
   let parameters = method.signature.parameters;
   for (let i = 0, k = parameters.length; i < k; ++i) {
     ctx.scope.declare(parameters[i].name.text, shadowBinding(parameters[i].name.range));
+  }
+  let loopEnvs = ctx.loopEnvs;
+  if (loopEnvs) {
+    let env = loopEnvs.get(method.name.text);
+    if (env) {
+      for (let i = 0, k = env.captures.length; i < k; ++i) {
+        let name = env.captures[i];
+        // An externref capture arrives as a hidden method parameter
+        // (reference-typed env fields are not allowed); it is already
+        // declared above, so it must not be rebound to an env field.
+        if (ctx.scope.lookupCurrent(name)) continue;
+        ctx.scope.declare(name, {
+          field: name,
+          spilled: false,
+          slotField: "",
+          range: method.name.range,
+          shadowed: false,
+          type: null,
+          envReceiver: env.envParam
+        });
+      }
+    }
   }
   let rewritten = rewriteStatement(method.body, ctx);
   ctx.scope.pop();
@@ -449,19 +588,16 @@ function rewriteIdentifier(node: IdentifierExpression, ctx: AsyncRewriter): Expr
       let method = adapters.get(node.text);
       if (method) {
         adapters.delete(node.text);
+        let loopEnvs = ctx.loopEnvs;
+        if (loopEnvs && loopEnvs.has(method.name.text) && ctx.rewriteLoopAdapter) {
+          return ctx.rewriteLoopAdapter(node.text, method);
+        }
         if (!rewriteClosureMethod(method, ctx)) return null;
       }
     }
     return node;
   }
-  if (binding.spilled) {
-    return callExpr(
-      ident(SPILL_GET, node.range),
-      [ thisProp(binding.slotField, node.range) ],
-      node.range
-    );
-  }
-  return thisProp(binding.field, node.range);
+  return bindingRead(binding, node.range);
 }
 
 export function rewriteExpression(node: Expression, ctx: AsyncRewriter): Expression | null {
@@ -889,6 +1025,11 @@ export function containsAwait(node: Node): bool {
       || (node.incrementor ? containsAwait(node.incrementor) : false)
       || containsAwait(node.body);
   }
+  if (node instanceof ForOfStatement) {
+    return containsAwait(node.variable)
+      || containsAwait(node.iterable)
+      || containsAwait(node.body);
+  }
   if (node instanceof SwitchStatement) {
     if (containsAwait(node.condition)) return true;
     let cases = node.cases;
@@ -996,6 +1137,170 @@ function containsAwaitExpression(node: Expression): bool {
   return false;
 }
 
+/** Tests whether the subtree references `this` or `super`. Used when a
+ *  parameter initializer is copied into a generated entry function (a
+ *  free function, so it has no `this`): an initializer that mentions
+ *  `this` cannot be evaluated there. Arrow functions inherit the
+ *  enclosing `this`, so they are descended into; regular function
+ *  expressions and class expressions have their own `this` and are not. */
+export function containsThisOrSuper(node: Node): bool {
+  if (node.kind == NodeKind.This || node.kind == NodeKind.Super) return true;
+  if (node instanceof FunctionExpression) {
+    let declaration = node.declaration;
+    if (declaration.arrowKind == ArrowKind.None) return false;
+    let body = declaration.body;
+    return body ? containsThisOrSuper(body) : false;
+  }
+  if (node instanceof ClassExpression) return false;
+  if (node instanceof BlockStatement) {
+    let statements = node.statements;
+    for (let i = 0, k = statements.length; i < k; ++i) {
+      if (containsThisOrSuper(statements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ExpressionStatement) return containsThisOrSuper(node.expression);
+  if (node instanceof VariableStatement) {
+    let declarations = node.declarations;
+    for (let i = 0, k = declarations.length; i < k; ++i) {
+      let initializer = declarations[i].initializer;
+      if (initializer && containsThisOrSuper(initializer)) return true;
+    }
+    return false;
+  }
+  if (node instanceof ReturnStatement) {
+    return node.value ? containsThisOrSuper(node.value) : false;
+  }
+  if (node instanceof ThrowStatement) return containsThisOrSuper(node.value);
+  if (node instanceof IfStatement) {
+    return containsThisOrSuper(node.condition)
+      || containsThisOrSuper(node.ifTrue)
+      || (node.ifFalse ? containsThisOrSuper(node.ifFalse) : false);
+  }
+  if (node instanceof WhileStatement) {
+    return containsThisOrSuper(node.condition) || containsThisOrSuper(node.body);
+  }
+  if (node instanceof DoStatement) {
+    return containsThisOrSuper(node.body) || containsThisOrSuper(node.condition);
+  }
+  if (node instanceof ForStatement) {
+    return (node.initializer ? containsThisOrSuper(node.initializer) : false)
+      || (node.condition ? containsThisOrSuper(node.condition) : false)
+      || (node.incrementor ? containsThisOrSuper(node.incrementor) : false)
+      || containsThisOrSuper(node.body);
+  }
+  if (node instanceof SwitchStatement) {
+    if (containsThisOrSuper(node.condition)) return true;
+    let cases = node.cases;
+    for (let i = 0, k = cases.length; i < k; ++i) {
+      let switchCase = cases[i];
+      if (switchCase.label && containsThisOrSuper(switchCase.label)) return true;
+      let statements = switchCase.statements;
+      for (let j = 0, l = statements.length; j < l; ++j) {
+        if (containsThisOrSuper(statements[j])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof TryStatement) {
+    let bodyStatements = node.bodyStatements;
+    for (let i = 0, k = bodyStatements.length; i < k; ++i) {
+      if (containsThisOrSuper(bodyStatements[i])) return true;
+    }
+    if (node.catchStatements) {
+      let catchStatements = node.catchStatements;
+      for (let i = 0, k = catchStatements.length; i < k; ++i) {
+        if (containsThisOrSuper(catchStatements[i])) return true;
+      }
+    }
+    if (node.finallyStatements) {
+      let finallyStatements = node.finallyStatements;
+      for (let i = 0, k = finallyStatements.length; i < k; ++i) {
+        if (containsThisOrSuper(finallyStatements[i])) return true;
+      }
+    }
+    return false;
+  }
+  if (node instanceof Expression) {
+    return containsThisOrSuperExpression(<Expression>node);
+  }
+  return false;
+}
+
+function containsThisOrSuperExpression(node: Expression): bool {
+  if (node.kind == NodeKind.This || node.kind == NodeKind.Super) return true;
+  if (node instanceof FunctionExpression) {
+    let declaration = node.declaration;
+    if (declaration.arrowKind == ArrowKind.None) return false;
+    let body = declaration.body;
+    return body ? containsThisOrSuper(body) : false;
+  }
+  if (node instanceof ClassExpression) return false;
+  if (node instanceof BinaryExpression) {
+    return containsThisOrSuperExpression(node.left) || containsThisOrSuperExpression(node.right);
+  }
+  if (node instanceof CallExpression) {
+    if (containsThisOrSuperExpression(node.expression)) return true;
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof PropertyAccessExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof ElementAccessExpression) {
+    return containsThisOrSuperExpression(node.expression) || containsThisOrSuperExpression(node.elementExpression);
+  }
+  if (node instanceof UnaryPrefixExpression) return containsThisOrSuperExpression(node.operand);
+  if (node instanceof UnaryPostfixExpression) return containsThisOrSuperExpression(node.operand);
+  if (node instanceof TernaryExpression) {
+    return containsThisOrSuperExpression(node.condition)
+      || containsThisOrSuperExpression(node.ifThen)
+      || containsThisOrSuperExpression(node.ifElse);
+  }
+  if (node instanceof AssertionExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof ParenthesizedExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof CommaExpression) {
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof InstanceOfExpression) return containsThisOrSuperExpression(node.expression);
+  if (node instanceof NewExpression) {
+    let args = node.args;
+    for (let i = 0, k = args.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(args[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ArrayLiteralExpression) {
+    let elements = node.elementExpressions;
+    for (let i = 0, k = elements.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(elements[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof ObjectLiteralExpression) {
+    let values = node.values;
+    for (let i = 0, k = values.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(values[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof TemplateLiteralExpression) {
+    if (node.tag && containsThisOrSuperExpression(node.tag)) return true;
+    let exprs = node.expressions;
+    for (let i = 0, k = exprs.length; i < k; ++i) {
+      if (containsThisOrSuperExpression(exprs[i])) return true;
+    }
+    return false;
+  }
+  if (node instanceof AwaitExpression) return containsThisOrSuperExpression(node.operand);
+  return false;
+}
+
 /**
  * Rejects what chunk 1 cannot transform, with a specific diagnostic per
  * construct. Returns `false` when a failure was reported. Nested
@@ -1052,14 +1357,12 @@ function validateStatement(node: Statement, fail: AsyncFail): bool {
         && validateStatement(stmt.body, fail);
     }
     case NodeKind.ForOf: {
-      fail("'for-of' in async functions is not yet supported", node.range);
-      return false;
+      let stmt = <ForOfStatement>node;
+      return validateStatement(stmt.variable, fail)
+        && validateExpression(stmt.iterable, fail)
+        && validateStatement(stmt.body, fail);
     }
     case NodeKind.Switch: {
-      if (containsAwait(node)) {
-        fail("Async functions with 'await' in a 'switch' statement are not yet supported", node.range);
-        return false;
-      }
       let stmt = <SwitchStatement>node;
       if (!validateExpression(stmt.condition, fail)) return false;
       let cases = stmt.cases;

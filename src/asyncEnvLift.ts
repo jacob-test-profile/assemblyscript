@@ -12,6 +12,7 @@
 
 import {
   NodeKind,
+  TypeNode,
   Statement,
   Expression,
   IdentifierExpression,
@@ -34,6 +35,8 @@ import {
   FunctionExpression,
   FunctionDeclaration,
   MethodDeclaration,
+  ParameterNode,
+  ParameterKind,
   BlockStatement,
   ExpressionStatement,
   ReturnStatement,
@@ -58,6 +61,10 @@ import {
 } from "./common";
 
 import {
+  Range
+} from "./diagnostics";
+
+import {
   Program,
   FunctionPrototype,
   File,
@@ -68,7 +75,12 @@ import {
 import {
   AsyncFail,
   ASYNC_THIS_NAME,
+  ASYNC_OUTER_NAME,
+  SPILL_GET,
+  LOOP_ENV_PARAM,
+  LoopEnvInfo,
   ident,
+  intLit,
   namedType,
   blockStmt,
   callExpr,
@@ -81,9 +93,19 @@ import {
   ArrowAlias,
   ArrowWorkItem,
   FileArrowAliases,
+  OuterArrowBinding,
+  OuterRecord,
   extractAsyncArrow,
+  outerFieldKey,
   validateLiftableParams
 } from "./asyncArrowExtract";
+
+import {
+  scanFunctionFreeVars,
+  isCompoundAssign,
+  FreeVarInfo,
+  FreeVarKind
+} from "./asyncFreeVars";
 
 /** Inputs the core computes for one async function or method. */
 export interface LiftContext {
@@ -112,6 +134,8 @@ export interface EnvLiftResult {
   hasAdapters: bool;
   /** Extracted async arrows awaiting their pre-passes. */
   arrows: ArrowWorkItem[];
+  /** Loop closures and their per-iteration envs, by adapter name. */
+  loopEnvs: Map<string, LoopEnvInfo>;
 }
 
 /** One arrow binding: how a local holding an extracted arrow is called. */
@@ -123,28 +147,52 @@ interface ArrowBinding {
 
 interface FrameEntry {
   arrow: ArrowBinding | null;
+  /** Annotated type node of a parameter or variable, if any. `null`
+   *  when the name was declared without an annotation, so it cannot
+   *  be passed as a by-value environment parameter. */
+  typeNode: TypeNode | null;
+  /** Environment parameter names of a lifted closure held by this
+   *  variable, if any. A value reference to such a variable is an
+   *  escape: the closure cannot leave its defining scope. */
+  envParams: string[] | null;
+  /** Range of the declaration name, for resolving a capture to the
+   *  exact declaration (shadowing) when an arrow is extracted. */
+  nameRange: Range | null;
 }
 
 interface ScopeFrame {
   names: Map<string, FrameEntry>;
   isClosure: bool;
+  /** Loop nesting at the point the frame was pushed; names declared in
+   *  a frame with loop depth > 0 are fresh bindings per iteration. */
+  loopDepth: i32;
+}
+
+/** Loop-scoped names one closure captures, in first-reference order. */
+interface CaptureCollector {
+  names: string[];
+  set: Set<string>;
 }
 
 /** Lifts closures and async arrows in one async body. Returns `null`
- *  when a failure was reported through `fail`. */
+ *  when a failure was reported through `fail`. `outer` is the record
+ *  for resolving captures from the enclosing async function, or `null`
+ *  when this body is not an extracted arrow. */
 export function liftEnvInAsyncBody(
   program: Program,
   prototype: FunctionPrototype,
   ctx: LiftContext,
   selfName: string | null,
   forbidden: Set<string>,
+  outer: OuterRecord | null,
   fail: AsyncFail
 ): EnvLiftResult | null {
   let lifter = new EnvLifter(program, ctx, forbidden, fail);
+  lifter.outer = outer;
   lifter.pushFrame(false);
   let parameters = prototype.functionTypeNode.parameters;
   for (let i = 0, k = parameters.length; i < k; ++i) {
-    lifter.declare(parameters[i].name.text);
+    lifter.declare(parameters[i].name.text, parameters[i].type, parameters[i].name.range);
   }
   if (selfName) {
     lifter.bindArrow(selfName, {
@@ -160,7 +208,8 @@ export function liftEnvInAsyncBody(
     methods: lifter.methods,
     adapters: lifter.adapters,
     hasAdapters: lifter.methods.length > 0,
-    arrows: lifter.arrows
+    arrows: lifter.arrows,
+    loopEnvs: lifter.loopEnvs
   };
 }
 
@@ -168,15 +217,25 @@ class EnvLifter {
   methods: MethodDeclaration[] = [];
   adapters = new Map<string, MethodDeclaration>();
   arrows: ArrowWorkItem[] = [];
+  loopEnvs = new Map<string, LoopEnvInfo>();
   private frames: ScopeFrame[] = [];
   private closureDepth: i32 = 0;
+  private loopDepth: i32 = 0;
+  /** One collector per closure being walked, innermost last. */
+  private captureStack: CaptureCollector[] = [];
   /** Frame index where each enclosing closure's parameters start, so a
    *  nested closure capturing an outer closure's locals is rejected. */
   private closureFrameBases: i32[] = [];
   private closureCounter: i32 = 0;
   private arrowCounter: i32 = 0;
+  /** Adapter name to the environment parameter names its lifted
+   *  closure captures from an enclosing closure. */
+  private closureEnvParams = new Map<string, string[]>();
   private dynamicFieldAliases = new Map<string, ArrowAlias>();
   private poisonedFields = new Set<string>();
+  /** Record for resolving captures from the enclosing async function,
+   *  or `null` when this body is not an extracted arrow. */
+  outer: OuterRecord | null = null;
 
   constructor(
     private program: Program,
@@ -193,16 +252,16 @@ class EnvLifter {
   // === Scopes ===================================================================================
 
   pushFrame(isClosure: bool): void {
-    this.frames.push({ names: new Map(), isClosure });
+    this.frames.push({ names: new Map(), isClosure, loopDepth: this.loopDepth });
   }
 
   popFrame(): void {
     this.frames.pop();
   }
 
-  declare(name: string): void {
+  declare(name: string, typeNode: TypeNode | null = null, nameRange: Range | null = null): void {
     let frame = this.frames[this.frames.length - 1];
-    if (!frame.names.has(name)) frame.names.set(name, { arrow: null });
+    if (!frame.names.has(name)) frame.names.set(name, { arrow: null, typeNode, envParams: null, nameRange });
   }
 
   bindArrow(name: string, binding: ArrowBinding): void {
@@ -213,7 +272,116 @@ class EnvLifter {
         return;
       }
     }
-    this.frames[this.frames.length - 1].names.set(name, { arrow: binding });
+    this.frames[this.frames.length - 1].names.set(name, { arrow: binding, typeNode: null, envParams: null, nameRange: null });
+  }
+
+  /** Records that the variable holds a lifted closure whose captured
+   *  environment parameters are `envParams`. */
+  private bindEnvParams(name: string, envParams: string[]): void {
+    for (let i = this.frames.length - 1; i >= 0; --i) {
+      let entry = this.frames[i].names.get(name);
+      if (entry) {
+        entry.envParams = envParams;
+        return;
+      }
+    }
+    this.frames[this.frames.length - 1].names.set(name, { arrow: null, typeNode: null, envParams, nameRange: null });
+  }
+
+  /** Annotated type node of the nearest binding of `name`, if any. */
+  private lookupTypeNode(name: string): TypeNode | null {
+    for (let i = this.frames.length - 1; i >= 0; --i) {
+      let entry = this.frames[i].names.get(name);
+      if (entry) return entry.typeNode;
+    }
+    return null;
+  }
+
+  /** Classifies a free variable of a closure body for the free-var
+   *  scan: bound in the async function's own scope, in an enclosing
+   *  closure's scope, or nowhere. */
+  private classifyFreeVar(name: string): FreeVarKind {
+    for (let i = this.frames.length - 1; i >= 0; --i) {
+      if (this.frames[i].names.has(name)) {
+        return this.frames[i].isClosure ? "closure" : "async";
+      }
+    }
+    if (name == ASYNC_THIS_NAME) return "async";
+    if (this.forbidden.has(name)) return "async";
+    if (this.ctx.aliases.globals.has(name)) return "async";
+    return "global";
+  }
+
+  /** Enclosing local name to its declaration name range, nearest
+   *  declaration wins. Captured when an arrow is extracted, so the
+   *  arrow can resolve its captures to the exact declaration. */
+  private captureOuterNames(): Map<string, Range> {
+    let names = new Map<string, Range>();
+    for (let i = this.frames.length - 1; i >= 0; --i) {
+      let keys = Map_keys(this.frames[i].names);
+      for (let j = 0, k = keys.length; j < k; ++j) {
+        let name = keys[j];
+        if (names.has(name)) continue;
+        let entry = this.frames[i].names.get(name)!;
+        if (entry.nameRange) names.set(name, entry.nameRange);
+      }
+    }
+    return names;
+  }
+
+  /** Enclosing arrow name to its binding, nearest wins. */
+  private captureOuterArrows(): Map<string, OuterArrowBinding> {
+    let arrows = new Map<string, OuterArrowBinding>();
+    for (let i = this.frames.length - 1; i >= 0; --i) {
+      let keys = Map_keys(this.frames[i].names);
+      for (let j = 0, k = keys.length; j < k; ++j) {
+        let name = keys[j];
+        if (arrows.has(name)) continue;
+        let entry = this.frames[i].names.get(name)!;
+        if (entry.arrow) {
+          arrows.set(name, {
+            extractedName: entry.arrow.extractedName,
+            needsReceiver: entry.arrow.needsReceiver,
+            receiverName: entry.arrow.receiverName
+          });
+        }
+      }
+    }
+    return arrows;
+  }
+
+  /** Whether `name` is a captured externref local (spilled). Writes to
+   *  such a local stay loud: the spill slot is a value copy. */
+  private outerSpilled(name: string): bool {
+    let outer = this.outer;
+    if (!outer) return false;
+    let nameRange = outer.names.get(name);
+    if (!nameRange) return false;
+    let info = outer.fields.get(outerFieldKey(nameRange));
+    return info ? info.spilled : false;
+  }
+
+  /** Environment parameters of an expression that is a lifted closure's
+   *  adapter, if any. Parentheses are transparent. */
+  private envParamsOf(expr: Expression): string[] | null {
+    let unwrapped = unwrapParens(expr);
+    if (unwrapped.kind != NodeKind.Identifier) return null;
+    let envParams = this.closureEnvParams.get((<IdentifierExpression>unwrapped).text);
+    return envParams ? envParams : null;
+  }
+
+  /** Walks an expression in a value position, failing when it is a
+   *  lifted closure carrying environment parameters: such a closure
+   *  cannot escape its defining scope. Binding sites (a variable
+   *  declaration or reassignment) and call callees do not use this. */
+  private walkValue(node: Expression): Expression | null {
+    let walked = this.walkExpression(node);
+    if (!walked) return null;
+    if (this.envParamsOf(walked)) {
+      this.fail("Closures capturing names from an enclosing closure cannot be passed as values; call them directly", node.range);
+      return null;
+    }
+    return walked;
   }
 
   lookup(name: string): FrameEntry | null {
@@ -231,17 +399,6 @@ class EnvLifter {
     return -1;
   }
 
-  private flattenFrames(): Set<string> {
-    let names = new Set<string>();
-    for (let i = 0, k = this.frames.length; i < k; ++i) {
-      let keys = Map_keys(this.frames[i].names);
-      for (let j = 0, l = keys.length; j < l; ++j) {
-        names.add(keys[j]);
-      }
-    }
-    return names;
-  }
-
   private lookupFieldAlias(fieldName: string): ArrowAlias | null {
     if (this.poisonedFields.has(fieldName)) return null;
     let dynamic = this.dynamicFieldAliases.get(fieldName);
@@ -256,7 +413,7 @@ class EnvLifter {
       if (statement.kind == NodeKind.Variable) {
         let declarations = (<VariableStatement>statement).declarations;
         for (let j = 0, l = declarations.length; j < l; ++j) {
-          this.declare(declarations[j].name.text);
+          this.declare(declarations[j].name.text, declarations[j].type, declarations[j].name.range);
         }
       }
     }
@@ -292,7 +449,7 @@ class EnvLifter {
       case NodeKind.Return: {
         let stmt = <ReturnStatement>node;
         if (stmt.value) {
-          let value = this.walkExpression(stmt.value);
+          let value = this.walkValue(stmt.value);
           if (!value) return false;
           stmt.value = value;
         }
@@ -308,65 +465,71 @@ class EnvLifter {
       }
       case NodeKind.While: {
         let stmt = <WhileStatement>node;
+        this.loopDepth++;
         let condition = this.walkExpression(stmt.condition);
-        if (!condition) return false;
+        if (!condition) {
+          this.loopDepth--;
+          return false;
+        }
         stmt.condition = condition;
-        return this.walkStatement(stmt.body);
+        let ok = this.walkStatement(stmt.body);
+        this.loopDepth--;
+        return ok;
       }
       case NodeKind.Do: {
         let stmt = <DoStatement>node;
-        if (!this.walkStatement(stmt.body)) return false;
+        this.loopDepth++;
+        if (!this.walkStatement(stmt.body)) {
+          this.loopDepth--;
+          return false;
+        }
         let condition = this.walkExpression(stmt.condition);
-        if (!condition) return false;
+        if (!condition) {
+          this.loopDepth--;
+          return false;
+        }
         stmt.condition = condition;
+        this.loopDepth--;
         return true;
       }
       case NodeKind.For: {
         let stmt = <ForStatement>node;
+        this.loopDepth++;
         this.pushFrame(this.closureDepth > 0);
+        let ok = true;
         if (stmt.initializer) {
           this.prescan([ stmt.initializer ]);
-          if (!this.walkStatement(stmt.initializer)) {
-            this.popFrame();
-            return false;
-          }
+          if (!this.walkStatement(stmt.initializer)) ok = false;
         }
-        if (stmt.condition) {
+        if (ok && stmt.condition) {
           let condition = this.walkExpression(stmt.condition);
-          if (!condition) {
-            this.popFrame();
-            return false;
-          }
-          stmt.condition = condition;
+          if (!condition) ok = false;
+          else stmt.condition = condition;
         }
-        if (stmt.incrementor) {
+        if (ok && stmt.incrementor) {
           let incrementor = this.walkExpression(stmt.incrementor);
-          if (!incrementor) {
-            this.popFrame();
-            return false;
-          }
-          stmt.incrementor = incrementor;
+          if (!incrementor) ok = false;
+          else stmt.incrementor = incrementor;
         }
-        let ok = this.walkStatement(stmt.body);
+        if (ok) ok = this.walkStatement(stmt.body);
         this.popFrame();
+        this.loopDepth--;
         return ok;
       }
       case NodeKind.ForOf: {
         let stmt = <ForOfStatement>node;
+        this.loopDepth++;
         this.pushFrame(this.closureDepth > 0);
         this.prescan([ stmt.variable ]);
-        if (!this.walkStatement(stmt.variable)) {
-          this.popFrame();
-          return false;
+        let ok = this.walkStatement(stmt.variable);
+        if (ok) {
+          let iterable = this.walkExpression(stmt.iterable);
+          if (!iterable) ok = false;
+          else stmt.iterable = iterable;
         }
-        let iterable = this.walkExpression(stmt.iterable);
-        if (!iterable) {
-          this.popFrame();
-          return false;
-        }
-        stmt.iterable = iterable;
-        let ok = this.walkStatement(stmt.body);
+        if (ok) ok = this.walkStatement(stmt.body);
         this.popFrame();
+        this.loopDepth--;
         return ok;
       }
       case NodeKind.Switch: {
@@ -417,7 +580,7 @@ class EnvLifter {
         this.popFrame();
         if (stmt.catchStatements) {
           this.pushFrame(this.closureDepth > 0);
-          if (stmt.catchVariable) this.declare(stmt.catchVariable.text);
+          if (stmt.catchVariable) this.declare(stmt.catchVariable.text, null, stmt.catchVariable.range);
           this.prescan(stmt.catchStatements);
           let catchStatements = stmt.catchStatements;
           for (let i = 0, k = catchStatements.length; i < k; ++i) {
@@ -444,7 +607,7 @@ class EnvLifter {
       }
       case NodeKind.Throw: {
         let stmt = <ThrowStatement>node;
-        let value = this.walkExpression(stmt.value);
+        let value = this.walkValue(stmt.value);
         if (!value) return false;
         stmt.value = value;
         return true;
@@ -506,12 +669,24 @@ class EnvLifter {
       let walked = this.walkExpression(initializer);
       if (!walked) return false;
       declaration.initializer = walked;
+      let envParams = this.envParamsOf(walked);
+      if (envParams) this.bindEnvParams(name, envParams);
     }
     return true;
   }
 
   private extractArrowHere(declaration: FunctionDeclaration, selfName: string): ArrowWorkItem | null {
     let extractedName = `__async_arrow_${this.ctx.qualName}_${this.arrowCounter++}`;
+    // Names the new arrow cannot capture: the ancestor's visible names
+    // (transitive capture is not threaded). The immediate outer's names
+    // are capturable through the outer record.
+    let forbidden = new Set<string>();
+    if (this.outer) {
+      let ancestorNames = Map_keys(this.outer.names);
+      for (let i = 0, k = ancestorNames.length; i < k; ++i) forbidden.add(ancestorNames[i]);
+      let ancestorArrows = Map_keys(this.outer.arrows);
+      for (let i = 0, k = ancestorArrows.length; i < k; ++i) forbidden.add(ancestorArrows[i]);
+    }
     return extractAsyncArrow(
       this.ctx.program,
       this.ctx.genParent,
@@ -520,7 +695,10 @@ class EnvLifter {
       this.ctx.hasReceiver,
       this.receiverClassName,
       this.ctx.receiverClass,
-      this.flattenFrames(),
+      forbidden,
+      this.ctx.qualName,
+      this.captureOuterNames(),
+      this.captureOuterArrows(),
       this.fail
     );
   }
@@ -537,15 +715,54 @@ class EnvLifter {
             this.fail("Async arrows cannot be passed as values; await them directly", node.range);
             return null;
           }
+          if (entry.envParams) {
+            this.fail("Closures capturing names from an enclosing closure cannot be passed as values; call them directly", node.range);
+            return null;
+          }
           if (this.closureDepth > 0) {
             let frameIndex = this.lookupFrame(name);
             let base = this.closureFrameBases[this.closureFrameBases.length - 1];
-            if (frameIndex >= 0 && frameIndex < base && this.frames[frameIndex].isClosure) {
-              this.fail(`Closures cannot capture '${name}' from an enclosing closure`, node.range);
-              return null;
+            if (frameIndex >= 0 && frameIndex < base) {
+              if (this.frames[frameIndex].isClosure) {
+                this.fail(`Closures cannot capture '${name}' from an enclosing closure`, node.range);
+                return null;
+              }
+              if (this.frames[frameIndex].loopDepth > 0) {
+                let collector = this.captureStack[this.captureStack.length - 1];
+                if (collector && !collector.set.has(name)) {
+                  collector.set.add(name);
+                  collector.names.push(name);
+                }
+              }
             }
           }
           return node;
+        }
+        if (this.outer) {
+          let nameRange = this.outer.names.get(name);
+          if (nameRange) {
+            let info = this.outer.fields.get(outerFieldKey(nameRange));
+            if (!info) {
+              this.fail(`Async arrows cannot capture '${name}' from the enclosing function`, node.range);
+              return null;
+            }
+            if (info.spilled) {
+              return callExpr(
+                ident(SPILL_GET, node.range),
+                [ new PropertyAccessExpression(ident(ASYNC_OUTER_NAME, node.range), ident(info.slotField, node.range), node.range) ],
+                node.range
+              );
+            }
+            return new PropertyAccessExpression(
+              ident(ASYNC_OUTER_NAME, node.range),
+              ident(info.field, node.range),
+              node.range
+            );
+          }
+          if (this.outer.arrows.has(name)) {
+            this.fail("Async arrows cannot be passed as values; await them directly", node.range);
+            return null;
+          }
         }
         if (this.forbidden.has(name)) {
           this.fail(`Async arrows cannot capture '${name}' from the enclosing function`, node.range);
@@ -564,7 +781,7 @@ class EnvLifter {
         if (node instanceof ArrayLiteralExpression) {
           let elements = node.elementExpressions;
           for (let i = 0, k = elements.length; i < k; ++i) {
-            let element = this.walkExpression(elements[i]);
+            let element = this.walkValue(elements[i]);
             if (!element) return null;
             elements[i] = element;
           }
@@ -573,7 +790,7 @@ class EnvLifter {
         if (node instanceof ObjectLiteralExpression) {
           let values = node.values;
           for (let i = 0, k = values.length; i < k; ++i) {
-            let value = this.walkExpression(values[i]);
+            let value = this.walkValue(values[i]);
             if (!value) return null;
             values[i] = value;
           }
@@ -605,7 +822,7 @@ class EnvLifter {
         let expr = <NewExpression>node;
         let args = expr.args;
         for (let i = 0, k = args.length; i < k; ++i) {
-          let arg = this.walkExpression(args[i]);
+          let arg = this.walkValue(args[i]);
           if (!arg) return null;
           args[i] = arg;
         }
@@ -616,6 +833,13 @@ class EnvLifter {
       }
       case NodeKind.UnaryPrefix: {
         let unary = <UnaryPrefixExpression>node;
+        if (unary.operator == Token.Plus_Plus || unary.operator == Token.Minus_Minus) {
+          let target = unwrapParens(unary.operand);
+          if (target.kind == NodeKind.Identifier && this.outerSpilled((<IdentifierExpression>target).text)) {
+            this.fail(`Async arrows cannot write to '${(<IdentifierExpression>target).text}' captured from the enclosing function`, node.range);
+            return null;
+          }
+        }
         let operand = this.walkExpression(unary.operand);
         if (!operand) return null;
         unary.operand = operand;
@@ -623,6 +847,13 @@ class EnvLifter {
       }
       case NodeKind.UnaryPostfix: {
         let unary = <UnaryPostfixExpression>node;
+        if (unary.operator == Token.Plus_Plus || unary.operator == Token.Minus_Minus) {
+          let target = unwrapParens(unary.operand);
+          if (target.kind == NodeKind.Identifier && this.outerSpilled((<IdentifierExpression>target).text)) {
+            this.fail(`Async arrows cannot write to '${(<IdentifierExpression>target).text}' captured from the enclosing function`, node.range);
+            return null;
+          }
+        }
         let operand = this.walkExpression(unary.operand);
         if (!operand) return null;
         unary.operand = operand;
@@ -632,9 +863,9 @@ class EnvLifter {
         let ternary = <TernaryExpression>node;
         let condition = this.walkExpression(ternary.condition);
         if (!condition) return null;
-        let ifThen = this.walkExpression(ternary.ifThen);
+        let ifThen = this.walkValue(ternary.ifThen);
         if (!ifThen) return null;
-        let ifElse = this.walkExpression(ternary.ifElse);
+        let ifElse = this.walkValue(ternary.ifElse);
         if (!ifElse) return null;
         ternary.condition = condition;
         ternary.ifThen = ifThen;
@@ -734,11 +965,36 @@ class EnvLifter {
         if (binding.needsReceiver) args.push(ident(binding.receiverName!, node.range));
         let callArgs = node.args;
         for (let i = 0, k = callArgs.length; i < k; ++i) {
-          let arg = this.walkExpression(callArgs[i]);
+          let arg = this.walkValue(callArgs[i]);
           if (!arg) return null;
           args.push(arg);
         }
         return new CallExpression(ident(binding.extractedName, callee.range), null, args, node.range);
+      }
+      if (this.outer) {
+        let outerArrow = this.outer.arrows.get(name);
+        if (outerArrow) {
+          if (this.closureDepth > 0) {
+            this.fail("Async arrows cannot be called inside a closure; call them in the async function body", node.range);
+            return null;
+          }
+          if (outerArrow.needsReceiver && !outerArrow.receiverName) {
+            this.fail("Internal error: async arrow call without a receiver", node.range);
+            return null;
+          }
+          let args = new Array<Expression>();
+          if (outerArrow.needsReceiver) args.push(ident(outerArrow.receiverName!, node.range));
+          let callArgs = node.args;
+          for (let i = 0, k = callArgs.length; i < k; ++i) {
+            let arg = this.walkValue(callArgs[i]);
+            if (!arg) return null;
+            args.push(arg);
+          }
+          return new CallExpression(ident(outerArrow.extractedName, callee.range), null, args, node.range);
+        }
+      }
+      if (entry && entry.envParams) {
+        return this.walkClosureCall(node, entry.envParams);
       }
     } else if (callee.kind == NodeKind.PropertyAccess) {
       let access = <PropertyAccessExpression>callee;
@@ -755,7 +1011,7 @@ class EnvLifter {
           args.push(ident((<IdentifierExpression>object).text, access.expression.range));
           let callArgs = node.args;
           for (let i = 0, k = callArgs.length; i < k; ++i) {
-            let arg = this.walkExpression(callArgs[i]);
+            let arg = this.walkValue(callArgs[i]);
             if (!arg) return null;
             args.push(arg);
           }
@@ -768,14 +1024,65 @@ class EnvLifter {
     node.expression = walkedCallee;
     let args = node.args;
     for (let i = 0, k = args.length; i < k; ++i) {
-      let arg = this.walkExpression(args[i]);
+      let arg = this.walkValue(args[i]);
       if (!arg) return null;
       args[i] = arg;
+    }
+    if (walkedCallee.kind == NodeKind.Identifier) {
+      let envParams = this.closureEnvParams.get((<IdentifierExpression>walkedCallee).text);
+      if (envParams) {
+        let envArgs = this.envArgIdents(envParams, node.range);
+        if (!envArgs) return null;
+        for (let i = 0, k = envArgs.length; i < k; ++i) args.push(envArgs[i]);
+      }
     }
     return node;
   }
 
+  /** Walks a call to a variable holding a lifted closure with
+   *  environment parameters, appending the environment arguments.
+   *  The callee stays the variable: it is a call target, not a value. */
+  private walkClosureCall(node: CallExpression, envParams: string[]): Expression | null {
+    let args = new Array<Expression>();
+    let callArgs = node.args;
+    for (let i = 0, k = callArgs.length; i < k; ++i) {
+      let arg = this.walkValue(callArgs[i]);
+      if (!arg) return null;
+      args.push(arg);
+    }
+    let envArgs = this.envArgIdents(envParams, node.range);
+    if (!envArgs) return null;
+    for (let i = 0, k = envArgs.length; i < k; ++i) args.push(envArgs[i]);
+    node.args = args;
+    return node;
+  }
+
+  /** Builds the environment arguments for a lifted closure call.
+   *  Each name must resolve in the current scope: a closure value
+   *  that escaped its defining scope has no environment to read. */
+  private envArgIdents(envParams: string[], range: Range): Expression[] | null {
+    let args = new Array<Expression>();
+    for (let i = 0, k = envParams.length; i < k; ++i) {
+      let name = envParams[i];
+      if (!this.lookup(name)) {
+        this.fail(`Closure capturing '${name}' from an enclosing closure was called outside its scope`, range);
+        return null;
+      }
+      args.push(ident(name, range));
+    }
+    return args;
+  }
+
   private walkBinary(node: BinaryExpression): Expression | null {
+    // A write to a captured externref local stays loud: the spill slot
+    // is a value copy, so the write could not be shared.
+    if (node.operator == Token.Equals || isCompoundAssign(node.operator)) {
+      let left = unwrapParens(node.left);
+      if (left.kind == NodeKind.Identifier && this.outerSpilled((<IdentifierExpression>left).text)) {
+        this.fail(`Async arrows cannot write to '${(<IdentifierExpression>left).text}' captured from the enclosing function`, node.range);
+        return null;
+      }
+    }
     if (node.operator == Token.Equals) {
       let right = unwrapParens(node.right);
       if (right.kind == NodeKind.Function && (<FunctionExpression>right).declaration.is(CommonFlags.Async)) {
@@ -783,11 +1090,28 @@ class EnvLifter {
       }
       let left = node.left;
       if (left.kind == NodeKind.Identifier) {
-        let entry = this.lookup((<IdentifierExpression>left).text);
-        if (entry) entry.arrow = null;
+        let name = (<IdentifierExpression>left).text;
+        let entry = this.lookup(name);
+        if (entry) {
+          entry.arrow = null;
+          entry.envParams = null;
+        }
+        let walkedLeft = this.walkExpression(left);
+        if (!walkedLeft) return null;
+        node.left = walkedLeft;
         let walkedRight = this.walkExpression(node.right);
         if (!walkedRight) return null;
         node.right = walkedRight;
+        let envParams = this.envParamsOf(walkedRight);
+        if (envParams) {
+          if (!entry) {
+            // Assigning a closure with env params to a non-local (an
+            // outer capture or a global) escapes it.
+            this.fail("Closures capturing names from an enclosing closure cannot be passed as values; call them directly", node.range);
+            return null;
+          }
+          this.bindEnvParams(name, envParams);
+        }
         return node;
       }
       if (left.kind == NodeKind.PropertyAccess) {
@@ -799,12 +1123,16 @@ class EnvLifter {
         let walkedRight = this.walkExpression(node.right);
         if (!walkedRight) return null;
         node.right = walkedRight;
+        if (this.envParamsOf(walkedRight)) {
+          this.fail("Closures capturing names from an enclosing closure cannot be assigned to a field; call them directly", node.range);
+          return null;
+        }
         return node;
       }
     }
     let left = this.walkExpression(node.left);
     if (!left) return null;
-    let right = this.walkExpression(node.right);
+    let right = this.walkValue(node.right);
     if (!right) return null;
     node.left = left;
     node.right = right;
@@ -867,21 +1195,66 @@ class EnvLifter {
       this.fail("'await' inside a closure is not yet supported; use an async arrow", range);
       return null;
     }
-    let methodName = `__closure_${this.closureCounter}`;
-    let adapterName = `__adapt_${this.ctx.qualName}_${this.closureCounter++}`;
+    let index = this.closureCounter++;
+    let methodName = `__closure_${index}`;
+    let adapterBase = `__adapt_${this.ctx.qualName}_${index}`;
+    let envClassName = `__env_${this.ctx.qualName}_${index}`;
+    let captureName = `__capture_${this.ctx.qualName}_${index}`;
+    let envsName = `__adapt_envs_${this.ctx.qualName}_${index}`;
+    let fnsName = `__adapt_fns_${this.ctx.qualName}_${index}`;
+    let slotName = `__adapt_slot_${this.ctx.qualName}_${index}`;
     let methodSignature = copyFunctionSignature(declaration.signature, range);
-    let adapterSignature = copyFunctionSignature(declaration.signature, range);
+
     let bodyNode = declaration.body;
     if (!bodyNode) {
       this.fail("Closures must have a body", range);
       return null;
+    }
+    let freeVars = scanFunctionFreeVars(declaration, (name) => this.classifyFreeVar(name));
+    let envCaptures: FreeVarInfo[] = [];
+    for (let i = 0, k = freeVars.length; i < k; ++i) {
+      let free = freeVars[i];
+      if (free.kind == "closure") envCaptures.push(free);
+    }
+    // Stock AssemblyScript has no nested-closure capture at all (the
+    // compiler reports "Not implemented: Closures" for a closure
+    // capturing an enclosing closure's locals, even in a plain
+    // function), so a nested closure is always lifted, with its
+    // outer-closure captures as extra by-value parameters.
+    let envParams: string[] = [];
+    let envParamTypes: TypeNode[] = [];
+    for (let i = 0, k = envCaptures.length; i < k; ++i) {
+      let capture = envCaptures[i];
+      if (capture.written) {
+        this.fail(`Closures cannot write to '${capture.name}' captured from an enclosing closure`, capture.range);
+        return null;
+      }
+      let typeNode = this.lookupTypeNode(capture.name);
+      if (!typeNode) {
+        this.fail(`Closures cannot capture '${capture.name}' from an enclosing closure without an explicit type annotation`, capture.range);
+        return null;
+      }
+      envParams.push(capture.name);
+      envParamTypes.push(typeNode);
+    }
+    for (let i = 0, k = envParams.length; i < k; ++i) {
+      methodSignature.parameters.push(new ParameterNode(ParameterKind.Default, ident(envParams[i], range), envParamTypes[i], null, range));
+    }
+    let inLoop = this.loopDepth > 0;
+    let collector: CaptureCollector | null = null;
+    if (inLoop) {
+      collector = { names: [], set: new Set<string>() };
+      this.captureStack.push(collector);
     }
     let methodBody: Statement;
     this.closureFrameBases.push(this.frames.length);
     this.pushFrame(true);
     let parameters = declaration.signature.parameters;
     for (let i = 0, k = parameters.length; i < k; ++i) {
-      this.declare(parameters[i].name.text);
+      this.declare(parameters[i].name.text, parameters[i].type, parameters[i].name.range);
+    }
+    for (let i = 0, k = envParams.length; i < k; ++i) {
+      this.declare(envParams[i], envParamTypes[i]);
     }
     this.closureDepth++;
     if (bodyNode.kind == NodeKind.Block) {
@@ -889,6 +1262,7 @@ class EnvLifter {
         this.closureDepth--;
         this.closureFrameBases.pop();
         this.popFrame();
+        if (collector) this.captureStack.pop();
         return null;
       }
       methodBody = bodyNode;
@@ -898,6 +1272,7 @@ class EnvLifter {
         this.closureDepth--;
         this.closureFrameBases.pop();
         this.popFrame();
+        if (collector) this.captureStack.pop();
         return null;
       }
       methodBody = blockStmt([ new ReturnStatement(expr, range) ], range);
@@ -905,12 +1280,36 @@ class EnvLifter {
       this.closureDepth--;
       this.closureFrameBases.pop();
       this.popFrame();
+      if (collector) this.captureStack.pop();
       this.fail("Closures with this body shape are not yet supported", bodyNode.range);
       return null;
     }
     this.closureDepth--;
     this.closureFrameBases.pop();
     this.popFrame();
+    let captures: string[] = collector ? collector.names : [];
+    if (collector) this.captureStack.pop();
+    if (captures.length > 0) {
+      for (let i = 0, k = parameters.length; i < k; ++i) {
+        if (parameters[i].name.text == LOOP_ENV_PARAM) {
+          this.fail(`Closures cannot use '${LOOP_ENV_PARAM}' as a parameter name`, parameters[i].name.range);
+          return null;
+        }
+      }
+      for (let i = 0, k = captures.length; i < k; ++i) {
+        if (captures[i] == LOOP_ENV_PARAM || captures[i] == "__async_slot") {
+          this.fail(`Loop closures cannot capture '${captures[i]}'`, range);
+          return null;
+        }
+      }
+      methodSignature.parameters.unshift(new ParameterNode(
+        ParameterKind.Default,
+        ident(LOOP_ENV_PARAM, range),
+        namedType(envClassName, null, false, range),
+        null,
+        range
+      ));
+    }
     let method = new MethodDeclaration(
       ident(methodName, range),
       null,
@@ -920,9 +1319,18 @@ class EnvLifter {
       methodBody,
       range
     );
+    this.methods.push(method);
+    let adapterName = captures.length > 0 ? `${adapterBase}_0` : adapterBase;
+    let adapterSignature = copyFunctionSignature(declaration.signature, range);
+    for (let i = 0, k = envParams.length; i < k; ++i) {
+      adapterSignature.parameters.push(new ParameterNode(ParameterKind.Default, ident(envParams[i], range), envParamTypes[i], null, range));
+    }
     let argIdents = new Array<Expression>();
     for (let i = 0, k = parameters.length; i < k; ++i) {
       argIdents.push(ident(parameters[i].name.text, parameters[i].name.range));
+    }
+    for (let i = 0, k = envParams.length; i < k; ++i) {
+      argIdents.push(ident(envParams[i], range));
     }
     let stateAccess = new CallExpression(
       ident("changetype", range),
@@ -930,16 +1338,52 @@ class EnvLifter {
       [ ident(this.ctx.stateGlobalName, range) ],
       range
     );
-    let adapterBody = blockStmt([
-      new ReturnStatement(
-        callExpr(
-          new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
-          argIdents,
-          range
-        ),
+    let adapterBody: Statement;
+    if (captures.length > 0) {
+      // Slot 0's adapter: the env comes from the table's slot 0. It is
+      // built here, not by the core, so the closure's value identifier
+      // resolves while the core walks the body; the core builds slots
+      // 1..31 in generate() and always replaces this identifier with a
+      // capture call, so this adapter is only ever reached as slot 0.
+      let callArgs = new Array<Expression>();
+      callArgs.push(new ElementAccessExpression(
+        ident(envsName, range),
+        intLit(0, range),
         range
-      )
-    ], range);
+      ));
+      for (let i = 0, k = argIdents.length; i < k; ++i) callArgs.push(argIdents[i]);
+      adapterBody = blockStmt([
+        new ReturnStatement(
+          callExpr(
+            new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
+            callArgs,
+            range
+          ),
+          range
+        )
+      ], range);
+      this.loopEnvs.set(adapterName, {
+        envParam: LOOP_ENV_PARAM,
+        envClass: envClassName,
+        captureName,
+        captures,
+        adapterBase,
+        envsName,
+        fnsName,
+        slotName
+      });
+    } else {
+      adapterBody = blockStmt([
+        new ReturnStatement(
+          callExpr(
+            new PropertyAccessExpression(stateAccess, ident(methodName, range), range),
+            argIdents,
+            range
+          ),
+          range
+        )
+      ], range);
+    }
     let adapter = new FunctionDeclaration(
       ident(adapterName, range),
       null,
@@ -958,8 +1402,8 @@ class EnvLifter {
       this.fail(`Could not register generated function '${adapterName}'`, range);
       return null;
     }
-    this.methods.push(method);
     this.adapters.set(adapterName, method);
+    if (envParams.length > 0) this.closureEnvParams.set(adapterName, envParams);
     return ident(adapterName, range);
   }
 }

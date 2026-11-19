@@ -486,7 +486,7 @@ export class Compiler extends DiagnosticEmitter {
   /** Elements currently undergoing compilation. */
   pendingElements: Set<Element> = new Set();
   /** Elements, that are module exports, already processed */
-  doneModuleExports: Set<Element> = new Set();
+  doneModuleExports: Set<string> = new Set();
   /** Shadow stack reference. */
   shadowStack!: ShadowStackPass;
   /** Whether the module has custom function exports. */
@@ -953,21 +953,47 @@ export class Compiler extends DiagnosticEmitter {
 
   // === Exports ==================================================================================
 
-  /** Compiles the respective module exports for the specified entry file. */
+  /** Compiles the respective module exports for the specified entry file.
+   *  Re-scans until a full pass finds nothing new: compiling a body can
+   *  register new exports (a generic async instantiation creates its
+   *  clone and protocol exports mid-compilation), and a single pass over
+   *  a snapshot would miss them. Entries are tracked in
+   *  `doneModuleExports` by (name, element): one element can be
+   *  re-exported under several names, and each name is its own export. */
   private compileModuleExports(file: File): void {
-    let exports = file.exports;
-    if (exports) {
-      // TODO: for (let [elementName, element] of exports) {
-      for (let _keys = Map_keys(exports), i = 0, k = _keys.length; i < k; ++i) {
-        let elementName = unchecked(_keys[i]);
-        let element = assert(exports.get(elementName));
-        this.compileModuleExport(elementName, element);
-      }
-    }
-    let exportsStar = file.exportsStar;
-    if (exportsStar)  {
-      for (let i = 0, k = exportsStar.length; i < k; ++i) {
-        this.compileModuleExports(exportsStar[i]);
+    let files = new Array<File>();
+    files.push(file);
+    let seen = new Set<File>();
+    seen.add(file);
+    let progress = true;
+    while (progress) {
+      progress = false;
+      for (let i = 0, k = files.length; i < k; ++i) {
+        let current = files[i];
+        let exports = current.exports;
+        if (exports) {
+          // TODO: for (let [elementName, element] of exports) {
+          for (let _keys = Map_keys(exports), j = 0, l = _keys.length; j < l; ++j) {
+            let elementName = unchecked(_keys[j]);
+            let element = assert(exports.get(elementName));
+            let key = elementName + "\0" + element.internalName;
+            if (this.doneModuleExports.has(key)) continue;
+            this.doneModuleExports.add(key);
+            progress = true;
+            this.compileModuleExport(elementName, element);
+          }
+        }
+        let exportsStar = current.exportsStar;
+        if (exportsStar) {
+          for (let j = 0, l = exportsStar.length; j < l; ++j) {
+            let star = exportsStar[j];
+            if (!seen.has(star)) {
+              seen.add(star);
+              files.push(star);
+              progress = true;
+            }
+          }
+        }
       }
     }
   }
@@ -4853,7 +4879,8 @@ export class Compiler extends DiagnosticEmitter {
       right,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      left
     );
   }
 
@@ -5851,7 +5878,8 @@ export class Compiler extends DiagnosticEmitter {
       valueExpression,
       thisExpression,
       elementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      expression
     );
   }
 
@@ -5870,7 +5898,12 @@ export class Compiler extends DiagnosticEmitter {
     /** Index expression reference if an indexed set. */
     indexExpression: Expression | null,
     /** Whether to tee the value. */
-    tee: bool
+    tee: bool,
+    /** Target AST node, for the setter call's report node. A `super`
+     *  target must skip the override stub, like a `super` method call or
+     *  getter read does (makeCallDirect checks
+     *  reportNode.isAccessOnSuper). */
+    reportNode: Node
   ): ExpressionRef {
     let module = this.module;
     let flow = this.currentFlow;
@@ -5948,26 +5981,26 @@ export class Compiler extends DiagnosticEmitter {
             thisType,
             Constraints.ConvImplicit | Constraints.IsThis
           );
-          if (!tee) return this.makeCallDirect(setterInstance, [ thisExpr, valueExpr ], valueExpression);
+          if (!tee) return this.makeCallDirect(setterInstance, [ thisExpr, valueExpr ], reportNode);
           let tempLocal = flow.getTempLocal(valueType);
           let valueTypeRef = valueType.toRef();
           let ret = module.block(null, [
             this.makeCallDirect(setterInstance, [
               thisExpr,
               module.local_tee(tempLocal.index, valueExpr, valueType.isManaged, valueTypeRef)
-            ], valueExpression),
+            ], reportNode),
             module.local_get(tempLocal.index, valueTypeRef),
           ], valueTypeRef);
           this.currentType = valueType;
           return ret;
         } else {
-          if (!tee) return this.makeCallDirect(setterInstance, [ valueExpr ], valueExpression);
+          if (!tee) return this.makeCallDirect(setterInstance, [ valueExpr ], reportNode);
           let tempLocal = flow.getTempLocal(valueType);
           let valueTypeRef = valueType.toRef();
           let ret = module.block(null, [
             this.makeCallDirect(setterInstance, [
               module.local_tee(tempLocal.index, valueExpr, valueType.isManaged, valueTypeRef),
-            ], valueExpression),
+            ], reportNode),
             module.local_get(tempLocal.index, valueTypeRef),
           ], valueTypeRef);
           this.currentType = valueType;
@@ -9571,7 +9604,8 @@ export class Compiler extends DiagnosticEmitter {
         expression.operand,
         resolver.currentThisExpression,
         resolver.currentElementExpression,
-        false
+        false,
+        expression.operand
       );
     }
 
@@ -9583,7 +9617,8 @@ export class Compiler extends DiagnosticEmitter {
       expression.operand,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      false
+      false,
+      expression.operand
     );
 
     this.currentType = tempLocal.type;
@@ -9975,7 +10010,8 @@ export class Compiler extends DiagnosticEmitter {
       expression.operand,
       resolver.currentThisExpression,
       resolver.currentElementExpression,
-      contextualType != Type.void
+      contextualType != Type.void,
+      expression.operand
     );
   }
 

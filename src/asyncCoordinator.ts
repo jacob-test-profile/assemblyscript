@@ -13,8 +13,10 @@
 
 import {
   Program,
+  Function,
   FunctionPrototype,
   ClassPrototype,
+  Class,
   Element,
   ElementKind
 } from "./program";
@@ -38,16 +40,27 @@ import {
   ClassMeta,
   ImportMeta,
   ValueDesc,
+  RestDesc,
   warnSkipped,
   sanitizeName,
   describeType,
+  describePointerType,
   describeParams,
+  describeParamsAndRest,
   owningFile,
   findExportName,
   collectSuspendingImports,
   findImportName,
-  qualNameOf
+  qualNameOf,
+  methodClassOf,
+  isStaticMethod,
+  namespacePathOf,
+  exportedThroughNamespaces
 } from "./asyncCoordinatorMeta";
+
+import {
+  mangleGenericName
+} from "./asyncRewrite";
 
 /** Builds metadata for one transformed async function, or `null` (with a
  *  warning) when it cannot be driven. Non-exported functions are skipped
@@ -90,12 +103,19 @@ function buildFunctionMeta(
     warnSkipped(program, prototype, "it does not return a Promise", notes);
     return null;
   }
-  let result = describeType(unwrapped);
+  let result = describeType(program, unwrapped);
   if (!result) {
-    warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
-    return null;
+    // An inner function may return a wasm-pointer value (array/class):
+    // its result is handed to the awaiting parent untouched, never to JS.
+    // Top-level entry functions keep the loud skip — a raw pointer is
+    // not a usable JS result.
+    if (forInner) result = describePointerType(unwrapped);
+    if (!result) {
+      warnSkipped(program, prototype, "unsupported return type '" + unwrapped.toString() + "'", notes);
+      return null;
+    }
   }
-  let params = describeParams(signature.parameterTypes, prototype.name);
+  let params = describeParamsAndRest(program, signature, prototype.name);
   if (params.reason) {
     warnSkipped(program, prototype, params.reason, notes);
     return null;
@@ -121,6 +141,12 @@ function buildFunctionMeta(
         warnSkipped(program, prototype, "join site " + n.toString() + " has no join_store export", notes);
         return null;
       }
+      let markName = "__async_" + fileBase + "_" + fn + "_join_mark_" + n.toString();
+      let markMember = lookupParent.getMember(markName);
+      if (!markMember || markMember.kind != ElementKind.FunctionPrototype) {
+        warnSkipped(program, prototype, "join site " + n.toString() + " has no join_mark export", notes);
+        return null;
+      }
       let storeInstance = program.resolver.resolveFunction(
         <FunctionPrototype>storeMember, null, new Map(), ReportMode.Swallow
       );
@@ -133,7 +159,7 @@ function buildFunctionMeta(
         warnSkipped(program, prototype, "join site " + n.toString() + " has no value parameter", notes);
         return null;
       }
-      let member = describeType(storeTypes[2]);
+      let member = describeType(program, storeTypes[2]);
       if (!member) {
         warnSkipped(
           program, prototype,
@@ -143,8 +169,7 @@ function buildFunctionMeta(
         return null;
       }
       sites.push({
-        kind: member.kind,
-        nullable: member.nullable,
+        desc: member,
         join: true,
         nested: false,
         resumeExport: null,
@@ -152,6 +177,7 @@ function buildFunctionMeta(
         storeExport: storeName,
         errorExport: "__async_" + fileBase + "_" + fn + "_join_error_" + n.toString(),
         doneExport: doneName,
+        markExport: markName,
         pendingExport: null,
         innerExportName: null
       });
@@ -165,22 +191,34 @@ function buildFunctionMeta(
       return null;
     }
     let valueTypes = resumeInstance.signature.parameterTypes;
-    if (valueTypes.length < 2) {
-      warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
-      return null;
-    }
-    let site = describeType(valueTypes[1]);
-    if (!site) {
-      warnSkipped(
-        program, prototype,
-        "unsupported awaited type '" + valueTypes[1].toString() + "'",
-        notes
-      );
-      return null;
-    }
     let pendingName = "__async_" + fileBase + "_" + fn + "_pending_" + n.toString();
     let pendingMember = lookupParent.getMember(pendingName);
     if (pendingMember && pendingMember.kind != ElementKind.FunctionPrototype) pendingMember = null;
+    // A void site's resume export takes only the state: the awaited
+    // value does not exist, so there is no value parameter to describe.
+    let site: ValueDesc | null;
+    if (valueTypes.length == 1) {
+      site = { kind: "void", nullable: false };
+    } else if (valueTypes.length < 2) {
+      warnSkipped(program, prototype, "its resume export '" + resumeName + "' has no value parameter", notes);
+      return null;
+    } else {
+      site = describeType(program, valueTypes[1]);
+      if (!site) {
+        // A nested site may await a wasm-pointer value (array/class): the
+        // inner result is handed to the resume untouched, never lowered
+        // from JS. Any other site keeps the loud skip.
+        if (pendingMember) site = describePointerType(valueTypes[1]);
+        if (!site) {
+          warnSkipped(
+            program, prototype,
+            "unsupported awaited type '" + valueTypes[1].toString() + "'",
+            notes
+          );
+          return null;
+        }
+      }
+    }
     let innerExportName: string | null = null;
     if (pendingMember) {
       innerExportName = program.asyncNestedPending.get(pendingName) || null;
@@ -190,8 +228,7 @@ function buildFunctionMeta(
       }
     }
     sites.push({
-      kind: site.kind,
-      nullable: site.nullable,
+      desc: site,
       join: false,
       nested: !!pendingMember,
       resumeExport: resumeName,
@@ -199,6 +236,7 @@ function buildFunctionMeta(
       storeExport: null,
       errorExport: null,
       doneExport: null,
+      markExport: null,
       pendingExport: pendingMember ? pendingName : null,
       innerExportName
     });
@@ -207,64 +245,117 @@ function buildFunctionMeta(
     exportName,
     fileBase,
     params: params.params,
-    resultKind: result.kind,
-    resultNullable: result.nullable,
+    varargs: params.varargs,
+    rest: params.rest,
+    result,
     statusExport: "__async_" + fileBase + "_" + fn + "_status",
     resultExport: "__async_" + fileBase + "_" + fn + "_result",
     errorExport: "__async_" + fileBase + "_" + fn + "_error",
+    lastHandleExport: "__async_" + fileBase + "_" + fn + "_last_handle",
+    reclaimExport: "__async_" + fileBase + "_" + fn + "_reclaim",
     sites
   };
 }
 
 /** Builds metadata for one transformed async method on an exported class,
  *  or `null` when it cannot be driven. A method on a non-exported class
- *  is skipped silently (no wrapper class in v1); any other failure warns.
+ *  is skipped silently by design (no wrapper class: the class is not
+ *  nameable from JS, so its methods stay reachable only as nested
+ *  inners); a namespaced class counts as exported when the class and
+ *  every enclosing namespace carry `Export`. A method on a generic class
+ *  is resolved with its type args (the clone's `thisType` gives
+ *  `Box<i32>`) and lands on the wrapper for that instantiation, one
+ *  wrapper per instantiation, under the mangled clone name. Any other
+ *  failure warns.
  *  The resolved signature's parameterTypes are the declared params only —
  *  the receiver lives in signature.thisType — so they describe as-is and
- *  the runtime prepends the raw pointer. */
+ *  the runtime prepends the raw pointer. A static method has no receiver
+ *  at all: its entry takes only the declared params. */
 function buildMethodMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[]
 ): MethodMeta | null {
-  let bound = prototype.getBoundClassOrInterface();
-  if (!bound) return null;
+  let cls = methodClassOf(prototype);
+  if (!cls) return null;
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);
     return null;
   }
-  if (!findExportName(program, file, bound.prototype)) return null;
+  if (!findExportName(program, file, cls) && !exportedThroughNamespaces(cls)) return null;
+  let className = cls.name;
+  let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+  let thisType = instance ? instance.signature.thisType : null;
+  let thisClass = thisType ? thisType.getClass() : null;
+  let typeArgs = thisClass ? thisClass.typeArguments : null;
+  if (typeArgs && typeArgs.length > 0) {
+    className = mangleGenericName(cls.name, typeArgs);
+  }
+  let classPath = namespacePathOf(cls);
   let qualName = qualNameOf(prototype);
   let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
   if (!meta) return null;
+  let entryExport = "__async_" + meta.fileBase + "_" + qualName + "_entry";
+  // The transform skips the entry when the method cannot be driven
+  // through it (e.g. a default value referencing `this`): without the
+  // entry the wrapper method would call a missing export, so the method
+  // is skipped here instead.
+  let entryMember = file.getMember(entryExport);
+  if (!entryMember || entryMember.kind != ElementKind.FunctionPrototype) {
+    warnSkipped(program, prototype, "its generated entry was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
+    return null;
+  }
   return {
     ...meta,
     exportName: null,
     name: prototype.name,
-    entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
+    isStatic: isStaticMethod(prototype),
+    entryExport,
+    className,
+    classKey: classPath.length > 0 ? classPath.join("/") + "/" + className : className,
+    classPath
   };
 }
 
 /** Builds metadata for one exported class from its drivable async methods,
  *  or `null` (with a warning) when the constructor cannot be driven: the
  *  whole class is skipped, since the wrapper cannot be constructed. A
- *  class with no explicit constructor takes no `new` params. */
+ *  class with no explicit constructor takes no `new` params. The wrapper
+ *  name, namespace path and `_new` export come from the methods (one
+ *  wrapper per class instantiation, namespaced under its path);
+ *  `firstPrototype` resolves the constructor off the instantiated class
+ *  when the methods carry one — a generic class resolved with null type
+ *  args leaves the type parameters in the signature, which describe as
+ *  nothing — falling back to the plain class for static-only classes,
+ *  whose methods have no receiver type. */
 function buildClassMeta(
   program: Program,
   classPrototype: ClassPrototype,
   methods: MethodMeta[],
-  notes: string[]
+  notes: string[],
+  firstPrototype: FunctionPrototype
 ): ClassMeta | null {
   let fileBase = methods[0].fileBase;
-  let name = classPrototype.name;
+  let name = methods[0].className;
+  let path = methods[0].classPath;
+  let classQual = (path.length > 0 ? path.join("_") + "_" : "") + name;
+  let newExport = "__async_" + fileBase + "_" + classQual + "_new";
   let newParams: ValueDesc[] = [];
+  let newVarargs = false;
+  let newRest: RestDesc | null = null;
   let ctor = classPrototype.constructorPrototype;
   if (ctor) {
     // The constructor prototype is flagged Instance but unbound, so
     // resolveFunction asserts on it: resolve the class instead and take
     // the constructor instance the resolver links (resolver.ts).
-    let classInstance = program.resolver.resolveClass(classPrototype, null, new Map(), ReportMode.Swallow);
+    let classInstance: Class | null = null;
+    let methodInstance = program.resolver.resolveFunction(firstPrototype, null, new Map(), ReportMode.Swallow);
+    let thisType = methodInstance ? methodInstance.signature.thisType : null;
+    if (thisType) classInstance = thisType.getClass();
+    if (!classInstance) {
+      classInstance = program.resolver.resolveClass(classPrototype, null, new Map(), ReportMode.Swallow);
+    }
     if (!classInstance) {
       warnSkipped(program, ctor, "its class cannot be resolved", notes);
       return null;
@@ -274,17 +365,37 @@ function buildClassMeta(
       warnSkipped(program, ctor, "its constructor cannot be resolved", notes);
       return null;
     }
-    let params = describeParams(ctorInstance.signature.parameterTypes, name);
+    let params = describeParamsAndRest(program, ctorInstance.signature, name);
     if (params.reason) {
       warnSkipped(program, ctor, params.reason, notes);
       return null;
     }
     newParams = params.params;
+    newVarargs = params.varargs;
+    newRest = params.rest;
+  }
+  // The transform skips _new when the constructor cannot be driven
+  // through it (e.g. a default value referencing `this`, or a generic
+  // class with no instantiation to construct): without it the wrapper
+  // cannot be constructed, so the whole class is skipped. The check
+  // applies with an implicit constructor too — the transform emits _new
+  // for any transformed method of a drivable class, so a missing _new
+  // always means the class is not constructible through the coordinator.
+  let file = owningFile(classPrototype);
+  if (file) {
+    let newMember = file.getMember(newExport);
+    if (!newMember || newMember.kind != ElementKind.FunctionPrototype) {
+      warnSkipped(program, firstPrototype, "its generated _new was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
+      return null;
+    }
   }
   return {
     name,
-    newExport: "__async_" + fileBase + "_" + name + "_new",
+    path,
+    newExport,
     newParams,
+    newVarargs,
+    newRest,
     methods
   };
 }
@@ -292,16 +403,32 @@ function buildClassMeta(
 /** Builds metadata for one suspending import. An import with an
  *  unsupported type still gets an entry: the runtime installs a stub that
  *  rejects with the reason instead of calling the binding. Returns `null`
- *  (with a warning) only when the import cannot be located at all. */
+ *  (with a warning) only when the import cannot be located at all. A
+ *  generic import has no default instance (resolving with null type
+ *  arguments asserts), so it is built from its resolved instantiations:
+ *  one wrapper serves them all when their parameter types agree — the
+ *  wrapper only lifts arguments, and each instantiation's result is
+ *  delivered through its own await site's resume export. */
 function buildImportMeta(
   program: Program,
   prototype: FunctionPrototype,
   notes: string[]
 ): ImportMeta | null {
-  let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
-  if (!instance) {
-    warnSkipped(program, prototype, "suspending import cannot be resolved", notes);
-    return null;
+  let instances: Function[] | null = null;
+  let instance: Function | null;
+  if (prototype.typeParameterNodes && prototype.typeParameterNodes.length > 0) {
+    instances = genericImportInstances(prototype);
+    if (!instances || instances.length == 0) {
+      warnSkipped(program, prototype, "generic suspending import has no instantiations", notes);
+      return null;
+    }
+    instance = instances[0];
+  } else {
+    instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+    if (!instance) {
+      warnSkipped(program, prototype, "suspending import cannot be resolved", notes);
+      return null;
+    }
   }
   let found = findImportName(program, prototype, instance);
   if (!found) {
@@ -313,7 +440,7 @@ function buildImportMeta(
     warnSkipped(program, prototype, "suspending import does not return a Promise", notes);
     return null;
   }
-  let result = describeType(unwrapped);
+  let result = describeType(program, unwrapped);
   if (!result) {
     let reason = "unsupported return type '" + unwrapped.toString() + "'";
     warnSkipped(program, prototype, reason, notes);
@@ -321,70 +448,140 @@ function buildImportMeta(
       module: found.module,
       name: found.name,
       params: [],
-      resultKind: "void",
-      resultNullable: false,
+      result: { kind: "void", nullable: false },
       unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
         "': " + reason
     };
   }
-  let params = describeParams(instance.signature.parameterTypes, prototype.name);
+  let params = describeParams(program, instance.signature.parameterTypes, prototype.name);
   if (params.reason) {
     warnSkipped(program, prototype, params.reason, notes);
     return {
       module: found.module,
       name: found.name,
       params: [],
-      resultKind: result.kind,
-      resultNullable: result.nullable,
+      result,
       unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
         "': " + params.reason
     };
+  }
+  if (instances) {
+    for (let i = 1, k = instances.length; i < k; ++i) {
+      let other = describeParams(program, instances[i].signature.parameterTypes, prototype.name);
+      if (other.reason || !sameParams(params.params, other.params)) {
+        let reason = "instantiations disagree on parameter types";
+        warnSkipped(program, prototype, reason, notes);
+        return {
+          module: found.module,
+          name: found.name,
+          params: [],
+          result,
+          unsupported: "async coordinator cannot drive suspending import '" + prototype.name +
+            "': " + reason
+        };
+      }
+    }
   }
   return {
     module: found.module,
     name: found.name,
     params: params.params,
-    resultKind: result.kind,
-    resultNullable: result.nullable
+    result
   };
 }
 
-/** Builds metadata for a nested inner function by qualified name, or
- *  `null` when it cannot be found or driven. The inner lives in the
- *  same file as the outer function and needs no export. A method inner
- *  has innerQual `Class_method`, so the match uses the qualified name,
- *  not `prototype.name` (which is just the method name). */
+/** Splits a file-qualified inner key (`fileBase#qualName`, set by the
+ *  transform) into its parts; a bare name means the outer file. */
+function splitInnerQual(innerQual: string): { fileBase: string | null, qual: string } {
+  let hash = innerQual.indexOf("#");
+  if (hash < 0) return { fileBase: null, qual: innerQual };
+  return { fileBase: innerQual.substring(0, hash), qual: innerQual.substring(hash + 1) };
+}
+
+/** Finds a nested inner prototype by file-qualified name, or `null`
+ *  when it cannot be found. A bare name means the outer file. */
+function findInnerPrototypeByBase(program: Program, innerBase: string, qual: string): FunctionPrototype | null {
+  for (let prototype of program.transformedAsyncFunctions) {
+    if (qualNameOf(prototype) != qual) continue;
+    let innerFile = owningFile(prototype);
+    if (!innerFile || sanitizeName(innerFile.source.simplePath) != innerBase) continue;
+    return prototype;
+  }
+  return null;
+}
+
+/** Resolved instantiations of a generic suspending import. */
+function genericImportInstances(prototype: FunctionPrototype): Function[] | null {
+  let instances = prototype.instances;
+  if (!instances) return null;
+  return Map_values(instances);
+}
+
+/** Whether two parameter descriptions lift identically (same kind and
+ *  nullability at every position). */
+function sameParams(a: ValueDesc[], b: ValueDesc[]): bool {
+  if (a.length != b.length) return false;
+  for (let i = 0, k = a.length; i < k; ++i) {
+    if (a[i].kind != b[i].kind || a[i].nullable != b[i].nullable) return false;
+  }
+  return true;
+}
+
+/** Builds metadata for a nested inner function by file-qualified name, or
+ *  `null` when it cannot be found or driven. The inner may live in another
+ *  file than the outer function and needs no export. A method inner has
+ *  innerQual `Class_method`, so the match uses the qualified name, not
+ *  `prototype.name` (which is just the method name). */
 function buildInnerMeta(
   program: Program,
   outer: FunctionPrototype,
   innerQual: string,
   notes: string[]
 ): FunctionMeta | null {
-  let file = owningFile(outer);
-  if (!file) return null;
-  for (let prototype of program.transformedAsyncFunctions) {
-    if (qualNameOf(prototype) != innerQual) continue;
-    let innerFile = owningFile(prototype);
-    if (!innerFile || innerFile != file) continue;
-    let lookupParent: Element = prototype.getBoundClassOrInterface() ? innerFile : prototype.parent;
-    return buildFunctionMeta(program, prototype, notes, true, innerQual, lookupParent);
-  }
-  return null;
+  let outerFile = owningFile(outer);
+  if (!outerFile) return null;
+  let parts = splitInnerQual(innerQual);
+  let innerBase = parts.fileBase ? parts.fileBase : sanitizeName(outerFile.source.simplePath);
+  let prototype = findInnerPrototypeByBase(program, innerBase, parts.qual);
+  if (!prototype) return null;
+  let innerFile = owningFile(prototype);
+  if (!innerFile) return null;
+  // Protocol members register under the owning file for methods (whose
+  // parent is the bound class) and for namespaced functions (whose
+  // parent is the namespace); only a top-level function looks them up
+  // under its own parent, the file itself.
+  let lookupParent: Element = methodClassOf(prototype) || namespacePathOf(prototype).length > 0
+    ? innerFile
+    : prototype.parent;
+  return buildFunctionMeta(program, prototype, notes, true, parts.qual, lookupParent);
+}
+
+/** Finds the prototype for an inners-map key
+ *  (`outerFileBase\0innerQual`), or `null` when it cannot be found. */
+function findInnerPrototypeByKey(program: Program, key: string): FunctionPrototype | null {
+  let nul = key.indexOf("\0");
+  let innerQual = nul < 0 ? key : key.substring(nul + 1);
+  let outerBase = nul < 0 ? "" : key.substring(0, nul);
+  let parts = splitInnerQual(innerQual);
+  let innerBase = parts.fileBase ? parts.fileBase : outerBase;
+  return findInnerPrototypeByBase(program, innerBase, parts.qual);
 }
 
 /** Resolves the metadata for every nested inner function the exported
  *  functions await, keyed by file + qualified name. A function whose
  *  inner cannot be found or driven is dropped (with a warning) —
  *  driving it would deliver the inner import's raw value as the inner
- *  result. A longer chain (A awaits B, B's own inner undrivable) is
- *  not dropped here; it fails loudly at runtime in driveNested when
- *  the inner task suspends at the broken site. */
+ *  result. Inners of inners resolve transitively to a fixpoint, so a
+ *  chain (A awaits B, B awaits C) drives; a longer chain whose inner is
+ *  undrivable is not dropped here — it fails loudly at runtime in
+ *  driveNested when the inner task suspends at the broken site. */
 function resolveNestedInners(
   program: Program,
   entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }>,
   notes: string[]
 ): { [key: string]: FunctionMeta } {
   let inners: { [key: string]: FunctionMeta } = {};
+  let innerKeys = new Array<string>();
   for (let i = entries.length - 1; i >= 0; --i) {
     let entry = entries[i];
     let sites = entry.meta.sites;
@@ -397,14 +594,32 @@ function resolveNestedInners(
       let innerMeta = buildInnerMeta(program, entry.prototype, site.innerExportName, notes);
       if (innerMeta) {
         inners[key] = innerMeta;
+        innerKeys.push(key);
         continue;
       }
-      warnSkipped(program, entry.prototype, "its nested await of '" + site.innerExportName + "' cannot be driven", notes);
+      warnSkipped(program, entry.prototype, "its nested await of '" + splitInnerQual(site.innerExportName).qual + "' cannot be driven", notes);
       entries.splice(i, 1);
       dropped = true;
       break;
     }
     if (dropped) continue;
+  }
+  for (let q = 0; q < innerKeys.length; ++q) {
+    let key = innerKeys[q];
+    let meta = inners[key];
+    let outerPrototype = findInnerPrototypeByKey(program, key);
+    if (!outerPrototype) continue;
+    let sites = meta.sites;
+    for (let j = 0, l = sites.length; j < l; ++j) {
+      let site = sites[j];
+      if (!site.nested || !site.innerExportName) continue;
+      let innerKey = meta.fileBase + "\0" + site.innerExportName;
+      if (inners[innerKey]) continue;
+      let innerMeta = buildInnerMeta(program, outerPrototype, site.innerExportName, notes);
+      if (!innerMeta) continue;
+      inners[innerKey] = innerMeta;
+      innerKeys.push(innerKey);
+    }
   }
   return inners;
 }
@@ -420,10 +635,28 @@ export function buildAsyncCoordinator(program: Program): string | null {
   let entries: Array<{ prototype: FunctionPrototype, meta: FunctionMeta }> = [];
   let methodEntries: Array<{ prototype: FunctionPrototype, meta: MethodMeta, classPrototype: ClassPrototype }> = [];
   for (let prototype of program.transformedAsyncFunctions) {
-    let bound = prototype.getBoundClassOrInterface();
-    if (bound && bound.kind == ElementKind.Class) {
+    let cls = methodClassOf(prototype);
+    if (cls) {
       let meta = buildMethodMeta(program, prototype, notes);
-      if (meta) methodEntries.push({ prototype, meta, classPrototype: bound.prototype });
+      if (meta) methodEntries.push({ prototype, meta, classPrototype: cls });
+    } else if (namespacePathOf(prototype).length > 0) {
+      // A namespaced function is not a wasm export, so it is driven
+      // through its generated top-level entry alias. The entry exists
+      // only when the function is exported through its namespace chain;
+      // without it the function stays inner-only and is skipped here.
+      let qual = qualNameOf(prototype);
+      let file = owningFile(prototype);
+      let meta = file ? buildFunctionMeta(program, prototype, notes, true, qual, file) : null;
+      if (meta) {
+        let entryName = "__async_" + meta.fileBase + "_" + qual + "_entry";
+        if (file!.getMember(entryName)) {
+          meta.exportName = null;
+          meta.entryExport = entryName;
+          meta.path = namespacePathOf(prototype);
+          meta.name = prototype.name;
+          entries.push({ prototype, meta });
+        }
+      }
     } else {
       let meta = buildFunctionMeta(program, prototype, notes, false, prototype.name, prototype.parent);
       if (meta) entries.push({ prototype, meta });
@@ -439,21 +672,28 @@ export function buildAsyncCoordinator(program: Program): string | null {
   }
   let inners = resolveNestedInners(program, combined, notes);
   let functions: FunctionMeta[] = [];
-  let keptMethods = new Map<ClassPrototype, MethodMeta[]>();
+  let keptMethods = new Map<string, MethodMeta[]>();
+  let keptClasses = new Map<string, ClassPrototype>();
+  let keptFirst = new Map<string, FunctionPrototype>();
   for (let i = 0, k = combined.length; i < k; ++i) {
     let entry = combined[i];
     let classPrototype = classOf.get(entry.prototype);
     if (classPrototype) {
-      let list = keptMethods.get(classPrototype);
-      if (!list) keptMethods.set(classPrototype, list = []);
+      let key = (<MethodMeta>entry.meta).classKey;
+      let list = keptMethods.get(key);
+      if (!list) {
+        keptMethods.set(key, list = []);
+        keptClasses.set(key, classPrototype);
+        keptFirst.set(key, entry.prototype);
+      }
       list.push(<MethodMeta>entry.meta);
     } else {
       functions.push(entry.meta);
     }
   }
   let classes: ClassMeta[] = [];
-  for (let classPrototype of keptMethods.keys()) {
-    let classMeta = buildClassMeta(program, classPrototype, keptMethods.get(classPrototype)!, notes);
+  for (let key of keptMethods.keys()) {
+    let classMeta = buildClassMeta(program, keptClasses.get(key)!, keptMethods.get(key)!, notes, keptFirst.get(key)!);
     if (classMeta) classes.push(classMeta);
   }
   if (functions.length == 0 && classes.length == 0) return null;
@@ -469,7 +709,34 @@ export function buildAsyncCoordinator(program: Program): string | null {
     seen.add(key);
     imports.push(meta);
   }
-  let metadata = { functions, classes, inners, imports };
+  // The mint is per file and file-independent: any transformed
+  // function's file carries one, so the first entry's file will do.
+  let mintFileBase = functions.length > 0
+    ? functions[0].fileBase
+    : classes[0].methods[0].fileBase;
+  // Array layout constants for the runtime's array lowering/lifting,
+  // from the stock bindings generator's `__lowerArray`/`__liftArray`
+  // (`src/bindings/js.ts`): the ArrayBuffer id, the Array<T> header
+  // size, and the buffer/dataStart/byteLength/length field offsets.
+  let arrayView = program.arrayBufferViewInstance;
+  let byteLengthOffset = arrayView.offsetof("byteLength");
+  let layout = {
+    arrayBufferId: program.arrayBufferInstance.id,
+    arraySize: arrayView.nextMemoryOffset + 4,
+    bufferOffset: arrayView.offsetof("buffer"),
+    dataStartOffset: arrayView.offsetof("dataStart"),
+    byteLengthOffset,
+    lengthOffset: byteLengthOffset + 4
+  };
+  let metadata = {
+    functions,
+    classes,
+    inners,
+    imports,
+    layout,
+    mintExport: "__async_" + mintFileBase + "_mint",
+    mintStringExport: "__async_" + mintFileBase + "_mint_string"
+  };
   let hasJoin = false;
   for (let i = 0, k = functions.length; i < k; ++i) {
     let sites = functions[i].sites;
@@ -491,8 +758,7 @@ export function buildAsyncCoordinator(program: Program): string | null {
       module: "env",
       name: "__async_join",
       params: [],
-      resultKind: "i32",
-      resultNullable: false,
+      result: { kind: "i32", nullable: false },
       joinImport: true
     });
   }
@@ -502,8 +768,7 @@ export function buildAsyncCoordinator(program: Program): string | null {
       module: "env",
       name: "__async_wait",
       params: [],
-      resultKind: "i32",
-      resultNullable: false,
+      result: { kind: "i32", nullable: false },
       waitImport: true
     });
   }

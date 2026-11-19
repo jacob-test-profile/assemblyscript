@@ -7,7 +7,9 @@
 // await, the join engine (via the test-only join driver and via chunk 5's
 // real wasm join), rejection propagation, a void task, the spill-pool FIFO
 // queue, and heap churn + __collect mid-suspension. Also checks a sync-only
-// module emits no coordinator.
+// module emits no coordinator, cross-file await (direct, guarded, chain,
+// terminating mutual cycle, cross-file method), and join-member /
+// join-argument await through the real join engine.
 //
 // Run: npm run test:async-coordinator   (after npm run build)
 import { spawnSync } from "node:child_process";
@@ -26,23 +28,27 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "namespace-generics.ts", "namespace-methods.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
-function compile(name) {
+function compileTo(cwd, name, flags) {
   const base = name.replace(/\.ts$/, "");
   const r = spawnSync(
     process.execPath,
-    [ascBin, name, "-o", base + ".wasm", "--exportRuntime", "--debug", "--enable", "reference-types"],
-    { cwd: dir, encoding: "utf8" }
+    [ascBin, name, "-o", base + ".wasm", ...flags],
+    { cwd, encoding: "utf8" }
   );
   if (r.status !== 0) {
     console.log(r.stdout, r.stderr);
     console.log("FAIL: asc failed for " + name);
     process.exit(1);
   }
-  return join(dir, base + ".wasm");
+  return join(cwd, base + ".wasm");
+}
+
+function compile(name) {
+  return compileTo(dir, name, ["--exportRuntime", "--debug", "--enable", "reference-types"]);
 }
 
 function check(cond, msg) {
@@ -113,11 +119,13 @@ console.log("PASS missing suspending binding fails loudly");
 const chunkCalls = [];
 const chunkDeferreds = [];
 const numDeferreds = [];
+const flagDeferreds = [];
 const handleDeferreds = [];
 const useDeferreds = [];
 const seenHandles = [];
 const issueLog = [];
 const memberDeferreds = [];
+const voidDeferreds = [];
 const registry = createJoinRegistry();
 let issuesAtJoin = -1;
 const sentinel = { tag: "handle" };
@@ -134,6 +142,16 @@ const api = await instantiateAsync(bytes, {
     getNumber() {
       const d = deferred();
       numDeferreds.push(d);
+      return d.promise;
+    },
+    getFlag(i) {
+      const d = deferred();
+      flagDeferreds.push(d);
+      return d.promise;
+    },
+    getVoid() {
+      const d = deferred();
+      voidDeferreds.push(d);
       return d.promise;
     },
     getHandle() {
@@ -174,6 +192,213 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[2].resolve("CCC");
   check((await p) === "AAABBBCCC", "concatThree must resolve AAABBBCCC");
   console.log("PASS loop+await through the generated coordinator");
+}
+
+// Compound assignment with await, field/element assignment await, and a
+// join awaited into a field — all through the generated coordinator.
+{
+  // compoundStr: "" += "AAA" += "BBB".
+  let base = chunkDeferreds.length;
+  let p = api.compoundStr();
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "0", "compoundStr must issue chunk 0 first");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(chunkCalls.slice(-1).join(",") === "1", "compoundStr must issue chunk 1 second");
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "compoundStr must resolve AAABBB");
+  console.log("PASS compound assignment with await on a string");
+
+  // compoundNum: 10, then +=1 -=2 *=3 /=2 %=3 <<=1 &=7 |=8 ^=3 >>=1 == 4.
+  base = numDeferreds.length;
+  p = api.compoundNum();
+  const nums = [1, 2, 3, 2, 3, 1, 7, 8, 3, 1];
+  for (let i = 0; i < nums.length; i++) {
+    await tick();
+    check(numDeferreds.length === base + i + 1, "compoundNum must issue await " + i);
+    numDeferreds[base + i].resolve(nums[i]);
+  }
+  check((await p) === 4, "compoundNum must resolve 4");
+  console.log("PASS compound assignment with await, all eleven operators");
+
+  // fieldAssign: w.s = "CCC", w.n = 5.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.fieldAssign();
+  await tick();
+  chunkDeferreds[base].resolve("CCC");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "fieldAssign must issue getNumber after the field await");
+  numDeferreds[nBase].resolve(5);
+  check((await p) === "CCC5", "fieldAssign must resolve CCC5");
+  console.log("PASS field-assignment await");
+
+  // fieldCompound: "x" + "AAA", 1 + 4.
+  base = chunkDeferreds.length;
+  nBase = numDeferreds.length;
+  p = api.fieldCompound();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  numDeferreds[nBase].resolve(4);
+  check((await p) === "xAAA5", "fieldCompound must resolve xAAA5");
+  console.log("PASS compound assignment with await on a field");
+
+  // fieldJoin: Promise.all awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.fieldJoin();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "fieldJoin must issue both members");
+  chunkDeferreds[base + 1].resolve("BBB");
+  chunkDeferreds[base].resolve("AAA");
+  check((await p) === "AAABBB", "fieldJoin must resolve AAABBB");
+  console.log("PASS join awaited into a field");
+
+  // elemAssign: arr[0] = "AAA", arr[1] = "BBB", i ends at 1.
+  base = chunkDeferreds.length;
+  p = api.elemAssign();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB1", "elemAssign must resolve AAABBB1");
+  console.log("PASS element-assignment await");
+
+  // indexOrder: the index side effect runs before the suspension, so the
+  // awaited call observes j == 1.
+  base = chunkDeferreds.length;
+  const cBase = chunkCalls.length;
+  p = api.indexOrder();
+  await tick();
+  check(chunkCalls[cBase] === 1, "indexOrder must call getChunk with j==1, got " + chunkCalls[cBase]);
+  chunkDeferreds[base].resolve("BBB");
+  check((await p) === 1, "indexOrder must resolve 1");
+  console.log("PASS element index evaluated before suspension");
+
+  // elemCompound: 100 + 5.
+  nBase = numDeferreds.length;
+  p = api.elemCompound();
+  await tick();
+  numDeferreds[nBase].resolve(5);
+  check((await p) === 105, "elemCompound must resolve 105");
+  console.log("PASS compound assignment with await on an element");
+
+  // storedField: the stored promise is awaited into a field.
+  base = chunkDeferreds.length;
+  p = api.storedField();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedField must issue exactly once, at bind time");
+  chunkDeferreds[base].resolve("DDD");
+  check((await p) === "DDD", "storedField must resolve DDD");
+  console.log("PASS stored promise awaited into a field");
+}
+
+// Hoisted awaits: conditions, call arguments, binary operands, and the
+// for incrementor — all through the generated coordinator.
+{
+  // ifCondFlag: flag 0 true.
+  let fBase = flagDeferreds.length;
+  let p = api.ifCondFlag();
+  await tick();
+  check(flagDeferreds.length === fBase + 1, "ifCondFlag must issue getFlag once");
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ifCondFlag must resolve YES");
+  console.log("PASS await in an if condition");
+
+  // whileCondFlag: flag true, true, false across three evaluations.
+  let base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.whileCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  check(chunkDeferreds.length === base + 1, "whileCondFlag must issue chunk 0 after the first flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "whileCondFlag must resolve AAABBB");
+  console.log("PASS await in a while condition, re-evaluated per iteration");
+
+  // forCondFlag: same re-evaluation shape as the while condition.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.forCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 2].resolve(false);
+  check((await p) === "AAABBB", "forCondFlag must resolve AAABBB");
+  console.log("PASS await in a for condition, re-evaluated per iteration");
+
+  // doCondFlag: body runs before the first condition evaluation.
+  base = chunkDeferreds.length;
+  fBase = flagDeferreds.length;
+  p = api.doCondFlag();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "doCondFlag must issue chunk 0 before any flag");
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  flagDeferreds[fBase + 1].resolve(false);
+  check((await p) === "AAABBB", "doCondFlag must resolve AAABBB");
+  console.log("PASS await in a do-while condition");
+
+  // forIncrFlag: chunk 0, +1, chunk 1, +1, stop.
+  base = chunkDeferreds.length;
+  let nBase = numDeferreds.length;
+  p = api.forIncrFlag();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  check(numDeferreds.length === nBase + 1, "forIncrFlag must issue the incrementor after the first body");
+  numDeferreds[nBase].resolve(1);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  numDeferreds[nBase + 1].resolve(1);
+  check((await p) === "AAABBB", "forIncrFlag must resolve AAABBB");
+  console.log("PASS await in a for incrementor");
+
+  // callArgsHoist: chunk 0 then chunk 1, in argument order.
+  base = chunkDeferreds.length;
+  p = api.callArgsHoist();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  check((await p) === "AAABBB", "callArgsHoist must resolve AAABBB");
+  console.log("PASS awaits in call arguments, in order");
+
+  // binaryHoist: 1 + 2 + 3.
+  nBase = numDeferreds.length;
+  p = api.binaryHoist();
+  await tick();
+  numDeferreds[nBase].resolve(2);
+  await tick();
+  numDeferreds[nBase + 1].resolve(3);
+  check((await p) === 6, "binaryHoist must resolve 6");
+  console.log("PASS awaits as binary operands, in order");
+
+  // ternaryCondFlag: the condition await hoists, the branches do not run.
+  fBase = flagDeferreds.length;
+  p = api.ternaryCondFlag();
+  await tick();
+  flagDeferreds[fBase].resolve(true);
+  check((await p) === "YES", "ternaryCondFlag must resolve YES");
+  console.log("PASS await in a ternary condition");
 }
 
 // Heap churn + __collect mid-suspension: the state object must survive.
@@ -331,6 +556,52 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS stored externref promise");
 }
 
+// Stored promises read out of an array / an object field, and copied
+// from a tracked binding, suspend on the issued token.
+{
+  let base = chunkDeferreds.length;
+  let p = api.storedMember();
+  await tick();
+  check(chunkDeferreds.length === base + 2, "storedMember must issue both promises before awaiting");
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p) === "AB", "storedMember must resolve AB");
+  console.log("PASS stored promise read out of an array");
+
+  base = chunkDeferreds.length;
+  p = api.storedFieldRead();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedFieldRead must issue once");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedFieldRead must resolve got-A");
+  console.log("PASS stored promise read out of an object field");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopy();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopy must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopy must resolve got-A");
+  console.log("PASS stored promise copied from a tracked binding");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyRebind();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyRebind must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyRebind must resolve got-A");
+  console.log("PASS stored promise copied by rebind");
+
+  base = chunkDeferreds.length;
+  p = api.storedCopyMember();
+  await tick();
+  check(chunkDeferreds.length === base + 1, "storedCopyMember must issue once, at bind time");
+  chunkDeferreds[base].resolve("A");
+  check((await p) === "got-A", "storedCopyMember must resolve got-A");
+  console.log("PASS stored promise copied from an array element");
+}
+
 // Nested await: the inner task is driven, its result (not the inner
 // import's raw value) reaches the outer resume.
 {
@@ -365,6 +636,67 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS nested await of an extracted async arrow");
 }
 
+// Default / optional / rest parameters: the coordinator sets
+// __setArgumentsLength before the entry call so the varargs stub fills
+// omitted defaults, and extra arguments collect into a rest array.
+{
+  let base = numDeferreds.length;
+  let p = api.defInt();
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 105, "defInt() must fill the default 5");
+  console.log("PASS default parameter filled when omitted");
+
+  base = numDeferreds.length;
+  p = api.defInt(2);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 102, "defInt(2) must give 102");
+  console.log("PASS default parameter overridden when passed");
+
+  base = numDeferreds.length;
+  p = api.defOther(3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 104, "defOther(3) must default b to a + 1");
+  console.log("PASS default parameter referencing another parameter");
+
+  base = numDeferreds.length;
+  p = api.defOther(3, 10);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 110, "defOther(3, 10) must give 110");
+  console.log("PASS default parameter overridden with an explicit value");
+
+  base = numDeferreds.length;
+  p = api.restNums(1);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 101, "restNums(1) must give 101 with an empty rest");
+  console.log("PASS rest parameter empty when no extra arguments");
+
+  base = numDeferreds.length;
+  p = api.restNums(1, 2, 3);
+  await tick();
+  numDeferreds[base].resolve(100);
+  check((await p) === 106, "restNums(1, 2, 3) must give 106");
+  console.log("PASS rest parameter collects extra arguments into an array");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings();
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "|S", "restStrings() must give '|S'");
+  console.log("PASS rest parameter of strings empty when no extra arguments");
+
+  base = chunkDeferreds.length;
+  p = api.restStrings("a", "b");
+  await tick();
+  chunkDeferreds[base].resolve("S");
+  check((await p) === "a,b|S", "restStrings('a', 'b') must give 'a,b|S'");
+  console.log("PASS rest parameter of strings collects extra arguments");
+}
+
 // Closure counter across an await: 1 then 2, shared storage exact.
 {
   const base = chunkDeferreds.length;
@@ -373,6 +705,44 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base].resolve("X");
   check((await p) === 12, "closure counter must read 1 then 2 across the await");
   console.log("PASS closure counter 1-then-2 across await");
+}
+
+// Nested closures capturing outer-closure names, driven through the
+// generated coordinator: the outer capture is passed as an argument.
+{
+  const base = numDeferreds.length;
+  const p1 = api.nestedParam();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 21, "nestedParam must resolve 11 + 10");
+  const p2 = api.nestedMixed();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 121, "nestedMixed must resolve 111 + 10");
+  const p3 = api.nestedMixedLocal();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 1027, "nestedMixedLocal must resolve 1017 + 10");
+  console.log("PASS nested closures capture outer-closure names");
+}
+
+// Async arrows capturing outer locals, driven through the generated
+// coordinator: the capture reads the enclosing state object.
+{
+  const base = numDeferreds.length;
+  const p1 = api.arrowCapture();
+  await tick();
+  numDeferreds[base].resolve(10);
+  check((await p1) === 12, "arrowCapture must resolve (1+10)+1");
+  const p2 = api.arrowCaptureWrite();
+  await tick();
+  numDeferreds[base + 1].resolve(10);
+  check((await p2) === 40, "arrowCaptureWrite must resolve 25 + 15");
+  const p3 = api.arrowCallsArrow();
+  await tick();
+  numDeferreds[base + 2].resolve(10);
+  check((await p3) === 13, "arrowCallsArrow must resolve 12 + 1");
+  console.log("PASS async arrows capture outer locals");
 }
 
 // A rejection that lands in a catch must drive the catch, not fail the task.
@@ -409,6 +779,163 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS finally exactly once across a caught rejection");
 }
 
+// Await in switch: dispatch, fallthrough and default across suspensions.
+{
+  const base = chunkDeferreds.length;
+  const p1 = api.switchAwait(1);
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  check((await p1) === "AAA", "switchAwait(1) must resolve AAA");
+  const p2 = api.switchAwait(2);
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  chunkDeferreds[base + 2].resolve("CCC");
+  check((await p2) === "BBBCCC", "switchAwait(2) must fall through case 2 into case 3");
+  const p3 = api.switchAwait(3);
+  await tick();
+  chunkDeferreds[base + 3].resolve("CCC");
+  check((await p3) === "CCC", "switchAwait(3) must resolve CCC");
+  check((await api.switchAwait(9)) === "dflt", "switchAwait(9) must take the default with no await");
+  console.log("PASS await in switch (dispatch, fallthrough, default)");
+}
+
+// A switch inside a loop: continue skips to the next iteration, break
+// leaves the switch only.
+{
+  const base = chunkDeferreds.length;
+  const p = api.switchInLoop();
+  await tick();
+  chunkDeferreds[base].resolve("CCC");
+  check((await p) === "xCCCx", "switchInLoop must skip case 1 and await only case 2");
+  console.log("PASS switch in loop with await (continue/break)");
+}
+
+// A finally may await: it runs exactly once, never on suspend, on the
+// normal path and after a caught throw.
+{
+  const base = chunkDeferreds.length;
+  const p0 = api.finallyAwait(0);
+  await tick();
+  chunkDeferreds[base].resolve("A");
+  await tick();
+  chunkDeferreds[base + 1].resolve("B");
+  check((await p0) === "ok-A/B", "finallyAwait(0) must run the awaiting finally exactly once");
+  const p1 = api.finallyAwait(1);
+  await tick();
+  chunkDeferreds[base + 2].resolve("A");
+  await tick();
+  chunkDeferreds[base + 3].resolve("B");
+  check((await p1) === "caught/B", "finallyAwait(1) must run the awaiting finally after the catch");
+  console.log("PASS await in finally (exactly once, both paths)");
+}
+
+// A rejection of a finally await replaces the pending body error.
+{
+  const base = chunkDeferreds.length;
+  const p = api.finallyRejectOuter();
+  await tick();
+  chunkDeferreds[base].reject(new Error("fin-boom"));
+  check((await p) === "outer-caught:fin-boom", "a finally-await rejection must replace the pending body error");
+  console.log("PASS finally-await rejection replaces the pending body error");
+}
+
+// Try inside a switch case, with catch and finally; a break out of the
+// switch from inside the try must still run the finally, then leave.
+{
+  const base = chunkDeferreds.length;
+  const p1 = api.tryInSwitch(1);
+  await tick();
+  chunkDeferreds[base].resolve("A");
+  check((await p1) === "t-A!", "tryInSwitch(1) must run the finally on the break path and skip the rest");
+  const p2 = api.tryInSwitch(2);
+  await tick();
+  chunkDeferreds[base + 1].resolve("A");
+  check((await p2) === "sw-caught:sw-boom", "tryInSwitch(2) must catch the throw after the await");
+  check((await api.tryInSwitch(9)) === "sw-dflt", "tryInSwitch(9) must take the default");
+  console.log("PASS try inside switch (catch, finally, break out)");
+}
+
+// For-of over an array: the iterator state survives suspension.
+{
+  const base = chunkDeferreds.length;
+  const p = api.forOfAwait();
+  await tick();
+  chunkDeferreds[base].resolve("AAA");
+  await tick();
+  chunkDeferreds[base + 1].resolve("BBB");
+  await tick();
+  chunkDeferreds[base + 2].resolve("CCC");
+  check((await p) === "AAABBBCCC", "forOfAwait must iterate the array across suspensions");
+  console.log("PASS for-of with await in the body");
+}
+
+// For-of with a break after an await: only the values before the break count.
+{
+  const base = numDeferreds.length;
+  const p = api.forOfBreak();
+  await tick();
+  numDeferreds[base].resolve(10);
+  await tick();
+  numDeferreds[base + 1].resolve(20);
+  check((await p) === 10, "forOfBreak must stop after the break");
+  console.log("PASS for-of with break after an await");
+}
+
+// Thrown values: the error channel carries the value; the task rejects
+// with the message (Error via .message, string as-is, number via toString).
+{
+  await assertRejects(api.throwErrorUncaught(), /coord-err/, "an uncaught Error must reject with its message");
+  console.log("PASS uncaught Error rejects with its message");
+}
+{
+  await assertRejects(api.throwStringUncaught(), /coord-str/, "an uncaught string must reject with the string");
+  console.log("PASS uncaught string rejects with the string");
+}
+{
+  await assertRejects(api.throwNumberUncaught(), /^42$/, "an uncaught number must reject with its toString");
+  console.log("PASS uncaught number rejects with its toString");
+}
+{
+  check((await api.throwErrorCaught()) === "caught:coord-caught", "a caught Error must resolve with its message");
+  console.log("PASS caught Error resolves with its message");
+}
+
+// throw await: the awaited value becomes the thrown value.
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitString();
+  await tick();
+  chunkDeferreds[base].resolve("thrown-A");
+  await assertRejects(p, /^thrown-A$/, "throw await <string> must reject with the awaited string");
+  console.log("PASS throw await string rejects with the awaited string");
+}
+{
+  const base = numDeferreds.length;
+  const p = api.throwAwaitNumber();
+  await tick();
+  numDeferreds[base].resolve(42);
+  await assertRejects(p, /^42$/, "throw await <number> must reject with the awaited number");
+  console.log("PASS throw await number rejects with the awaited number");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitCaught();
+  await tick();
+  chunkDeferreds[base].resolve("caught-A");
+  check((await p) === "caught:caught-A", "throw await <string> in a try must resolve with the caught message");
+  console.log("PASS throw await string caught with its message");
+}
+{
+  const base = chunkDeferreds.length;
+  const p = api.throwAwaitRejected();
+  await tick();
+  chunkDeferreds[base].reject(new Error("import-boom"));
+  const caught = await p;
+  check(caught === "caught:import-boom", "a rejected await inside throw await must land in the catch, got " + caught);
+  console.log("PASS rejected await inside throw await lands in catch");
+}
+
 // Void task resolves undefined.
 {
   const base = chunkDeferreds.length;
@@ -417,6 +944,40 @@ const api = await instantiateAsync(bytes, {
   chunkDeferreds[base].resolve("x");
   check((await p) === undefined, "void task must resolve undefined");
   console.log("PASS void task");
+}
+
+// Awaiting a Promise<void> completes the suspension with no value.
+{
+  let base = voidDeferreds.length;
+  let p = api.voidStmt();
+  await tick();
+  check(voidDeferreds.length === base + 1, "voidStmt must suspend on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "after-void", "voidStmt must resolve after-void");
+  console.log("PASS void await as a statement");
+
+  base = voidDeferreds.length;
+  p = api.voidReturn();
+  await tick();
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === undefined, "voidReturn must resolve undefined");
+  console.log("PASS void await as a return value");
+
+  base = voidDeferreds.length;
+  p = api.voidCatch();
+  await tick();
+  voidDeferreds[base].reject(new Error("void-boom"));
+  const caughtVoid = await p;
+  check(caughtVoid === "caught:void-boom", "a rejected void await must land in the catch, got " + caughtVoid);
+  console.log("PASS void await rejection lands in catch");
+
+  base = voidDeferreds.length;
+  p = api.outerVoid();
+  await tick();
+  check(voidDeferreds.length === base + 1, "outerVoid must suspend the inner void task on getVoid");
+  voidDeferreds[base].resolve(undefined);
+  check((await p) === "outer-void-done", "nested void await must resolve outer-void-done");
+  console.log("PASS nested void await");
 }
 
 // Spill-pool FIFO queue: each handleRoundtrip holds 2 of the 8 slots, so
@@ -449,6 +1010,154 @@ const api = await instantiateAsync(bytes, {
   await Promise.all(tasks);
   check(results.join(",") === "42,42,42,42,42", "all 5 pool tasks must resolve 42, got " + results);
   console.log("PASS spill-pool FIFO queue (4 start, 5th queues, then runs)");
+}
+
+// Trap slot reclaim: fill the pool, trap a task on resume and a task on
+// entry, and the queued tasks must run instead of stalling behind the
+// leaked slots. No slots may leak: a fresh set of 4 tasks must all start
+// after every trap.
+{
+  const hBase = handleDeferreds.length;
+  const uBase = useDeferreds.length;
+  const results = [];
+  const traps = [];
+  for (let i = 0; i < 4; i++) {
+    const p = api.trapRoundtrip();
+    p.then(
+      () => results.push("ok"),
+      (e) => results.push("trap:" + e.message)
+    );
+    traps.push(p);
+  }
+  await tick();
+  check(handleDeferreds.length === hBase + 4, "4 trap tasks must fill the pool, got " + (handleDeferreds.length - hBase));
+  const entryTrap = api.trapEntry(sentinel);
+  entryTrap.then(
+    () => results.push("entry-ok"),
+    (e) => results.push("entry-trap:" + e.message)
+  );
+  const queued = api.handleRoundtrip();
+  queued.then((v) => results.push(v));
+  await tick();
+  check(handleDeferreds.length === hBase + 4, "no queued task may start while the pool is full");
+  handleDeferreds[hBase].resolve(sentinel);
+  await tick();
+  check(results[0] && results[0].startsWith("trap:"), "resumed trap task must reject, got " + results[0]);
+  check(/unreachable/.test(results[0]), "resumed trap must report the trap, got " + results[0]);
+  await tick();
+  check(results[1] && results[1].startsWith("entry-trap:"), "entry trap task must reject, got " + results[1]);
+  check(/unreachable/.test(results[1]), "entry trap must report the trap, got " + results[1]);
+  check(handleDeferreds.length === hBase + 5, "the queued handleRoundtrip must start once the trapped slots free, got " + (handleDeferreds.length - hBase));
+  handleDeferreds[hBase + 4].resolve(sentinel);
+  await tick();
+  check(seenHandles[uBase] === sentinel, "queued task must keep externref identity");
+  useDeferreds[uBase].resolve(42);
+  check((await queued) === 42, "queued task must resolve 42");
+  for (let i = 1; i < 4; i++) {
+    handleDeferreds[hBase + i].resolve(sentinel);
+    await tick();
+  }
+  await Promise.allSettled(traps);
+  check(
+    results.filter((r) => typeof r === "string" && r.startsWith("trap:")).length === 4,
+    "all 4 trap tasks must reject, got " + results.join(",")
+  );
+  const freshBase = handleDeferreds.length;
+  const fresh = [];
+  for (let i = 0; i < 4; i++) fresh.push(api.handleRoundtrip());
+  await tick();
+  check(handleDeferreds.length === freshBase + 4, "a fresh 4 tasks must all start (no leaked slots), got " + (handleDeferreds.length - freshBase));
+  for (let i = 0; i < 4; i++) {
+    handleDeferreds[freshBase + i].resolve(sentinel);
+    await tick();
+    useDeferreds[uBase + 1 + i].resolve(42);
+  }
+  check((await Promise.all(fresh)).join(",") === "42,42,42,42", "fresh tasks must all resolve 42");
+  console.log("PASS trap slot reclaim (resume trap + entry trap, queued tasks run, no leak)");
+}
+
+// No --exportRuntime: the wasm-side mint exports replace __new for
+// tokens, string lowering and error messages, so a module with no
+// classes drives fully without the flag.
+{
+  const dirNoRt = mkdtempSync(join(tmpdir(), "async-coord-nort-"));
+  copyFileSync(join(fixtures, "coordinator.ts"), join(dirNoRt, "coordinator.ts"));
+  const wasmNoRt = compileTo(dirNoRt, "coordinator.ts", ["--debug", "--enable", "reference-types"]);
+  const coordNoRt = join(dirNoRt, "coordinator.async.js");
+  check(existsSync(coordNoRt), "coordinator.async.js must be emitted without --exportRuntime");
+  const bytesNoRt = readFileSync(wasmNoRt);
+  const exportNames = WebAssembly.Module.exports(new WebAssembly.Module(bytesNoRt)).map((e) => e.name);
+  check(!exportNames.includes("__new"), "wasm without --exportRuntime must not export __new");
+  check(exportNames.includes("__async_coordinator_mint"), "wasm must export the token mint");
+  check(exportNames.includes("__async_coordinator_mint_string"), "wasm must export the string mint");
+  const { instantiateAsync: instantiateNoRt } = await import(pathToFileURL(coordNoRt).href);
+  const nrChunks = [];
+  const nrHandles = [];
+  const nrUses = [];
+  const nrSentinel = { tag: "no-rt-handle" };
+  const apiNoRt = await instantiateNoRt(bytesNoRt, {
+    env: {
+      getChunk(i) {
+        const d = deferred();
+        nrChunks.push(d);
+        return d.promise;
+      },
+      getHandle() {
+        const d = deferred();
+        nrHandles.push(d);
+        return d.promise;
+      },
+      useHandle(h) {
+        check(h === nrSentinel, "no-rt handleRoundtrip must keep externref identity");
+        const d = deferred();
+        nrUses.push(d);
+        return d.promise;
+      },
+      // Unused by the driven functions, but the coordinator requires a
+      // binding for every suspending import in the module.
+      getNumber() {
+        return new Promise(() => {});
+      },
+      getFlag() {
+        return new Promise(() => {});
+      },
+      getVoid() {
+        return new Promise(() => {});
+      },
+      issueNumber() {
+        return 0;
+      },
+      joinNumbers() {
+        return new Promise(() => {});
+      }
+    }
+  });
+  const pNoRt = apiNoRt.concatThree();
+  await tick();
+  nrChunks[0].resolve("AAA");
+  await tick();
+  nrChunks[1].resolve("BBB");
+  await tick();
+  nrChunks[2].resolve("CCC");
+  check((await pNoRt) === "AAABBBCCC", "loop+await must work without --exportRuntime");
+  console.log("PASS no --exportRuntime: loop+await through the wasm mint");
+
+  const pHandle = apiNoRt.handleRoundtrip();
+  await tick();
+  nrHandles[0].resolve(nrSentinel);
+  await tick();
+  nrUses[0].resolve(42);
+  check((await pHandle) === 42, "externref roundtrip must work without --exportRuntime");
+  console.log("PASS no --exportRuntime: externref identity across await");
+
+  const base = nrChunks.length;
+  const pFail = apiNoRt.failingConcat();
+  await tick();
+  nrChunks[base].resolve("A");
+  await tick();
+  nrChunks[base + 1].reject(new Error("chunk-1 failed"));
+  await assertRejects(pFail, /chunk-1 failed/, "rejection must propagate without --exportRuntime (error message via the string mint)");
+  console.log("PASS no --exportRuntime: rejection propagates with its message");
 }
 
 // Join engine unit checks for the policies the e2e does not drive.
@@ -504,6 +1213,17 @@ const api = await instantiateAsync(bytes, {
   joinMembers[base + 1].resolve(20);
   check((await p) === "10|20|30", "real join all must deliver results in argument order");
   console.log("PASS real join all, out-of-order delivery, in-order results");
+
+  // A join awaited as a method-call receiver: the join result is hoisted
+  // into a temp before the call.
+  base = joinMembers.length;
+  p = joinApi.joinHoist();
+  await tick();
+  check(joinMembers.length === base + 2, "joinHoist must issue 2 members");
+  joinMembers[base + 1].resolve(20);
+  joinMembers[base].resolve(10);
+  check((await p) === "10|20", "hoisted join must deliver its result to the method call");
+  console.log("PASS join awaited as a method-call receiver");
 
   base = joinMembers.length;
   p = joinApi.allFailFast();
@@ -653,8 +1373,92 @@ const api = await instantiateAsync(bytes, {
     await tick();
     methodNums[2].resolve(7);
     check((await p) === 130, "Counter.viaArrow(1) must give 130");
+    p = c.setField(0);
+    await tick();
+    methodNums[3].resolve(10);
+    await tick();
+    methodNums[4].resolve(5);
+    check((await p) === 15, "Counter.setField must give 15 (10, then += 5)");
     c.dispose();
     console.log("PASS basic async method, known values 12/119/130");
+  }
+
+  // Default parameters on a method and its constructor: the entry and
+  // the _new fill omitted defaults through their own varargs stubs.
+  {
+    const g = new methodsApi.Greeter();
+    let base = methodNums.length;
+    let p = g.greet();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hi there 100", "Greeter().greet() must give 'hi there 100'");
+    g.dispose();
+    console.log("PASS constructor and method defaults filled when omitted");
+
+    const g2 = new methodsApi.Greeter("hey");
+    base = methodNums.length;
+    p = g2.greet("bob");
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === "hey bob 100", "Greeter('hey').greet('bob') must give 'hey bob 100'");
+    g2.dispose();
+    console.log("PASS constructor and method defaults overridden when passed");
+
+    const c = new methodsApi.Counter();
+    base = methodNums.length;
+    p = c.addDefault();
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 8, "Counter.addDefault() must give 8 with the default step 1");
+    base = methodNums.length;
+    p = c.addDefault(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 20, "Counter.addDefault(5) must give 20");
+    c.dispose();
+    console.log("PASS method default filled when omitted, overridden when passed");
+  }
+
+  // A rest method has no wrapper class (its entry is skipped), but a
+  // top-level fn awaiting it still drives it through nested await.
+  {
+    check(typeof methodsApi.RestCounter === "undefined", "a rest method's class must have no wrapper class");
+    check(typeof methodsApi.driveRest === "function", "generated coordinator must expose driveRest");
+    const base = methodNums.length;
+    const p = methodsApi.driveRest();
+    await tick();
+    methodNums[base].resolve(100);
+    check((await p) === 106, "driveRest() must give 106 through nested await of a rest method");
+    console.log("PASS rest method driven through nested await, no wrapper class");
+  }
+
+  // `super` in async methods, all with getNumber()=7 and a fresh instance
+  // per check (superAccessor and superCompound mutate the base field).
+  // superCall: Base.foo()=2 (not Child's override 3); superField: n set
+  // to 30; superAccessor: before is Base's 10, v is 5 after the Base
+  // setter; superInClosure: Base.foo()=2 in the lifted closure;
+  // superInherited: Base.bar()=200; superCompound: v 10 += 2 -> 12, ++ -> 13.
+  {
+    check(typeof methodsApi.SuperChild === "function", "generated coordinator must expose a SuperChild wrapper class");
+    const base = methodNums.length;
+    const driveSuper = async (method) => {
+      const c = new methodsApi.SuperChild();
+      const p = c[method]();
+      await tick();
+      methodNums[base + driveSuper.n].resolve(7);
+      driveSuper.n++;
+      const value = await p;
+      c.dispose();
+      return value;
+    };
+    driveSuper.n = 0;
+    check((await driveSuper("superCall")) === 9, "SuperChild.superCall() with getNumber()=7 must give 9");
+    check((await driveSuper("superField")) === 37, "SuperChild.superField() with getNumber()=7 must give 37");
+    check((await driveSuper("superAccessor")) === 1012, "SuperChild.superAccessor() with getNumber()=7 must give 1012");
+    check((await driveSuper("superInClosure")) === 9, "SuperChild.superInClosure() with getNumber()=7 must give 9");
+    check((await driveSuper("superInherited")) === 207, "SuperChild.superInherited() with getNumber()=7 must give 207");
+    check((await driveSuper("superCompound")) === 20, "SuperChild.superCompound() with getNumber()=7 must give 20");
+    console.log("PASS super in async methods, known values 9/37/1012/9/207/20");
   }
 
   // Two instances driven concurrently keep independent counts.
@@ -841,6 +1645,949 @@ const api = await instantiateAsync(bytes, {
     check((await p) === 12, "pinned instance must still drive after churn + __collect");
     c.dispose();
     console.log("PASS pinned instance survives churn + __collect");
+  }
+
+  // Static async methods through the generated coordinator: statics on the
+// wrapper constructor, static state across awaits via `this`, a static
+// awaiting an instance method, concurrent statics, the static async
+// `dispose` not colliding with the sync dispose(), and methods on a
+// non-exported class reachable only from within async code.
+{
+  check(typeof methodsApi.Counter.create === "function", "generated wrapper class must expose static create");
+  check(typeof methodsApi.Counter.fetch === "function", "generated wrapper class must expose static fetch");
+  check(typeof methodsApi.Counter.viaInstance === "function", "generated wrapper class must expose static viaInstance");
+  check(typeof methodsApi.Counter.dispose === "function", "generated wrapper class must expose static dispose");
+  check(typeof methodsApi.viaHidden === "function", "generated coordinator must expose viaHidden");
+  check(typeof methodsApi.viaHiddenStatic === "function", "generated coordinator must expose viaHiddenStatic");
+  check(methodsApi.Hidden === undefined, "a non-exported class must get no wrapper class");
+  console.log("PASS static methods and non-exported class surface on the coordinator");
+
+  // Basic static, with static state accumulating across calls: create(5)
+  // with getNumber()=7 gives 12, then create(100) gives 119.
+  {
+    let base = methodNums.length;
+    let p = methodsApi.Counter.create(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.create(5) with getNumber()=7 must give 12");
+    base = methodNums.length;
+    p = methodsApi.Counter.create(100);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 119, "Counter.create(100) must give 119 with static state kept");
+    console.log("PASS basic static method, static state 12 then 119");
+  }
+
+  // Static method awaiting an import.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.fetch(3);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 10, "Counter.fetch(3) with getNumber()=7 must give 10");
+    console.log("PASS static method awaiting an import");
+  }
+
+  // Static method awaiting an instance method of a fresh instance.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.viaInstance(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.viaInstance(5) must give 12");
+    console.log("PASS static method awaiting an instance method");
+  }
+
+  // Two statics driven concurrently keep independent results.
+  {
+    const base = methodNums.length;
+    const p1 = methodsApi.Counter.fetch(1);
+    const p2 = methodsApi.Counter.fetch(2);
+    await tick();
+    check(methodNums.length === base + 2, "concurrent statics must issue two awaits");
+    methodNums[base].resolve(7);
+    methodNums[base + 1].resolve(7);
+    check((await p1) === 8, "first concurrent static must give 8");
+    check((await p2) === 9, "second concurrent static must give 9");
+    console.log("PASS two statics driven concurrently");
+  }
+
+  // Static async `dispose` and the sync instance dispose() coexist: the
+  // static drives a task, the sync one still releases the pin.
+  {
+    const base = methodNums.length;
+    const p = methodsApi.Counter.dispose(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "Counter.dispose(5) static must give 12");
+    const c = new methodsApi.Counter();
+    c.dispose();
+    c.dispose();
+    console.log("PASS static async dispose does not shadow sync dispose()");
+  }
+
+  // Non-exported class: its instance method and its static method are
+  // both reachable from exported async functions, with no wrapper.
+  {
+    let base = methodNums.length;
+    const p = methodsApi.viaHidden(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p) === 12, "viaHidden(5) must give 12");
+    base = methodNums.length;
+    const p2 = methodsApi.viaHiddenStatic(5);
+    await tick();
+    methodNums[base].resolve(7);
+    check((await p2) === 12, "viaHiddenStatic(5) must give 12");
+    console.log("PASS non-exported class methods reachable only from async code");
+  }
+}
+}
+
+// Namespaced async functions through the generated coordinator: the api
+// mirrors the namespace path (api.NS.take, api.Outer.Inner.deep), a
+// namespaced fn awaiting another namespaced fn, a top-level fn awaiting
+// a namespaced fn, a non-exported namespace fn driven as an inner, and
+// rejection propagation out of a namespaced fn.
+{
+  const wasmBytes = readFileSync(compile("namespaces.ts"));
+  const nsCoord = join(dir, "namespaces.async.js");
+  check(existsSync(nsCoord), "namespaces.async.js must be emitted for the namespaces fixture");
+  const { instantiateAsync: instantiateNs } = await import(pathToFileURL(nsCoord).href);
+  const nsApi = await instantiateNs(wasmBytes, {
+    env: {
+      getChunk(i) {
+        if (i === 9) return Promise.reject(new Error("ns-boom"));
+        return Promise.resolve("C" + i);
+      }
+    }
+  });
+  check(typeof nsApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof nsApi.NS.take === "function", "generated coordinator must expose NS.take");
+  check(typeof nsApi.Outer === "object", "generated coordinator must expose the Outer namespace object");
+  check(typeof nsApi.Outer.Inner.deep === "function", "generated coordinator must expose Outer.Inner.deep");
+  check((await nsApi.NS.take()) === "got-C0", "NS.take must resolve got-C0");
+  console.log("PASS namespaced async fn at api.NS.take");
+  check((await nsApi.NS.takeTwo(5)) === "two-C5", "NS.takeTwo(5) must resolve two-C5");
+  console.log("PASS two async fns in the same namespace, with params");
+  check((await nsApi.NS.viaOther()) === "via-two-C1", "NS.viaOther must resolve via-two-C1");
+  console.log("PASS namespaced async fn awaiting another namespaced async fn");
+  check((await nsApi.Outer.Inner.deep()) === "deep-C2", "Outer.Inner.deep must resolve deep-C2");
+  console.log("PASS async fn in a nested namespace at api.Outer.Inner.deep");
+  check((await nsApi.topViaNs()) === "top-got-C0", "topViaNs must resolve top-got-C0");
+  console.log("PASS top-level async fn awaiting a namespaced async fn");
+  check((await nsApi.viaHidden()) === "via-hidden-secret-C3", "viaHidden must resolve via-hidden-secret-C3");
+  console.log("PASS non-exported namespace fn driven as a nested inner");
+  await assertRejects(nsApi.NS.failing(), /ns-boom/, "a rejecting namespaced await must reject the task promise");
+  console.log("PASS rejection propagates out of a namespaced async fn");
+}
+
+// Generic async functions in namespaces through the generated coordinator
+// (close-gaps Group 4c): each instantiation is a clone qualified with the
+// namespace path, exposed under the mangled clone name on the namespace
+// object (api.NS.id_i32, api.Outer.Inner.id_i32 — mirroring the top-level
+// id_i32 and the generic-class api.NS.GBox_i32 spellings). A clone in a
+// non-exported namespace stays inner-only, driven nested through runPlain.
+{
+  const wasmBytes = readFileSync(compile("namespace-generics.ts"));
+  const ngCoord = join(dir, "namespace-generics.async.js");
+  check(existsSync(ngCoord), "namespace-generics.async.js must be emitted for the namespace-generics fixture");
+  const { instantiateAsync: instantiateNg } = await import(pathToFileURL(ngCoord).href);
+  const ngApi = await instantiateNg(wasmBytes, {
+    env: {
+      fetchValue() {
+        return Promise.resolve(1);
+      }
+    }
+  });
+  check(typeof ngApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof ngApi.NS.id_i32 === "function", "generated coordinator must expose NS.id_i32");
+  check(typeof ngApi.Outer.Inner.id_i32 === "function", "generated coordinator must expose Outer.Inner.id_i32");
+  check(typeof ngApi.NS["id__x7e_lib_x2f_string_x2f_String"] === "function", "generated coordinator must expose NS.id<string>");
+  check(ngApi.Plain === undefined, "a clone in a non-exported namespace stays inner-only (no api.Plain)");
+  check((await ngApi.NS.id_i32(42)) === 42, "NS.id<i32>(42) must resolve 42");
+  console.log("PASS generic async fn in a namespace at api.NS.id_i32");
+  check((await ngApi.Outer.Inner.id_i32(7)) === 7, "Outer.Inner.id<i32>(7) must resolve 7");
+  console.log("PASS generic async fn in a nested namespace at api.Outer.Inner.id_i32");
+  check((await ngApi.NS["id__x7e_lib_x2f_string_x2f_String"]("hi")) === "hi", "NS.id<string>(\"hi\") must resolve hi");
+  console.log("PASS generic async fn in a namespace, string instantiation");
+  check((await ngApi.runNsGen()) === 42, "runNsGen must resolve 42");
+  check((await ngApi.runOuterGen()) === 7, "runOuterGen must resolve 7");
+  check((await ngApi.runPlain()) === 9, "runPlain must resolve 9");
+  check((await ngApi.runStr()) === "hi", "runStr must resolve hi");
+  console.log("PASS generic namespaced async fns awaited as nested tasks");
+}
+
+// Async methods on namespaced classes through the generated coordinator
+// (close-gaps Group 4b): the wrapper class mirrors the namespace path
+// (api.NS2.H, api.Outer.Inner.Deep), instance methods live on the
+// prototype under their plain name, statics on the constructor, and a
+// generic class in a namespace composes both (api.NS.GBox_i32).
+{
+  const wasmBytes = readFileSync(compile("namespace-methods.ts"));
+  const nsmCoord = join(dir, "namespace-methods.async.js");
+  check(existsSync(nsmCoord), "namespace-methods.async.js must be emitted for the namespace-methods fixture");
+  const { instantiateAsync: instantiateNsm } = await import(pathToFileURL(nsmCoord).href);
+  const nsmApi = await instantiateNsm(wasmBytes, {
+    env: {
+      getChunk(i) {
+        return Promise.resolve("C" + i);
+      },
+      fetchValue() {
+        return Promise.resolve(1);
+      }
+    }
+  });
+  check(typeof nsmApi.NS2 === "object", "generated coordinator must expose the NS2 namespace object");
+  check(typeof nsmApi.NS2.H === "function", "generated coordinator must expose the NS2.H wrapper class");
+  check(typeof nsmApi.Outer === "object", "generated coordinator must expose the Outer namespace object");
+  check(typeof nsmApi.Outer.Inner.Deep === "function", "generated coordinator must expose the Outer.Inner.Deep wrapper class");
+  check(typeof nsmApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof nsmApi.NS.GBox_i32 === "function", "generated coordinator must expose the generic namespaced wrapper NS.GBox_i32");
+  {
+    const h = new nsmApi.NS2.H(5);
+    check((await h.m()) === "C05", "NS2.H.m must resolve C05");
+    h.dispose();
+    let threw = null;
+    try {
+      h.m();
+    } catch (e) {
+      threw = e;
+    }
+    check(threw instanceof Error && /has been disposed/.test(threw.message), "a disposed namespaced wrapper call must throw synchronously, got " + threw);
+    console.log("PASS namespaced-class method at api.NS2.H, dispose throws");
+  }
+  check((await nsmApi.NS2.H.make(3)) === 5, "NS2.H.make(3) must resolve 5");
+  console.log("PASS namespaced-class static method at api.NS2.H.make");
+  check((await nsmApi.runNs()) === "C05", "runNs must resolve C05");
+  console.log("PASS namespaced-class method awaited from an async fn");
+  check((await nsmApi.runNsStatic()) === 5, "runNsStatic must resolve 5");
+  console.log("PASS namespaced-class static method awaited from an async fn");
+  {
+    const d = new nsmApi.Outer.Inner.Deep();
+    check((await d.m()) === "deep-C2", "Outer.Inner.Deep.m must resolve deep-C2");
+    d.dispose();
+    console.log("PASS method on a class in a nested namespace at api.Outer.Inner.Deep");
+  }
+  check((await nsmApi.runDeep()) === "deep-C2", "runDeep must resolve deep-C2");
+  console.log("PASS nested-namespace class method awaited from an async fn");
+  {
+    const box = new nsmApi.NS.GBox_i32(42);
+    check((await box.get_i32()) === 42, "NS.GBox_i32.get_i32 must resolve 42");
+    box.dispose();
+    console.log("PASS generic class in a namespace at api.NS.GBox_i32");
+  }
+  check((await nsmApi.runCombo()) === 42, "runCombo must resolve 42");
+  console.log("PASS generic namespaced-class method awaited from an async fn");
+}
+
+// Cross-file await through the generated coordinator: direct, guarded,
+// chain, terminating mutual cycle, cross-file method.
+{
+  const wasmBytes = readFileSync(compile("crossfile.ts"));
+  const crossCoord = join(dir, "crossfile.async.js");
+  check(existsSync(crossCoord), "crossfile.async.js must be emitted for the cross-file fixture");
+  const { instantiateAsync: instantiateCross } = await import(pathToFileURL(crossCoord).href);
+  const chunks = [];
+  const numsA = [];
+  const numsB = [];
+  const numsW = [];
+  const crossApi = await instantiateCross(wasmBytes, {
+    env: {
+      getChunk(i) { const d = deferred(); chunks.push(d); return d.promise; },
+      getNumberA() { const d = deferred(); numsA.push(d); return d.promise; },
+      getNumberB() { const d = deferred(); numsB.push(d); return d.promise; },
+      getNumberW() { const d = deferred(); numsW.push(d); return d.promise; }
+    }
+  });
+
+  let p = crossApi.awaitOtherFile();
+  await tick();
+  check(chunks.length === 1, "awaitOtherFile must issue one getChunk");
+  chunks[0].resolve("hello");
+  check((await p) === "hello", "cross-file await must return the helper result");
+  console.log("PASS cross-file await, direct");
+
+  p = crossApi.awaitOtherFileGuarded();
+  await tick();
+  check(chunks.length === 2, "guarded cross-file await must issue one getChunk");
+  chunks[1].reject(new Error("cross-boom"));
+  check((await p) === "caught", "cross-file await rejection must land in the catch");
+  console.log("PASS cross-file await, guarded by try/catch");
+
+  p = crossApi.awaitChain();
+  await tick();
+  check(chunks.length === 3, "awaitChain must issue one getChunk");
+  chunks[2].resolve("hello");
+  check((await p) === "hello2", "cross-file chain must return the chained result");
+  console.log("PASS cross-file await, chain");
+
+  p = crossApi.awaitCycle();
+  await tick();
+  check(numsA.length === 1, "awaitCycle must issue getNumberA first");
+  numsA[0].resolve(1);
+  await tick();
+  check(numsB.length === 1, "awaitCycle must issue getNumberB next");
+  numsB[0].resolve(10);
+  check((await p) === 11, "cross-file mutual cycle must terminate with 11");
+  console.log("PASS cross-file await, terminating mutual cycle");
+
+  p = crossApi.awaitCrossMethod();
+  await tick();
+  check(numsW.length === 1, "awaitCrossMethod must issue one getNumberW");
+  numsW[0].resolve(7);
+  check((await p) === 17, "cross-file method await must return 17");
+  console.log("PASS cross-file await, method in another file");
+}
+
+// Join-member and join-argument await through the generated coordinator.
+{
+  const wasmBytes = readFileSync(compile("joinmember.ts"));
+  const jmCoord = join(dir, "joinmember.async.js");
+  check(existsSync(jmCoord), "joinmember.async.js must be emitted for the join-member fixture");
+  const { instantiateAsync: instantiateJm } = await import(pathToFileURL(jmCoord).href);
+  const jmNums = [];
+  const jmFails = [];
+  const jmSlows = [];
+  const jmApi = await instantiateJm(wasmBytes, {
+    env: {
+      getNumber() { const d = deferred(); jmNums.push(d); return d.promise; },
+      getFailing() { const d = deferred(); jmFails.push(d); return d.promise; },
+      getSlow() { const d = deferred(); jmSlows.push(d); return d.promise; }
+    }
+  });
+
+  // allHoisted: the hoisted member suspends first; the join issues only
+  // after it settles, and the result keeps argument order.
+  let base = jmNums.length;
+  let p = jmApi.allHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "allHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmNums.length === base + 3, "allHoisted must issue the remaining members after the hoisted await");
+  jmNums[base + 2].resolve(30);
+  jmNums[base + 1].resolve(20);
+  check((await p) === "5|20|30", "join-member all must deliver results in argument order");
+  console.log("PASS join-member await, all");
+
+  // raceHoisted: the pre-resolved member wins even though the other
+  // member is still pending.
+  base = jmNums.length;
+  let slowBase = jmSlows.length;
+  p = jmApi.raceHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "raceHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmSlows.length === slowBase + 1, "raceHoisted must issue the slow member after the hoisted await");
+  check((await p) === 5, "join-member race must resolve with the pre-resolved member");
+  jmSlows[slowBase].resolve(99);
+  await tick();
+  console.log("PASS join-member await, race pre-resolved wins");
+
+  // anyHoisted: the hoisted member is issued first; the failing member
+  // is issued after it settles, and the pre-resolved member still wins
+  // over its concurrent rejection.
+  base = jmNums.length;
+  let failBase = jmFails.length;
+  p = jmApi.anyHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "anyHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmFails.length === failBase + 1, "anyHoisted must issue the failing member after the hoisted await");
+  jmFails[failBase].reject(new Error("no-a"));
+  check((await p) === 5, "join-member any must resolve with the hoisted member");
+  console.log("PASS join-member await, any");
+
+  // settledHoisted: pre-resolved fulfillment plus a rejection.
+  base = jmNums.length;
+  failBase = jmFails.length;
+  p = jmApi.settledHoisted();
+  await tick();
+  check(jmNums.length === base + 1, "settledHoisted must issue only the hoisted member first");
+  jmNums[base].resolve(5);
+  await tick();
+  check(jmFails.length === failBase + 1, "settledHoisted must issue the failing member after the hoisted await");
+  jmFails[failBase].reject(new Error("bad"));
+  check((await p) === "ok5;nobad;", "join-member allSettled must report both members");
+  console.log("PASS join-member await, allSettled");
+
+  // allHoistedFail: the hoisted rejection fails the task before the join issues.
+  base = jmFails.length;
+  let numBase = jmNums.length;
+  p = jmApi.allHoistedFail();
+  await tick();
+  check(jmFails.length === base + 1, "allHoistedFail must issue only the hoisted member first");
+  jmFails[base].reject(new Error("boom"));
+  await assertRejects(p, /boom/, "join-member rejection must fail the task");
+  check(jmNums.length === numBase, "allHoistedFail must never issue the join members");
+  console.log("PASS join-member await, rejection fails before the join issues");
+
+  // allHoistedCaught: the hoisted rejection lands in the catch, and the
+  // join members are never issued.
+  base = jmFails.length;
+  numBase = jmNums.length;
+  p = jmApi.allHoistedCaught();
+  await tick();
+  check(jmFails.length === base + 1, "allHoistedCaught must issue only the hoisted member first");
+  jmFails[base].reject(new Error("boom"));
+  check((await p) === "caught:boom", "join-member rejection must land in the catch");
+  check(jmNums.length === numBase, "allHoistedCaught must never issue the join members");
+  console.log("PASS join-member await, rejection caught, join never issued");
+
+  // argAwait: the nested helper builds the member array wasm-side.
+  base = jmNums.length;
+  p = jmApi.argAwait();
+  await tick();
+  check(jmNums.length === base + 2, "argAwait must issue both members from the nested helper");
+  jmNums[base + 1].resolve(20);
+  jmNums[base].resolve(10);
+  check((await p) === "10|20", "join-argument await must deliver results in order");
+  console.log("PASS join-argument await, all");
+
+  // argAwaitRace: the array-built race resolves with the first member.
+  base = jmNums.length;
+  p = jmApi.argAwaitRace();
+  await tick();
+  check(jmNums.length === base + 2, "argAwaitRace must issue both members");
+  jmNums[base + 1].resolve(20);
+  check((await p) === 20, "join-argument race must resolve with the first fulfillment");
+  jmNums[base].resolve(10);
+  await tick();
+  console.log("PASS join-argument await, race");
+}
+
+// Generic async functions and generic-class methods (close-gaps Group
+// 3b, wrappers in Group 4b): per-instantiation clones driven through the
+// generated coordinator (i32, string and externref type args; nested
+// awaits; a generic-class method awaited from an async fn). Each class
+// instantiation gets its own wrapper (`api.Box_i32`,
+// `api.Box_<string>`) with methods under the mangled clone name
+// (`get_i32`, `wrap_i32_string`); a static generic method on a
+// non-generic class is a wrapper static, while one on a generic class
+// stays nested-only (no canonical instantiation to construct).
+{
+  const wasmBytes = readFileSync(compile("generics.ts"));
+  const genericsCoord = join(dir, "generics.async.js");
+  check(existsSync(genericsCoord), "generics.async.js must be emitted for the generics fixture");
+  const { instantiateAsync: instantiateGenerics } = await import(pathToFileURL(genericsCoord).href);
+  const genValues = [];
+  const genHandles = [];
+  const genFetches = [];
+  const sentinel = { tag: "generics-handle" };
+  const genApi = await instantiateGenerics(wasmBytes, {
+    env: {
+      fetchValue() {
+        const d = deferred();
+        genValues.push(d);
+        return d.promise;
+      },
+      fetchHandle() {
+        const d = deferred();
+        genHandles.push(d);
+        return d.promise;
+      },
+      fetch(x) {
+        const d = deferred();
+        genFetches.push(d);
+        return d.promise;
+      }
+    }
+  });
+  check(typeof genApi.id_i32 === "function", "generated coordinator must expose id_i32");
+  check(typeof genApi.id__x7e_lib_x2f_string_x2f_String === "function", "generated coordinator must expose id<string>");
+  check(typeof genApi.withHandle_ref_x5f_extern_x7c_null === "function", "generated coordinator must expose withHandle<externref>");
+  check(typeof genApi.runGeneric === "function", "generated coordinator must expose runGeneric");
+  check(typeof genApi.runHandle === "function", "generated coordinator must expose runHandle");
+  check(typeof genApi.runBox === "function", "generated coordinator must expose runBox");
+  check(typeof genApi.runFetch === "function", "generated coordinator must expose runFetch");
+  check(typeof genApi.runBoxStr === "function", "generated coordinator must expose runBoxStr");
+  check(typeof genApi.runWrap === "function", "generated coordinator must expose runWrap");
+  check(typeof genApi.runMaker === "function", "generated coordinator must expose runMaker");
+  check(typeof genApi.runGStatic === "function", "generated coordinator must expose runGStatic");
+  check(typeof genApi.Box_i32 === "function", "generated coordinator must expose one wrapper per class instantiation (Box_i32)");
+  check(typeof genApi["Box__x7e_lib_x2f_string_x2f_String"] === "function", "generated coordinator must expose one wrapper per class instantiation (Box<string>)");
+  check(typeof genApi.Maker === "function", "generated coordinator must expose the Maker wrapper");
+  check(genApi.GBox === undefined, "a generic class with only a static generic method gets no wrapper (no instantiation to construct)");
+  check(typeof genApi.runPoint === "function", "a class-typed instantiation is coordinator-driven now (Group 5b class values)");
+  const pointKey = Object.keys(genApi).find((k) => k.endsWith("_Point"));
+  check(typeof pointKey === "string", "an id<Point> clone method must be exposed now (Group 5b class values)");
+  console.log("PASS generics coordinator file emitted with the per-instantiation clones");
+
+  // Direct clone calls: id<i32>(42) -> 42, id<string>("hi") -> "hi".
+  {
+    const p1 = genApi.id_i32(42);
+    await tick();
+    genValues[0].resolve(1);
+    check((await p1) === 42, "id<i32>(42) must give 42");
+    const p2 = genApi.id__x7e_lib_x2f_string_x2f_String("hi");
+    await tick();
+    genValues[1].resolve(1);
+    check((await p2) === "hi", "id<string>('hi') must give 'hi'");
+    console.log("PASS generic async fn clones, direct calls 42/'hi'");
+  }
+
+  // Nested awaits: runGeneric awaits id<i32> then id<string>.
+  {
+    const p = genApi.runGeneric();
+    await tick();
+    genValues[2].resolve(1);
+    await tick();
+    genValues[3].resolve(1);
+    check((await p) === 43, "runGeneric must give 43");
+    console.log("PASS generic async fns as nested awaits, 43");
+  }
+
+  // Externref type arg + spill pool: runHandle awaits fetchHandle, then
+  // withHandle<externref> and withHandle<i32>.
+  {
+    const p = genApi.runHandle();
+    await tick();
+    genHandles[0].resolve(sentinel);
+    await tick();
+    genHandles[1].resolve(sentinel);
+    await tick();
+    genHandles[2].resolve(sentinel);
+    check((await p) === 2, "runHandle must give 2");
+    console.log("PASS externref generic instantiation + spill pool, 2");
+  }
+
+  // Generic-class method awaited from an async fn.
+  {
+    const p = genApi.runBox();
+    await tick();
+    genValues[4].resolve(1);
+    check((await p) === 42, "runBox must give 42");
+    console.log("PASS generic-class method awaited from an async fn, 42");
+  }
+
+  // Class-typed nested await: runPoint awaits id<Point> and returns q.x.
+  {
+    const p = genApi.runPoint();
+    await tick();
+    genValues[5].resolve(1);
+    check((await p) === 7, "runPoint must give 7");
+    console.log("PASS class-typed generic instantiation as nested await, 7");
+  }
+
+  // Direct class-typed clone call: id<Point> round-trips the Point.
+  {
+    const p = genApi[pointKey]({ x: 3, y: 4 });
+    await tick();
+    genValues[6].resolve(1);
+    const v = await p;
+    check(v.x === 3 && v.y === 4, "id<Point>({x:3,y:4}) must round-trip, got " + JSON.stringify(v));
+    console.log("PASS class-typed generic clone, direct call round-trips the Point");
+  }
+
+  // Generic suspending import: one wrapper serves the i32 and string
+  // instantiations (both pass an i32); each result is delivered through
+  // its own await site.
+  {
+    const p = genApi.runFetch();
+    await tick();
+    genFetches[0].resolve(42);
+    await tick();
+    genFetches[1].resolve("hi");
+    check((await p) === 43, "runFetch must give 43");
+    console.log("PASS generic suspending import, one wrapper for agreeing instantiations, 43");
+  }
+
+  // Generic-class wrappers, one per instantiation: Box<i32> and
+  // Box<string> are distinct wrappers; methods drive under the mangled
+  // clone name, including a generic method's own type args.
+  {
+    const p = genApi.runBoxStr();
+    await tick();
+    genValues[7].resolve(1);
+    check((await p) === "hi", "runBoxStr must give 'hi'");
+    console.log("PASS generic-class method awaited from an async fn at a second instantiation, 'hi'");
+  }
+  {
+    const box = new genApi.Box_i32(42);
+    const p = box.get_i32();
+    await tick();
+    genValues[8].resolve(1);
+    check((await p) === 42, "Box_i32.get_i32 must give 42");
+    const w = box["wrap_i32__x7e_lib_x2f_string_x2f_String"]("hey");
+    await tick();
+    genValues[9].resolve(1);
+    check((await w) === "hey", "Box_i32.wrap_i32_string must give 'hey'");
+    box.dispose();
+    let threw = null;
+    try {
+      box.get_i32();
+    } catch (e) {
+      threw = e;
+    }
+    check(threw instanceof Error && /has been disposed/.test(threw.message), "a disposed generic wrapper call must throw synchronously, got " + threw);
+    console.log("PASS generic-class wrapper Box_i32, mangled method names, dispose throws");
+  }
+  {
+    const sbox = new genApi["Box__x7e_lib_x2f_string_x2f_String"]("hi");
+    const p = sbox["get__x7e_lib_x2f_string_x2f_String"]();
+    await tick();
+    genValues[10].resolve(1);
+    check((await p) === "hi", "Box<string>.get must give 'hi'");
+    sbox.dispose();
+    console.log("PASS generic-class wrapper Box<string>, ctor param per instantiation");
+  }
+  {
+    const p = genApi.runWrap();
+    await tick();
+    genValues[11].resolve(1);
+    check((await p) === "hey", "runWrap must give 'hey'");
+    console.log("PASS generic method's own type args awaited from an async fn, 'hey'");
+  }
+
+  // Static generic methods: on a non-generic class they are wrapper
+  // statics; on a generic class they drive as nested inners only.
+  {
+    const p = genApi.Maker.make_i32(9);
+    await tick();
+    genValues[12].resolve(1);
+    check((await p) === 9, "Maker.make_i32(9) must give 9");
+    const q = genApi.runMaker();
+    await tick();
+    genValues[13].resolve(1);
+    check((await q) === 7, "runMaker must give 7");
+    console.log("PASS static generic method as a wrapper static, 9, and as a nested await, 7");
+  }
+  {
+    const p = genApi.runGStatic();
+    await tick();
+    genValues[14].resolve(1);
+    check((await p) === 7, "runGStatic must give 7");
+    console.log("PASS static generic method on a generic class as a nested await only, 7");
+  }
+}
+
+// A generic suspending import whose instantiations disagree on parameter
+// types stays loud: the coordinator installs a stub that rejects with
+// the reason instead of wrapping it.
+{
+  const wasmBytes = readFileSync(compile("generic-import-disagree.ts"));
+  const disagreeCoord = join(dir, "generic-import-disagree.async.js");
+  check(existsSync(disagreeCoord), "generic-import-disagree.async.js must be emitted");
+  const { instantiateAsync: instantiateDisagree } = await import(pathToFileURL(disagreeCoord).href);
+  const disagreeApi = await instantiateDisagree(wasmBytes, {
+    env: {
+      fetch(x) { return Promise.resolve(1); }
+    }
+  });
+  await assertRejects(
+    disagreeApi.run(),
+    /instantiations disagree on parameter types/,
+    "run() with a disagreeing generic import must reject with the reason"
+  );
+  console.log("PASS disagreeing generic suspending import stays loud with the reason");
+}
+
+// Array and plain-class values across the boundary (close-gaps Group
+// 5b): await values, parameters, results, join members, stored awaits,
+// nullable results, and async methods, driven through the generated
+// coordinator only.
+{
+  const wasmBytes = readFileSync(compile("values.ts"));
+  const valuesCoord = join(dir, "values.async.js");
+  check(existsSync(valuesCoord), "values.async.js must be emitted for the values fixture");
+  const { instantiateAsync: instantiateValues } = await import(pathToFileURL(valuesCoord).href);
+  const vNumDeferreds = [];
+  const vArrDeferreds = [];
+  const valuesApi = await instantiateValues(wasmBytes, {
+    env: {
+      getNumbers() {
+        const d = deferred();
+        vArrDeferreds.push(d);
+        return d.promise;
+      },
+      getNumber() {
+        const d = deferred();
+        vNumDeferreds.push(d);
+        return d.promise;
+      },
+      getStrings: async () => ["a", "bb", "ccc"],
+      getPoint: async () => ({ x: 3, y: 4 }),
+      getPoints: async () => [{ x: 1, y: 2 }, { x: 10, y: 20 }],
+      getMatrix: async () => [[1, 2], [3, 4, 5]],
+      getBytes: async () => [1, 2, 3],
+      getFloats: async () => [1.5, 2.5],
+      getStatic: async () => [7, 8]
+    }
+  });
+  const eq = (got, want, msg) => check(JSON.stringify(got) === JSON.stringify(want), msg + ", got " + JSON.stringify(got));
+
+  {
+    const p = valuesApi.sumArr();
+    await tick();
+    vArrDeferreds[0].resolve([10, 20, 30]);
+    check((await p) === 60, "sumArr must resolve 60");
+    console.log("PASS awaited Array<i32> value");
+  }
+
+  {
+    const p = valuesApi.getArr();
+    await tick();
+    vNumDeferreds[0].resolve(5);
+    eq(await p, [5, 6], "getArr must resolve [5,6]");
+    console.log("PASS Array<i32> result");
+  }
+
+  {
+    const p = valuesApi.sumParam([1, 2, 3]);
+    await tick();
+    vNumDeferreds[1].resolve(5);
+    check((await p) === 11, "sumParam([1,2,3]) must resolve 11");
+    console.log("PASS Array<i32> parameter");
+  }
+
+  check((await valuesApi.concatStrs()) === "a,bb,ccc", "concatStrs must resolve a,bb,ccc");
+  console.log("PASS awaited Array<string> value");
+
+  check((await valuesApi.sumPoint()) === 7, "sumPoint must resolve 7");
+  console.log("PASS awaited plain-class value");
+
+  {
+    const p = valuesApi.makePoint();
+    await tick();
+    vNumDeferreds[2].resolve(5);
+    eq(await p, { x: 5, y: 10 }, "makePoint must resolve {x:5,y:10}");
+    console.log("PASS plain-class result");
+  }
+
+  check((await valuesApi.sumPoints()) === 33, "sumPoints must resolve 33");
+  console.log("PASS awaited Array<Point> value");
+
+  check((await valuesApi.sumMatrix()) === 15, "sumMatrix must resolve 15");
+  console.log("PASS awaited Array<Array<i32>> value");
+
+  {
+    const p = valuesApi.getLabeled();
+    await tick();
+    vNumDeferreds[3].resolve(5);
+    eq(await p, { label: "L5", vals: [5, 6] }, "getLabeled must resolve {label:L5,vals:[5,6]}");
+    console.log("PASS plain-class result with string and array fields");
+  }
+
+  {
+    const p = valuesApi.sumLabeled({ label: "x", vals: [1, 2] });
+    await tick();
+    vNumDeferreds[4].resolve(5);
+    check((await p) === 8, "sumLabeled must resolve 8");
+    console.log("PASS plain-class parameter");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.joinArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 2, "joinArrs must issue 2 members");
+    vArrDeferreds[aBase + 1].resolve([10, 20, 30]);
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [[10, 20, 30], [10, 20, 30]], "joinArrs must resolve both member arrays");
+    console.log("PASS join members of Array<i32> type");
+  }
+
+  eq(await valuesApi.joinPoints(), [{ x: 3, y: 4 }, { x: 3, y: 4 }], "joinPoints must resolve both member objects");
+  console.log("PASS join members of plain-class type");
+
+  {
+    const p = valuesApi.storedArr();
+    await tick();
+    const base = vArrDeferreds.length - 1;
+    vArrDeferreds[base].resolve([10, 20, 30]);
+    check((await p) === 60, "storedArr must resolve 60");
+    console.log("PASS stored Array<i32> await");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.maybeArr(1);
+    await tick();
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [10, 20, 30], "maybeArr(1) must resolve the array");
+  }
+  check((await valuesApi.maybeArr(0)) === null, "maybeArr(0) must resolve null");
+  console.log("PASS nullable Array<i32> result");
+
+  check((await valuesApi.sumBytes()) === 6, "sumBytes must resolve 6");
+  console.log("PASS awaited Array<i8> value (byte-width elements)");
+
+  check((await valuesApi.sumFloats()) === 4, "sumFloats must resolve 4");
+  console.log("PASS awaited Array<f64> value");
+
+  check((await valuesApi.sumStatic()) === 15, "sumStatic must resolve 15");
+  console.log("PASS awaited StaticArray<i32> value");
+
+  {
+    const p = valuesApi.getStaticArr();
+    await tick();
+    vNumDeferreds[5].resolve(5);
+    eq(await p, [5, 6], "getStaticArr must resolve [5,6]");
+    console.log("PASS StaticArray<i32> result");
+  }
+
+  // An array awaited before a second await must survive heap churn +
+  // __collect while it sits in the state object's pending field.
+  {
+    const aBase = vArrDeferreds.length;
+    const nBase = vNumDeferreds.length;
+    const p = valuesApi.twoArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 1, "twoArrs must issue getNumbers once");
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    await tick();
+    check(vNumDeferreds.length === nBase + 1, "twoArrs must issue getNumber after the first await");
+    valuesApi.exports.__collect();
+    valuesApi.exports.allocSpam(2000);
+    valuesApi.exports.__collect();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 65, "twoArrs must resolve 65 with the first array surviving churn + __collect");
+    console.log("PASS Array<i32> await value survives churn + __collect across a second await");
+  }
+
+  // Async methods with array/class values, through the wrapper class.
+  {
+    const box = new valuesApi.Box(100);
+    const nBase = vNumDeferreds.length;
+    let p = box.addAll([1, 2]);
+    await tick();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 108, "Box.addAll([1,2]) must resolve 108");
+    p = box.makePoint();
+    await tick();
+    vNumDeferreds[nBase + 1].resolve(5);
+    eq(await p, { x: 105, y: 0 }, "Box.makePoint must resolve {x:105,y:0}");
+    box.dispose();
+    console.log("PASS async methods with Array<i32> parameter and Point result");
+  }
+}
+
+// Loop closures: stored closures created in a loop, called after the
+// loop (close-gaps Group 5b item 2). Each sees its own iteration's
+// values; only names declared inside the loop are per-iteration.
+{
+  const wasmBytes = readFileSync(compile("loopclosures.ts"));
+  const loopCoord = join(dir, "loopclosures.async.js");
+  check(existsSync(loopCoord), "loopclosures.async.js must be emitted for the loopclosures fixture");
+  const { instantiateAsync: instantiateLoop } = await import(pathToFileURL(loopCoord).href);
+  const lNumDeferreds = [];
+  const lObjDeferreds = [];
+  const loopApi = await instantiateLoop(wasmBytes, {
+    env: {
+      getNumber() {
+        const d = deferred();
+        lNumDeferreds.push(d);
+        return d.promise;
+      },
+      getObj() {
+        const d = deferred();
+        lObjDeferreds.push(d);
+        return d.promise;
+      }
+    }
+  });
+
+  // Each getNumber() resolves 0; the sums below depend only on the
+  // captured iteration values, not on the awaited numbers.
+  // The first await is issued synchronously by the task's initial step,
+  // so the base is captured before the task starts, not inside resolveNums.
+  const resolveNums = async (count, base) => {
+    for (let k = 0; k < count; ++k) {
+      await tick();
+      check(lNumDeferreds.length > base + k, "loop test must issue getNumber await " + k);
+      lNumDeferreds[base + k].resolve(0);
+    }
+  };
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopStored must resolve 33");
+    console.log("PASS stored loop closures see their own iteration's value (33, not 39)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopBodyLet();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopBodyLet must resolve 30");
+    console.log("PASS stored loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNested();
+    await resolveNums(4, base);
+    check((await p) === 422, "loopNested must resolve 422");
+    console.log("PASS stored loop closures capture nested loop variables and shared outers");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileOuter();
+    await resolveNums(3, base);
+    check((await p) === 9, "loopWhileOuter must resolve 9 (one shared binding)");
+    console.log("PASS closures over a variable declared outside the loop share it (9)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileInner();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopWhileInner must resolve 30");
+    console.log("PASS stored while-loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStrings();
+    await resolveNums(3, base);
+    check((await p) === "s0s1s2", "loopStrings must resolve s0s1s2");
+    console.log("PASS stored loop closures capture reference-typed values per iteration");
+  }
+
+  {
+    const objA = { tag: "a" };
+    const objB = { tag: "b" };
+    const p = loopApi.loopExtern();
+    await tick();
+    check(lObjDeferreds.length === 1, "loopExtern must issue getObj once first");
+    lObjDeferreds[0].resolve(objA);
+    await tick();
+    check(lObjDeferreds.length === 2, "loopExtern must issue getObj again");
+    lObjDeferreds[1].resolve(objB);
+    check((await p) === objB, "loopExtern must resolve the second iteration's object");
+    console.log("PASS stored loop closures capture externref values per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopInline();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopInline must resolve 33");
+    console.log("PASS loop closures called in their iteration still work");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNoCapture();
+    await resolveNums(3, base);
+    check((await p) === 21, "loopNoCapture must resolve 21");
+    console.log("PASS loop closures capturing nothing loop-scoped keep working");
+  }
+
+  {
+    const c = new loopApi.Counter(5);
+    const base = lNumDeferreds.length;
+    const p = c.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 48, "Counter.loopStored must resolve 48");
+    c.dispose();
+    console.log("PASS loop closures in async methods capture per iteration");
   }
 }
 

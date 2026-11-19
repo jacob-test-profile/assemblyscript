@@ -7,6 +7,8 @@
  */
 
 import {
+  NodeKind,
+  Source,
   SourceKind
 } from "./ast";
 
@@ -21,7 +23,11 @@ import {
 
 import {
   Program,
+  Function,
   FunctionPrototype,
+  ClassPrototype,
+  Class,
+  PropertyPrototype,
   Element,
   ElementKind,
   File
@@ -33,26 +39,63 @@ import {
 
 import {
   Type,
+  Signature,
   TypeKind,
   TypeFlags
 } from "./types";
 
-/** A value kind the coordinator can lower/lift across the boundary. */
+/** A value kind the coordinator can lower/lift across the boundary.
+ *  Array and class descs carry what the runtime needs to build them:
+ *  an array carries its class id, element alignment and element desc;
+ *  a class carries its record shape (runtime id, byte size, fields). */
 export interface ValueDesc {
   kind: string;
   nullable: boolean;
+  elem?: ValueDesc;
+  id?: i32;
+  align?: i32;
+  shape?: ClassShape;
+}
+
+/** The record shape of a plain class: what `__new` and the field
+ *  offsets need. Mirrors the stock bindings generator's `__lowerRecord`
+ *  (`src/bindings/js.ts`): only plain objects lower this way. */
+export interface ClassShape {
+  id: i32;
+  size: i32;
+  fields: Array<{ name: string, offset: i32, desc: ValueDesc }>;
+}
+
+/** Metadata for a rest parameter: how the runtime builds the collected
+ *  array (element kind for lowering, the Array<T> runtime id, and the
+ *  element layout for the typed-array fill). */
+export interface RestDesc {
+  kind: string;
+  nullable: boolean;
+  /** Runtime id of the Array<T> class. */
+  id: number;
+  /** log2 element size: 0, 1, 2 or 3. */
+  align: number;
+  /** The element view is signed (integer elements only). */
+  signed: boolean;
+  /** The element view is floating-point. */
+  float: boolean;
+  /** Elements are managed references (pointers), not scalars. */
+  managed: boolean;
 }
 
 /** Metadata for one await site, per the chunk 1 wire protocol. A join
  *  site (chunk 5) has no resume export: settlements are delivered through
  *  the join_store/join_error exports and the site resumes via join_done.
- *  A nested site (chunk 3/7) awaits another async function in the same
- *  file: the inner task's handle comes from the pending export, and the
- *  inner function is named by innerExportName (its export name when it
- *  is exported, else the generated name the inners map is keyed by). */
+ *  A nested site (chunk 3/7) awaits another async function, in this file
+ *  or another: the inner task's handle comes from the pending export, and
+ *  the inner function is named by innerExportName (its file-qualified
+ *  `fileBase#qualName` key when it is exported, else the generated name
+ *  the inners map is keyed by).
+ *  `desc` is the full value description: array and class await values
+ *  carry their element/field descs, so the runtime can lower them. */
 export interface SiteMeta {
-  kind: string;
-  nullable: boolean;
+  desc: ValueDesc;
   join: boolean;
   nested: boolean;
   resumeExport: string | null;
@@ -60,45 +103,96 @@ export interface SiteMeta {
   storeExport: string | null;
   errorExport: string | null;
   doneExport: string | null;
+  /** Marks one pre-resolved member (a hoisted member await) as the
+   *  winning member for race/any; `null` for non-join sites. */
+  markExport: string | null;
   pendingExport: string | null;
   innerExportName: string | null;
 }
 
-/** Metadata for one exported transformed async function. */
+/** Metadata for one exported transformed async function. A namespaced
+ *  function has `exportName: null` and is driven through `entryExport`
+ *  instead; `path`/`name` place it at `api.NS.take` in the generated JS
+ *  (nested objects mirroring the namespace path). */
 export interface FunctionMeta {
-  /** Wasm export name, or `null` for a non-exported inner function. */
+  /** Wasm export name, or `null` for a non-exported inner function and
+   *  for a namespaced function (driven through `entryExport`). */
   exportName: string | null;
   fileBase: string;
   params: ValueDesc[];
-  resultKind: string;
-  resultNullable: boolean;
+  /** True when the function takes optional or rest parameters: the
+   *  runtime sets `__setArgumentsLength` before the entry call so the
+   *  varargs stub fills the omitted ones. */
+  varargs: boolean;
+  /** Rest-element description, or `null` when there is no rest param. */
+  rest: RestDesc | null;
+  result: ValueDesc;
   statusExport: string;
   resultExport: string;
   errorExport: string;
+  /** `__async_<file>_<fn>_last_handle`: the last entry's handle, for the
+   *  coordinator's trap reclaim when an entry's step traps. */
+  lastHandleExport: string;
+  /** `__async_<file>_<fn>_reclaim`: releases a trapped task's spill
+   *  slots without running its state machine. */
+  reclaimExport: string;
   sites: SiteMeta[];
+  /** `__async_<file>_<qual>_entry`, for namespaced functions and methods. */
+  entryExport?: string;
+  /** Namespace path segments, for namespaced functions. */
+  path?: string[];
+  /** Simple function name, for namespaced functions. */
+  name?: string;
 }
 
 /** Metadata for one transformed async method on an exported class. Like
  *  FunctionMeta, but the method is not a top-level api function
  *  (exportName is `null`) and is driven through its entry export instead.
  *  `params` describes only the declared params: the receiver is a raw
- *  pointer the runtime prepends, never a described value. */
+ *  pointer the runtime prepends, never a described value. A static
+ *  method has no receiver: the runtime puts it on the wrapper
+ *  constructor instead of the prototype. `className` is the JS wrapper
+ *  class name: the plain class name, or the mangled instantiated name
+ *  for a generic class (`Box_i32`); `classKey` groups methods of one
+ *  wrapper (one per class instantiation); `classPath` is the namespace
+ *  path the wrapper lives under (`[]` for a top-level class). */
 export interface MethodMeta extends FunctionMeta {
   exportName: null;
   /** AS method name, e.g. `add`: the runtime puts the Promise-returning
    *  method on the wrapper prototype under this name. It is not derived
-   *  from entryExport — the fileBase in there may contain underscores. */
+   *  from entryExport — the fileBase in there may contain underscores.
+   *  For a generic class or method the name is the mangled clone name
+   *  (`get_i32`), matching the generic-function spelling (`id_i32`). */
   name: string;
+  /** Whether the method is static (driven without a receiver). */
+  isStatic: boolean;
   /** `__async_<file>_<Class>_<method>_entry` (chunk A). */
   entryExport: string;
+  /** JS wrapper class name: plain class name, or mangled instantiated
+   *  name for a generic class. */
+  className: string;
+  /** Grouping key for one wrapper: namespace path + className. */
+  classKey: string;
+  /** Namespace path segments the wrapper lives under. */
+  classPath: string[];
 }
 
 /** Metadata for one exported class with drivable async methods. */
 export interface ClassMeta {
   name: string;
-  /** `__async_<file>_<Class>_new` (chunk A). */
+  /** Namespace path segments the wrapper class lives under (`[]` for a
+   *  top-level class): the runtime places it at `api.NS.C`, mirroring
+   *  namespaced functions. */
+  path?: string[];
+  /** `__async_<file>_<Class>_new` (chunk A): the namespace path and the
+   *  instantiation's type args are part of the export name
+   *  (`__async_<file>_NS_H_new`, `__async_<file>_Box_i32_new`). */
   newExport: string;
   newParams: ValueDesc[];
+  /** True when the constructor takes optional or rest parameters. */
+  newVarargs: boolean;
+  /** Rest-element description for the constructor, or `null`. */
+  newRest: RestDesc | null;
   methods: MethodMeta[];
 }
 
@@ -107,8 +201,7 @@ export interface ImportMeta {
   module: string;
   name: string;
   params: ValueDesc[];
-  resultKind: string;
-  resultNullable: boolean;
+  result: ValueDesc;
   /** Set when the import cannot be driven: the runtime installs a stub
    *  that rejects with this reason instead of calling the binding. */
   unsupported?: string;
@@ -154,8 +247,17 @@ export function sanitizeName(name: string): string {
   return out;
 }
 
-/** Maps a resolved type to a coordinator value kind, or `null` if unsupported. */
-export function describeType(type: Type): ValueDesc | null {
+/** Maps a resolved type to a coordinator value description, or `null`
+ *  if it cannot be lowered/lifted. Arrays and plain classes are
+ *  described recursively, mirroring the stock bindings generator's
+ *  layouts (`src/bindings/js.ts`): an array carries its class id,
+ *  element alignment and element desc; a plain class carries its record
+ *  shape. `seen` guards the recursion: a class whose shape references
+ *  itself cannot be described as finite JSON, so it is refused.
+ *  Externref inside an array or a class field is refused too: an
+ *  externref stored in memory is a table index, not the JS object, so
+ *  the runtime could not lift it back. */
+export function describeType(program: Program, type: Type, seen: Set<i32> = new Set<i32>()): ValueDesc | null {
   let nullable = (type.flags & TypeFlags.Nullable) != 0;
   let base = nullable ? type.nonNullableType : type;
   // Class types are Usize-based, so the String class must be recognised
@@ -165,16 +267,38 @@ export function describeType(type: Type): ValueDesc | null {
     if (classReference.prototype.name == CommonNames.String) {
       return { kind: "string", nullable };
     }
-    return null;
+    // A Promise is a token, not data: its heap object holds no value the
+    // coordinator can rebuild, and its identity is the member token for
+    // joins. Refuse it so callers fall back to the pointer passthrough
+    // (inner results) or stay loud (top-level values). Without this, the
+    // empty Promise stub describes as a plain class and an
+    // Array<Promise<T>> lifts to an array of empty objects, losing the
+    // member tokens.
+    if (classReference.prototype.name == CommonNames.Promise) {
+      return null;
+    }
+    if (classReference.extendsPrototype(program.arrayPrototype)) {
+      return describeArray(program, classReference, "array", nullable, seen);
+    }
+    if (classReference.extendsPrototype(program.staticArrayPrototype)) {
+      return describeArray(program, classReference, "staticarray", nullable, seen);
+    }
+    if (
+      classReference.extendsPrototype(program.arrayBufferInstance.prototype) ||
+      classReference.extendsPrototype(program.arrayBufferViewInstance.prototype)
+    ) {
+      return null;
+    }
+    return describeClass(program, classReference, nullable, seen);
   }
   switch (base.kind) {
     case TypeKind.Bool: return { kind: "bool", nullable };
-    case TypeKind.I8:
-    case TypeKind.I16:
+    case TypeKind.I8: return { kind: "i8", nullable };
+    case TypeKind.I16: return { kind: "i16", nullable };
     case TypeKind.I32:
     case TypeKind.Isize: return { kind: "i32", nullable };
-    case TypeKind.U8:
-    case TypeKind.U16:
+    case TypeKind.U8: return { kind: "u8", nullable };
+    case TypeKind.U16: return { kind: "u16", nullable };
     case TypeKind.U32:
     case TypeKind.Usize: return { kind: "u32", nullable };
     case TypeKind.I64: return { kind: "i64", nullable };
@@ -189,11 +313,113 @@ export function describeType(type: Type): ValueDesc | null {
   return null;
 }
 
+/** Describes a wasm-pointer value (an array or a non-string class) for
+ *  nested delivery only: the value is a heap pointer produced wasm-side
+ *  by an inner task, so the coordinator hands it from the inner result
+ *  to the outer resume untouched. It must never describe a value lowered
+ *  from JS — a JS array or object is not a wasm pointer — so callers gate
+ *  it on the nested (pending) path. */
+export function describePointerType(type: Type): ValueDesc | null {
+  let nullable = (type.flags & TypeFlags.Nullable) != 0;
+  let base = nullable ? type.nonNullableType : type;
+  let classReference = base.getClass();
+  if (!classReference) return null;
+  if (classReference.prototype.name == CommonNames.String) return null;
+  return { kind: "pointer", nullable };
+}
+/** Describes an Array<T> or StaticArray<T>: the element desc decides
+ *  the element width, so i8 elements lower as bytes, not words. */
+function describeArray(
+  program: Program,
+  classReference: Class,
+  kind: string,
+  nullable: boolean,
+  seen: Set<i32>
+): ValueDesc | null {
+  let elemType = classReference.getArrayValueType();
+  let elem = describeType(program, elemType, seen);
+  if (!elem) return null;
+  if (elem.kind == "externref") return null;
+  return {
+    kind,
+    nullable,
+    id: classReference.id,
+    align: elemType.alignLog2,
+    elem
+  };
+}
+
+/** Describes a plain class as a record shape, or `null` when it is not
+ *  plain, when its shape is recursive, or when a field cannot be
+ *  described. Only `isField` properties carry data; methods and
+ *  accessors are not stored. */
+function describeClass(
+  program: Program,
+  classReference: Class,
+  nullable: boolean,
+  seen: Set<i32>
+): ValueDesc | null {
+  if (!isPlainClass(classReference)) return null;
+  let id = classReference.id;
+  if (seen.has(id)) return null;
+  seen.add(id);
+  let fields: Array<{ name: string, offset: i32, desc: ValueDesc }> = [];
+  let members = classReference.members;
+  if (members) {
+    for (let name of members.keys()) {
+      let member = members.get(name)!;
+      if (member.kind != ElementKind.PropertyPrototype) continue;
+      let property = (<PropertyPrototype>member).instance;
+      if (!property || !property.isField) continue;
+      if (property.memoryOffset < 0) {
+        seen.delete(id);
+        return null;
+      }
+      let desc = describeType(program, property.type, seen);
+      if (!desc || desc.kind == "externref") {
+        seen.delete(id);
+        return null;
+      }
+      fields.push({ name, offset: property.memoryOffset, desc });
+    }
+  }
+  seen.delete(id);
+  return {
+    kind: "class",
+    nullable,
+    shape: {
+      id,
+      size: classReference.nextMemoryOffset,
+      fields
+    }
+  };
+}
+
+/** The stock bindings generator's plain-object rule
+ *  (`src/bindings/js.ts`, `isPlainObject`): a class whose data is
+ *  exactly its declared fields — no non-Object base, no explicit
+ *  constructor, no private or protected members. Anything else keeps
+ *  its state somewhere the coordinator cannot rebuild from a JS object,
+ *  so it stays skipped with a warning. */
+function isPlainClass(clazz: Class): bool {
+  if (clazz.base && !clazz.prototype.implicitlyExtendsObject) return false;
+  let members = clazz.members;
+  if (members) {
+    for (let member of members.values()) {
+      if (member.isAny(CommonFlags.Private | CommonFlags.Protected)) return false;
+      if (member.is(CommonFlags.Constructor)) {
+        if (member.declaration.range != Source.native.range) return false;
+      }
+    }
+  }
+  return true;
+}
+
 /** Describes every parameter type, or `null` with the reason when one is unsupported. */
-export function describeParams(types: Type[], owner: string): { params: ValueDesc[], reason: string | null } {
+export function describeParams(program: Program, types: Type[], owner: string): { params: ValueDesc[], reason: string | null } {
   let out: ValueDesc[] = [];
   for (let i = 0, k = types.length; i < k; ++i) {
-    let desc = describeType(types[i]);
+    let desc = describeType(program, types[i]);
     if (!desc) {
       return {
         params: out,
@@ -205,13 +431,156 @@ export function describeParams(types: Type[], owner: string): { params: ValueDes
   return { params: out, reason: null };
 }
 
+/** Namespace path of an element, outermost first: `["Outer", "Inner"]`
+ *  for a member of `Outer.Inner`, `[]` for a top-level element. */
+export function namespacePathOf(element: Element): string[] {
+  let path = new Array<string>();
+  let current: Element | null = element.parent;
+  while (current && current.kind == ElementKind.Namespace) {
+    path.unshift(current.name);
+    current = current.parent;
+  }
+  return path;
+}
+
+/** Whether a method prototype is a static method (a MethodDeclaration
+ *  without the Instance flag; statics live in the class's own members). */
+export function isStaticMethod(prototype: FunctionPrototype): bool {
+  return prototype.declaration.kind == NodeKind.MethodDeclaration
+    && !prototype.is(CommonFlags.Instance);
+}
+
+/** Finds the class prototype a method prototype belongs to: the bound
+ *  class for an instance method, the parent class prototype for a static
+ *  method (statics are never bound: toBound asserts Instance). Returns
+ *  `null` for a plain function. */
+export function methodClassOf(prototype: FunctionPrototype): ClassPrototype | null {
+  let bound = prototype.getBoundClassOrInterface();
+  if (bound) return bound.prototype;
+  if (
+    prototype.declaration.kind == NodeKind.MethodDeclaration &&
+    prototype.parent.kind == ElementKind.ClassPrototype
+  ) return <ClassPrototype>prototype.parent;
+  return null;
+}
+
+/** Describes one rest element type, or `null` when the runtime cannot
+ *  build the collected array for it. Rest elements are written through
+ *  a DataView fill, so externref elements are unsupported (they cannot
+ *  be written that way) and class/array elements are unsupported (no
+ *  lowering); the precise integer width is kept, since `describeType`
+ *  collapses i8/i16/i32 and the fill needs the real element size. */
+function describeRestElement(element: Type): RestDesc | null {
+  let nullable = (element.flags & TypeFlags.Nullable) != 0;
+  let base = nullable ? element.nonNullableType : element;
+  let classReference = base.getClass();
+  if (classReference) {
+    if (classReference.prototype.name == CommonNames.String) {
+      return { kind: "string", nullable, id: 0, align: 2, signed: false, float: false, managed: true };
+    }
+    return null;
+  }
+  switch (base.kind) {
+    case TypeKind.Bool: return { kind: "bool", nullable, id: 0, align: 0, signed: false, float: false, managed: false };
+    case TypeKind.I8: return { kind: "i32", nullable, id: 0, align: 0, signed: true, float: false, managed: false };
+    case TypeKind.I16: return { kind: "i32", nullable, id: 0, align: 1, signed: true, float: false, managed: false };
+    case TypeKind.I32:
+    case TypeKind.Isize: return { kind: "i32", nullable, id: 0, align: 2, signed: true, float: false, managed: false };
+    case TypeKind.U8: return { kind: "u32", nullable, id: 0, align: 0, signed: false, float: false, managed: false };
+    case TypeKind.U16: return { kind: "u32", nullable, id: 0, align: 1, signed: false, float: false, managed: false };
+    case TypeKind.U32:
+    case TypeKind.Usize: return { kind: "u32", nullable, id: 0, align: 2, signed: false, float: false, managed: false };
+    case TypeKind.I64: return { kind: "i64", nullable, id: 0, align: 3, signed: true, float: false, managed: false };
+    case TypeKind.U64: return { kind: "u64", nullable, id: 0, align: 3, signed: false, float: false, managed: false };
+    case TypeKind.F32: return { kind: "f32", nullable, id: 0, align: 2, signed: true, float: true, managed: false };
+    case TypeKind.F64: return { kind: "f64", nullable, id: 0, align: 3, signed: true, float: true, managed: false };
+    case TypeKind.String: return { kind: "string", nullable, id: 0, align: 2, signed: false, float: false, managed: true };
+    default: return null;
+  }
+}
+
+/** Splits a signature's parameter types into the fixed params and the
+ *  rest element description, or a reason when a type is unsupported.
+ *  `varargs` is true when the function takes optional or rest
+ *  parameters (the compiler's own stub condition): the runtime must set
+ *  `__setArgumentsLength` before the entry call. */
+export function describeParamsAndRest(
+  program: Program,
+  signature: Signature,
+  owner: string
+): { params: ValueDesc[], rest: RestDesc | null, varargs: boolean, reason: string | null } {
+  let types = signature.parameterTypes;
+  let fixed = signature.hasRest ? types.slice(0, types.length - 1) : types;
+  let params = describeParams(program, fixed, owner);
+  if (params.reason) {
+    return { params: params.params, rest: null, varargs: false, reason: params.reason };
+  }
+  let rest: RestDesc | null = null;
+  if (signature.hasRest) {
+    let restType = types[types.length - 1];
+    let base = (restType.flags & TypeFlags.Nullable) != 0 ? restType.nonNullableType : restType;
+    let restClass = base.getClass();
+    if (!restClass || !restClass.typeArguments || restClass.typeArguments.length == 0) {
+      return {
+        params: params.params,
+        rest: null,
+        varargs: false,
+        reason: "unsupported rest parameter type '" + restType.toString() + "' in '" + owner + "'"
+      };
+    }
+    let element = restClass.typeArguments[0];
+    let desc = describeRestElement(element);
+    if (!desc) {
+      return {
+        params: params.params,
+        rest: null,
+        varargs: false,
+        reason: "unsupported rest element type '" + element.toString() + "' in '" + owner + "'"
+      };
+    }
+    desc.id = restClass.id;
+    rest = desc;
+  }
+  return {
+    params: params.params,
+    rest,
+    varargs: signature.requiredParameters < types.length,
+    reason: null
+  };
+}
+
 /** Qualified name used for all generated names: `Class_method` for a bound
  *  method prototype (the transform binds methods to the resolved class, so
- *  the parent chain carries the class), the plain name otherwise. */
+ *  the parent chain carries the class), `NS_C_method` for a method on a
+ *  class in a namespace (the path disambiguates same-named classes in
+ *  different namespaces), `NS_take` for a function in a namespace (the
+ *  path disambiguates same-named functions in different namespaces), the
+ *  plain name otherwise. For a generic clone the prototype name is
+ *  already the mangled clone name (`Box_get_i32`). */
 export function qualNameOf(prototype: FunctionPrototype): string {
-  let bound = prototype.getBoundClassOrInterface();
-  if (bound) return bound.prototype.name + "_" + prototype.name;
+  let cls = methodClassOf(prototype);
+  if (cls) {
+    let path = namespacePathOf(cls);
+    let prefix = path.length > 0 ? path.join("_") + "_" : "";
+    return prefix + cls.name + "_" + prototype.name;
+  }
+  let path = namespacePathOf(prototype);
+  if (path.length > 0) return path.join("_") + "_" + prototype.name;
   return prototype.name;
+}
+
+/** Whether an element is exported through its whole namespace chain:
+ *  the element and every enclosing namespace carry `Export`. A class or
+ *  function in a non-exported namespace stays inner-only, like a
+ *  non-exported top-level element. */
+export function exportedThroughNamespaces(element: Element): bool {
+  if (!element.is(CommonFlags.Export)) return false;
+  let current = element.parent;
+  while (current && current.kind == ElementKind.Namespace) {
+    if (!current.is(CommonFlags.Export)) return false;
+    current = current.parent;
+  }
+  return true;
 }
 
 /** Finds the file owning an element, walking up through namespaces. */
@@ -224,12 +593,17 @@ export function owningFile(element: Element): File | null {
   return null;
 }
 
-/** Finds the wasm export name of an element, or `null` if not exported. */
+/** Finds the wasm export name of an element, or `null` if not exported.
+ *  Only UserEntry exports become WebAssembly exports: an element exported
+ *  from a non-entry file (a helper imported by the entry) is not one, so
+ *  only entry files count here. */
 export function findExportName(program: Program, file: File, element: Element): string | null {
-  let exports = file.exports;
-  if (exports) {
-    for (let name of exports.keys()) {
-      if (exports.get(name) === element) return name;
+  if (file.source.sourceKind == SourceKind.UserEntry) {
+    let exports = file.exports;
+    if (exports) {
+      for (let name of exports.keys()) {
+        if (exports.get(name) === element) return name;
+      }
     }
   }
   for (let other of program.filesByName.values()) {
@@ -260,9 +634,24 @@ function collectFromElement(program: Program, element: Element, out: FunctionPro
   for (let member of members.values()) {
     if (member.kind == ElementKind.FunctionPrototype && member.is(CommonFlags.Ambient)) {
       let prototype = <FunctionPrototype>member;
-      let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
-      if (instance && program.resolver.unwrapPromiseType(instance.signature.returnType)) {
-        out.push(prototype);
+      if (prototype.typeParameterNodes && prototype.typeParameterNodes.length > 0) {
+        // Generic: there is no default instance (resolving with null
+        // type arguments asserts), so look at the resolved
+        // instantiations instead.
+        let instances = prototype.instances;
+        if (instances) {
+          for (let _values = Map_values(instances), i = 0, k = _values.length; i < k; ++i) {
+            if (program.resolver.unwrapPromiseType(_values[i].signature.returnType)) {
+              out.push(prototype);
+              break;
+            }
+          }
+        }
+      } else {
+        let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+        if (instance && program.resolver.unwrapPromiseType(instance.signature.returnType)) {
+          out.push(prototype);
+        }
       }
     } else if (member.kind == ElementKind.Namespace) {
       collectFromElement(program, member, out);
@@ -270,7 +659,11 @@ function collectFromElement(program: Program, element: Element, out: FunctionPro
   }
 }
 
-/** Looks up the wasm import module/name of an ambient function. */
+/** Looks up the wasm import module/name of an ambient function. For a
+ *  generic import the module holds only the last-registered instance
+ *  (one import per (module, name), several internal functions), so an
+ *  element matches when it is the prototype, the passed instance, or any
+ *  other instance of the prototype. */
 export function findImportName(
   program: Program,
   prototype: FunctionPrototype,
@@ -283,6 +676,9 @@ export function findImportName(
       let elementName = nameEntry[0];
       let element = nameEntry[1];
       if (element === prototype || element === instance) {
+        return { module: moduleName, name: elementName };
+      }
+      if (element.kind == ElementKind.Function && (<Function>element).prototype === prototype) {
         return { module: moduleName, name: elementName };
       }
     }

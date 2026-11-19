@@ -16,6 +16,7 @@ declare function useHandle(h: externref): Promise<i32>;
 declare function log(msg: string): void;
 
 export class Counter {
+  static total: i32 = 0;
   count: i32 = 0;
 
   // Fields mutated before and after the await; both visible in the result.
@@ -38,6 +39,22 @@ export class Counter {
     return this.count;
   }
 
+  // `this` field written by the awaited value, and a compound
+  // assignment to a `this` field across the await.
+  async setField(n: i32): Promise<i32> {
+    this.count = await getNumber();
+    this.count += await getNumber();
+    return this.count;
+  }
+
+  // A method default, filled by the entry's varargs stub.
+  async addDefault(step: i32 = 1): Promise<i32> {
+    this.count += step;
+    let m = await getNumber();
+    this.count += m;
+    return this.count;
+  }
+
   // Rejects when the awaited import rejects.
   async fail(n: i32): Promise<i32> {
     let m = await getNumber();
@@ -49,6 +66,33 @@ export class Counter {
     let h = await getHandle();
     let n = await useHandle(h);
     return n;
+  }
+
+  // Static state across awaits: `this` in a static method is the class.
+  static async create(n: i32): Promise<i32> {
+    let m = await getNumber();
+    this.total += n + m;
+    return this.total;
+  }
+
+  // A static method awaiting an import.
+  static async fetch(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
+  }
+
+  // A static method awaiting an instance method of a fresh instance.
+  static async viaInstance(n: i32): Promise<i32> {
+    let c = new Counter();
+    let v = await c.add(n);
+    return v;
+  }
+
+  // A static async `dispose` lives on the constructor and does not
+  // collide with the wrapper's sync dispose() on the prototype.
+  static async dispose(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
   }
 }
 
@@ -96,6 +140,35 @@ export async function viaObj(n: i32): Promise<i32> {
   return h;
 }
 
+// Not exported: no wrapper class, no entry export. Its async methods
+// stay reachable only from within async code, as nested inners.
+class Hidden {
+  count: i32 = 0;
+
+  async add(n: i32): Promise<i32> {
+    this.count += n;
+    let m = await getNumber();
+    this.count += m;
+    return this.count;
+  }
+
+  static async make(n: i32): Promise<i32> {
+    let m = await getNumber();
+    return n + m;
+  }
+}
+
+export async function viaHidden(n: i32): Promise<i32> {
+  let h = new Hidden();
+  let v = await h.add(n);
+  return v;
+}
+
+export async function viaHiddenStatic(n: i32): Promise<i32> {
+  let v = await Hidden.make(n);
+  return v;
+}
+
 // An inner method failure must reach the outer catch.
 export async function viaObjGuarded(n: i32): Promise<i32> {
   let w = new Worker();
@@ -105,6 +178,95 @@ export async function viaObjGuarded(n: i32): Promise<i32> {
   } catch (e) {
     log("catch:" + e);
     return -1;
+  }
+}
+
+// A constructor and a method with defaults: the _new and the entry get
+// their own varargs stubs, and the coordinator sets __setArgumentsLength
+// before each call (counting the receiver for the entry).
+export class Greeter {
+  greeting: string;
+  constructor(greeting: string = "hi") {
+    this.greeting = greeting;
+  }
+  async greet(name: string = "there"): Promise<string> {
+    const v = await getNumber();
+    return this.greeting + " " + name + " " + v.toString();
+  }
+}
+// A rest method has no entry (a pre-built array cannot be passed as a
+// rest argument), so it has no wrapper class — but nested await still
+// drives it, with elements wrapping into the array normally.
+export class RestCounter {
+  count: i32 = 10;
+  async sumAll(base: i32, ...more: i32[]): Promise<i32> {
+    const v = await getNumber();
+    let sum = base + v;
+    for (let i = 0; i < more.length; ++i) sum += more[i];
+    return sum;
+  }
+}
+export async function driveRest(): Promise<i32> {
+  const c = new RestCounter();
+  return await c.sumAll(1, 2, 3);
+}
+
+// `super` in async methods: calls and member access route to the base
+// implementation across suspension (see tests/compiler/async-super.ts).
+class SuperBase {
+  n: i32 = 20;
+  protected _v: i32 = 10;
+  get v(): i32 { return this._v; }
+  set v(value: i32) { this._v = value; }
+  foo(): i32 { return 2; }
+  bar(): i32 { return 200; }
+}
+
+export class SuperChild extends SuperBase {
+  foo(): i32 { return 3; }
+  get v(): i32 { return 99; }
+  set v(value: i32) { this._v = value + 1000; }
+
+  // A `super` method call runs the base implementation, not the override.
+  async superCall(): Promise<i32> {
+    let m = await getNumber();
+    return super.foo() + m;
+  }
+
+  // A `super` field read/write goes through the base field storage.
+  async superField(): Promise<i32> {
+    let m = await getNumber();
+    super.n = 30;
+    return super.n + m;
+  }
+
+  // A `super` accessor read/write runs the base getter/setter.
+  async superAccessor(): Promise<i32> {
+    let m = await getNumber();
+    let before = super.v;
+    super.v = 5;
+    return before * 100 + super.v + m;
+  }
+
+  // A `super` call inside a lifted closure.
+  async superInClosure(): Promise<i32> {
+    let m = await getNumber();
+    let f = (): i32 => { return super.foo(); };
+    return f() + m;
+  }
+
+  // A `super` call to a method declared on the grandparent.
+  async superInherited(): Promise<i32> {
+    let m = await getNumber();
+    return super.bar() + m;
+  }
+
+  // Compound assignment and `++` on a `super` accessor.
+  async superCompound(): Promise<i32> {
+    let m = await getNumber();
+    super.v += 2;
+    super.v++;
+    return super.v + m;
   }
 }
 

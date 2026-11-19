@@ -13,6 +13,10 @@
 /** JS source of the driver loop, without the metadata line. */
 export const ASYNC_COORDINATOR_RUNTIME = `const STRING_ID = 2;
 const SIZE_OFFSET = -4;
+// Must match CPS_SEGMENT_BASE in src/asyncTransform.ts: a task observed
+// with status >= this value was executing a segment when it trapped;
+// a suspended task reads site + 1 (1..sites).
+const CPS_SEGMENT_BASE = 1024;
 
 function asyncGetString(buffer, ptr) {
   if (!ptr) return null;
@@ -37,8 +41,6 @@ function asyncNewString(memory, alloc, str) {
 // Builds a coordinator for the metadata baked into the generated file.
 export function createCoordinator(metadata) {
   metadata = metadata || __ASYNC_METADATA__;
-  const functionsByExport = new Map();
-  metadata.functions.forEach(function (fn) { functionsByExport.set(fn.exportName, fn); });
   const innerFunctionsByKey = new Map();
   Object.keys(metadata.inners || {}).forEach(function (key) { innerFunctionsByKey.set(key, metadata.inners[key]); });
   const importsByKey = new Map();
@@ -48,11 +50,30 @@ export function createCoordinator(metadata) {
   let wasmExports = null;
   let memory = null;
   let alloc = null;
+  let mint = null;
+  let mintString = null;
   let pin = null;
   let unpin = null;
   let activeTask = null;
   const queues = new Map();
+  const liveHandles = new Set();
   const api = {};
+
+  // Functions per file, for the trap sweep: a task that traps during
+  // entry stays on its function's roots registry, which the sweep reads
+  // through the last-handle export.
+  const functionsByFile = new Map();
+  function noteFunctions(list) {
+    if (!list) return;
+    list.forEach(function (fn) {
+      let filed = functionsByFile.get(fn.fileBase);
+      if (!filed) { filed = []; functionsByFile.set(fn.fileBase, filed); }
+      filed.push(fn);
+    });
+  }
+  noteFunctions(metadata.functions);
+  (metadata.classes || []).forEach(function (cls) { noteFunctions(cls.methods); });
+  Object.keys(metadata.inners || {}).forEach(function (key) { noteFunctions([metadata.inners[key]]); });
 
   // Member tokens: one fresh heap-pointer token per suspending-import
   // call (chunk 5's protocol). The token must be a heap pointer, not a
@@ -71,7 +92,14 @@ export function createCoordinator(metadata) {
   }
 
   function newString(str) {
-    return asyncNewString(memory, needAlloc(), str);
+    if (alloc) return asyncNewString(memory, alloc, str);
+    if (mintString) {
+      const ptr = mintString(str.length);
+      const view = new Uint16Array(memory.buffer);
+      for (let i = 0, p = ptr >>> 1; i < str.length; ++i) view[p + i] = str.charCodeAt(i);
+      return ptr;
+    }
+    throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
   }
 
   function getString(ptr) {
@@ -96,18 +124,148 @@ export function createCoordinator(metadata) {
     }
   }
 
-  function lower(value, kind, nullable) {
+  // Array layout constants from the generator (metadata.layout), from
+  // the stock bindings generator's __lowerArray/__liftArray.
+  const layout = metadata.layout;
+
+  function needPin() {
+    if (!pin || !unpin) throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
+  }
+
+  // Lowers a value into linear memory at ptr, for array elements and
+  // class fields. References lower to a pointer first, then store as u32;
+  // scalars write at their own width, so i8 elements stay bytes.
+  function lowerToMemory(desc, ptr, value) {
+    const view = new DataView(memory.buffer);
+    switch (desc.kind) {
+      case 'i8': view.setInt8(ptr, value | 0); return;
+      case 'u8': view.setUint8(ptr, value >>> 0); return;
+      case 'i16': view.setInt16(ptr, value | 0, true); return;
+      case 'u16': view.setUint16(ptr, value >>> 0, true); return;
+      case 'i32': view.setInt32(ptr, value | 0, true); return;
+      case 'u32': view.setUint32(ptr, value >>> 0, true); return;
+      case 'i64': view.setBigInt64(ptr, typeof value === 'bigint' ? value : BigInt(value), true); return;
+      case 'u64': view.setBigUint64(ptr, typeof value === 'bigint' ? value : BigInt(value), true); return;
+      case 'f32': view.setFloat32(ptr, value, true); return;
+      case 'f64': view.setFloat64(ptr, value, true); return;
+      case 'bool': view.setUint8(ptr, value ? 1 : 0); return;
+      default: view.setUint32(ptr, lower(value, desc), true); return;
+    }
+  }
+
+  function liftFromMemory(desc, ptr) {
+    const view = new DataView(memory.buffer);
+    switch (desc.kind) {
+      case 'i8': return view.getInt8(ptr);
+      case 'u8': return view.getUint8(ptr);
+      case 'i16': return view.getInt16(ptr, true);
+      case 'u16': return view.getUint16(ptr, true);
+      case 'i32': return view.getInt32(ptr, true);
+      case 'u32': return view.getUint32(ptr, true);
+      case 'i64': return view.getBigInt64(ptr, true);
+      case 'u64': return view.getBigUint64(ptr, true);
+      case 'f32': return view.getFloat32(ptr, true);
+      case 'f64': return view.getFloat64(ptr, true);
+      case 'bool': return view.getUint8(ptr) !== 0;
+      default: return lift(view.getUint32(ptr, true), desc);
+    }
+  }
+
+  // Lowers a JS array to a wasm Array<T>: pin buffer + header while the
+  // elements lower (an element lowering may allocate and collect), then
+  // unpin. The stock bindings generator's __lowerArray shape exactly.
+  function lowerArray(value, desc) {
+    if (!Array.isArray(value)) throw new TypeError('async coordinator: expected an array');
+    needPin();
+    const length = value.length;
+    const buffer = pin(needAlloc()(length << desc.align, layout.arrayBufferId)) >>> 0;
+    const header = pin(needAlloc()(layout.arraySize, desc.id)) >>> 0;
+    const view = new DataView(memory.buffer);
+    view.setUint32(header + layout.bufferOffset, buffer, true);
+    view.setUint32(header + layout.dataStartOffset, buffer, true);
+    view.setUint32(header + layout.byteLengthOffset, length << desc.align, true);
+    view.setUint32(header + layout.lengthOffset, length, true);
+    for (let i = 0; i < length; ++i) lowerToMemory(desc.elem, buffer + (i << desc.align), value[i]);
+    unpin(buffer);
+    unpin(header);
+    return header;
+  }
+
+  function liftArray(ptr, desc) {
+    if (!ptr) return null;
+    const view = new DataView(memory.buffer);
+    const dataStart = view.getUint32(ptr + layout.dataStartOffset, true);
+    const length = view.getUint32(ptr + layout.lengthOffset, true);
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) values[i] = liftFromMemory(desc.elem, dataStart + (i << desc.align));
+    return values;
+  }
+
+  // StaticArray<T> has no header: the pointer is the payload, and the
+  // length is the runtime size at ptr - 4 (the OBJECT header) shifted
+  // by the element alignment, as in the bindings' __liftStaticArray.
+  function lowerStaticArray(value, desc) {
+    if (!Array.isArray(value)) throw new TypeError('async coordinator: expected an array');
+    needPin();
+    const length = value.length;
+    const ptr = pin(needAlloc()(length << desc.align, desc.id)) >>> 0;
+    for (let i = 0; i < length; ++i) lowerToMemory(desc.elem, ptr + (i << desc.align), value[i]);
+    unpin(ptr);
+    return ptr;
+  }
+
+  function liftStaticArray(ptr, desc) {
+    if (!ptr) return null;
+    const view = new DataView(memory.buffer);
+    const length = view.getUint32(ptr - 4, true) >>> desc.align;
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) values[i] = liftFromMemory(desc.elem, ptr + (i << desc.align));
+    return values;
+  }
+
+  // Lowers a plain JS object to a wasm class instance: __new the record,
+  // write each field at its offset, unpin. The stock bindings generator's
+  // __lowerRecord shape exactly; the class must be plain (the generator
+  // refuses anything else), so the fields are the whole state.
+  function lowerClass(value, desc) {
+    if (typeof value !== 'object') throw new TypeError('async coordinator: expected an object');
+    needPin();
+    const ptr = pin(needAlloc()(desc.shape.size, desc.shape.id)) >>> 0;
+    for (let i = 0; i < desc.shape.fields.length; ++i) {
+      const field = desc.shape.fields[i];
+      lowerToMemory(field.desc, ptr + field.offset, value[field.name]);
+    }
+    unpin(ptr);
+    return ptr;
+  }
+
+  function liftClass(ptr, desc) {
+    if (!ptr) return null;
+    const obj = {};
+    for (let i = 0; i < desc.shape.fields.length; ++i) {
+      const field = desc.shape.fields[i];
+      obj[field.name] = liftFromMemory(field.desc, ptr + field.offset);
+    }
+    return obj;
+  }
+
+  function lower(value, desc) {
+    // A void value is always undefined: the promise resolved with no
+    // value, so there is nothing to check or convert. This must precede
+    // the null check: a void await settles with undefined, which reads
+    // as null here and is not an error.
+    if (desc.kind === 'void') return undefined;
     if (value == null) {
-      if (!nullable) throw new TypeError('async coordinator: null is not a valid ' + kind + ' value');
+      if (!desc.nullable) throw new TypeError('async coordinator: null is not a valid ' + desc.kind + ' value');
       return 0;
     }
-    switch (kind) {
+    switch (desc.kind) {
       case 'string': {
         if (typeof value !== 'string') throw new TypeError('async coordinator: expected a string, got ' + typeof value);
         return newString(value);
       }
-      case 'i32': return value | 0;
-      case 'u32': return value >>> 0;
+      case 'i8': case 'i16': case 'i32': return value | 0;
+      case 'u8': case 'u16': case 'u32': return value >>> 0;
       case 'i64': case 'u64': return typeof value === 'bigint' ? value : BigInt(value);
       case 'f32': case 'f64': {
         if (typeof value !== 'number') throw new TypeError('async coordinator: expected a number, got ' + typeof value);
@@ -115,23 +273,84 @@ export function createCoordinator(metadata) {
       }
       case 'bool': return value ? 1 : 0;
       case 'externref': return value;
+      case 'pointer': {
+        // A wasm-produced heap pointer (nested array/class result),
+        // handed through untouched. Anything else here is a misuse,
+        // not a value: fail loudly rather than pass garbage to wasm.
+        if (typeof value !== 'number') throw new TypeError('async coordinator: expected a wasm pointer, got ' + typeof value);
+        return value;
+      }
+      case 'array': return lowerArray(value, desc);
+      case 'staticarray': return lowerStaticArray(value, desc);
+      case 'class': return lowerClass(value, desc);
       case 'void': return undefined;
-      default: throw new Error('async coordinator: cannot lower a ' + kind + ' value');
+      default: throw new Error('async coordinator: cannot lower a ' + desc.kind + ' value');
     }
   }
 
   function lowerArgs(jsArgs, params) {
     return jsArgs.map(function (arg, i) {
-      return lower(arg, params[i].kind, params[i].nullable);
+      return lower(arg, params[i]);
     });
   }
 
-  function lift(value, kind, nullable) {
-    if (kind === 'string') {
+  // Lowers the JS arguments for an entry call: the fixed params lower
+  // as usual, and any extra arguments collect into the rest array (when
+  // the function has one). The returned list is what the entry call
+  // passes; the caller sets __setArgumentsLength to its length first.
+  function lowerCallArgs(jsArgs, params, rest) {
+    const fixed = params.length;
+    const wasmArgs = lowerArgs(jsArgs.slice(0, fixed), params);
+    if (rest && jsArgs.length > fixed) {
+      wasmArgs.push(newRestArray(jsArgs.slice(fixed), rest));
+    }
+    return wasmArgs;
+  }
+
+  // Builds the Array<T> a rest parameter collects: an ArrayBuffer (id 1)
+  // filled through a typed view, then the array header (16 bytes) with
+  // buffer/dataStart/byteLength/length at +0/+4/+8/+12. Elements are
+  // lowered first, so no allocation can happen between creating the fill
+  // view and writing through it (an allocation could grow memory and
+  // detach the view). The buffer stays pinned until the header
+  // references it, so a GC during an element's allocation cannot collect
+  // it. Externref and class/array elements are rejected by the
+  // generator, so the fill only handles scalar and string elements.
+  function newRestArray(values, rest) {
+    if (!alloc) throw new Error('async coordinator: rest arguments need the wasm runtime (compile with --exportRuntime)');
+    const length = values.length;
+    const buf = alloc(length << rest.align, 1);
+    if (pin) { try { pin(buf); } catch (e) { /* pinning is best-effort; the header roots the buffer once built */ } }
+    const lowered = values.map(function (value) { return lower(value, { kind: rest.kind, nullable: rest.nullable }); });
+    let view;
+    if (rest.float) view = rest.align === 2 ? new Float32Array(memory.buffer) : new Float64Array(memory.buffer);
+    else if (rest.managed) view = new Uint32Array(memory.buffer);
+    else if (rest.align === 0) view = rest.signed ? new Int8Array(memory.buffer) : new Uint8Array(memory.buffer);
+    else if (rest.align === 1) view = rest.signed ? new Int16Array(memory.buffer) : new Uint16Array(memory.buffer);
+    else if (rest.align === 2) view = rest.signed ? new Int32Array(memory.buffer) : new Uint32Array(memory.buffer);
+    else view = rest.signed ? new BigInt64Array(memory.buffer) : new BigUint64Array(memory.buffer);
+    const start = buf >>> rest.align;
+    for (let i = 0; i < length; ++i) view[start + i] = lowered[i];
+    const arr = alloc(16, rest.id);
+    const U32 = new Uint32Array(memory.buffer);
+    U32[arr >>> 2] = buf;
+    U32[arr + 4 >>> 2] = buf;
+    U32[arr + 8 >>> 2] = length << rest.align;
+    U32[arr + 12 >>> 2] = length;
+    if (unpin) { try { unpin(buf); } catch (e) { /* pinning is best-effort */ } }
+    return arr;
+  }
+
+  function lift(value, desc) {
+    if (desc.kind === 'string') {
       if (!value) return null;
       return getString(value);
     }
-    if (kind === 'bool') return value !== 0;
+    if (desc.kind === 'bool') return value !== 0;
+    if (desc.kind === 'array') return liftArray(value, desc);
+    if (desc.kind === 'staticarray') return liftStaticArray(value, desc);
+    if (desc.kind === 'class') return liftClass(value, desc);
+    if (desc.kind === 'void') return undefined;
     return value;
   }
 
@@ -143,6 +362,47 @@ export function createCoordinator(metadata) {
     if (unpin && task.handle) {
       try { unpin(task.handle); } catch (e) { /* pinning is best-effort; the roots registry is the real root */ }
     }
+  }
+
+  function reclaimTask(task) {
+    if (!task || !task.handle || !task.fn.reclaimExport) return;
+    const reclaim = wasmExports[task.fn.reclaimExport];
+    if (typeof reclaim !== 'function') return;
+    try { reclaim(task.handle); } catch (e) { /* reclaim is best-effort; the task is already dead */ }
+  }
+
+  // Sweeps each file's roots registries for tasks that trapped during
+  // entry: status 0 (never stepped) or >= CPS_SEGMENT_BASE (a step was
+  // executing a segment when it trapped) means the task never suspended,
+  // completed or failed, so it is dead and its slots are leaked. The
+  // live set disambiguates status 1024, which a task suspended at the
+  // last site of a 1024-site function also reads: a live handle is never
+  // reclaimed. Reclaiming splices the task out, so the loop re-reads
+  // until the registry top is live or empty; the guard bounds it. This
+  // also covers a nested inner entry trapping inside the abandoned
+  // task's step, since the inner never registered live.
+  function sweepTrapped(fileBase) {
+    const list = functionsByFile.get(fileBase);
+    if (!list) return;
+    for (let i = 0; i < list.length; ++i) {
+      const fn = list[i];
+      if (!fn.lastHandleExport || !fn.reclaimExport) continue;
+      for (let guard = 0; guard < 1024; ++guard) {
+        let handle = 0;
+        try { handle = wasmExports[fn.lastHandleExport](); } catch (e) { break; }
+        if (!handle || liveHandles.has(handle)) break;
+        let st = 0;
+        try { st = wasmExports[fn.statusExport](handle); } catch (e) { break; }
+        if (st !== 0 && st < CPS_SEGMENT_BASE) break;
+        try { wasmExports[fn.reclaimExport](handle); } catch (e) { break; }
+      }
+    }
+  }
+
+  function reclaimTrap(task) {
+    if (!task) return;
+    reclaimTask(task);
+    sweepTrapped(task.fn.fileBase);
   }
 
   function drain(fileBase) {
@@ -163,9 +423,10 @@ export function createCoordinator(metadata) {
   function settleComplete(task) {
     if (task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
     let result;
     try {
-      result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.resultKind, task.fn.resultNullable);
+      result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.result);
     } catch (e) {
       dropPin(task);
       if (task.parent) { deliverInnerFailure(task, e); return; }
@@ -182,6 +443,7 @@ export function createCoordinator(metadata) {
   function settleFailed(task) {
     if (task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
     let message = 'async task failed';
     try {
       const ptr = wasmExports[task.fn.errorExport](task.handle);
@@ -196,6 +458,12 @@ export function createCoordinator(metadata) {
   function settleError(task, error) {
     if (!task || task.settled) return;
     task.settled = true;
+    liveHandles.delete(task.handle);
+    // The task will never be driven again, so release its spill slots
+    // here: every abandonment (trap, logic error, missing binding) flows
+    // through this function, and the reclaim is a no-op for a task that
+    // already reached a terminal state.
+    reclaimTrap(task);
     dropPin(task);
     if (task.parent) { deliverInnerFailure(task, error); return; }
     task.reject(error instanceof Error ? error : new Error(String(error)));
@@ -210,7 +478,7 @@ export function createCoordinator(metadata) {
     const site = parent.fn.sites[innerTask.parentSite];
     let lowered;
     try {
-      lowered = lower(result, site.kind, site.nullable);
+      lowered = lower(result, site.desc);
     } catch (e) {
       settleError(parent, e);
       drain(innerTask.fn.fileBase);
@@ -303,6 +571,12 @@ export function createCoordinator(metadata) {
   // their tokens and the policy on the task. Store/error calls deliver
   // settlements to the wasm side; join_done resumes once the policy is
   // satisfied, reject_<j> fails fast. Late settlements are dropped.
+  // A member awaited before the join issues carries the sentinel token 0
+  // in the reqs array (real tokens are fresh heap pointers, never 0);
+  // its value is already stored wasm-side, so the member resolves here
+  // to PRE_RESOLVED and is counted without a store/lower. For race/any
+  // a pre-resolved winner is recorded via the join_mark export.
+  const PRE_RESOLVED = {};
   function runJoin(task, site) {
     const join = task.pendingJoin;
     task.pendingJoin = null;
@@ -320,6 +594,10 @@ export function createCoordinator(metadata) {
     }
     const members = new Array(reqs.length);
     for (let i = 0; i < reqs.length; ++i) {
+      if (reqs[i] === 0) {
+        members[i] = Promise.resolve(PRE_RESOLVED);
+        continue;
+      }
       const p = joinMembers.get(reqs[i]);
       if (!p) {
         failJoin(task, site, 'async coordinator: unknown join member ' + reqs[i]);
@@ -334,9 +612,13 @@ export function createCoordinator(metadata) {
       members.forEach(function (p, i) {
         p.then(function (v) {
           if (settled) return;
+          if (v === PRE_RESOLVED) {
+            if (--remaining === 0) { settled = true; finishJoin(task, site); }
+            return;
+          }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             settled = true;
             failJoin(task, site, joinMessage(e));
@@ -364,9 +646,19 @@ export function createCoordinator(metadata) {
         p.then(function (v) {
           if (settled) return;
           settled = true;
+          if (v === PRE_RESOLVED) {
+            try {
+              wasmExports[site.markExport](task.handle, i);
+            } catch (e) {
+              settleError(task, e);
+              return;
+            }
+            finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             failJoin(task, site, joinMessage(e));
             return;
@@ -390,9 +682,13 @@ export function createCoordinator(metadata) {
       let remaining = members.length;
       members.forEach(function (p, i) {
         p.then(function (v) {
+          if (v === PRE_RESOLVED) {
+            if (--remaining === 0) finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             try { wasmExports[site.errorExport](task.handle, i, newString(joinMessage(e))); } catch (e2) { /* keep counting */ }
             if (--remaining === 0) finishJoin(task, site);
@@ -420,9 +716,19 @@ export function createCoordinator(metadata) {
         p.then(function (v) {
           if (settled) return;
           settled = true;
+          if (v === PRE_RESOLVED) {
+            try {
+              wasmExports[site.markExport](task.handle, i);
+            } catch (e) {
+              settleError(task, e);
+              return;
+            }
+            finishJoin(task, site);
+            return;
+          }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             failJoin(task, site, joinMessage(e));
             return;
@@ -470,7 +776,7 @@ export function createCoordinator(metadata) {
     }
     const innerMeta = innerFunctionsByKey.get(task.fn.fileBase + "\0" + siteMeta.innerExportName);
     if (!innerMeta) {
-      settleError(task, new Error("async coordinator: nested async function '" + siteMeta.innerExportName + "' cannot be driven"));
+      settleError(task, new Error("async coordinator: nested async function '" + siteMeta.innerExportName.split('#').pop() + "' cannot be driven"));
       return;
     }
     const innerTask = {
@@ -482,6 +788,7 @@ export function createCoordinator(metadata) {
     if (pin) {
       try { pin(innerHandle); } catch (e) { /* best-effort */ }
     }
+    liveHandles.add(innerHandle);
     drive(innerTask);
   }
 
@@ -538,7 +845,7 @@ export function createCoordinator(metadata) {
       if (task.settled) return;
       let lowered;
       try {
-        lowered = lower(value, siteMeta.kind, siteMeta.nullable);
+        lowered = lower(value, siteMeta.desc);
       } catch (e) {
         failTask(task, site, e);
         return;
@@ -572,8 +879,14 @@ export function createCoordinator(metadata) {
     let task = null;
     let handle = 0;
     try {
-      const wasmArgs = lowerArgs(jsArgs, fn.params);
+      const wasmArgs = lowerCallArgs(jsArgs, fn.params, fn.rest);
       if (receiver != null) wasmArgs.unshift(receiver);
+      // The entry is a varargs stub when the function takes optional or
+      // rest parameters: it reads __argumentsLength to decide which
+      // defaults to fill. The count is the number of arguments passed to
+      // the entry, receiver included (the entry is a free function, so
+      // the receiver is an ordinary parameter for its stub).
+      if (wasmExports.__setArgumentsLength) wasmExports.__setArgumentsLength(wasmArgs.length);
       task = { fn: fn, handle: 0, pending: null, pendingToken: 0, pendingJoin: null, pendingWaitMissing: 0, parent: null, parentSite: -1, settled: false, resolve: resolve, reject: reject };
       activeTask = task;
       try {
@@ -598,6 +911,7 @@ export function createCoordinator(metadata) {
     if (pin) {
       try { pin(handle); } catch (e) { /* best-effort */ }
     }
+    liveHandles.add(handle);
     let st;
     try {
       st = statusOf(fn, handle);
@@ -679,7 +993,7 @@ export function createCoordinator(metadata) {
         const task = activeTask;
         const args = new Array(arguments.length);
         for (let i = 0; i < arguments.length; ++i) {
-          args[i] = lift(arguments[i], imp.params[i].kind, imp.params[i].nullable);
+          args[i] = lift(arguments[i], imp.params[i]);
         }
         let result;
         try {
@@ -688,8 +1002,14 @@ export function createCoordinator(metadata) {
           result = Promise.reject(e);
         }
         if (task) {
-          let token = newString("token" + nextToken++);
-          while (joinMembers.has(token)) token = newString("token" + nextToken++);
+          let token;
+          if (mint) {
+            token = mint();
+            while (joinMembers.has(token)) token = mint();
+          } else {
+            token = newString("token" + nextToken++);
+            while (joinMembers.has(token)) token = newString("token" + nextToken++);
+          }
           const promise = Promise.resolve(result);
           joinMembers.set(token, promise);
           task.pending = promise;
@@ -705,7 +1025,9 @@ export function createCoordinator(metadata) {
   // Builds one JS wrapper class for a metadata class entry. The
   // constructor allocates the instance through the generated _new export
   // and pins it, so the GC cannot collect it between tasks; each async
-  // method drives its task with the stored pointer as the receiver.
+  // method drives its task with the stored pointer as the receiver, and
+  // each static async method lives on the constructor and drives
+  // through its entry with the declared params only.
   // dispose() releases the pin and is idempotent; a disposed wrapper
   // refuses further method calls instead of trapping on a dead pointer.
   // A constructor that traps throws out of new, so no half-constructed
@@ -715,7 +1037,12 @@ export function createCoordinator(metadata) {
       if (!pin) throw new Error("async coordinator: class '" + cls.name + "' needs the wasm runtime (compile with --exportRuntime)");
       let ptr = 0;
       try {
-        ptr = wasmExports[cls.newExport].apply(null, lowerArgs(Array.prototype.slice.call(arguments), cls.newParams));
+        const args = lowerCallArgs(Array.prototype.slice.call(arguments), cls.newParams, cls.newRest);
+        // The _new is a varargs stub when the constructor takes optional
+        // or rest parameters: the count is the number of constructor
+        // arguments passed (there is no receiver for _new).
+        if (wasmExports.__setArgumentsLength) wasmExports.__setArgumentsLength(args.length);
+        ptr = wasmExports[cls.newExport].apply(null, args);
       } catch (e) {
         throw e instanceof Error ? e : new Error(String(e));
       }
@@ -724,10 +1051,16 @@ export function createCoordinator(metadata) {
       try { pin(ptr); } catch (e) { /* pinning is best-effort; the task handle root covers suspension */ }
     }
     cls.methods.forEach(function (method) {
-      Wrapper.prototype[method.name] = function () {
-        if (!this.pointer) throw new Error("async coordinator: '" + cls.name + "' instance has been disposed");
-        return callAsync(method, Array.prototype.slice.call(arguments), this.pointer);
-      };
+      if (method.isStatic) {
+        Wrapper[method.name] = function () {
+          return callAsync(method, Array.prototype.slice.call(arguments));
+        };
+      } else {
+        Wrapper.prototype[method.name] = function () {
+          if (!this.pointer) throw new Error("async coordinator: '" + cls.name + "' instance has been disposed");
+          return callAsync(method, Array.prototype.slice.call(arguments), this.pointer);
+        };
+      }
     });
     Wrapper.prototype.dispose = function () {
       if (!this.pointer) return;
@@ -745,17 +1078,32 @@ export function createCoordinator(metadata) {
     wasmExports = instance.exports;
     memory = wasmExports.memory || memory;
     alloc = wasmExports.__new || null;
+    mint = (metadata.mintExport && wasmExports[metadata.mintExport]) || null;
+    mintString = (metadata.mintStringExport && wasmExports[metadata.mintStringExport]) || null;
     pin = wasmExports.__pin || null;
     unpin = wasmExports.__unpin || null;
     api.instance = instance;
     api.exports = wasmExports;
-    functionsByExport.forEach(function (fn, exportName) {
-      api[exportName] = function () {
+    // A top-level function lands at api[exportName]; a namespaced one
+    // lands at api.NS.take, in nested objects mirroring its namespace
+    // path, and is driven through its entry export.
+    metadata.functions.forEach(function (fn) {
+      let target = api;
+      (fn.path || []).forEach(function (segment) {
+        if (!target[segment]) target[segment] = {};
+        target = target[segment];
+      });
+      target[fn.name || fn.exportName] = function () {
         return callAsync(fn, Array.prototype.slice.call(arguments));
       };
     });
     (metadata.classes || []).forEach(function (cls) {
-      api[cls.name] = buildClass(cls);
+      let target = api;
+      (cls.path || []).forEach(function (segment) {
+        if (!target[segment]) target[segment] = {};
+        target = target[segment];
+      });
+      target[cls.name] = buildClass(cls);
     });
     return api;
   }
