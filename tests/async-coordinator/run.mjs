@@ -28,7 +28,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "namespace-methods.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "namespace-generics.ts", "namespace-methods.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -1780,6 +1780,42 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS non-exported namespace fn driven as a nested inner");
   await assertRejects(nsApi.NS.failing(), /ns-boom/, "a rejecting namespaced await must reject the task promise");
   console.log("PASS rejection propagates out of a namespaced async fn");
+}
+
+// Generic async functions in namespaces through the generated coordinator
+// (close-gaps Group 4c): each instantiation is a clone qualified with the
+// namespace path, exposed under the mangled clone name on the namespace
+// object (api.NS.id_i32, api.Outer.Inner.id_i32 — mirroring the top-level
+// id_i32 and the generic-class api.NS.GBox_i32 spellings). A clone in a
+// non-exported namespace stays inner-only, driven nested through runPlain.
+{
+  const wasmBytes = readFileSync(compile("namespace-generics.ts"));
+  const ngCoord = join(dir, "namespace-generics.async.js");
+  check(existsSync(ngCoord), "namespace-generics.async.js must be emitted for the namespace-generics fixture");
+  const { instantiateAsync: instantiateNg } = await import(pathToFileURL(ngCoord).href);
+  const ngApi = await instantiateNg(wasmBytes, {
+    env: {
+      fetchValue() {
+        return Promise.resolve(1);
+      }
+    }
+  });
+  check(typeof ngApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof ngApi.NS.id_i32 === "function", "generated coordinator must expose NS.id_i32");
+  check(typeof ngApi.Outer.Inner.id_i32 === "function", "generated coordinator must expose Outer.Inner.id_i32");
+  check(typeof ngApi.NS["id__x7e_lib_x2f_string_x2f_String"] === "function", "generated coordinator must expose NS.id<string>");
+  check(ngApi.Plain === undefined, "a clone in a non-exported namespace stays inner-only (no api.Plain)");
+  check((await ngApi.NS.id_i32(42)) === 42, "NS.id<i32>(42) must resolve 42");
+  console.log("PASS generic async fn in a namespace at api.NS.id_i32");
+  check((await ngApi.Outer.Inner.id_i32(7)) === 7, "Outer.Inner.id<i32>(7) must resolve 7");
+  console.log("PASS generic async fn in a nested namespace at api.Outer.Inner.id_i32");
+  check((await ngApi.NS["id__x7e_lib_x2f_string_x2f_String"]("hi")) === "hi", "NS.id<string>(\"hi\") must resolve hi");
+  console.log("PASS generic async fn in a namespace, string instantiation");
+  check((await ngApi.runNsGen()) === 42, "runNsGen must resolve 42");
+  check((await ngApi.runOuterGen()) === 7, "runOuterGen must resolve 7");
+  check((await ngApi.runPlain()) === 9, "runPlain must resolve 9");
+  check((await ngApi.runStr()) === "hi", "runStr must resolve hi");
+  console.log("PASS generic namespaced async fns awaited as nested tasks");
 }
 
 // Async methods on namespaced classes through the generated coordinator
