@@ -42,11 +42,56 @@ export class Box<T> {
     let v = await fetchValue();
     return v > 0 ? this.value : this.value;
   }
+  async wrap<U>(x: U): Promise<U> {
+    let v = await fetchValue();
+    return v > 0 ? x : x;
+  }
 }
 
 export async function runBox(): Promise<i32> {
   let box = new Box<i32>(42);
   let v = await box.get();
+  return v;
+}
+
+export async function runBoxStr(): Promise<string> {
+  let box = new Box<string>("hi");
+  let v = await box.get();
+  return v;
+}
+
+export async function runWrap(): Promise<string> {
+  let box = new Box<i32>(42);
+  let v = await box.wrap<string>("hey");
+  return v;
+}
+
+// A static generic method on a non-generic class: the clone is a plain
+// class member, so it gets a wrapper static (`Maker.make_i32`).
+export class Maker {
+  static async make<U>(x: U): Promise<U> {
+    let v = await fetchValue();
+    return v > 0 ? x : x;
+  }
+}
+
+export async function runMaker(): Promise<i32> {
+  let v = await Maker.make<i32>(7);
+  return v;
+}
+
+// A static generic method on a generic class: it transforms and drives
+// as a nested inner, but there is no canonical class instantiation to
+// construct a wrapper from, so the class gets no wrapper (nested-only).
+export class GBox<T> {
+  static async make<U>(x: U): Promise<U> {
+    let v = await fetchValue();
+    return v > 0 ? x : x;
+  }
+}
+
+export async function runGStatic(): Promise<i32> {
+  let v = await GBox.make<i32>(7);
   return v;
 }
 

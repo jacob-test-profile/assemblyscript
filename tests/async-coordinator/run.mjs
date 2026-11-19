@@ -28,7 +28,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "namespace-methods.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -1782,6 +1782,69 @@ const api = await instantiateAsync(bytes, {
   console.log("PASS rejection propagates out of a namespaced async fn");
 }
 
+// Async methods on namespaced classes through the generated coordinator
+// (close-gaps Group 4b): the wrapper class mirrors the namespace path
+// (api.NS2.H, api.Outer.Inner.Deep), instance methods live on the
+// prototype under their plain name, statics on the constructor, and a
+// generic class in a namespace composes both (api.NS.GBox_i32).
+{
+  const wasmBytes = readFileSync(compile("namespace-methods.ts"));
+  const nsmCoord = join(dir, "namespace-methods.async.js");
+  check(existsSync(nsmCoord), "namespace-methods.async.js must be emitted for the namespace-methods fixture");
+  const { instantiateAsync: instantiateNsm } = await import(pathToFileURL(nsmCoord).href);
+  const nsmApi = await instantiateNsm(wasmBytes, {
+    env: {
+      getChunk(i) {
+        return Promise.resolve("C" + i);
+      },
+      fetchValue() {
+        return Promise.resolve(1);
+      }
+    }
+  });
+  check(typeof nsmApi.NS2 === "object", "generated coordinator must expose the NS2 namespace object");
+  check(typeof nsmApi.NS2.H === "function", "generated coordinator must expose the NS2.H wrapper class");
+  check(typeof nsmApi.Outer === "object", "generated coordinator must expose the Outer namespace object");
+  check(typeof nsmApi.Outer.Inner.Deep === "function", "generated coordinator must expose the Outer.Inner.Deep wrapper class");
+  check(typeof nsmApi.NS === "object", "generated coordinator must expose the NS namespace object");
+  check(typeof nsmApi.NS.GBox_i32 === "function", "generated coordinator must expose the generic namespaced wrapper NS.GBox_i32");
+  {
+    const h = new nsmApi.NS2.H(5);
+    check((await h.m()) === "C05", "NS2.H.m must resolve C05");
+    h.dispose();
+    let threw = null;
+    try {
+      h.m();
+    } catch (e) {
+      threw = e;
+    }
+    check(threw instanceof Error && /has been disposed/.test(threw.message), "a disposed namespaced wrapper call must throw synchronously, got " + threw);
+    console.log("PASS namespaced-class method at api.NS2.H, dispose throws");
+  }
+  check((await nsmApi.NS2.H.make(3)) === 5, "NS2.H.make(3) must resolve 5");
+  console.log("PASS namespaced-class static method at api.NS2.H.make");
+  check((await nsmApi.runNs()) === "C05", "runNs must resolve C05");
+  console.log("PASS namespaced-class method awaited from an async fn");
+  check((await nsmApi.runNsStatic()) === 5, "runNsStatic must resolve 5");
+  console.log("PASS namespaced-class static method awaited from an async fn");
+  {
+    const d = new nsmApi.Outer.Inner.Deep();
+    check((await d.m()) === "deep-C2", "Outer.Inner.Deep.m must resolve deep-C2");
+    d.dispose();
+    console.log("PASS method on a class in a nested namespace at api.Outer.Inner.Deep");
+  }
+  check((await nsmApi.runDeep()) === "deep-C2", "runDeep must resolve deep-C2");
+  console.log("PASS nested-namespace class method awaited from an async fn");
+  {
+    const box = new nsmApi.NS.GBox_i32(42);
+    check((await box.get_i32()) === 42, "NS.GBox_i32.get_i32 must resolve 42");
+    box.dispose();
+    console.log("PASS generic class in a namespace at api.NS.GBox_i32");
+  }
+  check((await nsmApi.runCombo()) === 42, "runCombo must resolve 42");
+  console.log("PASS generic namespaced-class method awaited from an async fn");
+}
+
 // Cross-file await through the generated coordinator: direct, guarded,
 // chain, terminating mutual cycle, cross-file method.
 {
@@ -1961,11 +2024,14 @@ const api = await instantiateAsync(bytes, {
 }
 
 // Generic async functions and generic-class methods (close-gaps Group
-// 3b): per-instantiation clones driven through the generated coordinator
-// (i32, string and externref type args; nested awaits; a generic-class
-// method awaited from an async fn). The generic class has no wrapper
-// class yet (Group 4) and the class-typed instantiation has no method
-// (the pre-existing class-await limit).
+// 3b, wrappers in Group 4b): per-instantiation clones driven through the
+// generated coordinator (i32, string and externref type args; nested
+// awaits; a generic-class method awaited from an async fn). Each class
+// instantiation gets its own wrapper (`api.Box_i32`,
+// `api.Box_<string>`) with methods under the mangled clone name
+// (`get_i32`, `wrap_i32_string`); a static generic method on a
+// non-generic class is a wrapper static, while one on a generic class
+// stays nested-only (no canonical instantiation to construct).
 {
   const wasmBytes = readFileSync(compile("generics.ts"));
   const genericsCoord = join(dir, "generics.async.js");
@@ -2001,7 +2067,14 @@ const api = await instantiateAsync(bytes, {
   check(typeof genApi.runHandle === "function", "generated coordinator must expose runHandle");
   check(typeof genApi.runBox === "function", "generated coordinator must expose runBox");
   check(typeof genApi.runFetch === "function", "generated coordinator must expose runFetch");
-  check(genApi.Box === undefined, "a generic class must not get a wrapper class yet (Group 4)");
+  check(typeof genApi.runBoxStr === "function", "generated coordinator must expose runBoxStr");
+  check(typeof genApi.runWrap === "function", "generated coordinator must expose runWrap");
+  check(typeof genApi.runMaker === "function", "generated coordinator must expose runMaker");
+  check(typeof genApi.runGStatic === "function", "generated coordinator must expose runGStatic");
+  check(typeof genApi.Box_i32 === "function", "generated coordinator must expose one wrapper per class instantiation (Box_i32)");
+  check(typeof genApi["Box__x7e_lib_x2f_string_x2f_String"] === "function", "generated coordinator must expose one wrapper per class instantiation (Box<string>)");
+  check(typeof genApi.Maker === "function", "generated coordinator must expose the Maker wrapper");
+  check(genApi.GBox === undefined, "a generic class with only a static generic method gets no wrapper (no instantiation to construct)");
   check(typeof genApi.runPoint === "function", "a class-typed instantiation is coordinator-driven now (Group 5b class values)");
   const pointKey = Object.keys(genApi).find((k) => k.endsWith("_Point"));
   check(typeof pointKey === "string", "an id<Point> clone method must be exposed now (Group 5b class values)");
@@ -2084,6 +2157,74 @@ const api = await instantiateAsync(bytes, {
     genFetches[1].resolve("hi");
     check((await p) === 43, "runFetch must give 43");
     console.log("PASS generic suspending import, one wrapper for agreeing instantiations, 43");
+  }
+
+  // Generic-class wrappers, one per instantiation: Box<i32> and
+  // Box<string> are distinct wrappers; methods drive under the mangled
+  // clone name, including a generic method's own type args.
+  {
+    const p = genApi.runBoxStr();
+    await tick();
+    genValues[7].resolve(1);
+    check((await p) === "hi", "runBoxStr must give 'hi'");
+    console.log("PASS generic-class method awaited from an async fn at a second instantiation, 'hi'");
+  }
+  {
+    const box = new genApi.Box_i32(42);
+    const p = box.get_i32();
+    await tick();
+    genValues[8].resolve(1);
+    check((await p) === 42, "Box_i32.get_i32 must give 42");
+    const w = box["wrap_i32__x7e_lib_x2f_string_x2f_String"]("hey");
+    await tick();
+    genValues[9].resolve(1);
+    check((await w) === "hey", "Box_i32.wrap_i32_string must give 'hey'");
+    box.dispose();
+    let threw = null;
+    try {
+      box.get_i32();
+    } catch (e) {
+      threw = e;
+    }
+    check(threw instanceof Error && /has been disposed/.test(threw.message), "a disposed generic wrapper call must throw synchronously, got " + threw);
+    console.log("PASS generic-class wrapper Box_i32, mangled method names, dispose throws");
+  }
+  {
+    const sbox = new genApi["Box__x7e_lib_x2f_string_x2f_String"]("hi");
+    const p = sbox["get__x7e_lib_x2f_string_x2f_String"]();
+    await tick();
+    genValues[10].resolve(1);
+    check((await p) === "hi", "Box<string>.get must give 'hi'");
+    sbox.dispose();
+    console.log("PASS generic-class wrapper Box<string>, ctor param per instantiation");
+  }
+  {
+    const p = genApi.runWrap();
+    await tick();
+    genValues[11].resolve(1);
+    check((await p) === "hey", "runWrap must give 'hey'");
+    console.log("PASS generic method's own type args awaited from an async fn, 'hey'");
+  }
+
+  // Static generic methods: on a non-generic class they are wrapper
+  // statics; on a generic class they drive as nested inners only.
+  {
+    const p = genApi.Maker.make_i32(9);
+    await tick();
+    genValues[12].resolve(1);
+    check((await p) === 9, "Maker.make_i32(9) must give 9");
+    const q = genApi.runMaker();
+    await tick();
+    genValues[13].resolve(1);
+    check((await q) === 7, "runMaker must give 7");
+    console.log("PASS static generic method as a wrapper static, 9, and as a nested await, 7");
+  }
+  {
+    const p = genApi.runGStatic();
+    await tick();
+    genValues[14].resolve(1);
+    check((await p) === 7, "runGStatic must give 7");
+    console.log("PASS static generic method on a generic class as a nested await only, 7");
   }
 }
 

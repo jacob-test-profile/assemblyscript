@@ -1,6 +1,6 @@
 // Diagnostic fixture: one function per loud rejection that had no
 // pinned fixture (labeled break, member-call await,
-// arrow misuse, namespaced-class methods).
+// arrow misuse).
 //@ external("env", "getChunk")
 declare function getChunk(i: i32): Promise<string>;
 //@ external("env", "getVoid")
@@ -16,15 +16,6 @@ class W {
 
   sync(n: i32): Promise<string> {
     return getChunk(n);
-  }
-}
-
-namespace NS2 {
-  export class H {
-    async m(): Promise<string> {
-      let c = await getChunk(0);
-      return c;
-    }
   }
 }
 
@@ -78,10 +69,11 @@ export async function arrowAssignedInClosure(): Promise<i32> {
 
 
 // Member-call await stays loud when the callee is not a transformed
-// async method: a sync method, an unresolvable member,
-// and a namespaced-class method. (A static method is drivable:
-// see async-static-method.ts. A generic-class method is no longer
-// loud: see async-generic-method.ts.)
+// async method: a sync method and an unresolvable member.
+// (A static method is drivable: see async-static-method.ts. A
+// generic-class method is no longer loud: see async-generic-method.ts.
+// A namespaced-class method is no longer loud: see
+// async-namespace-method.ts.)
 export async function awaitSync(): Promise<string> {
   let w = new W();
   let c = await w.sync(0);
@@ -91,11 +83,5 @@ export async function awaitSync(): Promise<string> {
 export async function awaitNope(): Promise<string> {
   let w = new W();
   let c = await w.nope(0);
-  return c;
-}
-
-export async function awaitNamespaced(): Promise<string> {
-  let h = new NS2.H();
-  let c = await h.m();
   return c;
 }

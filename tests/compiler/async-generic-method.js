@@ -17,9 +17,11 @@ export function preInstantiate(imports, exports) {
 }
 
 // Inner task qualified name per outer task and nested site: `run` awaits
-// `Box<i32>.get` (qualName `Box_get_i32`) as a nested task.
+// `Box<i32>.get` (qualName `Box_get_i32`); `runWrap` awaits
+// `Box<i32>.wrap<string>` (qualName `Box_wrap_i32_string`).
 const INNER = {
-  "run": ["Box_get_i32"]
+  "run": ["Box_get_i32"],
+  "runWrap": ["Box_wrap_i32__x7e_lib_x2f_string_x2f_String"]
 };
 
 // Drives one task to completion. A nested site fetches the inner handle
@@ -69,6 +71,10 @@ export async function postInstantiate(instance) {
   // run(): new Box<i32>(42), await box.get() -> 42.
   const r = driveTask(instance, "run", exports.run());
   if (r.failed || r.value !== 42) throw new Error("run: " + JSON.stringify(r));
+
+  // runWrap(): new Box<i32>(42), await box.wrap<string>("hey") -> "hey".
+  const w = driveTask(instance, "runWrap", exports.runWrap());
+  if (w.failed || getString(w.value) !== "hey") throw new Error("runWrap: " + JSON.stringify(w));
 
   // The method directly through its entry export, on a Box built by the
   // class-new export: new Box<i32>(99), await get() -> 99.
