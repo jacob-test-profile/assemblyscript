@@ -28,7 +28,7 @@ if (!existsSync(join(repo, "dist", "asc.js"))) {
 }
 
 const dir = mkdtempSync(join(tmpdir(), "async-coord-"));
-for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "namespaces.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
+for (const name of ["coordinator.ts", "sync.ts", "join.ts", "methods.ts", "values.ts", "loopclosures.ts", "namespaces.ts", "crossfile.ts", "crossfile-helper.ts", "crossfile-chain.ts", "crossfile-cycle-a.ts", "crossfile-cycle-b.ts", "crossfile-methods.ts", "joinmember.ts", "generics.ts", "generic-import-disagree.ts"]) {
   copyFileSync(join(fixtures, name), join(dir, name));
 }
 
@@ -2002,8 +2002,9 @@ const api = await instantiateAsync(bytes, {
   check(typeof genApi.runBox === "function", "generated coordinator must expose runBox");
   check(typeof genApi.runFetch === "function", "generated coordinator must expose runFetch");
   check(genApi.Box === undefined, "a generic class must not get a wrapper class yet (Group 4)");
-  check(genApi.runPoint === undefined, "a class-typed instantiation must not be coordinator-driven");
-  check(!Object.keys(genApi).some((k) => k.endsWith("_Point")), "no id<Point> clone method must be exposed");
+  check(typeof genApi.runPoint === "function", "a class-typed instantiation is coordinator-driven now (Group 5b class values)");
+  const pointKey = Object.keys(genApi).find((k) => k.endsWith("_Point"));
+  check(typeof pointKey === "string", "an id<Point> clone method must be exposed now (Group 5b class values)");
   console.log("PASS generics coordinator file emitted with the per-instantiation clones");
 
   // Direct clone calls: id<i32>(42) -> 42, id<string>("hi") -> "hi".
@@ -2053,6 +2054,25 @@ const api = await instantiateAsync(bytes, {
     console.log("PASS generic-class method awaited from an async fn, 42");
   }
 
+  // Class-typed nested await: runPoint awaits id<Point> and returns q.x.
+  {
+    const p = genApi.runPoint();
+    await tick();
+    genValues[5].resolve(1);
+    check((await p) === 7, "runPoint must give 7");
+    console.log("PASS class-typed generic instantiation as nested await, 7");
+  }
+
+  // Direct class-typed clone call: id<Point> round-trips the Point.
+  {
+    const p = genApi[pointKey]({ x: 3, y: 4 });
+    await tick();
+    genValues[6].resolve(1);
+    const v = await p;
+    check(v.x === 3 && v.y === 4, "id<Point>({x:3,y:4}) must round-trip, got " + JSON.stringify(v));
+    console.log("PASS class-typed generic clone, direct call round-trips the Point");
+  }
+
   // Generic suspending import: one wrapper serves the i32 and string
   // instantiations (both pass an i32); each result is delivered through
   // its own await site.
@@ -2086,6 +2106,312 @@ const api = await instantiateAsync(bytes, {
     "run() with a disagreeing generic import must reject with the reason"
   );
   console.log("PASS disagreeing generic suspending import stays loud with the reason");
+}
+
+// Array and plain-class values across the boundary (close-gaps Group
+// 5b): await values, parameters, results, join members, stored awaits,
+// nullable results, and async methods, driven through the generated
+// coordinator only.
+{
+  const wasmBytes = readFileSync(compile("values.ts"));
+  const valuesCoord = join(dir, "values.async.js");
+  check(existsSync(valuesCoord), "values.async.js must be emitted for the values fixture");
+  const { instantiateAsync: instantiateValues } = await import(pathToFileURL(valuesCoord).href);
+  const vNumDeferreds = [];
+  const vArrDeferreds = [];
+  const valuesApi = await instantiateValues(wasmBytes, {
+    env: {
+      getNumbers() {
+        const d = deferred();
+        vArrDeferreds.push(d);
+        return d.promise;
+      },
+      getNumber() {
+        const d = deferred();
+        vNumDeferreds.push(d);
+        return d.promise;
+      },
+      getStrings: async () => ["a", "bb", "ccc"],
+      getPoint: async () => ({ x: 3, y: 4 }),
+      getPoints: async () => [{ x: 1, y: 2 }, { x: 10, y: 20 }],
+      getMatrix: async () => [[1, 2], [3, 4, 5]],
+      getBytes: async () => [1, 2, 3],
+      getFloats: async () => [1.5, 2.5],
+      getStatic: async () => [7, 8]
+    }
+  });
+  const eq = (got, want, msg) => check(JSON.stringify(got) === JSON.stringify(want), msg + ", got " + JSON.stringify(got));
+
+  {
+    const p = valuesApi.sumArr();
+    await tick();
+    vArrDeferreds[0].resolve([10, 20, 30]);
+    check((await p) === 60, "sumArr must resolve 60");
+    console.log("PASS awaited Array<i32> value");
+  }
+
+  {
+    const p = valuesApi.getArr();
+    await tick();
+    vNumDeferreds[0].resolve(5);
+    eq(await p, [5, 6], "getArr must resolve [5,6]");
+    console.log("PASS Array<i32> result");
+  }
+
+  {
+    const p = valuesApi.sumParam([1, 2, 3]);
+    await tick();
+    vNumDeferreds[1].resolve(5);
+    check((await p) === 11, "sumParam([1,2,3]) must resolve 11");
+    console.log("PASS Array<i32> parameter");
+  }
+
+  check((await valuesApi.concatStrs()) === "a,bb,ccc", "concatStrs must resolve a,bb,ccc");
+  console.log("PASS awaited Array<string> value");
+
+  check((await valuesApi.sumPoint()) === 7, "sumPoint must resolve 7");
+  console.log("PASS awaited plain-class value");
+
+  {
+    const p = valuesApi.makePoint();
+    await tick();
+    vNumDeferreds[2].resolve(5);
+    eq(await p, { x: 5, y: 10 }, "makePoint must resolve {x:5,y:10}");
+    console.log("PASS plain-class result");
+  }
+
+  check((await valuesApi.sumPoints()) === 33, "sumPoints must resolve 33");
+  console.log("PASS awaited Array<Point> value");
+
+  check((await valuesApi.sumMatrix()) === 15, "sumMatrix must resolve 15");
+  console.log("PASS awaited Array<Array<i32>> value");
+
+  {
+    const p = valuesApi.getLabeled();
+    await tick();
+    vNumDeferreds[3].resolve(5);
+    eq(await p, { label: "L5", vals: [5, 6] }, "getLabeled must resolve {label:L5,vals:[5,6]}");
+    console.log("PASS plain-class result with string and array fields");
+  }
+
+  {
+    const p = valuesApi.sumLabeled({ label: "x", vals: [1, 2] });
+    await tick();
+    vNumDeferreds[4].resolve(5);
+    check((await p) === 8, "sumLabeled must resolve 8");
+    console.log("PASS plain-class parameter");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.joinArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 2, "joinArrs must issue 2 members");
+    vArrDeferreds[aBase + 1].resolve([10, 20, 30]);
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [[10, 20, 30], [10, 20, 30]], "joinArrs must resolve both member arrays");
+    console.log("PASS join members of Array<i32> type");
+  }
+
+  eq(await valuesApi.joinPoints(), [{ x: 3, y: 4 }, { x: 3, y: 4 }], "joinPoints must resolve both member objects");
+  console.log("PASS join members of plain-class type");
+
+  {
+    const p = valuesApi.storedArr();
+    await tick();
+    const base = vArrDeferreds.length - 1;
+    vArrDeferreds[base].resolve([10, 20, 30]);
+    check((await p) === 60, "storedArr must resolve 60");
+    console.log("PASS stored Array<i32> await");
+  }
+
+  {
+    const aBase = vArrDeferreds.length;
+    const p = valuesApi.maybeArr(1);
+    await tick();
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    eq(await p, [10, 20, 30], "maybeArr(1) must resolve the array");
+  }
+  check((await valuesApi.maybeArr(0)) === null, "maybeArr(0) must resolve null");
+  console.log("PASS nullable Array<i32> result");
+
+  check((await valuesApi.sumBytes()) === 6, "sumBytes must resolve 6");
+  console.log("PASS awaited Array<i8> value (byte-width elements)");
+
+  check((await valuesApi.sumFloats()) === 4, "sumFloats must resolve 4");
+  console.log("PASS awaited Array<f64> value");
+
+  check((await valuesApi.sumStatic()) === 15, "sumStatic must resolve 15");
+  console.log("PASS awaited StaticArray<i32> value");
+
+  {
+    const p = valuesApi.getStaticArr();
+    await tick();
+    vNumDeferreds[5].resolve(5);
+    eq(await p, [5, 6], "getStaticArr must resolve [5,6]");
+    console.log("PASS StaticArray<i32> result");
+  }
+
+  // An array awaited before a second await must survive heap churn +
+  // __collect while it sits in the state object's pending field.
+  {
+    const aBase = vArrDeferreds.length;
+    const nBase = vNumDeferreds.length;
+    const p = valuesApi.twoArrs();
+    await tick();
+    check(vArrDeferreds.length === aBase + 1, "twoArrs must issue getNumbers once");
+    vArrDeferreds[aBase].resolve([10, 20, 30]);
+    await tick();
+    check(vNumDeferreds.length === nBase + 1, "twoArrs must issue getNumber after the first await");
+    valuesApi.exports.__collect();
+    valuesApi.exports.allocSpam(2000);
+    valuesApi.exports.__collect();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 65, "twoArrs must resolve 65 with the first array surviving churn + __collect");
+    console.log("PASS Array<i32> await value survives churn + __collect across a second await");
+  }
+
+  // Async methods with array/class values, through the wrapper class.
+  {
+    const box = new valuesApi.Box(100);
+    const nBase = vNumDeferreds.length;
+    let p = box.addAll([1, 2]);
+    await tick();
+    vNumDeferreds[nBase].resolve(5);
+    check((await p) === 108, "Box.addAll([1,2]) must resolve 108");
+    p = box.makePoint();
+    await tick();
+    vNumDeferreds[nBase + 1].resolve(5);
+    eq(await p, { x: 105, y: 0 }, "Box.makePoint must resolve {x:105,y:0}");
+    box.dispose();
+    console.log("PASS async methods with Array<i32> parameter and Point result");
+  }
+}
+
+// Loop closures: stored closures created in a loop, called after the
+// loop (close-gaps Group 5b item 2). Each sees its own iteration's
+// values; only names declared inside the loop are per-iteration.
+{
+  const wasmBytes = readFileSync(compile("loopclosures.ts"));
+  const loopCoord = join(dir, "loopclosures.async.js");
+  check(existsSync(loopCoord), "loopclosures.async.js must be emitted for the loopclosures fixture");
+  const { instantiateAsync: instantiateLoop } = await import(pathToFileURL(loopCoord).href);
+  const lNumDeferreds = [];
+  const lObjDeferreds = [];
+  const loopApi = await instantiateLoop(wasmBytes, {
+    env: {
+      getNumber() {
+        const d = deferred();
+        lNumDeferreds.push(d);
+        return d.promise;
+      },
+      getObj() {
+        const d = deferred();
+        lObjDeferreds.push(d);
+        return d.promise;
+      }
+    }
+  });
+
+  // Each getNumber() resolves 0; the sums below depend only on the
+  // captured iteration values, not on the awaited numbers.
+  // The first await is issued synchronously by the task's initial step,
+  // so the base is captured before the task starts, not inside resolveNums.
+  const resolveNums = async (count, base) => {
+    for (let k = 0; k < count; ++k) {
+      await tick();
+      check(lNumDeferreds.length > base + k, "loop test must issue getNumber await " + k);
+      lNumDeferreds[base + k].resolve(0);
+    }
+  };
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopStored must resolve 33");
+    console.log("PASS stored loop closures see their own iteration's value (33, not 39)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopBodyLet();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopBodyLet must resolve 30");
+    console.log("PASS stored loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNested();
+    await resolveNums(4, base);
+    check((await p) === 422, "loopNested must resolve 422");
+    console.log("PASS stored loop closures capture nested loop variables and shared outers");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileOuter();
+    await resolveNums(3, base);
+    check((await p) === 9, "loopWhileOuter must resolve 9 (one shared binding)");
+    console.log("PASS closures over a variable declared outside the loop share it (9)");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopWhileInner();
+    await resolveNums(3, base);
+    check((await p) === 30, "loopWhileInner must resolve 30");
+    console.log("PASS stored while-loop closures capture loop-body lets per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopStrings();
+    await resolveNums(3, base);
+    check((await p) === "s0s1s2", "loopStrings must resolve s0s1s2");
+    console.log("PASS stored loop closures capture reference-typed values per iteration");
+  }
+
+  {
+    const objA = { tag: "a" };
+    const objB = { tag: "b" };
+    const p = loopApi.loopExtern();
+    await tick();
+    check(lObjDeferreds.length === 1, "loopExtern must issue getObj once first");
+    lObjDeferreds[0].resolve(objA);
+    await tick();
+    check(lObjDeferreds.length === 2, "loopExtern must issue getObj again");
+    lObjDeferreds[1].resolve(objB);
+    check((await p) === objB, "loopExtern must resolve the second iteration's object");
+    console.log("PASS stored loop closures capture externref values per iteration");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopInline();
+    await resolveNums(3, base);
+    check((await p) === 33, "loopInline must resolve 33");
+    console.log("PASS loop closures called in their iteration still work");
+  }
+
+  {
+    const base = lNumDeferreds.length;
+    const p = loopApi.loopNoCapture();
+    await resolveNums(3, base);
+    check((await p) === 21, "loopNoCapture must resolve 21");
+    console.log("PASS loop closures capturing nothing loop-scoped keep working");
+  }
+
+  {
+    const c = new loopApi.Counter(5);
+    const base = lNumDeferreds.length;
+    const p = c.loopStored();
+    await resolveNums(3, base);
+    check((await p) === 48, "Counter.loopStored must resolve 48");
+    c.dispose();
+    console.log("PASS loop closures in async methods capture per iteration");
+  }
 }
 
 console.log("ALL COORDINATOR TESTS PASS");

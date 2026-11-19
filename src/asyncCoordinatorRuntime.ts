@@ -86,6 +86,11 @@ export function createCoordinator(metadata) {
   let nextToken = 1;
   const joinMembers = new Map();
 
+  function needAlloc() {
+    if (!alloc) throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
+    return alloc;
+  }
+
   function newString(str) {
     if (alloc) return asyncNewString(memory, alloc, str);
     if (mintString) {
@@ -119,21 +124,148 @@ export function createCoordinator(metadata) {
     }
   }
 
-  function lower(value, kind, nullable) {
+  // Array layout constants from the generator (metadata.layout), from
+  // the stock bindings generator's __lowerArray/__liftArray.
+  const layout = metadata.layout;
+
+  function needPin() {
+    if (!pin || !unpin) throw new Error('async coordinator: this operation needs the wasm runtime (compile with --exportRuntime)');
+  }
+
+  // Lowers a value into linear memory at ptr, for array elements and
+  // class fields. References lower to a pointer first, then store as u32;
+  // scalars write at their own width, so i8 elements stay bytes.
+  function lowerToMemory(desc, ptr, value) {
+    const view = new DataView(memory.buffer);
+    switch (desc.kind) {
+      case 'i8': view.setInt8(ptr, value | 0); return;
+      case 'u8': view.setUint8(ptr, value >>> 0); return;
+      case 'i16': view.setInt16(ptr, value | 0, true); return;
+      case 'u16': view.setUint16(ptr, value >>> 0, true); return;
+      case 'i32': view.setInt32(ptr, value | 0, true); return;
+      case 'u32': view.setUint32(ptr, value >>> 0, true); return;
+      case 'i64': view.setBigInt64(ptr, typeof value === 'bigint' ? value : BigInt(value), true); return;
+      case 'u64': view.setBigUint64(ptr, typeof value === 'bigint' ? value : BigInt(value), true); return;
+      case 'f32': view.setFloat32(ptr, value, true); return;
+      case 'f64': view.setFloat64(ptr, value, true); return;
+      case 'bool': view.setUint8(ptr, value ? 1 : 0); return;
+      default: view.setUint32(ptr, lower(value, desc), true); return;
+    }
+  }
+
+  function liftFromMemory(desc, ptr) {
+    const view = new DataView(memory.buffer);
+    switch (desc.kind) {
+      case 'i8': return view.getInt8(ptr);
+      case 'u8': return view.getUint8(ptr);
+      case 'i16': return view.getInt16(ptr, true);
+      case 'u16': return view.getUint16(ptr, true);
+      case 'i32': return view.getInt32(ptr, true);
+      case 'u32': return view.getUint32(ptr, true);
+      case 'i64': return view.getBigInt64(ptr, true);
+      case 'u64': return view.getBigUint64(ptr, true);
+      case 'f32': return view.getFloat32(ptr, true);
+      case 'f64': return view.getFloat64(ptr, true);
+      case 'bool': return view.getUint8(ptr) !== 0;
+      default: return lift(view.getUint32(ptr, true), desc);
+    }
+  }
+
+  // Lowers a JS array to a wasm Array<T>: pin buffer + header while the
+  // elements lower (an element lowering may allocate and collect), then
+  // unpin. The stock bindings generator's __lowerArray shape exactly.
+  function lowerArray(value, desc) {
+    if (!Array.isArray(value)) throw new TypeError('async coordinator: expected an array');
+    needPin();
+    const length = value.length;
+    const buffer = pin(needAlloc()(length << desc.align, layout.arrayBufferId)) >>> 0;
+    const header = pin(needAlloc()(layout.arraySize, desc.id)) >>> 0;
+    const view = new DataView(memory.buffer);
+    view.setUint32(header + layout.bufferOffset, buffer, true);
+    view.setUint32(header + layout.dataStartOffset, buffer, true);
+    view.setUint32(header + layout.byteLengthOffset, length << desc.align, true);
+    view.setUint32(header + layout.lengthOffset, length, true);
+    for (let i = 0; i < length; ++i) lowerToMemory(desc.elem, buffer + (i << desc.align), value[i]);
+    unpin(buffer);
+    unpin(header);
+    return header;
+  }
+
+  function liftArray(ptr, desc) {
+    if (!ptr) return null;
+    const view = new DataView(memory.buffer);
+    const dataStart = view.getUint32(ptr + layout.dataStartOffset, true);
+    const length = view.getUint32(ptr + layout.lengthOffset, true);
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) values[i] = liftFromMemory(desc.elem, dataStart + (i << desc.align));
+    return values;
+  }
+
+  // StaticArray<T> has no header: the pointer is the payload, and the
+  // length is the runtime size at ptr - 4 (the OBJECT header) shifted
+  // by the element alignment, as in the bindings' __liftStaticArray.
+  function lowerStaticArray(value, desc) {
+    if (!Array.isArray(value)) throw new TypeError('async coordinator: expected an array');
+    needPin();
+    const length = value.length;
+    const ptr = pin(needAlloc()(length << desc.align, desc.id)) >>> 0;
+    for (let i = 0; i < length; ++i) lowerToMemory(desc.elem, ptr + (i << desc.align), value[i]);
+    unpin(ptr);
+    return ptr;
+  }
+
+  function liftStaticArray(ptr, desc) {
+    if (!ptr) return null;
+    const view = new DataView(memory.buffer);
+    const length = view.getUint32(ptr - 4, true) >>> desc.align;
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) values[i] = liftFromMemory(desc.elem, ptr + (i << desc.align));
+    return values;
+  }
+
+  // Lowers a plain JS object to a wasm class instance: __new the record,
+  // write each field at its offset, unpin. The stock bindings generator's
+  // __lowerRecord shape exactly; the class must be plain (the generator
+  // refuses anything else), so the fields are the whole state.
+  function lowerClass(value, desc) {
+    if (typeof value !== 'object') throw new TypeError('async coordinator: expected an object');
+    needPin();
+    const ptr = pin(needAlloc()(desc.shape.size, desc.shape.id)) >>> 0;
+    for (let i = 0; i < desc.shape.fields.length; ++i) {
+      const field = desc.shape.fields[i];
+      lowerToMemory(field.desc, ptr + field.offset, value[field.name]);
+    }
+    unpin(ptr);
+    return ptr;
+  }
+
+  function liftClass(ptr, desc) {
+    if (!ptr) return null;
+    const obj = {};
+    for (let i = 0; i < desc.shape.fields.length; ++i) {
+      const field = desc.shape.fields[i];
+      obj[field.name] = liftFromMemory(field.desc, ptr + field.offset);
+    }
+    return obj;
+  }
+
+  function lower(value, desc) {
     // A void value is always undefined: the promise resolved with no
-    // value, so there is nothing to check or convert.
-    if (kind === 'void') return undefined;
+    // value, so there is nothing to check or convert. This must precede
+    // the null check: a void await settles with undefined, which reads
+    // as null here and is not an error.
+    if (desc.kind === 'void') return undefined;
     if (value == null) {
-      if (!nullable) throw new TypeError('async coordinator: null is not a valid ' + kind + ' value');
+      if (!desc.nullable) throw new TypeError('async coordinator: null is not a valid ' + desc.kind + ' value');
       return 0;
     }
-    switch (kind) {
+    switch (desc.kind) {
       case 'string': {
         if (typeof value !== 'string') throw new TypeError('async coordinator: expected a string, got ' + typeof value);
         return newString(value);
       }
-      case 'i32': return value | 0;
-      case 'u32': return value >>> 0;
+      case 'i8': case 'i16': case 'i32': return value | 0;
+      case 'u8': case 'u16': case 'u32': return value >>> 0;
       case 'i64': case 'u64': return typeof value === 'bigint' ? value : BigInt(value);
       case 'f32': case 'f64': {
         if (typeof value !== 'number') throw new TypeError('async coordinator: expected a number, got ' + typeof value);
@@ -148,14 +280,17 @@ export function createCoordinator(metadata) {
         if (typeof value !== 'number') throw new TypeError('async coordinator: expected a wasm pointer, got ' + typeof value);
         return value;
       }
+      case 'array': return lowerArray(value, desc);
+      case 'staticarray': return lowerStaticArray(value, desc);
+      case 'class': return lowerClass(value, desc);
       case 'void': return undefined;
-      default: throw new Error('async coordinator: cannot lower a ' + kind + ' value');
+      default: throw new Error('async coordinator: cannot lower a ' + desc.kind + ' value');
     }
   }
 
   function lowerArgs(jsArgs, params) {
     return jsArgs.map(function (arg, i) {
-      return lower(arg, params[i].kind, params[i].nullable);
+      return lower(arg, params[i]);
     });
   }
 
@@ -186,7 +321,7 @@ export function createCoordinator(metadata) {
     const length = values.length;
     const buf = alloc(length << rest.align, 1);
     if (pin) { try { pin(buf); } catch (e) { /* pinning is best-effort; the header roots the buffer once built */ } }
-    const lowered = values.map(function (value) { return lower(value, rest.kind, rest.nullable); });
+    const lowered = values.map(function (value) { return lower(value, { kind: rest.kind, nullable: rest.nullable }); });
     let view;
     if (rest.float) view = rest.align === 2 ? new Float32Array(memory.buffer) : new Float64Array(memory.buffer);
     else if (rest.managed) view = new Uint32Array(memory.buffer);
@@ -206,12 +341,16 @@ export function createCoordinator(metadata) {
     return arr;
   }
 
-  function lift(value, kind, nullable) {
-    if (kind === 'string') {
+  function lift(value, desc) {
+    if (desc.kind === 'string') {
       if (!value) return null;
       return getString(value);
     }
-    if (kind === 'bool') return value !== 0;
+    if (desc.kind === 'bool') return value !== 0;
+    if (desc.kind === 'array') return liftArray(value, desc);
+    if (desc.kind === 'staticarray') return liftStaticArray(value, desc);
+    if (desc.kind === 'class') return liftClass(value, desc);
+    if (desc.kind === 'void') return undefined;
     return value;
   }
 
@@ -287,7 +426,7 @@ export function createCoordinator(metadata) {
     liveHandles.delete(task.handle);
     let result;
     try {
-      result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.resultKind, task.fn.resultNullable);
+      result = lift(wasmExports[task.fn.resultExport](task.handle), task.fn.result);
     } catch (e) {
       dropPin(task);
       if (task.parent) { deliverInnerFailure(task, e); return; }
@@ -339,7 +478,7 @@ export function createCoordinator(metadata) {
     const site = parent.fn.sites[innerTask.parentSite];
     let lowered;
     try {
-      lowered = lower(result, site.kind, site.nullable);
+      lowered = lower(result, site.desc);
     } catch (e) {
       settleError(parent, e);
       drain(innerTask.fn.fileBase);
@@ -479,7 +618,7 @@ export function createCoordinator(metadata) {
           }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             settled = true;
             failJoin(task, site, joinMessage(e));
@@ -519,7 +658,7 @@ export function createCoordinator(metadata) {
           }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             failJoin(task, site, joinMessage(e));
             return;
@@ -549,7 +688,7 @@ export function createCoordinator(metadata) {
           }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             try { wasmExports[site.errorExport](task.handle, i, newString(joinMessage(e))); } catch (e2) { /* keep counting */ }
             if (--remaining === 0) finishJoin(task, site);
@@ -589,7 +728,7 @@ export function createCoordinator(metadata) {
           }
           let lowered;
           try {
-            lowered = lower(v, site.kind, site.nullable);
+            lowered = lower(v, site.desc);
           } catch (e) {
             failJoin(task, site, joinMessage(e));
             return;
@@ -706,7 +845,7 @@ export function createCoordinator(metadata) {
       if (task.settled) return;
       let lowered;
       try {
-        lowered = lower(value, siteMeta.kind, siteMeta.nullable);
+        lowered = lower(value, siteMeta.desc);
       } catch (e) {
         failTask(task, site, e);
         return;
@@ -854,7 +993,7 @@ export function createCoordinator(metadata) {
         const task = activeTask;
         const args = new Array(arguments.length);
         for (let i = 0; i < arguments.length; ++i) {
-          args[i] = lift(arguments[i], imp.params[i].kind, imp.params[i].nullable);
+          args[i] = lift(arguments[i], imp.params[i]);
         }
         let result;
         try {

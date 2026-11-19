@@ -159,8 +159,11 @@ import {
   AsyncScope,
   AsyncRewriter,
   AsyncFail,
+  LoopEnvInfo,
   ASYNC_THIS_NAME,
   ASYNC_OUTER_NAME,
+  LOOP_ADAPTER_SLOTS,
+  LOOP_ENV_PARAM,
   ident,
   thisProp,
   intLit,
@@ -176,6 +179,7 @@ import {
   rewriteExpression,
   rewriteStatement,
   rewriteClosureMethod,
+  bindingRead,
   containsAwait,
   containsThisOrSuper,
   validateBody,
@@ -312,6 +316,20 @@ class AwaitTarget {
     public expectedTypeNode: TypeNode | null,
     /** Plain binary operator for a compound assignment, `Token.Equals` for `=`. */
     public binaryOp: Token
+  ) {}
+}
+
+/** One loop closure's per-iteration env, with the capture types resolved
+ *  at first encounter of its adapter identifier. `types`/`typeNodes` are
+ *  per capture, in capture order; externref captures have no env field
+ *  (reference-typed fields are not allowed) and are listed separately. */
+class LoopAdapterBuild {
+  constructor(
+    public info: LoopEnvInfo,
+    public method: MethodDeclaration,
+    public types: Type[],
+    public typeNodes: TypeNode[],
+    public extCaptures: string[]
   ) {}
 }
 
@@ -936,6 +954,13 @@ class AsyncFunctionTransform {
   private hasArrows: bool;
   /** Whether the state global is needed: adapters or extracted arrows. */
   private needsStateGlobal: bool;
+  /** Per-iteration envs of loop closures, by lifted method name. */
+  private loopEnvs = new Map<string, LoopEnvInfo>();
+  /** Per-iteration envs of loop closures, by adapter name. */
+  private loopInfos = new Map<string, LoopEnvInfo>();
+  /** Loop closures whose adapter was rewritten, by adapter name, with
+   *  capture types resolved for code generation. */
+  private loopBuilds = new Map<string, LoopAdapterBuild>();
   /** Module global holding the currently-stepping state object. */
   private stateGlobalName: string;
   /** QualName of the enclosing async function or method, for an
@@ -986,6 +1011,14 @@ class AsyncFunctionTransform {
     this.hasArrows = lift.arrows.length > 0;
     this.needsStateGlobal = this.hasAdapters || this.hasArrows;
     this.outerQual = outerQual;
+    let loopAdapterNames = Map_keys(lift.loopEnvs);
+    for (let i = 0, k = loopAdapterNames.length; i < k; ++i) {
+      let adapterName = loopAdapterNames[i];
+      let info = lift.loopEnvs.get(adapterName)!;
+      this.loopInfos.set(adapterName, info);
+      let method = lift.adapters.get(adapterName);
+      if (method) this.loopEnvs.set(method.name.text, info);
+    }
   }
 
   private get fail(): AsyncFail {
@@ -1097,11 +1130,17 @@ class AsyncFunctionTransform {
     // Any lifted closure whose adapter identifier never passed through
     // the rewrite hook (it should have) is rewritten now with the
     // top-level scope, so a missed body fails loudly instead of
-    // compiling with unresolved captures.
+    // compiling with unresolved captures. A loop closure cannot be
+    // rewritten here: its captured names are out of scope by now, and
+    // its capture call was never emitted.
     let adapters = this.adapters;
     if (adapters) {
       let remaining = Map_values(adapters);
       for (let i = 0, k = remaining.length; i < k; ++i) {
+        if (this.loopEnvs.has(remaining[i].name.text)) {
+          this.fail(`Loop closure '${remaining[i].name.text}' could not be rewritten`, this.declaration.name.range);
+          return TransformOutcome.Rejected;
+        }
         if (!rewriteClosureMethod(remaining[i], this.rewriter())) return TransformOutcome.Rejected;
       }
     }
@@ -1131,7 +1170,113 @@ class AsyncFunctionTransform {
   }
 
   private rewriter(): AsyncRewriter {
-    return { scope: this.scope, fail: this.fail, adapters: this.adapters };
+    return {
+      scope: this.scope,
+      fail: this.fail,
+      adapters: this.adapters,
+      loopEnvs: this.loopEnvs.size > 0 ? this.loopEnvs : null,
+      rewriteLoopAdapter: (adapterName: string, method: MethodDeclaration): Expression | null => {
+        return this.rewriteLoopAdapter(adapterName, method);
+      }
+    };
+  }
+
+  /** Prepends the slot-0 externref globals to the slot-0 adapter's method
+   *  call, matching the hidden externref parameters added above. The
+   *  lifter builds slot 0's adapter before externref-ness is known, so
+   *  its call is fixed up here once the captures are resolved. */
+  private prependLoopAdapterExtArgs(info: LoopEnvInfo, extCaptures: string[]): bool {
+    let range = this.range;
+    let adapterName = `${info.adapterBase}_0`;
+    let member = this.genParent.getMember(adapterName);
+    if (!member || member.kind != ElementKind.FunctionPrototype) {
+      this.fail(`Loop closure adapter '${adapterName}' could not be found`, range);
+      return false;
+    }
+    let declaration = <FunctionDeclaration>(<FunctionPrototype>member).declaration;
+    let body = declaration.body;
+    if (!body || body.kind != NodeKind.Block) {
+      this.fail(`Loop closure adapter '${adapterName}' has an unexpected body`, range);
+      return false;
+    }
+    let statements = (<BlockStatement>body).statements;
+    if (statements.length != 1 || statements[0].kind != NodeKind.Return) {
+      this.fail(`Loop closure adapter '${adapterName}' has an unexpected body`, range);
+      return false;
+    }
+    let value = (<ReturnStatement>statements[0]).value;
+    if (!value || value.kind != NodeKind.Call) {
+      this.fail(`Loop closure adapter '${adapterName}' has an unexpected body`, range);
+      return false;
+    }
+    let call = <CallExpression>value;
+    let args = new Array<Expression>();
+    for (let i = 0, k = extCaptures.length; i < k; ++i) {
+      args.push(ident(this.loopExtName(info.adapterBase, extCaptures[i], 0), range));
+    }
+    for (let i = 0, k = call.args.length; i < k; ++i) args.push(call.args[i]);
+    call.args = args;
+    return true;
+  }
+
+  /** Rewrites a loop closure's adapter identifier as a call to its capture
+   *  helper, snapshotting the current values of its captured names. The
+   *  lifted method body is rewritten first, with the enclosing scope still
+   *  live, so its captured names resolve to env fields. */
+  private rewriteLoopAdapter(adapterName: string, method: MethodDeclaration): Expression | null {
+    let info = this.loopInfos.get(adapterName);
+    if (!info) {
+      this.fail(`Loop closure '${adapterName}' has no per-iteration env`, method.name.range);
+      return null;
+    }
+    let range = method.name.range;
+    let types = new Array<Type>();
+    let typeNodes = new Array<TypeNode>();
+    let args = new Array<Expression>();
+    let extCaptures = new Array<string>();
+    for (let i = 0, k = info.captures.length; i < k; ++i) {
+      let name = info.captures[i];
+      let binding = this.scope.lookup(name);
+      if (!binding || binding.shadowed || !binding.type) {
+        this.fail(`Loop closure captures '${name}' that is not in scope here`, range);
+        return null;
+      }
+      let typeNode = typeToTypeNode(binding.type, range);
+      if (!typeNode) {
+        this.fail(`Loop closures cannot capture values of type '${binding.type.toString()}' yet`, range);
+        return null;
+      }
+      types.push(binding.type);
+      typeNodes.push(typeNode);
+      args.push(bindingRead(binding, range));
+      if (binding.spilled) extCaptures.push(name);
+    }
+    if (extCaptures.length > 0) {
+      // Externref captures cannot live in the env class (reference-typed
+      // fields are not allowed), so each becomes a hidden leading method
+      // parameter, fed from a per-slot externref global by the adapter.
+      // They precede the env parameter, so references to them in the
+      // method body resolve to the parameters.
+      let extParams = new Array<ParameterNode>();
+      for (let i = 0, k = extCaptures.length; i < k; ++i) {
+        extParams.push(new ParameterNode(
+          ParameterKind.Default,
+          ident(extCaptures[i], range),
+          namedType("externref", null, false, range),
+          null,
+          range
+        ));
+      }
+      let methodParams = method.signature.parameters;
+      let newParams = new Array<ParameterNode>();
+      for (let i = 0, k = extParams.length; i < k; ++i) newParams.push(extParams[i]);
+      for (let i = 0, k = methodParams.length; i < k; ++i) newParams.push(methodParams[i]);
+      method.signature.parameters = newParams;
+      if (!this.prependLoopAdapterExtArgs(info, extCaptures)) return null;
+    }
+    if (!rewriteClosureMethod(method, this.rewriter())) return null;
+    this.loopBuilds.set(adapterName, new LoopAdapterBuild(info, method, types, typeNodes, extCaptures));
+    return callExpr(ident(info.captureName, range), args, range);
   }
 
   // === Locals =====================================================================================
@@ -1178,7 +1323,9 @@ class AsyncFunctionTransform {
         spilled: true,
         slotField,
         range: nameRange,
-        shadowed: false
+        shadowed: false,
+        type,
+        envReceiver: ""
       });
       this.recordField(name, nameRange, "", true, slotField);
       return TransformOutcome.Transformed;
@@ -1202,7 +1349,9 @@ class AsyncFunctionTransform {
       spilled: false,
       slotField: "",
       range: nameRange,
-      shadowed: false
+      shadowed: false,
+      type,
+      envReceiver: ""
     });
     this.recordField(name, nameRange, fieldName, false, "");
     return TransformOutcome.Transformed;
@@ -1236,7 +1385,9 @@ class AsyncFunctionTransform {
       spilled: false,
       slotField: "",
       range,
-      shadowed: false
+      shadowed: false,
+      type: outerType,
+      envReceiver: ""
     });
     return TransformOutcome.Transformed;
   }
@@ -2124,7 +2275,7 @@ class AsyncFunctionTransform {
         if (!join) return;
         let status = this.emitJoin(join, (result: Expression): void => {
           if (this.returnType.kind != TypeKind.Void) {
-            this.emit(exprStmt(assignExpr(this.resultAccess(stmt.range), result, stmt.range)));
+            this.emitResultAssign(result, stmt.range);
           }
         }, breakTarget);
         if (status == JoinEmitOutcome.FailedInline) return;
@@ -2150,7 +2301,7 @@ class AsyncFunctionTransform {
       let rewritten = this.rewriteChecked(hoisted);
       if (!rewritten) return;
       if (this.returnType.kind != TypeKind.Void) {
-        this.emit(exprStmt(assignExpr(this.resultAccess(stmt.range), rewritten, stmt.range)));
+        this.emitResultAssign(rewritten, stmt.range);
       }
     }
     this.emitTerminal(stmt.range);
@@ -3996,17 +4147,24 @@ class AsyncFunctionTransform {
     this.emit(exprStmt(assignExpr(thisProp(binding!.field, range), this.pendAccess(site, range), range)));
   }
 
-  private emitReturnAssignment(site: AwaitSite, range: Range): void {
+  /** Stores a return value: through the result spill slot for externref
+      returns (the state class has no `__result` field for those), the
+      `__result` field otherwise. */
+  private emitResultAssign(value: Expression, range: Range): void {
     if (this.returnType.kind == TypeKind.Void) return;
     if (this.returnType.kind == TypeKind.Extern) {
       this.emit(exprStmt(callExpr(
         ident(SPILL_SET, range),
-        [ thisProp("__slot_result", range), this.pendAccess(site, range) ],
+        [ thisProp("__slot_result", range), value ],
         range
       )));
       return;
     }
-    this.emit(exprStmt(assignExpr(this.resultAccess(range), this.pendAccess(site, range), range)));
+    this.emit(exprStmt(assignExpr(this.resultAccess(range), value, range)));
+  }
+
+  private emitReturnAssignment(site: AwaitSite, range: Range): void {
+    this.emitResultAssign(this.pendAccess(site, range), range);
   }
 
   private emitTerminal(range: Range): void {
@@ -4122,6 +4280,25 @@ class AsyncFunctionTransform {
     if (this.needsStateGlobal) {
       if (this.hasNameCollision(this.stateGlobalName)) return false;
     }
+    let loopAdapterNames = Map_keys(this.loopBuilds);
+    for (let i = 0, k = loopAdapterNames.length; i < k; ++i) {
+      let adapterName = loopAdapterNames[i];
+      let build = this.loopBuilds.get(adapterName)!;
+      if (this.hasNameCollision(build.info.envClass)) return false;
+      if (this.hasNameCollision(build.info.captureName)) return false;
+      if (this.hasNameCollision(build.info.envsName)) return false;
+      if (this.hasNameCollision(build.info.fnsName)) return false;
+      if (this.hasNameCollision(build.info.slotName)) return false;
+      for (let i = 0, k = build.extCaptures.length; i < k; ++i) {
+        for (let s = 0; s < LOOP_ADAPTER_SLOTS; ++s) {
+          if (this.hasNameCollision(this.loopExtName(build.info.adapterBase, build.extCaptures[i], s))) return false;
+        }
+      }
+      // Slot 0's adapter is built by the lifter; the rest are built here.
+      for (let s = 1; s < LOOP_ADAPTER_SLOTS; ++s) {
+        if (this.hasNameCollision(`${build.info.adapterBase}_${s}`)) return false;
+      }
+    }
     if (this.slots.length > 0) {
       if (!this.ensureSpillPool()) return false;
     }
@@ -4134,6 +4311,12 @@ class AsyncFunctionTransform {
     declarations.push(this.buildLastHandleGetter());
     declarations.push(this.buildReclaim());
     if (this.needsStateGlobal) declarations.push(this.buildStateGlobal());
+    for (let i = 0, k = loopAdapterNames.length; i < k; ++i) {
+      let adapterName = loopAdapterNames[i];
+      let loopDeclarations = this.buildLoopAdapterSet(this.loopBuilds.get(adapterName)!);
+      if (!loopDeclarations) return false;
+      for (let j = 0, l = loopDeclarations.length; j < l; ++j) declarations.push(loopDeclarations[j]);
+    }
     for (let i = 0, k = this.sites.length; i < k; ++i) {
       let site = this.sites[i];
       if (site.isJoin) {
@@ -4731,6 +4914,281 @@ class AsyncFunctionTransform {
       ) ],
       range
     );
+  }
+
+  /** Copies the closure's own parameters out of the lifted method's
+   *  signature (its leading parameters are the hidden externref captures
+   *  and env). */
+  private loopClosureParams(method: MethodDeclaration, range: Range, skip: i32): ParameterNode[] {
+    let params = new Array<ParameterNode>();
+    let methodParams = method.signature.parameters;
+    for (let i = skip, k = methodParams.length; i < k; ++i) {
+      let parameter = methodParams[i];
+      params.push(new ParameterNode(
+        parameter.parameterKind,
+        ident(parameter.name.text, parameter.name.range),
+        parameter.type,
+        null,
+        parameter.range
+      ));
+    }
+    return params;
+  }
+
+  /** Module-global holding one loop closure's externref capture, per slot. */
+  private loopExtName(adapterBase: string, capture: string, slot: i32): string {
+    return `${adapterBase}_ext_${capture}_${slot}`;
+  }
+
+  /** Builds the env class, adapter table globals, capture helper, and
+   *  adapters for one loop closure. The capture helper snapshots the
+   *  current values into a fresh env, stores it in the next round-robin
+   *  slot, and returns that slot's adapter; each adapter forwards through
+   *  its slot's env. Slot 0's adapter is built by the lifter, so only
+   *  slots 1..31 are built here. */
+  private buildLoopAdapterSet(build: LoopAdapterBuild): Statement[] | null {
+    let range = this.range;
+    let info = build.info;
+    let method = build.method;
+    let envsName = info.envsName;
+    let fnsName = info.fnsName;
+    let slotName = info.slotName;
+    let declarations = new Array<Statement>();
+    let envMembers = new Array<DeclarationStatement>();
+    for (let i = 0, k = info.captures.length; i < k; ++i) {
+      if (build.extCaptures.indexOf(info.captures[i]) >= 0) continue;
+      let zero = zeroValue(build.types[i], build.typeNodes[i], range);
+      if (!zero) return null;
+      envMembers.push(new FieldDeclaration(
+        ident(info.captures[i], range), null, CommonFlags.None,
+        build.typeNodes[i], zero, -1, range
+      ));
+    }
+    declarations.push(new ClassDeclaration(
+      ident(info.envClass, range), null, CommonFlags.None,
+      null, null, null, envMembers, range
+    ));
+    let hiddenParams = 1 + build.extCaptures.length;
+    let closureParams = this.loopClosureParams(method, range, hiddenParams);
+    let fnType = new FunctionTypeNode(
+      this.loopClosureParams(method, range, hiddenParams),
+      method.signature.returnType,
+      null,
+      false,
+      range
+    );
+    let fnIdents = new Array<Expression>();
+    for (let s = 0; s < LOOP_ADAPTER_SLOTS; ++s) {
+      fnIdents.push(ident(`${info.adapterBase}_${s}`, range));
+    }
+    // One externref global per slot per externref capture: reference
+    // types cannot live in arrays or class fields, so each slot holds its
+    // capture in its own global, as the spill pool does. These must precede
+    // the adapter-function array below: compiling that array compiles the
+    // adapters, whose bodies read the ext globals, and a global assigned
+    // before its declaration is a compile error (TS2448).
+    for (let i = 0, k = build.extCaptures.length; i < k; ++i) {
+      let extGlobals = new Array<VariableDeclaration>();
+      for (let s = 0; s < LOOP_ADAPTER_SLOTS; ++s) {
+        extGlobals.push(new VariableDeclaration(
+          ident(this.loopExtName(info.adapterBase, build.extCaptures[i], s), range),
+          null, CommonFlags.None,
+          namedType("externref", null, false, range),
+          new NullExpression(range),
+          range
+        ));
+      }
+      declarations.push(new VariableStatement(null, extGlobals, range));
+    }
+    declarations.push(new VariableStatement(
+      null,
+      [
+        new VariableDeclaration(
+          ident(envsName, range), null, CommonFlags.None,
+          namedType("Array", [ namedType(info.envClass, null, false, range) ], false, range),
+          new NewExpression(
+            new TypeName(ident("Array", range), null, range),
+            [ namedType(info.envClass, null, false, range) ],
+            [ intLit(LOOP_ADAPTER_SLOTS, range) ],
+            range
+          ),
+          range
+        ),
+        new VariableDeclaration(
+          ident(fnsName, range), null, CommonFlags.None,
+          namedType("Array", [ fnType ], false, range),
+          new ArrayLiteralExpression(fnIdents, range),
+          range
+        ),
+        new VariableDeclaration(
+          ident(slotName, range), null, CommonFlags.None,
+          namedType("i32", null, false, range),
+          intLit(0, range),
+          range
+        )
+      ],
+      range
+    ));
+    let helperParams = new Array<ParameterNode>();
+    for (let i = 0, k = info.captures.length; i < k; ++i) {
+      helperParams.push(new ParameterNode(
+        ParameterKind.Default,
+        ident(info.captures[i], range),
+        build.typeNodes[i],
+        null,
+        range
+      ));
+    }
+    let helperBody = new Array<Statement>();
+    helperBody.push(new VariableStatement(
+      null,
+      [ new VariableDeclaration(
+        ident(LOOP_ENV_PARAM, range), null, CommonFlags.None,
+        namedType(info.envClass, null, false, range),
+        new NewExpression(
+          new TypeName(ident(info.envClass, range), null, range),
+          null,
+          [],
+          range
+        ),
+        range
+      ) ],
+      range
+    ));
+    for (let i = 0, k = info.captures.length; i < k; ++i) {
+      if (build.extCaptures.indexOf(info.captures[i]) >= 0) continue;
+      helperBody.push(exprStmt(assignExpr(
+        new PropertyAccessExpression(
+          ident(LOOP_ENV_PARAM, range),
+          ident(info.captures[i], range),
+          range
+        ),
+        ident(info.captures[i], range),
+        range
+      )));
+    }
+    helperBody.push(new VariableStatement(
+      null,
+      [ new VariableDeclaration(
+        ident("__async_slot", range), null, CommonFlags.None,
+        namedType("i32", null, false, range),
+        ident(slotName, range),
+        range
+      ) ],
+      range
+    ));
+    for (let i = 0, k = build.extCaptures.length; i < k; ++i) {
+      let capture = build.extCaptures[i];
+      let cases = new Array<SwitchCase>();
+      for (let s = 0; s < LOOP_ADAPTER_SLOTS; ++s) {
+        cases.push(new SwitchCase(
+          intLit(s, range),
+          [
+            exprStmt(assignExpr(
+              ident(this.loopExtName(info.adapterBase, capture, s), range),
+              ident(capture, range),
+              range
+            )),
+            new BreakStatement(null, range)
+          ],
+          range
+        ));
+      }
+      cases.push(new SwitchCase(
+        null,
+        [ new BreakStatement(null, range) ],
+        range
+      ));
+      helperBody.push(new SwitchStatement(ident("__async_slot", range), cases, range));
+    }
+    helperBody.push(exprStmt(assignExpr(
+      new ElementAccessExpression(
+        ident(envsName, range),
+        ident("__async_slot", range),
+        range
+      ),
+      ident(LOOP_ENV_PARAM, range),
+      range
+    )));
+    helperBody.push(exprStmt(assignExpr(
+      ident(slotName, range),
+      new BinaryExpression(
+        Token.Percent,
+        new BinaryExpression(
+          Token.Plus,
+          ident("__async_slot", range),
+          intLit(1, range),
+          range
+        ),
+        intLit(LOOP_ADAPTER_SLOTS, range),
+        range
+      ),
+      range
+    )));
+    helperBody.push(new ReturnStatement(
+      new ElementAccessExpression(
+        ident(fnsName, range),
+        ident("__async_slot", range),
+        range
+      ),
+      range
+    ));
+    declarations.push(new FunctionDeclaration(
+      ident(info.captureName, range),
+      null,
+      CommonFlags.None,
+      null,
+      new FunctionTypeNode(helperParams, fnType, null, false, range),
+      blockStmt(helperBody, range),
+      ArrowKind.None,
+      range
+    ));
+    for (let s = 1; s < LOOP_ADAPTER_SLOTS; ++s) {
+      let argIdents = new Array<Expression>();
+      for (let i = 0, k = build.extCaptures.length; i < k; ++i) {
+        argIdents.push(ident(this.loopExtName(info.adapterBase, build.extCaptures[i], s), range));
+      }
+      argIdents.push(new ElementAccessExpression(
+        ident(envsName, range),
+        intLit(s, range),
+        range
+      ));
+      for (let i = 0, k = closureParams.length; i < k; ++i) {
+        argIdents.push(ident(closureParams[i].name.text, closureParams[i].name.range));
+      }
+      let stateAccess = new CallExpression(
+        ident("changetype", range),
+        [ namedType(this.stateClassName, null, false, range) ],
+        [ ident(this.stateGlobalName, range) ],
+        range
+      );
+      declarations.push(new FunctionDeclaration(
+        ident(`${info.adapterBase}_${s}`, range),
+        null,
+        CommonFlags.None,
+        null,
+        new FunctionTypeNode(
+          this.loopClosureParams(method, range, hiddenParams),
+          method.signature.returnType,
+          null,
+          false,
+          range
+        ),
+        blockStmt([
+          new ReturnStatement(
+            callExpr(
+              new PropertyAccessExpression(stateAccess, ident(method.name.text, range), range),
+              argIdents,
+              range
+            ),
+            range
+          )
+        ], range),
+        ArrowKind.None,
+        range
+      ));
+    }
+    return declarations;
   }
 
   private pendingName(site: i32): string {
@@ -5331,7 +5789,7 @@ class AsyncFunctionTransform {
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
-      let described = describeParamsAndRest(ctor.signature, className);
+      let described = describeParamsAndRest(this.program, ctor.signature, className);
       if (described.reason) {
         warnSkipped(this.program, this.prototype, described.reason, []);
         return null;

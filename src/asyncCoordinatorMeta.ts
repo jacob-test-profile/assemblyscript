@@ -8,6 +8,7 @@
 
 import {
   NodeKind,
+  Source,
   SourceKind
 } from "./ast";
 
@@ -25,6 +26,8 @@ import {
   Function,
   FunctionPrototype,
   ClassPrototype,
+  Class,
+  PropertyPrototype,
   Element,
   ElementKind,
   File
@@ -41,10 +44,26 @@ import {
   TypeFlags
 } from "./types";
 
-/** A value kind the coordinator can lower/lift across the boundary. */
+/** A value kind the coordinator can lower/lift across the boundary.
+ *  Array and class descs carry what the runtime needs to build them:
+ *  an array carries its class id, element alignment and element desc;
+ *  a class carries its record shape (runtime id, byte size, fields). */
 export interface ValueDesc {
   kind: string;
   nullable: boolean;
+  elem?: ValueDesc;
+  id?: i32;
+  align?: i32;
+  shape?: ClassShape;
+}
+
+/** The record shape of a plain class: what `__new` and the field
+ *  offsets need. Mirrors the stock bindings generator's `__lowerRecord`
+ *  (`src/bindings/js.ts`): only plain objects lower this way. */
+export interface ClassShape {
+  id: i32;
+  size: i32;
+  fields: Array<{ name: string, offset: i32, desc: ValueDesc }>;
 }
 
 /** Metadata for a rest parameter: how the runtime builds the collected
@@ -72,10 +91,11 @@ export interface RestDesc {
  *  or another: the inner task's handle comes from the pending export, and
  *  the inner function is named by innerExportName (its file-qualified
  *  `fileBase#qualName` key when it is exported, else the generated name
- *  the inners map is keyed by). */
+ *  the inners map is keyed by).
+ *  `desc` is the full value description: array and class await values
+ *  carry their element/field descs, so the runtime can lower them. */
 export interface SiteMeta {
-  kind: string;
-  nullable: boolean;
+  desc: ValueDesc;
   join: boolean;
   nested: boolean;
   resumeExport: string | null;
@@ -106,8 +126,7 @@ export interface FunctionMeta {
   varargs: boolean;
   /** Rest-element description, or `null` when there is no rest param. */
   rest: RestDesc | null;
-  resultKind: string;
-  resultNullable: boolean;
+  result: ValueDesc;
   statusExport: string;
   resultExport: string;
   errorExport: string;
@@ -163,8 +182,7 @@ export interface ImportMeta {
   module: string;
   name: string;
   params: ValueDesc[];
-  resultKind: string;
-  resultNullable: boolean;
+  result: ValueDesc;
   /** Set when the import cannot be driven: the runtime installs a stub
    *  that rejects with this reason instead of calling the binding. */
   unsupported?: string;
@@ -210,8 +228,17 @@ export function sanitizeName(name: string): string {
   return out;
 }
 
-/** Maps a resolved type to a coordinator value kind, or `null` if unsupported. */
-export function describeType(type: Type): ValueDesc | null {
+/** Maps a resolved type to a coordinator value description, or `null`
+ *  if it cannot be lowered/lifted. Arrays and plain classes are
+ *  described recursively, mirroring the stock bindings generator's
+ *  layouts (`src/bindings/js.ts`): an array carries its class id,
+ *  element alignment and element desc; a plain class carries its record
+ *  shape. `seen` guards the recursion: a class whose shape references
+ *  itself cannot be described as finite JSON, so it is refused.
+ *  Externref inside an array or a class field is refused too: an
+ *  externref stored in memory is a table index, not the JS object, so
+ *  the runtime could not lift it back. */
+export function describeType(program: Program, type: Type, seen: Set<i32> = new Set<i32>()): ValueDesc | null {
   let nullable = (type.flags & TypeFlags.Nullable) != 0;
   let base = nullable ? type.nonNullableType : type;
   // Class types are Usize-based, so the String class must be recognised
@@ -221,16 +248,38 @@ export function describeType(type: Type): ValueDesc | null {
     if (classReference.prototype.name == CommonNames.String) {
       return { kind: "string", nullable };
     }
-    return null;
+    // A Promise is a token, not data: its heap object holds no value the
+    // coordinator can rebuild, and its identity is the member token for
+    // joins. Refuse it so callers fall back to the pointer passthrough
+    // (inner results) or stay loud (top-level values). Without this, the
+    // empty Promise stub describes as a plain class and an
+    // Array<Promise<T>> lifts to an array of empty objects, losing the
+    // member tokens.
+    if (classReference.prototype.name == CommonNames.Promise) {
+      return null;
+    }
+    if (classReference.extendsPrototype(program.arrayPrototype)) {
+      return describeArray(program, classReference, "array", nullable, seen);
+    }
+    if (classReference.extendsPrototype(program.staticArrayPrototype)) {
+      return describeArray(program, classReference, "staticarray", nullable, seen);
+    }
+    if (
+      classReference.extendsPrototype(program.arrayBufferInstance.prototype) ||
+      classReference.extendsPrototype(program.arrayBufferViewInstance.prototype)
+    ) {
+      return null;
+    }
+    return describeClass(program, classReference, nullable, seen);
   }
   switch (base.kind) {
     case TypeKind.Bool: return { kind: "bool", nullable };
-    case TypeKind.I8:
-    case TypeKind.I16:
+    case TypeKind.I8: return { kind: "i8", nullable };
+    case TypeKind.I16: return { kind: "i16", nullable };
     case TypeKind.I32:
     case TypeKind.Isize: return { kind: "i32", nullable };
-    case TypeKind.U8:
-    case TypeKind.U16:
+    case TypeKind.U8: return { kind: "u8", nullable };
+    case TypeKind.U16: return { kind: "u16", nullable };
     case TypeKind.U32:
     case TypeKind.Usize: return { kind: "u32", nullable };
     case TypeKind.I64: return { kind: "i64", nullable };
@@ -259,12 +308,99 @@ export function describePointerType(type: Type): ValueDesc | null {
   if (classReference.prototype.name == CommonNames.String) return null;
   return { kind: "pointer", nullable };
 }
+/** Describes an Array<T> or StaticArray<T>: the element desc decides
+ *  the element width, so i8 elements lower as bytes, not words. */
+function describeArray(
+  program: Program,
+  classReference: Class,
+  kind: string,
+  nullable: boolean,
+  seen: Set<i32>
+): ValueDesc | null {
+  let elemType = classReference.getArrayValueType();
+  let elem = describeType(program, elemType, seen);
+  if (!elem) return null;
+  if (elem.kind == "externref") return null;
+  return {
+    kind,
+    nullable,
+    id: classReference.id,
+    align: elemType.alignLog2,
+    elem
+  };
+}
+
+/** Describes a plain class as a record shape, or `null` when it is not
+ *  plain, when its shape is recursive, or when a field cannot be
+ *  described. Only `isField` properties carry data; methods and
+ *  accessors are not stored. */
+function describeClass(
+  program: Program,
+  classReference: Class,
+  nullable: boolean,
+  seen: Set<i32>
+): ValueDesc | null {
+  if (!isPlainClass(classReference)) return null;
+  let id = classReference.id;
+  if (seen.has(id)) return null;
+  seen.add(id);
+  let fields: Array<{ name: string, offset: i32, desc: ValueDesc }> = [];
+  let members = classReference.members;
+  if (members) {
+    for (let name of members.keys()) {
+      let member = members.get(name)!;
+      if (member.kind != ElementKind.PropertyPrototype) continue;
+      let property = (<PropertyPrototype>member).instance;
+      if (!property || !property.isField) continue;
+      if (property.memoryOffset < 0) {
+        seen.delete(id);
+        return null;
+      }
+      let desc = describeType(program, property.type, seen);
+      if (!desc || desc.kind == "externref") {
+        seen.delete(id);
+        return null;
+      }
+      fields.push({ name, offset: property.memoryOffset, desc });
+    }
+  }
+  seen.delete(id);
+  return {
+    kind: "class",
+    nullable,
+    shape: {
+      id,
+      size: classReference.nextMemoryOffset,
+      fields
+    }
+  };
+}
+
+/** The stock bindings generator's plain-object rule
+ *  (`src/bindings/js.ts`, `isPlainObject`): a class whose data is
+ *  exactly its declared fields — no non-Object base, no explicit
+ *  constructor, no private or protected members. Anything else keeps
+ *  its state somewhere the coordinator cannot rebuild from a JS object,
+ *  so it stays skipped with a warning. */
+function isPlainClass(clazz: Class): bool {
+  if (clazz.base && !clazz.prototype.implicitlyExtendsObject) return false;
+  let members = clazz.members;
+  if (members) {
+    for (let member of members.values()) {
+      if (member.isAny(CommonFlags.Private | CommonFlags.Protected)) return false;
+      if (member.is(CommonFlags.Constructor)) {
+        if (member.declaration.range != Source.native.range) return false;
+      }
+    }
+  }
+  return true;
+}
 
 /** Describes every parameter type, or `null` with the reason when one is unsupported. */
-export function describeParams(types: Type[], owner: string): { params: ValueDesc[], reason: string | null } {
+export function describeParams(program: Program, types: Type[], owner: string): { params: ValueDesc[], reason: string | null } {
   let out: ValueDesc[] = [];
   for (let i = 0, k = types.length; i < k; ++i) {
-    let desc = describeType(types[i]);
+    let desc = describeType(program, types[i]);
     if (!desc) {
       return {
         params: out,
@@ -350,12 +486,13 @@ function describeRestElement(element: Type): RestDesc | null {
  *  parameters (the compiler's own stub condition): the runtime must set
  *  `__setArgumentsLength` before the entry call. */
 export function describeParamsAndRest(
+  program: Program,
   signature: Signature,
   owner: string
 ): { params: ValueDesc[], rest: RestDesc | null, varargs: boolean, reason: string | null } {
   let types = signature.parameterTypes;
   let fixed = signature.hasRest ? types.slice(0, types.length - 1) : types;
-  let params = describeParams(fixed, owner);
+  let params = describeParams(program, fixed, owner);
   if (params.reason) {
     return { params: params.params, rest: null, varargs: false, reason: params.reason };
   }

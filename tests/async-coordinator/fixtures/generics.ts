@@ -2,9 +2,9 @@
 // generated coordinator. Each instantiation is a separate exported clone
 // (`id_i32`, `id_<string>`, `withHandle_<externref>`); `runGeneric`,
 // `runHandle` and `runBox` await them as nested tasks. `runPoint` awaits
-// a class-typed instantiation, which the coordinator cannot drive (the
-// pre-existing class-await limit): it is transformed and compilable, but
-// has no JS method — the test pins that absence.
+// a class-typed instantiation, driven through the recursive class desc
+// (close-gaps Group 5b): the nested task lifts the Point to JS and the
+// outer resume lowers it back, so q.x survives the round trip.
 //@ external("env", "fetchValue")
 declare function fetchValue(): Promise<i32>;
 //@ external("env", "fetchHandle")
