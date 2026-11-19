@@ -757,10 +757,11 @@ export function transformAsyncWorkItem(
     // Static methods stay unbound: toBound asserts Instance, and a
     // static has no receiver to bind.
     if (!item.isStatic) transformPrototype = prototype.toBound(assert(classInstance));
-  } else if (prototype.parent.kind == ElementKind.Namespace) {
-    fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
-    return;
   }
+  // A namespaced function transforms like a top-level one: its protocol
+  // members register under the file, and generate() emits a top-level
+  // entry alias the coordinator can drive. A generic clone arrives here
+  // with the namespace-prefixed qualName and file genParent the hook set.
   if (!liftThisInAsyncBody(program, transformPrototype, fail, item.isExtracted)) return;
   let fileBase = sanitizeName(file.source.simplePath);
   let ctx: LiftContext = {
@@ -995,8 +996,12 @@ class AsyncFunctionTransform {
     // at file level, not under the namespace: stock asc does not export
     // namespace members, so protocol/entry/_new exports would be
     // unreachable from the coordinator. The qualName carries the
-    // namespace path, so the generated names stay unique.
-    this.genParent = isMethod && receiverClass && receiverClass.parent.kind == ElementKind.Namespace
+    // namespace path, so the generated names stay unique. A plain
+    // namespaced function normalizes the same way, so a caller passing
+    // the namespace as genParent (the generic hook's clone path) lands
+    // its protocol members under the file like the main loop does.
+    let inNamespace = !isMethod && namespacePathOf(prototype).length > 0;
+    this.genParent = inNamespace || (isMethod && receiverClass && receiverClass.parent.kind == ElementKind.Namespace)
       ? file
       : genParent;
     this.isMethod = isMethod;

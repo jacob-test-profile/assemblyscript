@@ -852,9 +852,17 @@ export function ensureAsyncGenericInstance(
     genParent = receiverClass.parent;
   } else {
     mangled = mangleGenericName(prototype.name, combined);
-    qualName = mangled;
+    // A namespaced clone qualifies like a plain namespaced function
+    // (`NS_id_i32`): the coordinator keys protocol members and the entry
+    // alias by qualNameOf, which prefixes the namespace path.
+    let path = namespacePathOf(prototype);
+    let prefix = path.length > 0 ? path.join("_") + "_" : "";
+    qualName = prefix + mangled;
     registerParent = prototype.parent;
-    genParent = prototype.parent;
+    // The clone itself registers under its namespace, but its protocol
+    // members register under the file, like a plain namespaced function's
+    // in the main loop: stock asc does not export namespace members.
+    genParent = path.length > 0 ? assert(owningFile(prototype)) : prototype.parent;
   }
   let file = owningFile(prototype);
   if (!file) {
