@@ -151,23 +151,42 @@ export interface FunctionMeta {
  *  `params` describes only the declared params: the receiver is a raw
  *  pointer the runtime prepends, never a described value. A static
  *  method has no receiver: the runtime puts it on the wrapper
- *  constructor instead of the prototype. */
+ *  constructor instead of the prototype. `className` is the JS wrapper
+ *  class name: the plain class name, or the mangled instantiated name
+ *  for a generic class (`Box_i32`); `classKey` groups methods of one
+ *  wrapper (one per class instantiation); `classPath` is the namespace
+ *  path the wrapper lives under (`[]` for a top-level class). */
 export interface MethodMeta extends FunctionMeta {
   exportName: null;
   /** AS method name, e.g. `add`: the runtime puts the Promise-returning
    *  method on the wrapper prototype under this name. It is not derived
-   *  from entryExport — the fileBase in there may contain underscores. */
+   *  from entryExport — the fileBase in there may contain underscores.
+   *  For a generic class or method the name is the mangled clone name
+   *  (`get_i32`), matching the generic-function spelling (`id_i32`). */
   name: string;
   /** Whether the method is static (driven without a receiver). */
   isStatic: boolean;
   /** `__async_<file>_<Class>_<method>_entry` (chunk A). */
   entryExport: string;
+  /** JS wrapper class name: plain class name, or mangled instantiated
+   *  name for a generic class. */
+  className: string;
+  /** Grouping key for one wrapper: namespace path + className. */
+  classKey: string;
+  /** Namespace path segments the wrapper lives under. */
+  classPath: string[];
 }
 
 /** Metadata for one exported class with drivable async methods. */
 export interface ClassMeta {
   name: string;
-  /** `__async_<file>_<Class>_new` (chunk A). */
+  /** Namespace path segments the wrapper class lives under (`[]` for a
+   *  top-level class): the runtime places it at `api.NS.C`, mirroring
+   *  namespaced functions. */
+  path?: string[];
+  /** `__async_<file>_<Class>_new` (chunk A): the namespace path and the
+   *  instantiation's type args are part of the export name
+   *  (`__async_<file>_NS_H_new`, `__async_<file>_Box_i32_new`). */
   newExport: string;
   newParams: ValueDesc[];
   /** True when the constructor takes optional or rest parameters. */
@@ -532,15 +551,36 @@ export function describeParamsAndRest(
 
 /** Qualified name used for all generated names: `Class_method` for a bound
  *  method prototype (the transform binds methods to the resolved class, so
- *  the parent chain carries the class), `NS_take` for a function in a
- *  namespace (the path disambiguates same-named functions in different
- *  namespaces), the plain name otherwise. */
+ *  the parent chain carries the class), `NS_C_method` for a method on a
+ *  class in a namespace (the path disambiguates same-named classes in
+ *  different namespaces), `NS_take` for a function in a namespace (the
+ *  path disambiguates same-named functions in different namespaces), the
+ *  plain name otherwise. For a generic clone the prototype name is
+ *  already the mangled clone name (`Box_get_i32`). */
 export function qualNameOf(prototype: FunctionPrototype): string {
   let cls = methodClassOf(prototype);
-  if (cls) return cls.name + "_" + prototype.name;
+  if (cls) {
+    let path = namespacePathOf(cls);
+    let prefix = path.length > 0 ? path.join("_") + "_" : "";
+    return prefix + cls.name + "_" + prototype.name;
+  }
   let path = namespacePathOf(prototype);
   if (path.length > 0) return path.join("_") + "_" + prototype.name;
   return prototype.name;
+}
+
+/** Whether an element is exported through its whole namespace chain:
+ *  the element and every enclosing namespace carry `Export`. A class or
+ *  function in a non-exported namespace stays inner-only, like a
+ *  non-exported top-level element. */
+export function exportedThroughNamespaces(element: Element): bool {
+  if (!element.is(CommonFlags.Export)) return false;
+  let current = element.parent;
+  while (current && current.kind == ElementKind.Namespace) {
+    if (!current.is(CommonFlags.Export)) return false;
+    current = current.parent;
+  }
+  return true;
 }
 
 /** Finds the file owning an element, walking up through namespaces. */

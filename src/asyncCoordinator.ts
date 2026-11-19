@@ -16,6 +16,7 @@ import {
   Function,
   FunctionPrototype,
   ClassPrototype,
+  Class,
   Element,
   ElementKind
 } from "./program";
@@ -53,8 +54,13 @@ import {
   qualNameOf,
   methodClassOf,
   isStaticMethod,
-  namespacePathOf
+  namespacePathOf,
+  exportedThroughNamespaces
 } from "./asyncCoordinatorMeta";
+
+import {
+  mangleGenericName
+} from "./asyncRewrite";
 
 /** Builds metadata for one transformed async function, or `null` (with a
  *  warning) when it cannot be driven. Non-exported functions are skipped
@@ -255,7 +261,12 @@ function buildFunctionMeta(
  *  or `null` when it cannot be driven. A method on a non-exported class
  *  is skipped silently by design (no wrapper class: the class is not
  *  nameable from JS, so its methods stay reachable only as nested
- *  inners); any other failure warns.
+ *  inners); a namespaced class counts as exported when the class and
+ *  every enclosing namespace carry `Export`. A method on a generic class
+ *  is resolved with its type args (the clone's `thisType` gives
+ *  `Box<i32>`) and lands on the wrapper for that instantiation, one
+ *  wrapper per instantiation, under the mangled clone name. Any other
+ *  failure warns.
  *  The resolved signature's parameterTypes are the declared params only —
  *  the receiver lives in signature.thisType — so they describe as-is and
  *  the runtime prepends the raw pointer. A static method has no receiver
@@ -267,18 +278,21 @@ function buildMethodMeta(
 ): MethodMeta | null {
   let cls = methodClassOf(prototype);
   if (!cls) return null;
-  // A method on a generic class is transformed per instantiation and is
-  // drivable through its entry export, but the generated wrapper cannot
-  // name the instantiated class yet (Group 4): skip it silently, exactly
-  // like a method on a non-exported class.
-  let typeParameters = cls.typeParameterNodes;
-  if (typeParameters && typeParameters.length > 0) return null;
   let file = owningFile(prototype);
   if (!file) {
     warnSkipped(program, prototype, "it has no owning file", notes);
     return null;
   }
-  if (!findExportName(program, file, cls)) return null;
+  if (!findExportName(program, file, cls) && !exportedThroughNamespaces(cls)) return null;
+  let className = cls.name;
+  let instance = program.resolver.resolveFunction(prototype, null, new Map(), ReportMode.Swallow);
+  let thisType = instance ? instance.signature.thisType : null;
+  let thisClass = thisType ? thisType.getClass() : null;
+  let typeArgs = thisClass ? thisClass.typeArguments : null;
+  if (typeArgs && typeArgs.length > 0) {
+    className = mangleGenericName(cls.name, typeArgs);
+  }
+  let classPath = namespacePathOf(cls);
   let qualName = qualNameOf(prototype);
   let meta = buildFunctionMeta(program, prototype, notes, true, qualName, file);
   if (!meta) return null;
@@ -297,22 +311,36 @@ function buildMethodMeta(
     exportName: null,
     name: prototype.name,
     isStatic: isStaticMethod(prototype),
-    entryExport: "__async_" + meta.fileBase + "_" + qualName + "_entry"
+    entryExport,
+    className,
+    classKey: classPath.length > 0 ? classPath.join("/") + "/" + className : className,
+    classPath
   };
 }
 
 /** Builds metadata for one exported class from its drivable async methods,
  *  or `null` (with a warning) when the constructor cannot be driven: the
  *  whole class is skipped, since the wrapper cannot be constructed. A
- *  class with no explicit constructor takes no `new` params. */
+ *  class with no explicit constructor takes no `new` params. The wrapper
+ *  name, namespace path and `_new` export come from the methods (one
+ *  wrapper per class instantiation, namespaced under its path);
+ *  `firstPrototype` resolves the constructor off the instantiated class
+ *  when the methods carry one — a generic class resolved with null type
+ *  args leaves the type parameters in the signature, which describe as
+ *  nothing — falling back to the plain class for static-only classes,
+ *  whose methods have no receiver type. */
 function buildClassMeta(
   program: Program,
   classPrototype: ClassPrototype,
   methods: MethodMeta[],
-  notes: string[]
+  notes: string[],
+  firstPrototype: FunctionPrototype
 ): ClassMeta | null {
   let fileBase = methods[0].fileBase;
-  let name = classPrototype.name;
+  let name = methods[0].className;
+  let path = methods[0].classPath;
+  let classQual = (path.length > 0 ? path.join("_") + "_" : "") + name;
+  let newExport = "__async_" + fileBase + "_" + classQual + "_new";
   let newParams: ValueDesc[] = [];
   let newVarargs = false;
   let newRest: RestDesc | null = null;
@@ -321,7 +349,13 @@ function buildClassMeta(
     // The constructor prototype is flagged Instance but unbound, so
     // resolveFunction asserts on it: resolve the class instead and take
     // the constructor instance the resolver links (resolver.ts).
-    let classInstance = program.resolver.resolveClass(classPrototype, null, new Map(), ReportMode.Swallow);
+    let classInstance: Class | null = null;
+    let methodInstance = program.resolver.resolveFunction(firstPrototype, null, new Map(), ReportMode.Swallow);
+    let thisType = methodInstance ? methodInstance.signature.thisType : null;
+    if (thisType) classInstance = thisType.getClass();
+    if (!classInstance) {
+      classInstance = program.resolver.resolveClass(classPrototype, null, new Map(), ReportMode.Swallow);
+    }
     if (!classInstance) {
       warnSkipped(program, ctor, "its class cannot be resolved", notes);
       return null;
@@ -339,22 +373,26 @@ function buildClassMeta(
     newParams = params.params;
     newVarargs = params.varargs;
     newRest = params.rest;
-    // The transform skips _new when the constructor cannot be driven
-    // through it (e.g. a default value referencing `this`): without it
-    // the wrapper cannot be constructed, so the whole class is skipped.
-    let file = owningFile(classPrototype);
-    let newExport = "__async_" + fileBase + "_" + name + "_new";
-    if (file) {
-      let newMember = file.getMember(newExport);
-      if (!newMember || newMember.kind != ElementKind.FunctionPrototype) {
-        warnSkipped(program, ctor, "its generated _new was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
-        return null;
-      }
+  }
+  // The transform skips _new when the constructor cannot be driven
+  // through it (e.g. a default value referencing `this`, or a generic
+  // class with no instantiation to construct): without it the wrapper
+  // cannot be constructed, so the whole class is skipped. The check
+  // applies with an implicit constructor too — the transform emits _new
+  // for any transformed method of a drivable class, so a missing _new
+  // always means the class is not constructible through the coordinator.
+  let file = owningFile(classPrototype);
+  if (file) {
+    let newMember = file.getMember(newExport);
+    if (!newMember || newMember.kind != ElementKind.FunctionPrototype) {
+      warnSkipped(program, firstPrototype, "its generated _new was not emitted, so it is not driven (see the earlier warning for the reason)", notes);
+      return null;
     }
   }
   return {
     name,
-    newExport: "__async_" + fileBase + "_" + name + "_new",
+    path,
+    newExport,
     newParams,
     newVarargs,
     newRest,
@@ -634,21 +672,28 @@ export function buildAsyncCoordinator(program: Program): string | null {
   }
   let inners = resolveNestedInners(program, combined, notes);
   let functions: FunctionMeta[] = [];
-  let keptMethods = new Map<ClassPrototype, MethodMeta[]>();
+  let keptMethods = new Map<string, MethodMeta[]>();
+  let keptClasses = new Map<string, ClassPrototype>();
+  let keptFirst = new Map<string, FunctionPrototype>();
   for (let i = 0, k = combined.length; i < k; ++i) {
     let entry = combined[i];
     let classPrototype = classOf.get(entry.prototype);
     if (classPrototype) {
-      let list = keptMethods.get(classPrototype);
-      if (!list) keptMethods.set(classPrototype, list = []);
+      let key = (<MethodMeta>entry.meta).classKey;
+      let list = keptMethods.get(key);
+      if (!list) {
+        keptMethods.set(key, list = []);
+        keptClasses.set(key, classPrototype);
+        keptFirst.set(key, entry.prototype);
+      }
       list.push(<MethodMeta>entry.meta);
     } else {
       functions.push(entry.meta);
     }
   }
   let classes: ClassMeta[] = [];
-  for (let classPrototype of keptMethods.keys()) {
-    let classMeta = buildClassMeta(program, classPrototype, keptMethods.get(classPrototype)!, notes);
+  for (let key of keptMethods.keys()) {
+    let classMeta = buildClassMeta(program, keptClasses.get(key)!, keptMethods.get(key)!, notes, keptFirst.get(key)!);
     if (classMeta) classes.push(classMeta);
   }
   if (functions.length == 0 && classes.length == 0) return null;

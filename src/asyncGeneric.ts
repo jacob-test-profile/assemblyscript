@@ -121,7 +121,8 @@ import {
 } from "./asyncArrowExtract";
 
 import {
-  owningFile
+  owningFile,
+  namespacePathOf
 } from "./asyncCoordinatorMeta";
 
 /** Deep-copies a function or method declaration, replacing every
@@ -798,16 +799,13 @@ export function ensureAsyncGenericInstance(
   classInstance: Class | null
 ): Function | null {
   let declaration = <FunctionDeclaration>prototype.declaration;
-  let isMethod = prototype.is(CommonFlags.Instance);
-  if (
-    declaration.kind == NodeKind.MethodDeclaration &&
-    !isMethod
-  ) {
-    // Static async methods are not transformed at all today (the
-    // compiler guard rejects them); the generic form is no different.
-    failGeneric(program, prototype, "Async static methods are not yet supported");
-    return null;
-  }
+  // A static method is a method too, but it has no receiver: statics
+  // cannot reference the class's type parameters, so a static generic
+  // method is instantiated on its own type arguments alone
+  // (classInstance is null) and its clone is a plain class member, not
+  // an instance member.
+  let isMethod = declaration.kind == NodeKind.MethodDeclaration;
+  let isStatic = isMethod && !prototype.is(CommonFlags.Instance);
   let classArgs = classInstance ? classInstance.typeArguments : null;
   let combined = new Array<Type>();
   if (classArgs) {
@@ -843,9 +841,13 @@ export function ensureAsyncGenericInstance(
   let registerParent: Element;
   let genParent: Element;
   if (isMethod) {
-    receiverClass = assert(classInstance).prototype;
+    receiverClass = classInstance
+      ? classInstance.prototype
+      : <ClassPrototype>prototype.parent;
     mangled = mangleGenericName(prototype.name, combined);
-    qualName = `${receiverClass.name}_${mangled}`;
+    let path = namespacePathOf(receiverClass);
+    let prefix = path.length > 0 ? path.join("_") + "_" : "";
+    qualName = `${prefix}${receiverClass.name}_${mangled}`;
     registerParent = receiverClass;
     genParent = receiverClass.parent;
   } else {
@@ -882,10 +884,10 @@ export function ensureAsyncGenericInstance(
     failGeneric(program, prototype, `Generated name '${mangled}' collides with an existing declaration`);
     return null;
   }
-  // Instance methods live in the class's instanceMembers, not in members,
-  // so they are looked up there; plain functions live in the parent's members.
+  // Instance methods live in the class's instanceMembers, static methods
+  // and plain functions in the parent's members.
   let clone: DeclaredElement | null;
-  if (isMethod) {
+  if (isMethod && !isStatic) {
     let instanceMembers = (<ClassPrototype>registerParent).instanceMembers;
     clone = instanceMembers ? (instanceMembers.get(mangled) || null) : null;
   } else {
@@ -914,7 +916,7 @@ export function ensureAsyncGenericInstance(
   let item: TransformWorkItem = {
     prototype: clonePrototype,
     isMethod,
-    isStatic: false,
+    isStatic,
     receiverClass,
     boundClass: isMethod ? classInstance : null,
     genParent,

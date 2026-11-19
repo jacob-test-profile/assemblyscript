@@ -1098,7 +1098,12 @@ export function createCoordinator(metadata) {
       };
     });
     (metadata.classes || []).forEach(function (cls) {
-      api[cls.name] = buildClass(cls);
+      let target = api;
+      (cls.path || []).forEach(function (segment) {
+        if (!target[segment]) target[segment] = {};
+        target = target[segment];
+      });
+      target[cls.name] = buildClass(cls);
     });
     return api;
   }

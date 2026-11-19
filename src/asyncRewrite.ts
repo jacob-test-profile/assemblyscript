@@ -79,6 +79,10 @@ import {
   CommonFlags
 } from "./common";
 
+import {
+  ElementKind
+} from "./program";
+
 /** Spill-pool entry points, generated once per module when needed. */
 export const SPILL_POOL_SIZE = 8;
 export const SPILL_ACQUIRE = "__async_spill_acquire";
@@ -351,7 +355,18 @@ export function typeToTypeNode(type: Type, range: Range): TypeNode | null {
         typeArguments[i] = argNode;
       }
     }
-    return namedType(classReference.prototype.name, typeArguments, type.isNullableReference, range);
+    // Qualified with the class's namespace path (`NS.H`): generated code
+    // lives at file level, where the bare class name would not resolve.
+    // The recursion above qualifies type arguments the same way, so
+    // `Array<NS.H>` spells fully qualified throughout. A top-level class
+    // spells as before.
+    let name = new TypeName(ident(classReference.prototype.name, range), null, range);
+    let parent = classReference.prototype.parent;
+    while (parent && parent.kind == ElementKind.Namespace) {
+      name = new TypeName(ident(parent.name, range), name, range);
+      parent = parent.parent;
+    }
+    return new NamedTypeNode(name, typeArguments, type.isNullableReference, range);
   }
   // Function types are usize-based too, so the signature check must
   // precede the primitive lookup or every function would spell as `usize`.

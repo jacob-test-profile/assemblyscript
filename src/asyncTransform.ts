@@ -201,6 +201,7 @@ import {
   warnSkipped,
   qualNameOf,
   namespacePathOf,
+  exportedThroughNamespaces,
   owningFile
 } from "./asyncCoordinatorMeta";
 
@@ -495,7 +496,7 @@ export function transformAsyncFunctions(program: Program): void {
         receiverClass,
         boundClass: null,
         genParent: receiverClass.parent,
-        qualName: `${receiverClass.name}_${prototype.name}`,
+        qualName: qualNameOf(prototype),
         selfName: null,
         forbidden: new Set<string>(),
         isExtracted: false,
@@ -542,10 +543,6 @@ export function transformAsyncFunctions(program: Program): void {
       };
       if (item.isMethod) {
         let receiverClass = assert(item.receiverClass);
-        if (receiverClass.parent.kind == ElementKind.Namespace) {
-          fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
-          continue;
-        }
         let classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
         if (!classInstance) {
           program.rejectedAsyncFunctions.add(prototype);
@@ -747,12 +744,10 @@ export function transformAsyncWorkItem(
   };
   if (item.isMethod) {
     let receiverClass = assert(item.receiverClass);
-    if (receiverClass.parent.kind == ElementKind.Namespace) {
-      fail("Async methods in namespaced classes are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
-      return;
-    }
     let classInstance: Class | null = item.boundClass;
-    if (!classInstance) {
+    // A static method needs no class instance (no receiver to bind),
+    // and resolving a generic class with null type arguments asserts.
+    if (!classInstance && !item.isStatic) {
       classInstance = program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Report);
       if (!classInstance) {
         program.rejectedAsyncFunctions.add(prototype);
@@ -761,7 +756,7 @@ export function transformAsyncWorkItem(
     }
     // Static methods stay unbound: toBound asserts Instance, and a
     // static has no receiver to bind.
-    if (!item.isStatic) transformPrototype = prototype.toBound(classInstance);
+    if (!item.isStatic) transformPrototype = prototype.toBound(assert(classInstance));
   } else if (prototype.parent.kind == ElementKind.Namespace) {
     fail("Async functions in namespaces are not yet supported: the entry is not a WebAssembly export, so the coordinator cannot drive it", prototype.identifierNode.range);
     return;
@@ -938,6 +933,9 @@ class AsyncFunctionTransform {
   /** Namespace path segments, outermost first; empty for top-level
    *  functions and methods. */
   private namespacePath: string[];
+  /** Namespace path of the enclosing class, for methods; empty for
+   *  top-level classes and plain functions. */
+  private classNamespacePath: string[];
   /** Classes whose `__async_<file>_<Class>_new` export was already
    *  emitted by an earlier transformed method of the class, by export
    *  name. Keyed by name, not prototype: two instantiations of one
@@ -993,11 +991,19 @@ class AsyncFunctionTransform {
   ) {
     this.declaration = <FunctionDeclaration>prototype.declaration;
     this.parent = prototype.parent;
-    this.genParent = genParent;
+    // Generated declarations for a method on a namespaced class register
+    // at file level, not under the namespace: stock asc does not export
+    // namespace members, so protocol/entry/_new exports would be
+    // unreachable from the coordinator. The qualName carries the
+    // namespace path, so the generated names stay unique.
+    this.genParent = isMethod && receiverClass && receiverClass.parent.kind == ElementKind.Namespace
+      ? file
+      : genParent;
     this.isMethod = isMethod;
     this.isStatic = isStatic;
     this.receiverClass = receiverClass;
     this.namespacePath = isMethod ? [] : namespacePathOf(prototype);
+    this.classNamespacePath = isMethod && receiverClass ? namespacePathOf(receiverClass) : [];
     this.classNews = classNews;
     this.fnName = qualName;
     this.range = this.declaration.range;
@@ -3078,6 +3084,35 @@ class AsyncFunctionTransform {
     return prototype.is(CommonFlags.Async) ? prototype : null;
   }
 
+  /** Resolves a property-access chain to a class declared in a
+   *  namespace, or `null` when the chain does not name one: the root must
+   *  look up to a namespace, every intermediate segment must be a
+   *  namespace, and the final segment a class. A local with the root
+   *  name shadows the namespace, so that resolves to nothing here. */
+  private lookupNamespaceClass(expr: Expression): ClassPrototype | null {
+    let segments = new Array<string>();
+    let current = expr;
+    while (current.kind == NodeKind.PropertyAccess) {
+      let access = <PropertyAccessExpression>current;
+      segments.unshift(access.property.text);
+      current = access.expression;
+    }
+    if (current.kind != NodeKind.Identifier) return null;
+    let rootName = (<IdentifierExpression>current).text;
+    let binding = this.scope.lookup(rootName);
+    if (binding && !binding.shadowed) return null;
+    let element = assert(this.flow).lookup(rootName);
+    if (!element || element.kind != ElementKind.Namespace) return null;
+    for (let i = 0, k = segments.length - 1; i < k; ++i) {
+      let next: Element | null = (<Namespace>element).getMember(segments[i]);
+      if (!next || next.kind != ElementKind.Namespace) return null;
+      element = next;
+    }
+    let member = (<Namespace>element).getMember(segments[segments.length - 1]);
+    if (!member || member.kind != ElementKind.ClassPrototype) return null;
+    return <ClassPrototype>member;
+  }
+
   /** Rewrites a nested call's callee to the inner function's absolute
    *  namespace-qualified access (`NS.take`, `Outer.Inner.deep`), so the
    *  call still resolves once the transform moves it into the top-level
@@ -3162,15 +3197,16 @@ class AsyncFunctionTransform {
         return this.transformStaticAwait(node, call, <ClassPrototype>element, access.property.text, used);
       }
     }
+    if (receiver.kind == NodeKind.PropertyAccess) {
+      let namespacedClass = this.lookupNamespaceClass(receiver);
+      if (namespacedClass) {
+        return this.transformStaticAwait(node, call, namespacedClass, access.property.text, used);
+      }
+    }
     let receiverClass = this.receiverClassOf(receiver, node);
     if (!receiverClass) return null;
     let method = this.lookupInstanceMethod(receiverClass, access.property.text);
     if (!method || !method.is(CommonFlags.Async) || method.declaration.kind != NodeKind.MethodDeclaration) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
-    }
-    let declaringClass = <ClassPrototype>method.parent;
-    if (declaringClass.parent.kind == ElementKind.Namespace) {
       this.fail("'await' of a member call is not yet supported", node.range);
       return null;
     }
@@ -3206,12 +3242,14 @@ class AsyncFunctionTransform {
     let declaringClass = <ClassPrototype>method.parent;
     let typeParameters = declaringClass.typeParameterNodes;
     if (typeParameters && typeParameters.length > 0) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
-    }
-    if (declaringClass.parent.kind == ElementKind.Namespace) {
-      this.fail("'await' of a member call is not yet supported", node.range);
-      return null;
+      // A static method on a generic class is only instantiable through
+      // its own type arguments (statics cannot reference the class's type
+      // parameters): a static without them has no instantiation to drive.
+      let ownParameters = method.typeParameterNodes;
+      if (!ownParameters || ownParameters.length == 0) {
+        this.fail("'await' of a member call is not yet supported", node.range);
+        return null;
+      }
     }
     if (method.declaration.range.source != this.file.source) {
       this.fail("'await' of a member call is not yet supported", node.range);
@@ -4227,7 +4265,10 @@ class AsyncFunctionTransform {
     let receiverClass = this.isMethod ? this.receiverClass : null;
     let emitEntry = false;
     let emitClassNew = false;
-    if (receiverClass && findExportName(this.program, this.file, receiverClass) != null) {
+    // A class is drivable when it is a module export, or exported
+    // through its whole namespace chain (a namespaced class is never a
+    // module export itself: the namespace is).
+    if (receiverClass && (findExportName(this.program, this.file, receiverClass) != null || exportedThroughNamespaces(receiverClass))) {
       if (!this.classNews.has(this.classNewName(receiverClass))) {
         if (this.hasNameCollision(this.classNewName(receiverClass))) return false;
         emitClassNew = true;
@@ -5594,18 +5635,24 @@ class AsyncFunctionTransform {
   }
 
   /** Class name with its instantiation's type arguments encoded
-   *  (`Box_i32` for `Box<i32>`, plain `Box` otherwise), so two
-   *  instantiations of one generic class get distinct exports. */
+   *  (`Box_i32` for `Box<i32>`, plain `Box` otherwise), prefixed with
+   *  the namespace path for a namespaced class (`NS_H`, `NS_Box_i32`),
+   *  so two instantiations of one generic class, and two same-named
+   *  classes in different namespaces, get distinct exports. */
   private instantiatedClassName(receiverClass: ClassPrototype): string {
     let thisType = assert(this.instance).signature.thisType;
     let cls = thisType ? thisType.getClass() : null;
     let args = cls ? cls.typeArguments : null;
-    if (!args || args.length == 0) return receiverClass.name;
-    return mangleGenericName(receiverClass.name, args);
+    let base = receiverClass.name;
+    if (args && args.length > 0) base = mangleGenericName(receiverClass.name, args);
+    if (this.classNamespacePath.length > 0) return this.classNamespacePath.join("_") + "_" + base;
+    return base;
   }
 
   /** Type node for the resolved receiver (`Box<i32>` for a method on an
-   *  instantiated generic class, plain `Box` otherwise). */
+   *  instantiated generic class, plain `Box` otherwise). `typeToTypeNode`
+   *  qualifies the class with its namespace path (`NS.H`), so the node
+   *  resolves at file level, where the generated declarations live. */
   private receiverTypeNode(range: Range): TypeNode | null {
     let thisType = assert(this.instance).signature.thisType;
     if (!thisType) return null;
@@ -5763,7 +5810,7 @@ class AsyncFunctionTransform {
         [ namedType("i32", null, false, range) ],
         [ callExpr(
           new PropertyAccessExpression(
-            this.isStatic ? ident(receiverClass.name, range) : ident(receiverName, range),
+            this.isStatic ? this.classCallee(receiverClass, range) : ident(receiverName, range),
             ident(this.prototype.name, range),
             range
           ),
@@ -5780,12 +5827,37 @@ class AsyncFunctionTransform {
     );
   }
 
+  /** Callee qualifying the class for a static entry (`NS.H` for a
+   *  namespaced class, plain `H` otherwise): the entry lives at file
+   *  level, where the bare class name would not resolve. */
+  private classCallee(receiverClass: ClassPrototype, range: Range): Expression {
+    if (this.classNamespacePath.length == 0) return ident(receiverClass.name, range);
+    let callee: Expression = ident(this.classNamespacePath[0], range);
+    for (let i = 1, k = this.classNamespacePath.length; i < k; ++i) {
+      callee = new PropertyAccessExpression(callee, ident(this.classNamespacePath[i], range), range);
+    }
+    return new PropertyAccessExpression(callee, ident(receiverClass.name, range), range);
+  }
+
   private buildClassNew(receiverClass: ClassPrototype): FunctionDeclaration | null {
     let range = this.range;
     let className = receiverClass.name;
     let parameters = new Array<ParameterNode>();
     let args = new Array<Expression>();
     let classInstance = this.resolveNewClass(receiverClass);
+    // No class instance means no `_new`: a static method on a generic
+    // class has no instantiation to resolve the class with (statics
+    // cannot reference the class's type parameters, and `new Box()`
+    // without type arguments is an error), so the class cannot be
+    // constructed through the coordinator. The entry still drives the
+    // method as a nested inner.
+    if (!classInstance) {
+      let typeParameters = receiverClass.typeParameterNodes;
+      if (typeParameters && typeParameters.length > 0) {
+        warnSkipped(this.program, this.prototype, "the constructor of generic class '" + className + "' cannot be driven without a class instantiation", []);
+        return null;
+      }
+    }
     let ctor = classInstance ? classInstance.constructorInstance : null;
     if (ctor) {
       let ctorPrototype = ctor.prototype;
@@ -5838,15 +5910,24 @@ class AsyncFunctionTransform {
       range
     );
     let body = new Array<Statement>();
-    let receiverTypeNode = this.receiverTypeNode(range);
+    // The resolved receiver type, or the bare class name for a static
+    // method (which has no receiver type), qualified with the namespace
+    // path: the `_new` lives at file level, where the bare class name
+    // would not resolve. It carries the type arguments too (`Box<i32>`).
+    let newType = this.receiverTypeNode(range);
+    if (!newType) {
+      let chained = new TypeName(ident(className, range), null, range);
+      for (let i = this.classNamespacePath.length - 1; i >= 0; --i) {
+        chained = new TypeName(ident(this.classNamespacePath[i], range), chained, range);
+      }
+      newType = new NamedTypeNode(chained, null, false, range);
+    }
     let newTypeName = new TypeName(ident(className, range), null, range);
     let newTypeArgs: TypeNode[] | null = null;
-    if (receiverTypeNode && receiverTypeNode.kind == NodeKind.NamedType) {
-      let named = <NamedTypeNode>receiverTypeNode;
-      if (named.typeArguments) {
-        newTypeName = named.name;
-        newTypeArgs = named.typeArguments;
-      }
+    if (newType.kind == NodeKind.NamedType) {
+      let named = <NamedTypeNode>newType;
+      newTypeName = named.name;
+      newTypeArgs = named.typeArguments;
     }
     body.push(new ReturnStatement(
       new CallExpression(
@@ -5870,13 +5951,18 @@ class AsyncFunctionTransform {
 
   /** Resolves the class for the `_new` export. An instance method reads
    *  it off its receiver type; a static method has no receiver type, so
-   *  the class resolves directly (it already resolved in the worklist). */
+   *  the class resolves directly (it already resolved in the worklist).
+   *  A static method on a generic class has no instantiation to resolve
+   *  with — resolving a generic class with null type arguments asserts —
+   *  so that case returns `null` and the caller skips the `_new`. */
   private resolveNewClass(receiverClass: ClassPrototype): Class | null {
     let thisType = assert(this.instance).signature.thisType;
     if (thisType) {
       let classInstance = thisType.getClass();
       if (classInstance) return classInstance;
     }
+    let typeParameters = receiverClass.typeParameterNodes;
+    if (typeParameters && typeParameters.length > 0) return null;
     return this.program.resolver.resolveClass(receiverClass, null, new Map(), ReportMode.Swallow);
   }
 
